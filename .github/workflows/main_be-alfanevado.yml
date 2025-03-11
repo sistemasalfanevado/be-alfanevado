@@ -13,21 +13,30 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js version
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '22.x'
 
       - name: Install dependencies
-        run: npm install --omit=dev
+        run: npm ci
+
+      - name: Verify NestJS installation
+        run: npx nest --version
+
+      - name: Build NestJS application
+        run: npm run build
 
       - name: Generate Prisma client
         run: npx prisma generate
 
-      - name: Build the project
-        run: npm run build
+      - name: Create .env file
+        run: |
+          echo "DATABASE_URL_PROD=${{ secrets.DATABASE_URL_PROD }}" > .env
+          cat .env  # Debug: Verificar contenido del archivo .env
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
@@ -54,14 +63,13 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      - name: Create .env file
-        run: |
-          echo "DATABASE_URL_PROD=${{ secrets.DATABASE_URL_PROD }}" > .env
+      - name: Set environment variables
+        run: echo "DATABASE_URL_PROD=${{ secrets.DATABASE_URL_PROD }}" >> $GITHUB_ENV
 
       - name: Apply database migrations
         run: npx prisma migrate deploy
 
-      - name: 'Deploy to Azure Web App'
+      - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
