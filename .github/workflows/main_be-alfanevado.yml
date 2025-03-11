@@ -26,6 +26,9 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
+      - name: Build the project
+        run: npm run build
+
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
 
@@ -54,15 +57,9 @@ jobs:
       - name: Create .env file
         run: |
           echo "DATABASE_URL_PROD=${{ secrets.DATABASE_URL_PROD }}" > .env
-          echo "Archivo .env creado con éxito."
-
-      - name: Validate .env file
-        run: cat .env
 
       - name: Apply database migrations
         run: npx prisma migrate deploy
-        env:
-          DATABASE_URL_PROD: ${{ secrets.DATABASE_URL_PROD }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -70,5 +67,5 @@ jobs:
         with:
           app-name: 'be-alfanevado'
           slot-name: 'Production'
-          package: release.zip
+          package: .
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DBA683BB3DAF41749D5C4548B9A609AC }}
