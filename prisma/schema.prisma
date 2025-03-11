@@ -1,0 +1,257 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  //url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL_PROD")
+}
+
+// AUTEHTICATION USER MODULES SUBMODULES
+
+model User {
+  id        String  @id @default(uuid())
+  name      String  @db.VarChar(100)
+  email     String  @unique @db.VarChar(255)
+  modules   UserModule[]
+  password  String
+  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Module {
+  id           String      @id @default(uuid())
+  name         String      @db.VarChar(100)
+  description  String      @db.VarChar(200)
+  users        UserModule[] // Relación muchos a muchos con User
+  subModules   ModuleSubModule[] // Relación muchos a muchos con SubModule
+  deletedAt    DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model SubModule {
+  id           String      @id @default(uuid())
+  name         String      @db.VarChar(100)
+  description  String      @db.VarChar(200)
+  route        String      @db.VarChar(300)
+  modules      ModuleSubModule[] // Relación muchos a muchos con Module
+  deletedAt    DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model UserModule {
+  userId      String
+  moduleId    String
+  user        User      @relation(fields: [userId], references: [id])
+  module      Module    @relation(fields: [moduleId], references: [id])
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@id([userId, moduleId]) // Clave primaria compuesta
+}
+
+model ModuleSubModule {
+  moduleId    String
+  subModuleId String
+  module      Module    @relation(fields: [moduleId], references: [id])
+  subModule   SubModule @relation(fields: [subModuleId], references: [id])
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@id([moduleId, subModuleId]) // Clave primaria compuesta
+}
+
+// LANDING PAGE
+
+model LandingFooterContact {
+  id        String  @id @default(uuid())
+  title     String  @db.VarChar(150)
+  detail    String  @db.VarChar(400)
+  icon      String  @db.VarChar(100)
+  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("landing_footer_contact")
+}
+
+model LandingFooterLink {
+  id        String  @id @default(uuid())
+  title     String  @db.VarChar(150)
+  link      String  @db.VarChar(400)
+  icon      String  @db.VarChar(100)
+  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("landing_footer_link")
+}
+
+model LandingFooterSocial {
+  id        String  @id @default(uuid())
+  link      String  @db.VarChar(400)
+  icon      String  @db.VarChar(100)
+  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("landing_footer_social")
+}
+
+model LandingPage {
+  id              String  @id @default(uuid())
+  title           String  @db.VarChar(150)
+  route           String  @db.VarChar(100) @unique
+  heroBanners     LandingHeroBanner[]
+  features        LandingFeature[]
+  projects        LandingProject[]
+  contents        LandingContent[]
+  contentYears    LandingContentYear[]
+  contentSliders  LandingContentSlider[]
+  lots            LandingLot[]
+  deletedAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("landing_page")
+}
+
+model LandingHeroBanner {
+  id         String  @id @default(uuid())
+  title      String  @db.VarChar(150)
+  subtitle   String  @db.VarChar(400)
+  linkImage  String  @db.VarChar(400)
+  nameImage  String  @db.VarChar(100)
+  pageId     String  
+  page       LandingPage @relation(fields: [pageId], references: [id])
+  deletedAt  DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("landing_hero_banner")
+}
+
+model LandingFeature {
+  id          String  @id @default(uuid())
+  title       String  @db.VarChar(150)
+  detail      String  @db.VarChar(400)
+  icon        String  @db.VarChar(100)
+  pageId      String  
+  page        LandingPage @relation(fields: [pageId], references: [id])
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("landing_feature")
+}
+
+model LandingProject {
+  id              String   @id @default(uuid())
+  linkImage1      String   @db.VarChar(400)
+  linkImage2      String   @db.VarChar(400)
+  nameImage1      String   @db.VarChar(100)
+  nameImage2      String   @db.VarChar(100)
+  title           String   @db.VarChar(150)
+  subtitle        String   @db.VarChar(400)
+  textButton      String   @db.VarChar(50)
+  linkRedirect1   String?  @db.VarChar(400)
+  linkRedirect2   String?  @db.VarChar(400)
+  pageId          String  
+  page            LandingPage @relation(fields: [pageId], references: [id])
+  deletedAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("landing_project")
+}
+
+model LandingContent {
+  id              String   @id @default(uuid())
+  title           String   @db.VarChar(150)
+  subtitle        String   @db.VarChar(400)
+  pageId          String  
+  page            LandingPage @relation(fields: [pageId], references: [id])
+  deletedAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("landing_content")
+}
+
+model LandingContentYear {
+  id              String   @id @default(uuid())
+  year            String   @db.VarChar(10)
+  yearMessage     String   @db.VarChar(200)
+  title           String   @db.VarChar(150)
+  subtitle        String   @db.VarChar(400)
+  linkImage       String   @db.VarChar(400)
+  nameImage       String   @db.VarChar(100)
+  pageId          String  
+  page            LandingPage @relation(fields: [pageId], references: [id])
+  deletedAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("landing_content_year")
+}
+
+model LandingContentSlider {
+  id               String    @id @default(uuid())
+  title            String    @db.VarChar(150)
+  subtitle         String    @db.VarChar(400)
+  linkImage1       String?   @db.VarChar(400)
+  linkImage2       String?   @db.VarChar(400)
+  linkImage3       String?   @db.VarChar(400)
+  linkImage4       String?   @db.VarChar(400)
+  nameImage1       String?   @db.VarChar(100)
+  nameImage2       String?   @db.VarChar(100)
+  nameImage3       String?   @db.VarChar(100)
+  nameImage4       String?   @db.VarChar(100)
+  pageId           String  
+  page             LandingPage @relation(fields: [pageId], references: [id])
+  deletedAt        DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("landing_content_slider")
+}
+
+model LandingLotStatus {
+  id               String    @id @default(uuid())
+  title            String    @db.VarChar(25)
+  lots             LandingLot[] // Relación uno a muchos con LandingLot
+  deletedAt        DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("landing_lot_status")
+}
+
+model LandingLot {
+  id               String          @id @default(uuid())
+  name             String          @db.VarChar(50)
+  number           String          @db.VarChar(50)
+  block            String          @db.VarChar(50)
+  code             String          @db.VarChar(50)
+  statusId         String          // Clave foránea para LandingLotStatus
+  status           LandingLotStatus @relation(fields: [statusId], references: [id])
+  pageId           String          // Clave foránea para LandingPage
+  page             LandingPage     @relation(fields: [pageId], references: [id])
+  deletedAt        DateTime?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@map("landing_lot")
+}
