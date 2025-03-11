@@ -51,6 +51,9 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
       
+      - name: Set environment variables
+        run: echo "DATABASE_URL_PROD=${{ secrets.DATABASE_URL_PROD }}" >> $GITHUB_ENV
+
       - name: Apply database migrations
         run: npx prisma migrate deploy
 
