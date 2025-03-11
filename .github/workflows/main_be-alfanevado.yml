@@ -52,9 +52,11 @@ jobs:
         run: unzip release.zip
       
       - name: Set environment variables
-        run: echo "DATABASE_URL_PROD=${{ secrets.DATABASE_URL_PROD }}" >> $GITHUB_ENV
+        run: echo "DATABASE_URL=${{ secrets.DATABASE_URL_PROD }}" >> $GITHUB_ENV
 
       - name: Apply database migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_PROD }}
         run: npx prisma migrate deploy
 
       - name: 'Deploy to Azure Web App'
