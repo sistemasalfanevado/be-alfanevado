@@ -52,13 +52,15 @@ jobs:
         run: unzip release.zip
       
       - name: Debug Environment Variables
-        run: echo "DATABASE_URL_PROD=${{ secrets.DATABASE_URL_PROD }}" | sed 's/./& /g'
+        run: |
+          echo "DATABASE_URL_PROD=${{ secrets.DATABASE_URL_PROD }}" | sed 's/./& /g'
 
       - name: Set environment variables
         run: echo "DATABASE_URL=${{ secrets.DATABASE_URL_PROD }}" >> $GITHUB_ENV
 
       - name: Validate environment variable
-        run: echo "DATABASE_URL is set to: $DATABASE_URL"
+        run: |
+          echo "DATABASE_URL is set to: $DATABASE_URL"
 
       - name: Apply database migrations
         env:
