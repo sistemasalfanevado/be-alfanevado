@@ -6,7 +6,7 @@ import { UpdateContentSliderDto } from './dto/update-content-slider.dto';
 import { AuthGuard } from '@nestjs/passport'; 
 
 @Controller('content-slider')
-@UseGuards(AuthGuard('jwt'))
+//@UseGuards(AuthGuard('jwt'))
 export class ContentSliderController {
   constructor(private readonly contentSliderService: ContentSliderService) {}
 

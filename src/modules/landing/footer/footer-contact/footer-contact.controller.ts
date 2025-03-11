@@ -5,7 +5,7 @@ import { UpdateFooterContactDto } from './dto/update-footer-contact.dto';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('footer-contact')
-@UseGuards(AuthGuard('jwt'))
+//@UseGuards(AuthGuard('jwt'))
 export class FooterContactController {
 
   constructor(private readonly footerContactService: FooterContactService) { }

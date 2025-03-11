@@ -6,7 +6,7 @@ import { UpdateContentYearDto } from './dto/update-content-year.dto';
 import { AuthGuard } from '@nestjs/passport'; 
 
 @Controller('content-year')
-@UseGuards(AuthGuard('jwt'))
+//@UseGuards(AuthGuard('jwt'))
 export class ContentYearController {
   constructor(private readonly contentYearService: ContentYearService) {}
 

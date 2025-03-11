@@ -5,7 +5,7 @@ import { UpdateFeatureDto } from './dto/update-feature.dto';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('feature')
-@UseGuards(AuthGuard('jwt'))
+//@UseGuards(AuthGuard('jwt'))
 export class FeatureController {
   constructor(private readonly featureService: FeatureService) {}
 

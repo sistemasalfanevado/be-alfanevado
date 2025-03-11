@@ -6,7 +6,7 @@ import { UpdatePageDto } from './dto/update-page.dto';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('page')
-@UseGuards(AuthGuard('jwt'))
+//@UseGuards(AuthGuard('jwt'))
 export class PageController {
   constructor(private readonly pageService: PageService) {}
 

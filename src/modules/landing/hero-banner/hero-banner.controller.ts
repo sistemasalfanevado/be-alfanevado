@@ -6,7 +6,7 @@ import { UpdateHeroBannerDto } from './dto/update-hero-banner.dto';
 import { AuthGuard } from '@nestjs/passport'; 
 
 @Controller('hero-banner')
-@UseGuards(AuthGuard('jwt'))
+//@UseGuards(AuthGuard('jwt'))
 export class HeroBannerController {
   constructor(private readonly heroBannerService: HeroBannerService) { }
 

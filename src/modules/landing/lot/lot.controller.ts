@@ -6,7 +6,7 @@ import { UpdateLotDto } from './dto/update-lot.dto';
 import { AuthGuard } from '@nestjs/passport'; 
 
 @Controller('lot')
-@UseGuards(AuthGuard('jwt'))
+//@UseGuards(AuthGuard('jwt'))
 export class LotController {
   constructor(private readonly lotService: LotService) {}
 

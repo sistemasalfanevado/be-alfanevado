@@ -5,7 +5,7 @@ import { UpdateFooterLinkDto } from './dto/update-footer-link.dto';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('footer-link')
-@UseGuards(AuthGuard('jwt'))
+//@UseGuards(AuthGuard('jwt'))
 export class FooterLinkController {
   constructor(private readonly footerLinkService: FooterLinkService) { }
 
