@@ -2,10 +2,11 @@ import { Controller, Get, Post, Body, Put, Param, Delete, Patch, UseGuards } fro
 import { FeatureService } from './feature.service';
 import { CreateFeatureDto } from './dto/create-feature.dto';
 import { UpdateFeatureDto } from './dto/update-feature.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
+import { Public } from '../../../auth/decorators/public.decorator';
 
 @Controller('feature')
-//@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class FeatureController {
   constructor(private readonly featureService: FeatureService) {}
 
@@ -20,6 +21,7 @@ export class FeatureController {
   }
 
   @Get(':pageId/page')
+  @Public()
   findAllByPage(@Param('pageId') pageId: string) {
     return this.featureService.findAllByPage(pageId);
   }

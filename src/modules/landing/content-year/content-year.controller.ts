@@ -3,10 +3,11 @@ import { ContentYearService } from './content-year.service';
 import { CreateContentYearDto } from './dto/create-content-year.dto';
 import { UpdateContentYearDto } from './dto/update-content-year.dto';
 
-import { AuthGuard } from '@nestjs/passport'; 
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
+import { Public } from '../../../auth/decorators/public.decorator'; 
 
 @Controller('content-year')
-//@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class ContentYearController {
   constructor(private readonly contentYearService: ContentYearService) {}
 
@@ -21,6 +22,7 @@ export class ContentYearController {
   }
 
   @Get(':pageId/page')
+  @Public()
   findAllByPage(@Param('pageId') pageId: string) {
     return this.contentYearService.findAllByPage(pageId);
   }

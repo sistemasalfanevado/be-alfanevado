@@ -3,10 +3,11 @@ import { PageService } from './page.service';
 import { CreatePageDto } from './dto/create-page.dto';
 import { UpdatePageDto } from './dto/update-page.dto';
 
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
+import { Public } from '../../../auth/decorators/public.decorator';
 
 @Controller('page')
-//@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class PageController {
   constructor(private readonly pageService: PageService) {}
 
@@ -16,6 +17,7 @@ export class PageController {
   }
 
   @Get()
+  @Public()
   findAll() {
     return this.pageService.findAll();
   }

@@ -3,10 +3,11 @@ import { ContentSliderService } from './content-slider.service';
 import { CreateContentSliderDto } from './dto/create-content-slider.dto';
 import { UpdateContentSliderDto } from './dto/update-content-slider.dto';
 
-import { AuthGuard } from '@nestjs/passport'; 
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
+import { Public } from '../../../auth/decorators/public.decorator'; 
 
 @Controller('content-slider')
-//@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class ContentSliderController {
   constructor(private readonly contentSliderService: ContentSliderService) {}
 
@@ -21,6 +22,7 @@ export class ContentSliderController {
   }
 
   @Get(':pageId/page')
+  @Public()
   findAllByPage(@Param('pageId') pageId: string) {
     return this.contentSliderService.findAllByPage(pageId);
   }

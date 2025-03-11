@@ -2,10 +2,13 @@ import { Controller, Get, Post, Body, Put, Patch, Param, Delete, UseGuards } fro
 import { FooterSocialService } from './footer-social.service';
 import { CreateFooterSocialDto } from './dto/create-footer-social.dto';
 import { UpdateFooterSocialDto } from './dto/update-footer-social.dto';
-import { AuthGuard } from '@nestjs/passport';
+
+import { JwtAuthGuard } from '../../../../auth/guards/jwt-auth.guard'
+import { Public } from '../../../../auth/decorators/public.decorator'; 
+
 
 @Controller('footer-social')
-//@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class FooterSocialController {
   constructor(private readonly footerSocialService: FooterSocialService) {}
 
@@ -15,6 +18,7 @@ export class FooterSocialController {
   }
 
   @Get()
+  @Public()
   findAll() {
     return this.footerSocialService.findAll();
   }

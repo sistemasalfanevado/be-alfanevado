@@ -1,6 +1,11 @@
-import { IsString, IsOptional, MaxLength, IsUUID } from 'class-validator';
+import { IsString, IsOptional, MaxLength, IsUUID, IsNumber } from 'class-validator';
 
 export class UpdateProjectDto {
+
+  @IsNumber()
+  @IsOptional()
+  position?: number;
+
   @IsString()
   @IsOptional()
   @MaxLength(400)

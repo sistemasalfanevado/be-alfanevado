@@ -3,10 +3,11 @@ import { LotStatusService } from './lot-status.service';
 import { CreateLotStatusDto } from './dto/create-lot-status.dto';
 import { UpdateLotStatusDto } from './dto/update-lot-status.dto';
 
-import { AuthGuard } from '@nestjs/passport'; 
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
+import { Public } from '../../../auth/decorators/public.decorator'; 
 
 @Controller('lot-status')
-//@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class LotStatusController {
   constructor(private readonly lotStatusService: LotStatusService) {}
 

@@ -3,10 +3,11 @@ import { ContentService } from './content.service';
 import { CreateContentDto } from './dto/create-content.dto';
 import { UpdateContentDto } from './dto/update-content.dto';
 
-import { AuthGuard } from '@nestjs/passport'; 
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
+import { Public } from '../../../auth/decorators/public.decorator'; 
 
 @Controller('content')
-//@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class ContentController {
   constructor(private readonly contentService: ContentService) {}
 
@@ -21,6 +22,7 @@ export class ContentController {
   }
 
   @Get(':pageId/page')
+  @Public()
   findAllByPage(@Param('pageId') pageId: string) {
     return this.contentService.findAllByPage(pageId);
   }

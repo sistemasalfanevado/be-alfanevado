@@ -3,10 +3,11 @@ import { LotService } from './lot.service';
 import { CreateLotDto } from './dto/create-lot.dto';
 import { UpdateLotDto } from './dto/update-lot.dto';
 
-import { AuthGuard } from '@nestjs/passport'; 
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
+import { Public } from '../../../auth/decorators/public.decorator'; 
 
 @Controller('lot')
-//@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class LotController {
   constructor(private readonly lotService: LotService) {}
 
@@ -21,6 +22,7 @@ export class LotController {
   }
 
   @Get(':pageId/page')
+  @Public()
   findAllByPage(@Param('pageId') pageId: string) {
     return this.lotService.findAllByPage(pageId);
   }

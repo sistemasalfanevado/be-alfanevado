@@ -2,11 +2,11 @@ import { Controller, Get, Post, Body, Put, Param, Delete, Patch, UseGuards } fro
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
-
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
+import { Public } from '../../../auth/decorators/public.decorator';
 
 @Controller('project')
-//@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
@@ -21,6 +21,7 @@ export class ProjectController {
   }
 
   @Get(':pageId/page')
+  @Public()
   findAllByPage(@Param('pageId') pageId: string) {
     return this.projectService.findAllByPage(pageId);
   }

@@ -2,10 +2,12 @@ import { Controller, Get, Post, Body, Param, Patch, Put, Delete, UseGuards } fro
 import { FooterContactService } from './footer-contact.service';
 import { CreateFooterContactDto } from './dto/create-footer-contact.dto';
 import { UpdateFooterContactDto } from './dto/update-footer-contact.dto';
-import { AuthGuard } from '@nestjs/passport';
+
+import { JwtAuthGuard } from '../../../../auth/guards/jwt-auth.guard'
+import { Public } from '../../../../auth/decorators/public.decorator'; 
 
 @Controller('footer-contact')
-//@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class FooterContactController {
 
   constructor(private readonly footerContactService: FooterContactService) { }
@@ -16,6 +18,7 @@ export class FooterContactController {
   }
 
   @Get()
+  @Public()
   findAll() {
     return this.footerContactService.findAll();
   }

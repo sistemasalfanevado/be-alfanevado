@@ -10,6 +10,7 @@ export class ProjectService {
   async create(createProjectDto: CreateProjectDto) {
     return this.prisma.landingProject.create({
       data: {
+        position: createProjectDto.position,
         linkImage1: createProjectDto.linkImage1,
         linkImage2: createProjectDto.linkImage2,
         nameImage1: createProjectDto.nameImage1,

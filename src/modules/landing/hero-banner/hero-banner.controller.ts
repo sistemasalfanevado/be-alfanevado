@@ -3,10 +3,11 @@ import { HeroBannerService } from './hero-banner.service';
 import { CreateHeroBannerDto } from './dto/create-hero-banner.dto';
 import { UpdateHeroBannerDto } from './dto/update-hero-banner.dto';
 
-import { AuthGuard } from '@nestjs/passport'; 
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
+import { Public } from '../../../auth/decorators/public.decorator'; 
 
 @Controller('hero-banner')
-//@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class HeroBannerController {
   constructor(private readonly heroBannerService: HeroBannerService) { }
 
@@ -21,6 +22,7 @@ export class HeroBannerController {
   }
 
   @Get(':pageId/page')
+  @Public()
   findAllByPage(@Param('pageId') pageId: string) {
     return this.heroBannerService.findAllByPage(pageId);
   }

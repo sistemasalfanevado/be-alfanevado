@@ -1,6 +1,11 @@
-import { IsString, IsNotEmpty, MaxLength, IsUUID, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, IsUUID, IsOptional, IsNumber } from 'class-validator';
 
 export class CreateProjectDto {
+  
+  @IsNumber()
+  @IsNotEmpty()
+  position: number
+
   @IsString()
   @IsNotEmpty()
   @MaxLength(400)

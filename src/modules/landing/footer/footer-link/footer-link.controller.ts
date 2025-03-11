@@ -2,10 +2,12 @@ import { Controller, Get, Post, Body, Put, Param, Patch, Delete, UseGuards } fro
 import { FooterLinkService } from './footer-link.service';
 import { CreateFooterLinkDto } from './dto/create-footer-link.dto';
 import { UpdateFooterLinkDto } from './dto/update-footer-link.dto';
-import { AuthGuard } from '@nestjs/passport';
+
+import { JwtAuthGuard } from '../../../../auth/guards/jwt-auth.guard'
+import { Public } from '../../../../auth/decorators/public.decorator'; 
 
 @Controller('footer-link')
-//@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class FooterLinkController {
   constructor(private readonly footerLinkService: FooterLinkService) { }
 
@@ -15,6 +17,7 @@ export class FooterLinkController {
   }
 
   @Get()
+  @Public()
   findAll() {
     return this.footerLinkService.findAll();
   }
