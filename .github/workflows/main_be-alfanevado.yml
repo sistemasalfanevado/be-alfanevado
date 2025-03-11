@@ -41,7 +41,7 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
@@ -51,12 +51,18 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      - name: Validate environment variable
+      - name: Create .env file
         run: |
-          echo "DATABASE_URL_PROD is set to: ${{ secrets.DATABASE_URL_PROD }}"
+          echo "DATABASE_URL_PROD=${{ secrets.DATABASE_URL_PROD }}" > .env
+          echo "Archivo .env creado con éxito."
+
+      - name: Validate .env file
+        run: cat .env
 
       - name: Apply database migrations
-        run: DATABASE_URL=${{ secrets.DATABASE_URL_PROD }} npx prisma migrate deploy
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL_PROD: ${{ secrets.DATABASE_URL_PROD }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
