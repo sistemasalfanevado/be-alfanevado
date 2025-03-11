@@ -23,8 +23,20 @@ jobs:
         with:
           node-version: '22.x'
 
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Prepare deployment files
+        run: |
+          mkdir -p deploy
+          cp -r dist package.json package-lock.json prisma deploy/
+          cd deploy && npm install --omit=dev
+
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+        run: cd deploy && zip -r ../release.zip ./*
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -44,10 +56,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
+          path: .
 
       - name: Unzip artifact for deployment
-        run: unzip release.zip
-      
+        run: unzip release.zip -d deploy
+
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
