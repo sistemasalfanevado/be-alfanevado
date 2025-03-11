@@ -50,22 +50,13 @@ jobs:
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
-      
-      - name: Debug Environment Variables
-        run: |
-          echo "DATABASE_URL_PROD=${{ secrets.DATABASE_URL_PROD }}" | sed 's/./& /g'
-
-      - name: Set environment variables
-        run: echo "DATABASE_URL=${{ secrets.DATABASE_URL_PROD }}" >> $GITHUB_ENV
 
       - name: Validate environment variable
         run: |
-          echo "DATABASE_URL is set to: $DATABASE_URL"
+          echo "DATABASE_URL_PROD is set to: ${{ secrets.DATABASE_URL_PROD }}"
 
       - name: Apply database migrations
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL_PROD }}
-        run: npx prisma migrate deploy
+        run: DATABASE_URL=${{ secrets.DATABASE_URL_PROD }} npx prisma migrate deploy
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
