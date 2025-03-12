@@ -1,4 +1,4 @@
-import { IsString, IsOptional, MaxLength, IsUUID } from 'class-validator';
+import { IsString, IsOptional, MaxLength, IsUUID, IsNumber } from 'class-validator';
 
 export class UpdateLotDto {
   @IsString()
@@ -20,6 +20,14 @@ export class UpdateLotDto {
   @IsOptional()
   @MaxLength(50)
   code?: string;
+
+  @IsNumber()
+  @IsOptional()
+  length?: number;
+
+  @IsNumber()
+  @IsOptional()
+  width?: number;
 
   @IsUUID() // Valida que sea un UUID válido
   @IsOptional()

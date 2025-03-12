@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MaxLength, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, IsUUID, IsNumber } from 'class-validator';
 
 export class CreateLotDto {
   @IsString()
@@ -21,11 +21,19 @@ export class CreateLotDto {
   @MaxLength(50)
   code: string;
 
-  @IsUUID() // Valida que sea un UUID válido
+  @IsNumber()
   @IsNotEmpty()
-  statusId: string; // ID del estado del lote
+  length: number;
 
-  @IsUUID() // Valida que sea un UUID válido
+  @IsNumber()
   @IsNotEmpty()
-  pageId: string; // ID de la página a la que pertenece el lote
+  width: number;
+
+  @IsUUID()
+  @IsNotEmpty()
+  statusId: string;
+
+  @IsUUID()
+  @IsNotEmpty()
+  pageId: string;
 }

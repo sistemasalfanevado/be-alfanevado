@@ -246,6 +246,8 @@ model LandingLot {
   number           String          @db.VarChar(50)
   block            String          @db.VarChar(50)
   code             String          @db.VarChar(50)
+  length           Decimal?         @db.Decimal(6, 2)
+  width            Decimal?         @db.Decimal(6, 2)           
   statusId         String          // Clave foránea para LandingLotStatus
   status           LandingLotStatus @relation(fields: [statusId], references: [id])
   pageId           String          // Clave foránea para LandingPage
