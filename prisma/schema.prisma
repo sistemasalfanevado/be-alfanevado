@@ -181,6 +181,7 @@ model LandingContent {
   id              String   @id @default(uuid())
   title           String   @db.VarChar(150)
   subtitle        String   @db.VarChar(400)
+  position        Int      @default(0)
   pageId          String  
   page            LandingPage @relation(fields: [pageId], references: [id])
   deletedAt       DateTime?

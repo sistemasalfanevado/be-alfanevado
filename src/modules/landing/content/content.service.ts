@@ -10,6 +10,7 @@ export class ContentService {
   async create(createContentDto: CreateContentDto) {
     return this.prisma.landingContent.create({
       data: {
+        position: createContentDto.position,
         title: createContentDto.title,
         subtitle: createContentDto.subtitle,
         page: {
