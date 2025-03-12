@@ -15,6 +15,7 @@ export class LotService {
         block: createLotDto.block,
         code: createLotDto.code,
         area: createLotDto.area,
+        perimeter: createLotDto.perimeter,
         detail: createLotDto.detail,
         status: {
           connect: { id: createLotDto.statusId }, // Conecta con el estado

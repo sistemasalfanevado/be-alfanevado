@@ -246,7 +246,8 @@ model LandingLot {
   number           String          @db.VarChar(50)
   block            String          @db.VarChar(50)
   code             String          @db.VarChar(50)
-  area             Decimal?        @db.Decimal(7, 3)
+  area             Decimal?        @db.Decimal(6, 2)
+  perimeter        Decimal?        @db.Decimal(6, 2)
   detail           String?         @db.VarChar(500)          
   statusId         String          // Clave foránea para LandingLotStatus
   status           LandingLotStatus @relation(fields: [statusId], references: [id])

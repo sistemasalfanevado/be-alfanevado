@@ -25,6 +25,10 @@ export class CreateLotDto {
   @IsNotEmpty()
   area: number;
 
+  @IsNumber()
+  @IsNotEmpty()
+  perimeter: number;
+
   @IsString()
   @IsNotEmpty()
   @MaxLength(500)

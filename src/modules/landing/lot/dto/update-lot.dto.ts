@@ -25,6 +25,10 @@ export class UpdateLotDto {
   @IsOptional()
   area?: number;
 
+  @IsNumber()
+  @IsOptional()
+  perimeter?: number;
+
   @IsString()
   @IsOptional()
   @MaxLength(500)
