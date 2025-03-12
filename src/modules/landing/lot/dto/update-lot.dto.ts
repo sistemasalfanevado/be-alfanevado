@@ -23,11 +23,12 @@ export class UpdateLotDto {
 
   @IsNumber()
   @IsOptional()
-  length?: number;
+  area?: number;
 
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  width?: number;
+  @MaxLength(500)
+  detail?: string;
 
   @IsUUID() // Valida que sea un UUID válido
   @IsOptional()

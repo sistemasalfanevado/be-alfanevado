@@ -23,11 +23,12 @@ export class CreateLotDto {
 
   @IsNumber()
   @IsNotEmpty()
-  length: number;
+  area: number;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  width: number;
+  @MaxLength(500)
+  detail: string;
 
   @IsUUID()
   @IsNotEmpty()
