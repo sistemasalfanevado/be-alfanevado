@@ -9,7 +9,9 @@ async function bootstrap() {
     origin: [
         'http://localhost:4200', 
         'https://alfa-nevado-a8c64.web.app', 
-        'https://admin-alfa-nevado-78d3d.web.app', 
+        'https://admin-alfa-nevado-78d3d.web.app',
+        'https://alfa-nevado-landing-admin.web.app', 
+        'https://alfa-nevado-landing-uat.web.app',
         'https://alfanevado.pe',
         'https://www.alfanevado.pe'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
