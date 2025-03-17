@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { ConfigModule } from '@nestjs/config';
+
 
 import { FooterContactModule } from './modules/landing/footer/footer-contact/footer-contact.module';
 import { FooterLinkModule } from './modules/landing/footer/footer-link/footer-link.module';
@@ -29,7 +31,12 @@ import { BitrixModule } from './modules/bitrix/bitrix.module';
 
 
 @Module({
-  imports: [UsersModule, AuthModule, PrismaModule,
+  imports: [
+    ConfigModule.forRoot(),
+
+    UsersModule, 
+    AuthModule, 
+    PrismaModule,
 
     FooterContactModule,
     FooterLinkModule,

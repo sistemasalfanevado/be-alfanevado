@@ -8,14 +8,21 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 import { AccessControlService } from '../access-control/access-control.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 
 @Module({
   imports: [
+    ConfigModule,
     UsersModule,
     PassportModule,
-    JwtModule.register({
-      secret: 'tu_clave_secreta', // Usa una variable de entorno
-      signOptions: { expiresIn: '1h' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'), // Obtiene la clave del .env
+        signOptions: { expiresIn: '4h' },
+      }),
     }),
   ],
   controllers: [AuthController],
