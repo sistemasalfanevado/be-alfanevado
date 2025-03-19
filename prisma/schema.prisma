@@ -259,3 +259,10 @@ model LandingLot {
 
   @@map("landing_lot")
 }
+
+model LandingSetting {
+  id               String  @id @default(uuid())
+  site             String  @unique
+  maintenanceMode  Boolean @default(false)
+  deletedAt        DateTime?
+}

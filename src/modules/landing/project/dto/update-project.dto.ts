@@ -43,7 +43,7 @@ export class UpdateProjectDto {
 
   @IsString()
   @IsOptional()
-  @MaxLength(200)
+  @MaxLength(200)f
   linkRedirect1?: string;
 
   @IsString()

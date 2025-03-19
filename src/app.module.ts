@@ -19,7 +19,7 @@ import { ContentSliderModule } from './modules/landing/content-slider/content-sl
 
 import { LotStatusModule } from './modules/landing/lot-status/lot-status.module';
 import { LotModule } from './modules/landing/lot/lot.module';
-
+import { SettingsModule } from './modules/landing/setting/setting.module';
 import { PageModule } from './modules/landing/page/page.module';
 
 // Access Control
@@ -49,6 +49,7 @@ import { BitrixModule } from './modules/bitrix/bitrix.module';
     ContentSliderModule,
     LotStatusModule,
     LotModule,
+    SettingsModule,
     PageModule,
 
     ModuleModule,

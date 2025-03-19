@@ -3,6 +3,7 @@ import { PrismaService } from '../../../prisma/prisma.service'; // Importa Prism
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 
+
 @Injectable()
 export class ProjectService {
   constructor(private prisma: PrismaService) {} // Inyecta PrismaService

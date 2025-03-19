@@ -5,7 +5,7 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
 import { Public } from '../../../auth/decorators/public.decorator';
 
-@Controller('project')
+@Controller('project') 
 @UseGuards(JwtAuthGuard)
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
