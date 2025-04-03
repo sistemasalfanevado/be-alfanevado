@@ -17,9 +17,14 @@ export class CompleteProjectController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.completeProjectService.findAll();
+  }
+
+  @Get(':pageId/page')
+  @Public()
+  findAllByPage(@Param('pageId') pageId: string) {
+    return this.completeProjectService.findAllByPage(pageId);
   }
 
   @Get(':id')

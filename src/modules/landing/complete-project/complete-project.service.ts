@@ -18,6 +18,12 @@ export class CompleteProjectService {
     });
   }
 
+  async findAllByPage(pageId: string) {
+    return this.prisma.landingHeroBanner.findMany({
+      where: { deletedAt: null, pageId }, // Solo registros no eliminados
+    });
+  }
+
   async findOne(id: string) {
     const project = await this.prisma.landingCompleteProject.findUnique({
       where: { id, deletedAt: null },
