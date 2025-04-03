@@ -3,7 +3,7 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 
 import { CreateFooterContactDto } from './dto/create-footer-contact.dto';
 import { UpdateFooterContactDto } from './dto/update-footer-contact.dto';
-
+ 
 @Injectable()
 export class FooterContactService {
 
@@ -42,6 +42,7 @@ export class FooterContactService {
       data: { deletedAt: new Date() },
     });
   }
+  
 
   async restore(id: string) {
     return this.prisma.landingFooterContact.update({

@@ -110,19 +110,20 @@ model LandingFooterSocial {
 }
 
 model LandingPage {
-  id              String  @id @default(uuid())
-  title           String  @db.VarChar(150)
-  route           String  @db.VarChar(100) @unique
-  heroBanners     LandingHeroBanner[]
-  features        LandingFeature[]
-  projects        LandingProject[]
-  contents        LandingContent[]
-  contentYears    LandingContentYear[]
-  contentSliders  LandingContentSlider[]
-  lots            LandingLot[]
-  deletedAt       DateTime?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                String  @id @default(uuid())
+  title             String  @db.VarChar(150)
+  route             String  @db.VarChar(100) @unique
+  heroBanners       LandingHeroBanner[]
+  features          LandingFeature[]
+  projects          LandingProject[]
+  contents          LandingContent[]
+  contentYears      LandingContentYear[]
+  contentSliders    LandingContentSlider[]
+  lots              LandingLot[]
+  completeProjects  LandingCompleteProject[]
+  deletedAt         DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   @@map("landing_page")
 }
@@ -265,4 +266,29 @@ model LandingSetting {
   site             String  @unique
   maintenanceMode  Boolean @default(false)
   deletedAt        DateTime?
+}
+
+model LandingTermCondition {
+  id              String  @id @default(uuid())
+  description     String  @db.Text
+  deletedAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@map("landing_term_condition")
+}
+
+model LandingCompleteProject {
+  id              String   @id @default(uuid())
+  linkImage       String   @db.VarChar(400)
+  nameImage       String   @db.VarChar(100)
+  subtitle        String   @db.VarChar(400)
+  position        Int      @default(0) 
+  pageId          String  
+  page            LandingPage @relation(fields: [pageId], references: [id])
+  deletedAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("landing_complete_project")
 }
