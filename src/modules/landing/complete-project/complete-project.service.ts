@@ -19,7 +19,7 @@ export class CompleteProjectService {
   }
 
   async findAllByPage(pageId: string) {
-    return this.prisma.landingHeroBanner.findMany({
+    return this.prisma.landingCompleteProject.findMany({
       where: { deletedAt: null, pageId }, // Solo registros no eliminados
     });
   }
