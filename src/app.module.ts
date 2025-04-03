@@ -22,6 +22,10 @@ import { LotModule } from './modules/landing/lot/lot.module';
 import { SettingsModule } from './modules/landing/setting/setting.module';
 import { PageModule } from './modules/landing/page/page.module';
 
+import { CompleteProjectModule } from './modules/landing/complete-project/complete-project.module';
+import { TermConditionModule } from './modules/landing/term-condition/term-condition.module';
+
+
 // Access Control
 import { ModuleModule } from './modules/access-control/module/module.module';
 import { ModuleSubModuleModule } from './modules/access-control/module-sub-module/module-sub-module.module';
@@ -51,6 +55,8 @@ import { BitrixModule } from './modules/bitrix/bitrix.module';
     LotModule,
     SettingsModule,
     PageModule,
+    CompleteProjectModule,
+    TermConditionModule,
 
     ModuleModule,
     ModuleSubModuleModule,
