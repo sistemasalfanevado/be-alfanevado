@@ -13,7 +13,8 @@ async function bootstrap() {
         'https://alfa-nevado-landing-admin.web.app', 
         'https://alfa-nevado-landing-uat.web.app',
         'https://alfanevado.pe',
-        'https://www.alfanevado.pe'],
+        'https://www.alfanevado.pe',
+        'https://alfa-nevado-landing-prod.web.app',],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
