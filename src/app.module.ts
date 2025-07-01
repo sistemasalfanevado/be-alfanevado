@@ -26,11 +26,7 @@ import { CompleteProjectModule } from './modules/landing/complete-project/comple
 import { TermConditionModule } from './modules/landing/term-condition/term-condition.module';
 
 
-// Access Control
-import { ModuleModule } from './modules/access-control/module/module.module';
-import { ModuleSubModuleModule } from './modules/access-control/module-sub-module/module-sub-module.module';
-import { SubModuleModule } from './modules/access-control/sub-module/sub-module.module';
-import { UserModuleModule } from './modules/access-control/user-module/user-module.module';
+
 import { BitrixModule } from './modules/bitrix/bitrix.module';
 
 
@@ -58,10 +54,6 @@ import { BitrixModule } from './modules/bitrix/bitrix.module';
     CompleteProjectModule,
     TermConditionModule,
 
-    ModuleModule,
-    ModuleSubModuleModule,
-    SubModuleModule,
-    UserModuleModule,
     BitrixModule
 
   ],

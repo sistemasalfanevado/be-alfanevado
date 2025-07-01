@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL_PROD")
 }
 
-// AUTEHTICATION USER MODULES SUBMODULES
+// LANDING PAGE
 
 model User {
   id        String  @id @default(uuid())
@@ -25,54 +25,6 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
-model Module {
-  id           String      @id @default(uuid())
-  name         String      @db.VarChar(100)
-  description  String      @db.VarChar(200)
-  users        UserModule[] // Relación muchos a muchos con User
-  subModules   ModuleSubModule[] // Relación muchos a muchos con SubModule
-  deletedAt    DateTime?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-}
-
-model SubModule {
-  id           String      @id @default(uuid())
-  name         String      @db.VarChar(100)
-  description  String      @db.VarChar(200)
-  route        String      @db.VarChar(300)
-  modules      ModuleSubModule[] // Relación muchos a muchos con Module
-  deletedAt    DateTime?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-}
-
-model UserModule {
-  userId      String
-  moduleId    String
-  user        User      @relation(fields: [userId], references: [id])
-  module      Module    @relation(fields: [moduleId], references: [id])
-  deletedAt   DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@id([userId, moduleId]) // Clave primaria compuesta
-}
-
-model ModuleSubModule {
-  moduleId    String
-  subModuleId String
-  module      Module    @relation(fields: [moduleId], references: [id])
-  subModule   SubModule @relation(fields: [subModuleId], references: [id])
-  deletedAt   DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@id([moduleId, subModuleId]) // Clave primaria compuesta
-}
-
-// LANDING PAGE
 
 model LandingFooterContact {
   id        String  @id @default(uuid())
@@ -292,3 +244,8 @@ model LandingCompleteProject {
 
   @@map("landing_complete_project")
 }
+
+
+
+// SYSTEM FOR THE ORGANIZATION
+
