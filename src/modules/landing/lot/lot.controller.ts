@@ -3,8 +3,8 @@ import { LotService } from './lot.service';
 import { CreateLotDto } from './dto/create-lot.dto';
 import { UpdateLotDto } from './dto/update-lot.dto';
 
-import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
-import { Public } from '../../../auth/decorators/public.decorator'; 
+import { JwtAuthGuard } from '../../../auth/shared/guards/jwt-auth.guard'
+import { Public } from '../../../auth/shared/decorators/public.decorator'; 
 
 @Controller('lot')
 @UseGuards(JwtAuthGuard)

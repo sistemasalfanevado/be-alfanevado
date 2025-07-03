@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Put, Param, Delete, Patch, UseGuards } fro
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
-import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
-import { Public } from '../../../auth/decorators/public.decorator';
+import { JwtAuthGuard } from '../../../auth/shared/guards/jwt-auth.guard'
+import { Public } from '../../../auth/shared/decorators/public.decorator';
 
 @Controller('project') 
 @UseGuards(JwtAuthGuard)

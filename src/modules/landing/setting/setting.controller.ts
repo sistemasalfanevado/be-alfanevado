@@ -1,8 +1,8 @@
 import { Controller, Get, Patch, Delete, Body, Param, Query, Post, Put, UseGuards } from '@nestjs/common';
 import { SettingsService } from './setting.service';
 import { SettingDto } from './dto/setting.dto';
-import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
-import { Public } from '../../../auth/decorators/public.decorator';
+import { JwtAuthGuard } from '../../../auth/shared/guards/jwt-auth.guard'
+import { Public } from '../../../auth/shared/decorators/public.decorator';
 
 @Controller('setting')
 @UseGuards(JwtAuthGuard)

@@ -3,8 +3,8 @@ import { CompleteProjectService } from './complete-project.service';
 import { CreateCompleteProjectDto } from './dto/create-complete-project.dto';
 import { UpdateCompleteProjectDto } from './dto/update-complete-project.dto';
 
-import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
-import { Public } from '../../../auth/decorators/public.decorator'; 
+import { JwtAuthGuard } from '../../../auth/shared/guards/jwt-auth.guard'
+import { Public } from '../../../auth/shared/decorators/public.decorator'; 
 
 @Controller('complete-projects')
 @UseGuards(JwtAuthGuard)

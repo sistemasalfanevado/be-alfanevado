@@ -3,8 +3,8 @@ import { FooterLinkService } from './footer-link.service';
 import { CreateFooterLinkDto } from './dto/create-footer-link.dto';
 import { UpdateFooterLinkDto } from './dto/update-footer-link.dto';
 
-import { JwtAuthGuard } from '../../../../auth/guards/jwt-auth.guard'
-import { Public } from '../../../../auth/decorators/public.decorator'; 
+import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard'
+import { Public } from '../../../../auth/shared/decorators/public.decorator'; 
 
 @Controller('footer-link')
 @UseGuards(JwtAuthGuard)

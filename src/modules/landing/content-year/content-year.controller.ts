@@ -3,8 +3,8 @@ import { ContentYearService } from './content-year.service';
 import { CreateContentYearDto } from './dto/create-content-year.dto';
 import { UpdateContentYearDto } from './dto/update-content-year.dto';
 
-import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
-import { Public } from '../../../auth/decorators/public.decorator'; 
+import { JwtAuthGuard } from '../../../auth/shared/guards/jwt-auth.guard'
+import { Public } from '../../../auth/shared/decorators/public.decorator'; 
 
 @Controller('content-year')
 @UseGuards(JwtAuthGuard)

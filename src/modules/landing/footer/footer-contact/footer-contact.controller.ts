@@ -3,8 +3,8 @@ import { FooterContactService } from './footer-contact.service';
 import { CreateFooterContactDto } from './dto/create-footer-contact.dto';
 import { UpdateFooterContactDto } from './dto/update-footer-contact.dto';
 
-import { JwtAuthGuard } from '../../../../auth/guards/jwt-auth.guard'
-import { Public } from '../../../../auth/decorators/public.decorator'; 
+import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard'
+import { Public } from '../../../../auth/shared/decorators/public.decorator'; 
 
 @Controller('footer-contact')
 @UseGuards(JwtAuthGuard)

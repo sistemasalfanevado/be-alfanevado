@@ -3,8 +3,8 @@ import { ContentSliderService } from './content-slider.service';
 import { CreateContentSliderDto } from './dto/create-content-slider.dto';
 import { UpdateContentSliderDto } from './dto/update-content-slider.dto';
 
-import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
-import { Public } from '../../../auth/decorators/public.decorator'; 
+import { JwtAuthGuard } from '../../../auth/shared/guards/jwt-auth.guard'
+import { Public } from '../../../auth/shared/decorators/public.decorator'; 
 
 @Controller('content-slider')
 @UseGuards(JwtAuthGuard)

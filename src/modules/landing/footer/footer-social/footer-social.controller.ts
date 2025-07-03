@@ -3,8 +3,8 @@ import { FooterSocialService } from './footer-social.service';
 import { CreateFooterSocialDto } from './dto/create-footer-social.dto';
 import { UpdateFooterSocialDto } from './dto/update-footer-social.dto';
 
-import { JwtAuthGuard } from '../../../../auth/guards/jwt-auth.guard'
-import { Public } from '../../../../auth/decorators/public.decorator'; 
+import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard'
+import { Public } from '../../../../auth/shared/decorators/public.decorator'; 
 
 
 @Controller('footer-social')

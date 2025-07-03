@@ -3,8 +3,8 @@ import { HeroBannerService } from './hero-banner.service';
 import { CreateHeroBannerDto } from './dto/create-hero-banner.dto';
 import { UpdateHeroBannerDto } from './dto/update-hero-banner.dto';
 
-import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
-import { Public } from '../../../auth/decorators/public.decorator'; 
+import { JwtAuthGuard } from '../../../auth/shared/guards/jwt-auth.guard'
+import { Public } from '../../../auth/shared/decorators/public.decorator'; 
 
 @Controller('hero-banner')
 @UseGuards(JwtAuthGuard)

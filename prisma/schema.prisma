@@ -245,6 +245,69 @@ model LandingCompleteProject {
 }
 
 
+// ZENTRA
 
-// SYSTEM FOR THE ORGANIZATION
+model ZentraUser {
+  id           String       @id @default(uuid())
+  firstName    String       @db.VarChar(100)
+  lastName     String       @db.VarChar(100)
+  email        String       @unique @db.VarChar(255)
+  password     String
+  gender       String       @db.VarChar(20)
+  profileUrl   String?      @db.VarChar(300)
+  roleId       String
+  role         ZentraRole   @relation(fields: [roleId], references: [id])
+  deletedAt    DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
 
+model ZentraRole {
+  id           String                    @id @default(uuid())
+  name         String                    @unique @db.VarChar(100)
+  description  String                    @db.VarChar(200)
+  users        ZentraUser[]
+  permissions  ZentraRolePermission[]
+  deletedAt    DateTime?
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @updatedAt
+}
+
+model ZentraPageGroup {
+  id           String       @id @default(uuid())
+  name         String       @unique @db.VarChar(100)
+  description  String       @db.VarChar(200)
+  pages        ZentraPage[]
+  deletedAt    DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model ZentraPage {
+  id           String                  @id @default(uuid())
+  name         String                  @db.VarChar(100)
+  description  String                  @db.VarChar(200)
+  route        String                  @db.VarChar(300)
+  pageGroupId  String
+  pageGroup    ZentraPageGroup         @relation(fields: [pageGroupId], references: [id])
+  permissions  ZentraRolePermission[]
+  deletedAt    DateTime?
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @updatedAt
+}
+
+model ZentraRolePermission {
+  id           String             @id @default(uuid())
+  roleId       String
+  pageId       String
+  canCreate    Boolean            @default(false)
+  canEdit      Boolean            @default(false)
+  canDelete    Boolean            @default(false)
+  role         ZentraRole         @relation(fields: [roleId], references: [id])
+  page         ZentraPage         @relation(fields: [pageId], references: [id])
+  deletedAt    DateTime?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  @@unique([roleId, pageId]) // Un permiso por página por rol
+}

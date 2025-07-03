@@ -3,8 +3,8 @@ import { TermConditionService } from './term-condition.service';
 import { CreateTermConditionDto } from './dto/create-term-condition.dto';
 import { UpdateTermConditionDto } from './dto/update-term-condition.dto';
 
-import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
-import { Public } from '../../../auth/decorators/public.decorator'; 
+import { JwtAuthGuard } from '../../../auth/shared/guards/jwt-auth.guard'
+import { Public } from '../../../auth/shared/decorators/public.decorator'; 
 
 @Controller('term-conditions')
 @UseGuards(JwtAuthGuard)
