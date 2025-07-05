@@ -18,7 +18,7 @@ import { JwtAuthGuard } from '../../../auth/shared/guards/jwt-auth.guard';
 import { Public } from '../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-role-permission')
-@UseGuards(JwtAuthGuard)
+//@UseGuards(JwtAuthGuard)
 export class ZentraRolePermissionController {
   constructor(private readonly zentraRolePermissionService: ZentraRolePermissionService) {}
 

@@ -18,7 +18,7 @@ import { JwtAuthGuard } from '../../../auth/shared/guards/jwt-auth.guard';
 import { Public } from '../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-page')
-@UseGuards(JwtAuthGuard)
+//@UseGuards(JwtAuthGuard)
 export class ZentraPageController {
   constructor(private readonly zentraPageService: ZentraPageService) {}
 

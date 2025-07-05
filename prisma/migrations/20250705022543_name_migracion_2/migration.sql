@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "ZentraUser" (
+CREATE TABLE "zentra_user" (
     "id" TEXT NOT NULL,
     "firstName" VARCHAR(100) NOT NULL,
     "lastName" VARCHAR(100) NOT NULL,
@@ -12,11 +12,11 @@ CREATE TABLE "ZentraUser" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "ZentraUser_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "zentra_user_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "ZentraRole" (
+CREATE TABLE "zentra_role" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(100) NOT NULL,
     "description" VARCHAR(200) NOT NULL,
@@ -24,11 +24,11 @@ CREATE TABLE "ZentraRole" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "ZentraRole_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "zentra_role_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "ZentraPageGroup" (
+CREATE TABLE "zentra_page_group" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(100) NOT NULL,
     "description" VARCHAR(200) NOT NULL,
@@ -36,11 +36,11 @@ CREATE TABLE "ZentraPageGroup" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "ZentraPageGroup_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "zentra_page_group_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "ZentraPage" (
+CREATE TABLE "zentra_page" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(100) NOT NULL,
     "description" VARCHAR(200) NOT NULL,
@@ -50,11 +50,11 @@ CREATE TABLE "ZentraPage" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "ZentraPage_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "zentra_page_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "ZentraRolePermission" (
+CREATE TABLE "zentra_role_permission" (
     "id" TEXT NOT NULL,
     "roleId" TEXT NOT NULL,
     "pageId" TEXT NOT NULL,
@@ -65,29 +65,29 @@ CREATE TABLE "ZentraRolePermission" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "ZentraRolePermission_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "zentra_role_permission_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ZentraUser_email_key" ON "ZentraUser"("email");
+CREATE UNIQUE INDEX "zentra_user_email_key" ON "zentra_user"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ZentraRole_name_key" ON "ZentraRole"("name");
+CREATE UNIQUE INDEX "zentra_role_name_key" ON "zentra_role"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ZentraPageGroup_name_key" ON "ZentraPageGroup"("name");
+CREATE UNIQUE INDEX "zentra_page_group_name_key" ON "zentra_page_group"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ZentraRolePermission_roleId_pageId_key" ON "ZentraRolePermission"("roleId", "pageId");
+CREATE UNIQUE INDEX "zentra_role_permission_roleId_pageId_key" ON "zentra_role_permission"("roleId", "pageId");
 
 -- AddForeignKey
-ALTER TABLE "ZentraUser" ADD CONSTRAINT "ZentraUser_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "ZentraRole"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "zentra_user" ADD CONSTRAINT "zentra_user_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "zentra_role"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ZentraPage" ADD CONSTRAINT "ZentraPage_pageGroupId_fkey" FOREIGN KEY ("pageGroupId") REFERENCES "ZentraPageGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "zentra_page" ADD CONSTRAINT "zentra_page_pageGroupId_fkey" FOREIGN KEY ("pageGroupId") REFERENCES "zentra_page_group"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ZentraRolePermission" ADD CONSTRAINT "ZentraRolePermission_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "ZentraRole"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "zentra_role_permission" ADD CONSTRAINT "zentra_role_permission_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "zentra_role"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ZentraRolePermission" ADD CONSTRAINT "ZentraRolePermission_pageId_fkey" FOREIGN KEY ("pageId") REFERENCES "ZentraPage"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "zentra_role_permission" ADD CONSTRAINT "zentra_role_permission_pageId_fkey" FOREIGN KEY ("pageId") REFERENCES "zentra_page"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
