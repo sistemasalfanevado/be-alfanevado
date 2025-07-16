@@ -7,7 +7,6 @@ import { AuthGuard } from '@nestjs/passport'; // Importa AuthGuard
 export class ZentraAuthController {
   constructor(private zentraAuthService: ZentraAuthService) {}
 
-  @UseGuards(AuthGuard('local'))
   @Post('login')
   async login(@Body() zentraLoginDto: ZentraLoginDto) {
     return this.zentraAuthService.login(zentraLoginDto);
