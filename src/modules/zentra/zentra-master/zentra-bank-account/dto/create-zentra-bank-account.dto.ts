@@ -9,7 +9,7 @@ export class CreateZentraBankAccountDto {
 
   @IsDecimal()
   @Type(() => Number)
-  amount: string;
+  amount: number;
 
   @IsString()
   @IsNotEmpty()

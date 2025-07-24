@@ -10,7 +10,7 @@ export class UpdateZentraBankAccountDto {
   @IsDecimal()
   @IsOptional()
   @Type(() => Number)
-  amount?: string;
+  amount?: number;
 
   @IsString()
   @IsOptional()
