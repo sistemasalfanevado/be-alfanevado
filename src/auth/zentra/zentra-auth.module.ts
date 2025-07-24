@@ -3,7 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ZentraAuthService } from './zentra-auth.service';
 import { ZentraAuthController } from './zentra-auth.controller';
-import { ZentraUsersModule } from '../../modules/zentra/zentra-users/zentra-users.module';
+import { ZentraUsersModule } from '../../modules/zentra/zentra-config/zentra-users/zentra-users.module';
 import { ZentraLocalStrategy } from '../shared/strategies/zentra-local.strategy';
 import { JwtStrategy } from '../shared/strategies/jwt.strategy';
 

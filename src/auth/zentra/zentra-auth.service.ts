@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ZentraUsersService } from '../../modules/zentra/zentra-users/zentra-users.service';
+import { ZentraUsersService } from '../../modules/zentra/zentra-config/zentra-users/zentra-users.service';
 
 import * as bcrypt from 'bcrypt';
 

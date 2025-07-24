@@ -312,3 +312,94 @@ model ZentraRolePermission {
 
   @@map("zentra_role_permission")
 }
+
+// ZENTRA MASTERS
+
+
+
+model ZentraCurrency {
+  id          String    @id @default(uuid())
+  code        String    @db.VarChar(3)
+  name        String    @db.VarChar(50)
+  symbol      String    @db.VarChar(5)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  @@map("zentra_currency")
+}
+
+
+model ZentraBank {
+  id          String    @id @default(uuid())
+  name        String    @db.VarChar(50)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  @@map("zentra_bank")
+}
+
+model ZentraMovementCategory {
+  id          String    @id @default(uuid())
+  name        String    @db.VarChar(50)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  @@map("zentra_movement_category")
+}
+
+model ZentraDocumentType {
+  id          String    @id @default(uuid())
+  name        String    @db.VarChar(50)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  @@map("zentra_document_type")
+}
+
+model ZentraTransactionType {
+  id          String    @id @default(uuid())
+  name        String    @db.VarChar(50)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  @@map("zentra_transaction_type")
+}
+
+model ZentraBudgetItemCategory {
+  id          String    @id @default(uuid())
+  name        String    @db.VarChar(200)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  @@map("zentra_budget_item_category")
+}
+
+model ZentraCompany {
+  id          String            @id @default(uuid())
+  name        String            @db.VarChar(50)
+  projects    ZentraProject[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  deletedAt   DateTime?
+
+  @@map("zentra_company")
+}
+
+model ZentraProject {
+  id          String           @id @default(uuid())
+  name        String           @db.VarChar(100)
+  company     ZentraCompany    @relation(fields: [companyId], references: [id])
+  companyId   String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  deletedAt   DateTime?
+
+  @@map("zentra_project")
+}
+
