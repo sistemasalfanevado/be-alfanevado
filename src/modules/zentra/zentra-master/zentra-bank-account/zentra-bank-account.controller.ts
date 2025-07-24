@@ -1,0 +1,43 @@
+import { Controller, Get, Post, Body, Param, Patch, Put, Delete, UseGuards } from '@nestjs/common';
+import { ZentraBankAccountService } from './zentra-bank-account.service';
+import { CreateZentraBankAccountDto } from './dto/create-zentra-bank-account.dto';
+import { UpdateZentraBankAccountDto } from './dto/update-zentra-bank-account.dto';
+import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
+import { Public } from '../../../../auth/shared/decorators/public.decorator';
+
+@Controller('zentra-bank-accounts')
+//@UseGuards(JwtAuthGuard)
+export class ZentraBankAccountController {
+  constructor(private readonly zentraBankAccountService: ZentraBankAccountService) {}
+
+  @Post()
+  create(@Body() createZentraBankAccountDto: CreateZentraBankAccountDto) {
+    return this.zentraBankAccountService.create(createZentraBankAccountDto);
+  }
+
+  @Get()
+  @Public()
+  findAll() {
+    return this.zentraBankAccountService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.zentraBankAccountService.findOne(id);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateZentraBankAccountDto: UpdateZentraBankAccountDto) {
+    return this.zentraBankAccountService.update(id, updateZentraBankAccountDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.zentraBankAccountService.remove(id);
+  }
+
+  @Patch(':id/restore')
+  restore(@Param('id') id: string) {
+    return this.zentraBankAccountService.restore(id);
+  }
+}

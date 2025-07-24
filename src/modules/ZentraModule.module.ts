@@ -19,6 +19,13 @@ import { ZentraTransactionTypeModule } from './zentra/zentra-master/zentra-trans
 import { ZentraCompanyModule } from './zentra/zentra-master/zentra-company/zentra-company.module';
 import { ZentraPartyModule } from './zentra/zentra-master/zentra-party/zentra-party.module';
 import { ZentraPartyRoleModule } from './zentra/zentra-master/zentra-party-role/zentra-party-role.module';
+import { ZentraBankAccountModule } from './zentra/zentra-master/zentra-bank-account/zentra-bank-account.module';
+import { ZentraBudgetItemModule } from './zentra/zentra-master/zentra-budget-item/zentra-budget-item.module';
+
+// Zentra Transaction
+import { ZentraDocumentModule } from './zentra/zentra-transaction/zentra-document/zentra-document.module';
+import { ZentraMovementModule } from './zentra/zentra-transaction/zentra-movement/zentra-movement.module';
+
 
 @Module({
   imports: [
@@ -38,7 +45,15 @@ import { ZentraPartyRoleModule } from './zentra/zentra-master/zentra-party-role/
     ZentraTransactionTypeModule,
     ZentraCompanyModule,
     ZentraPartyModule,
-    ZentraPartyRoleModule
+    ZentraPartyRoleModule,
+    ZentraBankAccountModule,
+    ZentraBudgetItemModule,
+
+
+    ZentraDocumentModule,
+    ZentraMovementModule
+
+
 
   ],  
 })

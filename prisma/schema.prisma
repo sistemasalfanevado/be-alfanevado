@@ -315,27 +315,32 @@ model ZentraRolePermission {
 
 // ZENTRA MASTERS
 
-
-
 model ZentraCurrency {
-  id          String    @id @default(uuid())
-  code        String    @db.VarChar(3)
-  name        String    @db.VarChar(50)
-  symbol      String    @db.VarChar(5)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
+  id            String    @id @default(uuid())
+  code          String    @db.VarChar(3)
+  name          String    @db.VarChar(50)
+  symbol        String    @db.VarChar(5)
+
+  bankAccounts  ZentraBankAccount[]
+  documents     ZentraDocument[]
+  movements     ZentraMovement[]
+  budgetItems   ZentraBudgetItem[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
 
   @@map("zentra_currency")
 }
 
 
 model ZentraBank {
-  id          String    @id @default(uuid())
-  name        String    @db.VarChar(50)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
+  id            String    @id @default(uuid())
+  name          String    @db.VarChar(50)
+  bankAccounts  ZentraBankAccount[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
 
   @@map("zentra_bank")
 }
@@ -343,6 +348,10 @@ model ZentraBank {
 model ZentraMovementCategory {
   id          String    @id @default(uuid())
   name        String    @db.VarChar(50)
+  
+  documents   ZentraDocument[]
+  movements   ZentraMovement[]
+  
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
@@ -353,6 +362,8 @@ model ZentraMovementCategory {
 model ZentraDocumentType {
   id          String    @id @default(uuid())
   name        String    @db.VarChar(50)
+  documents   ZentraDocument[]
+  movements   ZentraMovement[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
@@ -363,6 +374,8 @@ model ZentraDocumentType {
 model ZentraTransactionType {
   id          String    @id @default(uuid())
   name        String    @db.VarChar(50)
+  documents   ZentraDocument[]
+  movements   ZentraMovement[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
@@ -373,6 +386,9 @@ model ZentraTransactionType {
 model ZentraBudgetItemCategory {
   id          String    @id @default(uuid())
   name        String    @db.VarChar(200)
+
+  budgetItems ZentraBudgetItem[]
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
@@ -381,24 +397,26 @@ model ZentraBudgetItemCategory {
 }
 
 model ZentraCompany {
-  id          String            @id @default(uuid())
-  name        String            @db.VarChar(50)
-  projects    ZentraProject[]
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
-  deletedAt   DateTime?
+  id            String            @id @default(uuid())
+  name          String            @db.VarChar(50)
+  projects      ZentraProject[]
+  bankAccounts  ZentraBankAccount[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  deletedAt     DateTime?
 
   @@map("zentra_company")
 }
 
 model ZentraProject {
-  id          String           @id @default(uuid())
-  name        String           @db.VarChar(100)
-  company     ZentraCompany    @relation(fields: [companyId], references: [id])
-  companyId   String
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  deletedAt   DateTime?
+  id            String           @id @default(uuid())
+  name          String           @db.VarChar(100)
+  company       ZentraCompany    @relation(fields: [companyId], references: [id])
+  companyId     String
+  budgetItems   ZentraBudgetItem[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  deletedAt     DateTime?
 
   @@map("zentra_project")
 }
@@ -423,6 +441,10 @@ model ZentraParty {
   address       String             @db.VarChar(200)
   partyRole     ZentraPartyRole    @relation(fields: [partyRoleId], references: [id])
   partyRoleId   String
+
+  documents     ZentraDocument[]
+  movements     ZentraMovement[]
+
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
   deletedAt     DateTime?
@@ -431,3 +453,116 @@ model ZentraParty {
 }
 
 
+model ZentraBudgetItem {
+  id             String                   @id @default(uuid())
+  name           String                   @db.VarChar(100)
+  amount         Decimal                  @db.Decimal(12, 2)
+  currency       ZentraCurrency           @relation(fields: [currencyId], references: [id])
+  currencyId     String
+  category       ZentraBudgetItemCategory @relation(fields: [categoryId], references: [id])
+  categoryId     String
+  project        ZentraProject            @relation(fields: [projectId], references: [id])
+  projectId      String
+  documents      ZentraDocument[]
+  movements      ZentraMovement[]
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+  deletedAt      DateTime?
+
+  @@map("zentra_budget_item")
+}
+
+model ZentraBankAccount {
+  id           String         @id @default(uuid())
+  name         String         @db.VarChar(100)
+  number       String         @db.VarChar(30)
+  
+  bank         ZentraBank     @relation(fields: [bankId], references: [id])
+  bankId       String
+  
+  company      ZentraCompany  @relation(fields: [companyId], references: [id])
+  companyId    String
+  
+  currency     ZentraCurrency  @relation(fields: [currencyId], references: [id])
+  currencyId   String
+
+  documents    ZentraDocument[]
+  movements    ZentraMovement[]
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  deletedAt    DateTime?
+
+  @@map("zentra_bank_account")
+}
+
+model ZentraDocument {
+  id                 String                @id @default(uuid())
+  description        String                @db.VarChar(255)
+  totalAmount        Decimal               @db.Decimal(12, 2)
+
+  transactionType    ZentraTransactionType @relation(fields: [transactionTypeId], references: [id])
+  transactionTypeId  String
+
+  movementCategory   ZentraMovementCategory @relation(fields: [movementCategoryId], references: [id])
+  movementCategoryId String
+
+  documentType       ZentraDocumentType @relation(fields: [documentTypeId], references: [id])
+  documentTypeId     String
+
+  party              ZentraParty           @relation(fields: [partyId], references: [id])
+  partyId            String
+
+  budgetItem         ZentraBudgetItem      @relation(fields: [budgetItemId], references: [id])
+  budgetItemId       String
+
+  bankAccount        ZentraBankAccount     @relation(fields: [bankAccountId], references: [id])
+  bankAccountId      String
+
+  currency           ZentraCurrency        @relation(fields: [currencyId], references: [id])
+  currencyId         String
+
+  movements          ZentraMovement[]
+
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  deletedAt          DateTime?
+
+  @@map("zentra_document")
+}
+
+model ZentraMovement {
+  id                 String                @id @default(uuid())
+  description        String                @db.VarChar(255)
+  amount             Decimal               @db.Decimal(12, 2)
+
+  document           ZentraDocument        @relation(fields: [documentId], references: [id])
+  documentId         String
+
+  transactionType    ZentraTransactionType @relation(fields: [transactionTypeId], references: [id])
+  transactionTypeId  String
+
+  movementCategory   ZentraMovementCategory @relation(fields: [movementCategoryId], references: [id])
+  movementCategoryId String
+
+  documentType       ZentraDocumentType @relation(fields: [documentTypeId], references: [id])
+  documentTypeId     String
+
+  party              ZentraParty           @relation(fields: [partyId], references: [id])
+  partyId            String
+
+  budgetItem         ZentraBudgetItem      @relation(fields: [budgetItemId], references: [id])
+  budgetItemId       String
+
+  bankAccount        ZentraBankAccount     @relation(fields: [bankAccountId], references: [id])
+  bankAccountId      String
+
+  currency           ZentraCurrency        @relation(fields: [currencyId], references: [id])
+  currencyId         String
+
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  deletedAt          DateTime?
+
+  @@map("zentra_movement")
+}
