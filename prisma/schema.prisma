@@ -403,3 +403,31 @@ model ZentraProject {
   @@map("zentra_project")
 }
 
+model ZentraPartyRole {
+  id          String            @id @default(uuid())
+  name        String            @db.VarChar(50)
+  parties     ZentraParty[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  deletedAt   DateTime?
+
+  @@map("zentra_party_role")
+}
+
+model ZentraParty {
+  id            String             @id @default(uuid())
+  name          String             @db.VarChar(100)
+  document      String             @db.VarChar(30)
+  email         String             @db.VarChar(50)
+  phone         String             @db.VarChar(20)
+  address       String             @db.VarChar(200)
+  partyRole     ZentraPartyRole    @relation(fields: [partyRoleId], references: [id])
+  partyRoleId   String
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  deletedAt     DateTime?
+
+  @@map("zentra_party")
+}
+
+

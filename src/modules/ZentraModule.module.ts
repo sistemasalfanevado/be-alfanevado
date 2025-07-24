@@ -17,7 +17,8 @@ import { ZentraMovementCategoryModule } from './zentra/zentra-master/zentra-move
 import { ZentraProjectModule } from './zentra/zentra-master/zentra-project/zentra-project.module';
 import { ZentraTransactionTypeModule } from './zentra/zentra-master/zentra-transaction-type/zentra-transaction-type.module';
 import { ZentraCompanyModule } from './zentra/zentra-master/zentra-company/zentra-company.module';
-
+import { ZentraPartyModule } from './zentra/zentra-master/zentra-party/zentra-party.module';
+import { ZentraPartyRoleModule } from './zentra/zentra-master/zentra-party-role/zentra-party-role.module';
 
 @Module({
   imports: [
@@ -35,7 +36,9 @@ import { ZentraCompanyModule } from './zentra/zentra-master/zentra-company/zentr
     ZentraMovementCategoryModule,
     ZentraProjectModule,
     ZentraTransactionTypeModule,
-    ZentraCompanyModule
+    ZentraCompanyModule,
+    ZentraPartyModule,
+    ZentraPartyRoleModule
 
   ],  
 })

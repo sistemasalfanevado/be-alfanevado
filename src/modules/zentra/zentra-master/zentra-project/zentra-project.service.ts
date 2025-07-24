@@ -12,7 +12,7 @@ export class ZentraProjectService {
       data: {
         name: createZentraProjectDto.name,
         company: {
-          connect: { id: createZentraProjectDto.companyId }
+          connect: { id: createZentraProjectDto.companyId } 
         }
       },
       include: {
