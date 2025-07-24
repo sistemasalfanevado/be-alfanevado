@@ -1,4 +1,5 @@
-import { IsString, IsOptional, MaxLength } from 'class-validator';
+import { IsString, IsOptional, IsDecimal, MaxLength } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class UpdateZentraBankAccountDto {
   @IsString()
@@ -6,10 +7,10 @@ export class UpdateZentraBankAccountDto {
   @MaxLength(100)
   name?: string;
 
-  @IsString()
+  @IsDecimal()
   @IsOptional()
-  @MaxLength(30)
-  number?: string;
+  @Type(() => Number)
+  amount?: string;
 
   @IsString()
   @IsOptional()

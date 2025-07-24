@@ -1,4 +1,5 @@
-import { IsString, IsNotEmpty, MaxLength } from 'class-validator';
+import { IsString, IsNotEmpty, IsDecimal, MaxLength } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateZentraBankAccountDto {
   @IsString()
@@ -6,10 +7,9 @@ export class CreateZentraBankAccountDto {
   @MaxLength(100)
   name: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(30)
-  number: string;
+  @IsDecimal()
+  @Type(() => Number)
+  amount: string;
 
   @IsString()
   @IsNotEmpty()
