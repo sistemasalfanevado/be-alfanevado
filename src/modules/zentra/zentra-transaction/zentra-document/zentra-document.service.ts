@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraDocumentDto } from './dto/create-zentra-document.dto';
 import { UpdateZentraDocumentDto } from './dto/update-zentra-document.dto';
+import moment from 'moment';
 
 @Injectable()
 export class ZentraDocumentService {
@@ -61,8 +62,8 @@ export class ZentraDocumentService {
       description: item.description,
       totalAmount: item.totalAmount,
 
-      registeredAt: item.registeredAt,
-      documentDate: item.documentDate,
+      registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
+      documentDate: moment(item.documentDate).format('DD/MM/YYYY'),
       
       transactionTypeId: item.transactionType.id,
       transactionTypeName: item.transactionType.name,
