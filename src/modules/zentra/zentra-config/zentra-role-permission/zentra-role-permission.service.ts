@@ -25,9 +25,6 @@ export class ZentraRolePermissionService {
       data: {
         roleId: createDto.roleId,
         pageId: createDto.pageId,
-        canCreate: createDto.canCreate,
-        canEdit: createDto.canEdit,
-        canDelete: createDto.canDelete,
       },
     });
   }
@@ -52,11 +49,7 @@ export class ZentraRolePermissionService {
 
     }));
   }
-
-
-
-
-
+  
   async findOne(id: string) {
     return this.prisma.zentraRolePermission.findUnique({
       where: { id, deletedAt: null },

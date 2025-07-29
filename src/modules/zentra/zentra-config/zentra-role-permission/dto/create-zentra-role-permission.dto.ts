@@ -1,4 +1,4 @@
-import { IsUUID, IsBoolean, IsNotEmpty } from 'class-validator';
+import { IsUUID, IsNotEmpty } from 'class-validator';
 
 export class CreateZentraRolePermissionDto {
   @IsUUID()
@@ -9,12 +9,4 @@ export class CreateZentraRolePermissionDto {
   @IsNotEmpty()
   pageId: string;
 
-  @IsBoolean()
-  canCreate: boolean;
-
-  @IsBoolean()
-  canEdit: boolean;
-
-  @IsBoolean()
-  canDelete: boolean;
 }

@@ -1,15 +1,10 @@
-import { IsBoolean, IsOptional } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class UpdateZentraRolePermissionDto {
-  @IsBoolean()
-  @IsOptional()
-  canCreate?: boolean;
+  @IsNotEmpty()
+  roleId?: string;
 
-  @IsBoolean()
-  @IsOptional()
-  canEdit?: boolean;
+  @IsNotEmpty()
+  pageId?: string;
 
-  @IsBoolean()
-  @IsOptional()
-  canDelete?: boolean;
 }

@@ -297,13 +297,12 @@ model ZentraPage {
 
 model ZentraRolePermission {
   id           String             @id @default(uuid())
+  
   roleId       String
   pageId       String
-  canCreate    Boolean            @default(false)
-  canEdit      Boolean            @default(false)
-  canDelete    Boolean            @default(false)
   role         ZentraRole         @relation(fields: [roleId], references: [id])
   page         ZentraPage         @relation(fields: [pageId], references: [id])
+  
   deletedAt    DateTime?
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
