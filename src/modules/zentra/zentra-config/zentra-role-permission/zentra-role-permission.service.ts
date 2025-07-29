@@ -31,12 +31,31 @@ export class ZentraRolePermissionService {
       },
     });
   }
-
-  async findAll() {
-    return this.prisma.zentraRolePermission.findMany({
+  
+  async findAll(): Promise<any[]> {
+    const results = await this.prisma.zentraRolePermission.findMany({
       where: { deletedAt: null },
+      include: {
+        page: true,
+        role: true,
+      }
     });
+
+    return results.map((item) => ({
+      id: item.id,
+      
+      pageId: item.page.id,
+      pageName: item.page.name,
+
+      roleId: item.role.id,
+      roleName: item.role.name,
+
+    }));
   }
+
+
+
+
 
   async findOne(id: string) {
     return this.prisma.zentraRolePermission.findUnique({

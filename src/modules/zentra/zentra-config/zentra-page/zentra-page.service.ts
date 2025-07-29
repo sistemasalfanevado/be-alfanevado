@@ -32,6 +32,7 @@ export class ZentraPageService {
       id: item.id,
       name: item.name,
       description: item.description,
+      route: item.route,
 
       pageGroupId: item.pageGroup.id,
       pageGroupName: item.pageGroup.name,
