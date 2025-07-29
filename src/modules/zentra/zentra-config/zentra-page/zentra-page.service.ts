@@ -5,7 +5,7 @@ import { UpdateZentraPageDto } from './dto/update-zentra-page.dto';
 
 @Injectable()
 export class ZentraPageService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createZentraPageDto: CreateZentraPageDto) {
     return this.prisma.zentraPage.create({
@@ -20,11 +20,25 @@ export class ZentraPageService {
     });
   }
 
-  async findAll() {
-    return this.prisma.zentraPage.findMany({
+  async findAll(): Promise<any[]> {
+    const results = await this.prisma.zentraPage.findMany({
       where: { deletedAt: null },
+      include: {
+        pageGroup: true,
+      }
     });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+
+      pageGroupId: item.pageGroup.id,
+      pageGroupName: item.pageGroup.name,
+
+    }));
   }
+
 
   async findOne(id: string) {
     return this.prisma.zentraPage.findUnique({

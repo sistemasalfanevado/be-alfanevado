@@ -39,20 +39,35 @@ export class ZentraUsersService {
     return this.prisma.zentraUser.findUnique({ where: { email } });
   }
 
-  async findAll() {
-    return this.prisma.zentraUser.findMany({
-      where: { deletedAt: null }
+  async findAll(): Promise<any[]> {
+    const results = await this.prisma.zentraUser.findMany({
+      where: { deletedAt: null },
+      include: {
+        role: true,
+      }
     });
-  }
 
+    return results.map((item) => ({
+      id: item.id,
+      firstName: item.firstName,
+      lastName: item.lastName,
+      email: item.email,
+      gender: item.gender,
+      profileUrl: item.gender,
+
+      roleId: item.role.id,
+      roleName: item.role.name,
+
+    }));
+  }
+  
   async findOne(id: string) {
     return this.prisma.zentraUser.findUnique({
       where: { id, deletedAt: null }
-    });
+    }); 
   }
 
   async update(id: string, zentraUpdateUserDto: ZentraUpdateUserDto) {
-    // Si se envía un password nuevo, lo encriptamos
     if (zentraUpdateUserDto.password) {
       zentraUpdateUserDto.password = await bcrypt.hash(zentraUpdateUserDto.password, 10);
     }

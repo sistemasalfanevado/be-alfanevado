@@ -5,11 +5,11 @@ import { UpdateZentraBankAccountDto } from './dto/update-zentra-bank-account.dto
 
 @Injectable()
 export class ZentraBankAccountService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createDto: CreateZentraBankAccountDto) {
     const { bankId, companyId, currencyId, ...data } = createDto;
-    
+
     return this.prisma.zentraBankAccount.create({
       data: {
         ...data,
@@ -25,8 +25,8 @@ export class ZentraBankAccountService {
     });
   }
 
-  async findAll() {
-    return this.prisma.zentraBankAccount.findMany({
+  async findAll(): Promise<any[]> {
+    const results = await this.prisma.zentraBankAccount.findMany({
       where: { deletedAt: null },
       include: {
         bank: true,
@@ -34,6 +34,22 @@ export class ZentraBankAccountService {
         currency: true
       }
     });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+      amount: item.amount,
+
+      bankId: item.bank.id,
+      bankName: item.bank.name,
+
+      companyId: item.company.id,
+      companyName: item.company.name,
+
+      currencyId: item.currency.id,
+      currencySymbol: item.currency.symbol,
+      currencyCode: item.currency.code,
+    }));
   }
 
   async findOne(id: string) {
