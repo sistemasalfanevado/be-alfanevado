@@ -1,9 +1,9 @@
-import { IsString, IsOptional, IsNumber, IsNotEmpty, MaxLength } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsNotEmpty, MaxLength, IsDateString } from 'class-validator';
 
 export class UpdateZentraDocumentDto {
   @IsString()
   @IsOptional()
-  @MaxLength(255)
+  @MaxLength(500)
   description?: string;
 
   @IsNumber()
@@ -37,4 +37,13 @@ export class UpdateZentraDocumentDto {
   @IsString()
   @IsOptional()
   currencyId?: string;
+
+  @IsDateString()
+  @IsOptional()
+  registeredAt?: string;
+
+  @IsDateString()
+  @IsOptional()
+  documentDate?: string;
+
 }

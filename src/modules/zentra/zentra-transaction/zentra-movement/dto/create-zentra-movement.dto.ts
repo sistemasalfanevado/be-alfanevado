@@ -1,5 +1,4 @@
-import { IsString, IsNotEmpty, IsDecimal, MaxLength } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsString, IsNotEmpty, IsNumber, MaxLength, IsDateString } from 'class-validator';
 
 export class CreateZentraMovementDto {
   @IsString()
@@ -7,10 +6,10 @@ export class CreateZentraMovementDto {
   @MaxLength(255)
   description: string;
 
-  @IsDecimal()
-  @Type(() => Number)
+  @IsNumber()
+  @IsNotEmpty()
   amount: number;
-
+  
   @IsString()
   @IsNotEmpty()
   documentId: string;
@@ -42,4 +41,12 @@ export class CreateZentraMovementDto {
   @IsString()
   @IsNotEmpty()
   currencyId: string;
+
+  @IsDateString()
+  @IsNotEmpty()
+  registeredAt: string;
+
+  @IsDateString()
+  @IsNotEmpty()
+  movementDate: string;
 }

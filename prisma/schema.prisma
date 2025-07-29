@@ -528,6 +528,9 @@ model ZentraDocument {
 
   movements          ZentraMovement[]
 
+  registeredAt       DateTime              // Fecha registrada por el usuario
+  documentDate       DateTime              // Fecha del documento
+  
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
   deletedAt          DateTime?
@@ -563,6 +566,9 @@ model ZentraMovement {
 
   currency           ZentraCurrency        @relation(fields: [currencyId], references: [id])
   currencyId         String
+
+  registeredAt       DateTime              // Fecha registrada por el usuario
+  movementDate       DateTime              // Fecha del movimiento
 
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt

@@ -5,7 +5,7 @@ import { UpdateZentraDocumentDto } from './dto/update-zentra-document.dto';
 
 @Injectable()
 export class ZentraDocumentService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   private includeRelations = {
     transactionType: true,
@@ -27,12 +27,16 @@ export class ZentraDocumentService {
       budgetItemId,
       bankAccountId,
       currencyId,
+      registeredAt,
+      documentDate,
       ...data
     } = createDto;
 
     return this.prisma.zentraDocument.create({
       data: {
         ...data,
+        registeredAt: new Date(registeredAt),
+        documentDate: new Date(documentDate),
         transactionType: { connect: { id: transactionTypeId } },
         movementCategory: { connect: { id: movementCategoryId } },
         documentType: { connect: { id: documentTypeId } },
@@ -44,7 +48,7 @@ export class ZentraDocumentService {
       include: this.includeRelations
     });
   }
-  
+
   async findAll(): Promise<any[]> {
     const results = await this.prisma.zentraDocument.findMany({
       where: { deletedAt: null },
@@ -57,6 +61,9 @@ export class ZentraDocumentService {
       description: item.description,
       totalAmount: item.totalAmount,
 
+      registeredAt: item.registeredAt,
+      documentDate: item.documentDate,
+      
       transactionTypeId: item.transactionType.id,
       transactionTypeName: item.transactionType.name,
 

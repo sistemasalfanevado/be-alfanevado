@@ -28,12 +28,16 @@ export class ZentraMovementService {
       budgetItemId,
       bankAccountId,
       currencyId,
+      registeredAt,
+      movementDate,
       ...data
     } = createDto;
 
     return this.prisma.zentraMovement.create({
       data: {
         ...data,
+        registeredAt: new Date(registeredAt),
+        movementDate: new Date(movementDate),
         document: { connect: { id: documentId } },
         transactionType: { connect: { id: transactionTypeId } },
         movementCategory: { connect: { id: movementCategoryId } },
@@ -47,12 +51,46 @@ export class ZentraMovementService {
     });
   }
 
-  async findAll() {
-    return this.prisma.zentraMovement.findMany({
+  async findAll(): Promise<any[]> {
+    const results = await this.prisma.zentraMovement.findMany({
       where: { deletedAt: null },
       include: this.includeRelations
     });
+
+    return results.map((item) => ({
+      id: item.id,
+
+      description: item.description,
+      amount: item.amount,
+
+      registeredAt: item.registeredAt,
+      movementDate: item.movementDate,
+
+      documentId: item.documentId,
+      
+      transactionTypeId: item.transactionType.id,
+      transactionTypeName: item.transactionType.name,
+
+      movementCategoryId: item.movementCategory.id,
+      movementCategoryName: item.movementCategory.name,
+
+      documentTypeId: item.documentType.id,
+      documentTypeName: item.documentType.name,
+
+      partyId: item.party.id,
+      partyName: item.party.name,
+
+      budgetItemId: item.budgetItem.id,
+      budgetItemName: item.budgetItem.name,
+
+      bankAccountId: item.bankAccount.id,
+      bankAccountName: item.bankAccount.name,
+
+      currencyId: item.currency.id,
+      currencyName: item.currency.name,
+    }));
   }
+
 
   async findOne(id: string) {
     return this.prisma.zentraMovement.findUnique({
