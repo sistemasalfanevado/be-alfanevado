@@ -47,8 +47,7 @@ export class ZentraBankAccountService {
       companyName: item.company.name,
 
       currencyId: item.currency.id,
-      currencySymbol: item.currency.symbol,
-      currencyCode: item.currency.code,
+      currencyName: item.currency.name,
     }));
   }
 

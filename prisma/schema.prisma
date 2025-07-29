@@ -456,14 +456,19 @@ model ZentraBudgetItem {
   id             String                   @id @default(uuid())
   name           String                   @db.VarChar(100)
   amount         Decimal                  @db.Decimal(12, 2)
+  
   currency       ZentraCurrency           @relation(fields: [currencyId], references: [id])
   currencyId     String
+  
   category       ZentraBudgetItemCategory @relation(fields: [categoryId], references: [id])
   categoryId     String
+  
   project        ZentraProject            @relation(fields: [projectId], references: [id])
   projectId      String
+  
   documents      ZentraDocument[]
   movements      ZentraMovement[]
+  
   createdAt      DateTime                 @default(now())
   updatedAt      DateTime                 @updatedAt
   deletedAt      DateTime?

@@ -1,5 +1,4 @@
-import { IsString, IsNotEmpty, IsDecimal, MaxLength } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsString, IsNumber, IsNotEmpty, IsDecimal, MaxLength } from 'class-validator';
 
 export class CreateZentraBudgetItemDto {
   @IsString()
@@ -7,8 +6,8 @@ export class CreateZentraBudgetItemDto {
   @MaxLength(100)
   name: string;
 
-  @IsDecimal()
-  @Type(() => Number)
+  @IsNumber()
+  @IsNotEmpty()
   amount: number;
 
   @IsString()

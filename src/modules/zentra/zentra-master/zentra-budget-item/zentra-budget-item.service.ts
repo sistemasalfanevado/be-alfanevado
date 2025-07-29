@@ -5,11 +5,11 @@ import { UpdateZentraBudgetItemDto } from './dto/update-zentra-budget-item.dto';
 
 @Injectable()
 export class ZentraBudgetItemService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createDto: CreateZentraBudgetItemDto) {
     const { currencyId, categoryId, projectId, ...data } = createDto;
-    
+
     return this.prisma.zentraBudgetItem.create({
       data: {
         ...data,
@@ -25,8 +25,8 @@ export class ZentraBudgetItemService {
     });
   }
 
-  async findAll() {
-    return this.prisma.zentraBudgetItem.findMany({
+  async findAll(): Promise<any[]> {
+    const results = await this.prisma.zentraBudgetItem.findMany({
       where: { deletedAt: null },
       include: {
         currency: true,
@@ -34,7 +34,24 @@ export class ZentraBudgetItemService {
         project: true
       }
     });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+      amount: item.amount,
+
+      categoryId: item.category.id,
+      categoryName: item.category.name,
+
+      projectId: item.project.id,
+      projectName: item.project.name,
+
+      currencyId: item.currency.id,
+      currencyName: item.currency.name,
+    }));
   }
+
+
 
   async findOne(id: string) {
     return this.prisma.zentraBudgetItem.findUnique({
