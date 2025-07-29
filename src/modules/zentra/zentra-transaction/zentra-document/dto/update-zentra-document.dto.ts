@@ -1,5 +1,4 @@
-import { IsString, IsOptional, IsDecimal, MaxLength } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsString, IsOptional, IsNumber, IsNotEmpty, MaxLength } from 'class-validator';
 
 export class UpdateZentraDocumentDto {
   @IsString()
@@ -7,11 +6,10 @@ export class UpdateZentraDocumentDto {
   @MaxLength(255)
   description?: string;
 
-  @IsDecimal()
-  @IsOptional()
-  @Type(() => Number)
+  @IsNumber()
+  @IsNotEmpty()
   totalAmount?: number;
-
+  
   @IsString()
   @IsOptional()
   transactionTypeId?: string;

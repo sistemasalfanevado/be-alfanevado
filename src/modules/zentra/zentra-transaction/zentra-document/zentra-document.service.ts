@@ -44,13 +44,44 @@ export class ZentraDocumentService {
       include: this.includeRelations
     });
   }
-
-  async findAll() {
-    return this.prisma.zentraDocument.findMany({
+  
+  async findAll(): Promise<any[]> {
+    const results = await this.prisma.zentraDocument.findMany({
       where: { deletedAt: null },
       include: this.includeRelations
     });
+
+    return results.map((item) => ({
+      id: item.id,
+
+      description: item.description,
+      totalAmount: item.totalAmount,
+
+      transactionTypeId: item.transactionType.id,
+      transactionTypeName: item.transactionType.name,
+
+      movementCategoryId: item.movementCategory.id,
+      movementCategoryName: item.movementCategory.name,
+
+      documentTypeId: item.documentType.id,
+      documentTypeName: item.documentType.name,
+
+      partyId: item.party.id,
+      partyName: item.party.name,
+
+      budgetItemId: item.budgetItem.id,
+      budgetItemName: item.budgetItem.name,
+
+      bankAccountId: item.bankAccount.id,
+      bankAccountName: item.bankAccount.name,
+
+      currencyId: item.currency.id,
+      currencyName: item.currency.name,
+    }));
   }
+
+
+
 
   async findOne(id: string) {
     return this.prisma.zentraDocument.findUnique({
@@ -58,6 +89,9 @@ export class ZentraDocumentService {
       include: this.includeRelations
     });
   }
+
+
+
 
   async update(id: string, updateDto: UpdateZentraDocumentDto) {
     const {

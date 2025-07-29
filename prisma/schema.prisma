@@ -502,7 +502,7 @@ model ZentraBankAccount {
 
 model ZentraDocument {
   id                 String                @id @default(uuid())
-  description        String                @db.VarChar(255)
+  description        String                @db.VarChar(500)
   totalAmount        Decimal               @db.Decimal(12, 2)
 
   transactionType    ZentraTransactionType @relation(fields: [transactionTypeId], references: [id])
@@ -537,7 +537,7 @@ model ZentraDocument {
 
 model ZentraMovement {
   id                 String                @id @default(uuid())
-  description        String                @db.VarChar(255)
+  description        String                @db.VarChar(500)
   amount             Decimal               @db.Decimal(12, 2)
 
   document           ZentraDocument        @relation(fields: [documentId], references: [id])
