@@ -9,6 +9,10 @@ export class UpdateZentraBudgetItemDto {
   @IsNumber()
   @IsNotEmpty()
   amount?: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  executedAmount?: number;
   
   @IsString()
   @IsOptional()

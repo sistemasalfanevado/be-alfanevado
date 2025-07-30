@@ -10,6 +10,10 @@ export class CreateZentraBudgetItemDto {
   @IsNotEmpty()
   amount: number;
 
+  @IsNumber()
+  @IsNotEmpty()
+  executedAmount: number;
+  
   @IsString()
   @IsNotEmpty()
   currencyId: string;

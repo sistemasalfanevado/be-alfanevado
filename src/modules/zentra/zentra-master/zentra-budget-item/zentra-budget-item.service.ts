@@ -39,6 +39,7 @@ export class ZentraBudgetItemService {
       id: item.id,
       name: item.name,
       amount: item.amount,
+      executedAmount: item.executedAmount,
 
       categoryId: item.category.id,
       categoryName: item.category.name,
