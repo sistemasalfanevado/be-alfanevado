@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraDocumentDto } from './dto/create-zentra-document.dto';
 import { UpdateZentraDocumentDto } from './dto/update-zentra-document.dto';
-import moment from 'moment';
+
+import * as moment from 'moment';
 
 @Injectable()
 export class ZentraDocumentService {
