@@ -302,4 +302,31 @@ export class ZentraMovementService {
       data: { deletedAt: null }
     });
   }
+
+  
+  async findByBudgetItem(budgetItemId: string) {
+    return this.prisma.zentraMovement.findMany({
+      where: { budgetItemId },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async findByCurrency(currencyId: string) {
+    return this.prisma.zentraMovement.findMany({
+      where: { currencyId },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async findByBudgetItemAndCurrency(budgetItemId: string, currencyId: string) {
+    return this.prisma.zentraMovement.findMany({
+      where: {
+        budgetItemId,
+        currencyId,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+
 }

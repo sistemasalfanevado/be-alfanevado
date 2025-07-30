@@ -8,7 +8,7 @@ import { Public } from '../../../../auth/shared/decorators/public.decorator';
 @Controller('zentra-movements')
 //@UseGuards(JwtAuthGuard)
 export class ZentraMovementController {
-  constructor(private readonly zentraMovementService: ZentraMovementService) {}
+  constructor(private readonly zentraMovementService: ZentraMovementService) { }
 
   @Post()
   create(@Body() createDto: CreateZentraMovementDto) {
@@ -40,4 +40,29 @@ export class ZentraMovementController {
   restore(@Param('id') id: string) {
     return this.zentraMovementService.restore(id);
   }
+
+  // 1. Movimientos por BudgetItemId
+  @Get('by-budget-item/:budgetItemId')
+  @Public()
+  findByBudgetItem(@Param('budgetItemId') budgetItemId: string) {
+    return this.zentraMovementService.findByBudgetItem(budgetItemId);
+  }
+
+  // 2. Movimientos por CurrencyId
+  @Get('by-currency/:currencyId')
+  @Public()
+  findByCurrency(@Param('currencyId') currencyId: string) {
+    return this.zentraMovementService.findByCurrency(currencyId);
+  }
+
+  // 3. Movimientos por BudgetItemId y CurrencyId
+  @Get('by-budget-item/:budgetItemId/currency/:currencyId')
+  @Public()
+  findByBudgetItemAndCurrency(
+    @Param('budgetItemId') budgetItemId: string,
+    @Param('currencyId') currencyId: string,
+  ) {
+    return this.zentraMovementService.findByBudgetItemAndCurrency(budgetItemId, currencyId);
+  }
+
 }
