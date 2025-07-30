@@ -1,9 +1,15 @@
 import { IsString, IsOptional, IsNumber, IsNotEmpty, MaxLength, IsDateString } from 'class-validator';
 
 export class UpdateZentraMovementDto {
+  
   @IsString()
   @IsOptional()
-  @MaxLength(255)
+  @MaxLength(50)
+  code?: string;
+  
+  @IsString()
+  @IsOptional()
+  @MaxLength(500)
   description?: string;
 
   @IsNumber()

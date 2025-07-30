@@ -60,6 +60,7 @@ export class ZentraDocumentService {
     return results.map((item) => ({
       id: item.id,
 
+      code: item.code,
       description: item.description,
       totalAmount: item.totalAmount,
 

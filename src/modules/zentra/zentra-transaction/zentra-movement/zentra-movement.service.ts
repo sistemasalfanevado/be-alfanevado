@@ -3,6 +3,8 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraMovementDto } from './dto/create-zentra-movement.dto';
 import { UpdateZentraMovementDto } from './dto/update-zentra-movement.dto';
 
+import * as moment from 'moment';
+
 @Injectable()
 export class ZentraMovementService {
   constructor(private prisma: PrismaService) {}
@@ -60,11 +62,12 @@ export class ZentraMovementService {
     return results.map((item) => ({
       id: item.id,
 
+      code: item.code,
       description: item.description,
       amount: item.amount,
 
-      registeredAt: item.registeredAt,
-      movementDate: item.movementDate,
+      registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
+      movementDate: moment(item.movementDate).format('DD/MM/YYYY'),
 
       documentId: item.documentId,
       

@@ -1,6 +1,12 @@
 import { IsString, IsOptional, IsNumber, IsNotEmpty, MaxLength, IsDateString } from 'class-validator';
 
 export class UpdateZentraDocumentDto {
+  
+  @IsString()
+  @IsOptional()
+  @MaxLength(50)
+  code?: string;
+  
   @IsString()
   @IsOptional()
   @MaxLength(500)
