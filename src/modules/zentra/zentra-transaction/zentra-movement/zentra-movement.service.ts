@@ -107,7 +107,8 @@ export class ZentraMovementService {
       registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
       movementDate: moment(item.movementDate).format('DD/MM/YYYY'),
 
-      documentId: item.documentId,
+      documentId: item.document.id,
+      documentCode: item.document.code,
 
       transactionTypeId: item.transactionType.id,
       transactionTypeName: item.transactionType.name,
