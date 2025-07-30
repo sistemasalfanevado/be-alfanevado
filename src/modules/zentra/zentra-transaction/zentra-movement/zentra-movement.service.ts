@@ -97,40 +97,7 @@ export class ZentraMovementService {
       include: this.includeRelations
     });
 
-    return results.map((item) => ({
-      id: item.id,
-
-      code: item.code,
-      description: item.description,
-      amount: item.amount,
-
-      registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
-      movementDate: moment(item.movementDate).format('DD/MM/YYYY'),
-
-      documentId: item.document.id,
-      documentCode: item.document.code,
-
-      transactionTypeId: item.transactionType.id,
-      transactionTypeName: item.transactionType.name,
-
-      movementCategoryId: item.movementCategory.id,
-      movementCategoryName: item.movementCategory.name,
-
-      documentTypeId: item.documentType.id,
-      documentTypeName: item.documentType.name,
-
-      partyId: item.party.id,
-      partyName: item.party.name,
-
-      budgetItemId: item.budgetItem.id,
-      budgetItemName: item.budgetItem.name,
-
-      bankAccountId: item.bankAccount.id,
-      bankAccountName: item.bankAccount.name,
-
-      currencyId: item.currency.id,
-      currencyName: item.currency.name,
-    }));
+    return results.map(this.formatMovement);
   }
 
 
@@ -311,40 +278,7 @@ export class ZentraMovementService {
       orderBy: { createdAt: 'desc' },
     });
 
-    return results.map((item) => ({
-      id: item.id,
-
-      code: item.code,
-      description: item.description,
-      amount: item.amount,
-
-      registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
-      movementDate: moment(item.movementDate).format('DD/MM/YYYY'),
-
-      documentId: item.document.id,
-      documentCode: item.document.code,
-
-      transactionTypeId: item.transactionType.id,
-      transactionTypeName: item.transactionType.name,
-
-      movementCategoryId: item.movementCategory.id,
-      movementCategoryName: item.movementCategory.name,
-
-      documentTypeId: item.documentType.id,
-      documentTypeName: item.documentType.name,
-
-      partyId: item.party.id,
-      partyName: item.party.name,
-
-      budgetItemId: item.budgetItem.id,
-      budgetItemName: item.budgetItem.name,
-
-      bankAccountId: item.bankAccount.id,
-      bankAccountName: item.bankAccount.name,
-
-      currencyId: item.currency.id,
-      currencyName: item.currency.name,
-    }));
+    return results.map(this.formatMovement);
 
   }
 
@@ -355,40 +289,7 @@ export class ZentraMovementService {
       orderBy: { createdAt: 'desc' },
     });
 
-    return results.map((item) => ({
-      id: item.id,
-
-      code: item.code,
-      description: item.description,
-      amount: item.amount,
-
-      registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
-      movementDate: moment(item.movementDate).format('DD/MM/YYYY'),
-
-      documentId: item.document.id,
-      documentCode: item.document.code,
-
-      transactionTypeId: item.transactionType.id,
-      transactionTypeName: item.transactionType.name,
-
-      movementCategoryId: item.movementCategory.id,
-      movementCategoryName: item.movementCategory.name,
-
-      documentTypeId: item.documentType.id,
-      documentTypeName: item.documentType.name,
-
-      partyId: item.party.id,
-      partyName: item.party.name,
-
-      budgetItemId: item.budgetItem.id,
-      budgetItemName: item.budgetItem.name,
-
-      bankAccountId: item.bankAccount.id,
-      bankAccountName: item.bankAccount.name,
-
-      currencyId: item.currency.id,
-      currencyName: item.currency.name,
-    }));
+    return results.map(this.formatMovement);
   }
 
   async findByBudgetItemAndCurrency(budgetItemId: string, currencyId: string) {
@@ -401,7 +302,13 @@ export class ZentraMovementService {
       orderBy: { createdAt: 'desc' },
     });
 
-    return results.map((item) => ({
+    return results.map(this.formatMovement);
+
+  }
+
+
+  private formatMovement(item: any) {
+    return {
       id: item.id,
 
       code: item.code,
@@ -434,8 +341,7 @@ export class ZentraMovementService {
 
       currencyId: item.currency.id,
       currencyName: item.currency.name,
-    }));
-
+    };
   }
 
 
