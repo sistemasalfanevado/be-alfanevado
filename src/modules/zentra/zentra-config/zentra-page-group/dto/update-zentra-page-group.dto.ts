@@ -10,4 +10,9 @@ export class UpdateZentraPageGroupDto {
   @IsOptional()
   @MaxLength(200)
   description?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }

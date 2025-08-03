@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, Length } from 'class-validator';
+import { IsString, IsNotEmpty, Length, IsOptional, MaxLength } from 'class-validator';
 
 export class CreateZentraCurrencyDto {
   @IsString()
@@ -13,4 +13,9 @@ export class CreateZentraCurrencyDto {
   @IsString()
   @IsNotEmpty()
   symbol: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }

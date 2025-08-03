@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MaxLength, IsEmail } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, IsEmail, IsOptional } from 'class-validator';
 
 export class CreateZentraPartyDto {
   @IsString()
@@ -26,4 +26,9 @@ export class CreateZentraPartyDto {
   @IsString()
   @IsNotEmpty()
   partyRoleId: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }

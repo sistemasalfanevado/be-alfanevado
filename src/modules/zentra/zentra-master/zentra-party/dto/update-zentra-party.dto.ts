@@ -29,4 +29,9 @@ export class UpdateZentraPartyDto {
   @IsString()
   @IsOptional()
   partyRoleId?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }

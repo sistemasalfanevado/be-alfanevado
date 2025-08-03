@@ -8,5 +8,10 @@ export class UpdateZentraProjectDto {
 
   @IsString()
   @IsOptional()
-  companyId?: string; // Nuevo campo opcional
+  companyId?: string;
+  
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }

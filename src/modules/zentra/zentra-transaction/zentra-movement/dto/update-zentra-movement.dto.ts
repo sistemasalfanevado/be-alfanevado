@@ -56,4 +56,9 @@ export class UpdateZentraMovementDto {
   @IsOptional()
   movementDate?: string;
 
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
+
 }

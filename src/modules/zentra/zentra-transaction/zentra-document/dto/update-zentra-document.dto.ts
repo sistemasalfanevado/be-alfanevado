@@ -52,4 +52,9 @@ export class UpdateZentraDocumentDto {
   @IsOptional()
   documentDate?: string;
 
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
+
 }

@@ -34,4 +34,9 @@ export class ZentraUpdateUserDto {
   @IsOptional()
   @IsString()
   roleId?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }

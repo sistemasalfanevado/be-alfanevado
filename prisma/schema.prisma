@@ -14,6 +14,7 @@ model User {
   password  String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  
   deletedAt DateTime?
 }
 
@@ -251,7 +252,7 @@ model ZentraUser {
   deletedAt    DateTime?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_user")
 }
 
@@ -264,7 +265,7 @@ model ZentraRole {
   deletedAt    DateTime?
   createdAt    DateTime                  @default(now())
   updatedAt    DateTime                  @updatedAt
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_role")
 }
 
@@ -276,7 +277,7 @@ model ZentraPageGroup {
   deletedAt    DateTime?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_page_group")
 }
 
@@ -291,7 +292,7 @@ model ZentraPage {
   deletedAt    DateTime?
   createdAt    DateTime                @default(now())
   updatedAt    DateTime                @updatedAt
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_page")
 }
 
@@ -306,7 +307,7 @@ model ZentraRolePermission {
   deletedAt    DateTime?
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@unique([roleId, pageId]) // Un permiso por página por rol
 
   @@map("zentra_role_permission")
@@ -319,7 +320,7 @@ model ZentraCurrency {
   code          String    @db.VarChar(3)
   name          String    @db.VarChar(50)
   symbol        String    @db.VarChar(5)
-
+  idFirebase String? @default("") @db.VarChar(30)
   bankAccounts  ZentraBankAccount[]
   documents     ZentraDocument[]
   movements     ZentraMovement[]
@@ -340,7 +341,7 @@ model ZentraBank {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   deletedAt     DateTime?
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_bank")
 }
 
@@ -354,7 +355,7 @@ model ZentraMovementCategory {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_movement_category")
 }
 
@@ -366,7 +367,7 @@ model ZentraDocumentType {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_document_type")
 }
 
@@ -378,7 +379,7 @@ model ZentraTransactionType {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_transaction_type")
 }
 
@@ -391,7 +392,7 @@ model ZentraBudgetItemCategory {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_budget_item_category")
 }
 
@@ -403,7 +404,7 @@ model ZentraCompany {
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   deletedAt     DateTime?
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_company")
 }
 
@@ -416,7 +417,7 @@ model ZentraProject {
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
   deletedAt     DateTime?
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_project")
 }
 
@@ -427,7 +428,7 @@ model ZentraPartyRole {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
   deletedAt   DateTime?
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_party_role")
 }
 
@@ -447,7 +448,7 @@ model ZentraParty {
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
   deletedAt     DateTime?
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_party")
 }
 
@@ -473,7 +474,7 @@ model ZentraBudgetItem {
   createdAt      DateTime                 @default(now())
   updatedAt      DateTime                 @updatedAt
   deletedAt      DateTime?
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_budget_item")
 }
 
@@ -497,7 +498,7 @@ model ZentraBankAccount {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   deletedAt    DateTime?
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_bank_account")
 }
 
@@ -537,7 +538,7 @@ model ZentraDocument {
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
   deletedAt          DateTime?
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_document")
 }
 
@@ -578,7 +579,7 @@ model ZentraMovement {
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
   deletedAt          DateTime?
-
+  idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_movement")
 }
 

@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MaxLength } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, IsOptional } from 'class-validator';
 
 export class CreateZentraProjectDto {
   @IsString()
@@ -8,5 +8,10 @@ export class CreateZentraProjectDto {
 
   @IsString()
   @IsNotEmpty()
-  companyId: string; // Nuevo campo requerido
+  companyId: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }

@@ -5,4 +5,9 @@ export class UpdateZentraBudgetItemCategoryDto {
   @IsOptional()
   @MaxLength(200, { message: 'El nombre no debe exceder los 200 caracteres' })
   name?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }

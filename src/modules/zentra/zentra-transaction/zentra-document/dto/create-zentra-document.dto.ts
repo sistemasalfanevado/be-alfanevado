@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, MaxLength, IsDateString } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, MaxLength, IsDateString, IsOptional } from 'class-validator';
 
 export class CreateZentraDocumentDto {
   
@@ -51,5 +51,10 @@ export class CreateZentraDocumentDto {
   @IsDateString()
   @IsNotEmpty()
   documentDate: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 
 }

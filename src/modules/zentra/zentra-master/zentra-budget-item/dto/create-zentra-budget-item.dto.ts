@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsNotEmpty, IsDecimal, MaxLength } from 'class-validator';
+import { IsString, IsNumber, IsNotEmpty, MaxLength, IsOptional } from 'class-validator';
 
 export class CreateZentraBudgetItemDto {
   @IsString()
@@ -25,4 +25,9 @@ export class CreateZentraBudgetItemDto {
   @IsString()
   @IsNotEmpty()
   projectId: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }

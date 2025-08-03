@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, MaxLength, IsDateString } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, MaxLength, IsDateString, IsOptional } from 'class-validator';
 
 export class CreateZentraMovementDto {
   
@@ -55,4 +55,9 @@ export class CreateZentraMovementDto {
   @IsDateString()
   @IsNotEmpty()
   movementDate: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }

@@ -21,4 +21,9 @@ export class UpdateZentraBankAccountDto {
   @IsString()
   @IsOptional()
   currencyId?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }

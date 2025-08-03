@@ -1,4 +1,4 @@
-import { IsString, IsOptional, Length } from 'class-validator';
+import { IsString, IsOptional, Length, MaxLength } from 'class-validator';
 
 export class UpdateZentraCurrencyDto {
   @IsString()
@@ -13,4 +13,9 @@ export class UpdateZentraCurrencyDto {
   @IsString()
   @IsOptional()
   symbol?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }

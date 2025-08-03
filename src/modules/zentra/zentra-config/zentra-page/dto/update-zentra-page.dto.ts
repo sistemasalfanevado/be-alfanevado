@@ -19,4 +19,9 @@ export class UpdateZentraPageDto {
   @IsUUID()
   @IsOptional()
   pageGroupId?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }

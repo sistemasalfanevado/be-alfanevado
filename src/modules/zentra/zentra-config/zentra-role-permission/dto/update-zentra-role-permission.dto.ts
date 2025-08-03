@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, MaxLength } from 'class-validator';
 
 export class UpdateZentraRolePermissionDto {
   @IsNotEmpty()
@@ -7,4 +7,8 @@ export class UpdateZentraRolePermissionDto {
   @IsNotEmpty()
   pageId?: string;
 
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }

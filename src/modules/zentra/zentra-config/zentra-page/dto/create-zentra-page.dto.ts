@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MaxLength, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, IsUUID, IsOptional } from 'class-validator';
 
 export class CreateZentraPageDto {
   @IsString()
@@ -19,4 +19,9 @@ export class CreateZentraPageDto {
   @IsUUID()
   @IsNotEmpty()
   pageGroupId: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }

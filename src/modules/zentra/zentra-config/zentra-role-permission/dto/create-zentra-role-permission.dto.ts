@@ -1,4 +1,4 @@
-import { IsUUID, IsNotEmpty } from 'class-validator';
+import { IsUUID, IsNotEmpty, IsString, IsOptional, MaxLength } from 'class-validator';
 
 export class CreateZentraRolePermissionDto {
   @IsUUID()
@@ -9,4 +9,8 @@ export class CreateZentraRolePermissionDto {
   @IsNotEmpty()
   pageId: string;
 
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  idFirebase?: string;
 }
