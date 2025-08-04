@@ -21,6 +21,8 @@ import { ZentraPartyModule } from './zentra/zentra-master/zentra-party/zentra-pa
 import { ZentraPartyRoleModule } from './zentra/zentra-master/zentra-party-role/zentra-party-role.module';
 import { ZentraBankAccountModule } from './zentra/zentra-master/zentra-bank-account/zentra-bank-account.module';
 import { ZentraBudgetItemModule } from './zentra/zentra-master/zentra-budget-item/zentra-budget-item.module';
+import { ZentraPartyBankAccountModule } from './zentra/zentra-master/zentra-party-bank-account/zentra-party-bank-account.module';
+
 
 // Zentra Transaction
 import { ZentraDocumentModule } from './zentra/zentra-transaction/zentra-document/zentra-document.module';
@@ -48,6 +50,7 @@ import { ZentraMovementModule } from './zentra/zentra-transaction/zentra-movemen
     ZentraPartyRoleModule,
     ZentraBankAccountModule,
     ZentraBudgetItemModule,
+    ZentraPartyBankAccountModule,
 
 
     ZentraDocumentModule,
