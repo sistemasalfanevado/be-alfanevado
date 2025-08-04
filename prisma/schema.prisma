@@ -322,6 +322,7 @@ model ZentraCurrency {
   symbol        String    @db.VarChar(5)
   idFirebase String? @default("") @db.VarChar(30)
   bankAccounts  ZentraBankAccount[]
+  partyBankAccounts ZentraPartyBankAccount[]
   documents     ZentraDocument[]
   movements     ZentraMovement[]
   budgetItems   ZentraBudgetItem[]
@@ -338,6 +339,8 @@ model ZentraBank {
   id            String    @id @default(uuid())
   name          String    @db.VarChar(50)
   bankAccounts  ZentraBankAccount[]
+  partyBankAccounts ZentraPartyBankAccount[]
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   deletedAt     DateTime?
@@ -444,12 +447,36 @@ model ZentraParty {
 
   documents     ZentraDocument[]
   movements     ZentraMovement[]
+  partyBankAccounts ZentraPartyBankAccount[]
 
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
   deletedAt     DateTime?
   idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_party")
+}
+
+model ZentraPartyBankAccount {
+  id          String   @id @default(uuid())
+  account     String   @db.VarChar(30)
+  cci         String   @db.VarChar(50)
+  description String   @db.VarChar(100)
+
+  // Relaciones opcionales
+  bank        ZentraBank?    @relation(fields: [bankId], references: [id])
+  bankId      String?        @db.VarChar(36)
+
+  currency    ZentraCurrency? @relation(fields: [currencyId], references: [id])
+  currencyId  String?         @db.VarChar(36)
+
+  party       ZentraParty     @relation(fields: [partyId], references: [id])
+  partyId     String
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  @@map("zentra_party_bank_account")
 }
 
 
