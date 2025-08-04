@@ -7,7 +7,6 @@ export class CreateZentraPartyDto {
   name: string;
 
   @IsString()
-  @IsNotEmpty()
   @MaxLength(30)
   document: string;
 
