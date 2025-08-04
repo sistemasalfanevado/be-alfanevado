@@ -11,7 +11,7 @@ export class UpdateZentraPartyDto {
   @MaxLength(30)
   document?: string;
 
-  @IsEmail()
+  @IsString()
   @IsOptional()
   @MaxLength(50)
   email?: string;

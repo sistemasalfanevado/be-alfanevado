@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MaxLength, IsEmail, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, IsOptional } from 'class-validator';
 
 export class CreateZentraPartyDto {
   @IsString()
@@ -11,7 +11,7 @@ export class CreateZentraPartyDto {
   @MaxLength(30)
   document: string;
 
-  @IsEmail()
+  @IsString()
   @MaxLength(50)
   email: string;
 
