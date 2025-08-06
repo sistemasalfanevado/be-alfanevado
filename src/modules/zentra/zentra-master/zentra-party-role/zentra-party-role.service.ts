@@ -17,9 +17,6 @@ export class ZentraPartyRoleService {
     return this.prisma.zentraPartyRole.findMany({
       where: {
         deletedAt: null,
-      },
-      include: {
-        parties: true // Include related parties if needed
       }
     });
   }
@@ -27,9 +24,6 @@ export class ZentraPartyRoleService {
   async findOne(id: string) {
     return this.prisma.zentraPartyRole.findUnique({
       where: { id, deletedAt: null },
-      include: {
-        parties: true // Include related parties if needed
-      }
     });
   }
 
