@@ -15,20 +15,29 @@ export class ZentraBudgetItemCategoryService {
         ...data,
         budgetCategory: { connect: { id: budgetCategoryId } },
       },
-      include: {
-        budgetCategory: true, // para devolver también la categoría principal
-      },
     });
   }
 
   async findAll() {
-    return this.prisma.zentraBudgetItemCategory.findMany({
+    const results = await  this.prisma.zentraBudgetItemCategory.findMany({
       where: { deletedAt: null },
       include: {
         budgetCategory: true,
       },
     });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+      
+      budgetCategoryId: item.budgetCategory.id,
+      budgetCategoryName: item.budgetCategory.name,
+
+      idFirebase: item.name,
+
+    }));
   }
+
 
   async findOne(id: string) {
     return this.prisma.zentraBudgetItemCategory.findUnique({
