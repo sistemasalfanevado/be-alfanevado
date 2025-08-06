@@ -386,10 +386,29 @@ model ZentraTransactionType {
   @@map("zentra_transaction_type")
 }
 
+model ZentraBudgetCategory {
+  id          String                     @id @default(uuid())
+  name        String                     @db.VarChar(100) // Operación, Financiamiento, Inversión
+  description String?                    @db.VarChar(250) // Opcional, para una explicación más larga
+
+  itemCategories ZentraBudgetItemCategory[] // Relación con subcategorías
+
+  createdAt   DateTime                   @default(now())
+  updatedAt   DateTime                   @updatedAt
+  deletedAt   DateTime?
+  idFirebase  String?                    @default("") @db.VarChar(30)
+
+  @@map("zentra_budget_category")
+}
+
 model ZentraBudgetItemCategory {
   id          String    @id @default(uuid())
   name        String    @db.VarChar(200)
 
+  // Relación con categoría principal
+  budgetCategory   ZentraBudgetCategory  @relation(fields: [budgetCategoryId], references: [id])
+  budgetCategoryId String
+  
   budgetItemDefinition ZentraBudgetItemDefinition[]
 
   createdAt   DateTime  @default(now())

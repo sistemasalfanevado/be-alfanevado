@@ -7,6 +7,10 @@ export class CreateZentraBudgetItemCategoryDto {
   name: string;
 
   @IsString()
+  @IsNotEmpty()
+  budgetCategoryId: string; // Nueva relación obligatoria con ZentraBudgetCategory
+
+  @IsString()
   @IsOptional()
   @MaxLength(30)
   idFirebase?: string;

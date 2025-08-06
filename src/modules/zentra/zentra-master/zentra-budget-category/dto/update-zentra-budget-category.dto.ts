@@ -1,14 +1,15 @@
 import { IsString, IsOptional, MaxLength } from 'class-validator';
 
-export class UpdateZentraBudgetItemCategoryDto {
+export class UpdateZentraBudgetCategoryDto {
   @IsString()
   @IsOptional()
-  @MaxLength(200, { message: 'El nombre no debe exceder los 200 caracteres' })
+  @MaxLength(100)
   name?: string;
 
   @IsString()
   @IsOptional()
-  budgetCategoryId?: string; // Ahora opcional en caso se quiera reasignar
+  @MaxLength(250)
+  description?: string;
 
   @IsString()
   @IsOptional()

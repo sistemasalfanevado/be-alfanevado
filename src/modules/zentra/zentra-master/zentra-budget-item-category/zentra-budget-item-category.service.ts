@@ -7,16 +7,25 @@ import { UpdateZentraBudgetItemCategoryDto } from './dto/update-zentra-budget-it
 export class ZentraBudgetItemCategoryService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createZentraBudgetItemCategoryDto: CreateZentraBudgetItemCategoryDto) {
+  async create(createDto: CreateZentraBudgetItemCategoryDto) {
+    const { budgetCategoryId, ...data } = createDto;
+
     return this.prisma.zentraBudgetItemCategory.create({
-      data: createZentraBudgetItemCategoryDto,
+      data: {
+        ...data,
+        budgetCategory: { connect: { id: budgetCategoryId } },
+      },
+      include: {
+        budgetCategory: true, // para devolver también la categoría principal
+      },
     });
   }
 
   async findAll() {
     return this.prisma.zentraBudgetItemCategory.findMany({
-      where: {
-        deletedAt: null,
+      where: { deletedAt: null },
+      include: {
+        budgetCategory: true,
       },
     });
   }
@@ -24,13 +33,26 @@ export class ZentraBudgetItemCategoryService {
   async findOne(id: string) {
     return this.prisma.zentraBudgetItemCategory.findUnique({
       where: { id, deletedAt: null },
+      include: {
+        budgetCategory: true,
+      },
     });
   }
 
-  async update(id: string, updateZentraBudgetItemCategoryDto: UpdateZentraBudgetItemCategoryDto) {
+  async update(id: string, updateDto: UpdateZentraBudgetItemCategoryDto) {
+    const { budgetCategoryId, ...data } = updateDto;
+    const updateData: any = { ...data };
+
+    if (budgetCategoryId) {
+      updateData.budgetCategory = { connect: { id: budgetCategoryId } };
+    }
+
     return this.prisma.zentraBudgetItemCategory.update({
       where: { id },
-      data: updateZentraBudgetItemCategoryDto,
+      data: updateData,
+      include: {
+        budgetCategory: true,
+      },
     });
   }
 

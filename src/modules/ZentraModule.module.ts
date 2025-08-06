@@ -19,10 +19,13 @@ import { ZentraCompanyModule } from './zentra/zentra-master/zentra-company/zentr
 import { ZentraPartyModule } from './zentra/zentra-master/zentra-party/zentra-party.module';
 import { ZentraPartyRoleModule } from './zentra/zentra-master/zentra-party-role/zentra-party-role.module';
 import { ZentraBankAccountModule } from './zentra/zentra-master/zentra-bank-account/zentra-bank-account.module';
-import { ZentraBudgetItemCategoryModule } from './zentra/zentra-master/zentra-budget-item-category/zentra-budget-item-category.module';
-import { ZentraBudgetItemModule } from './zentra/zentra-master/zentra-budget-item/zentra-budget-item.module';
-import { ZentraBudgetItemDefinitionModule } from './zentra/zentra-master/zentra-budget-item-definition/zentra-budget-item-definition.module';
 import { ZentraPartyBankAccountModule } from './zentra/zentra-master/zentra-party-bank-account/zentra-party-bank-account.module';
+
+
+import { ZentraBudgetCategoryModule } from './zentra/zentra-master/zentra-budget-category/zentra-budget-category.module';
+import { ZentraBudgetItemCategoryModule } from './zentra/zentra-master/zentra-budget-item-category/zentra-budget-item-category.module';
+import { ZentraBudgetItemDefinitionModule } from './zentra/zentra-master/zentra-budget-item-definition/zentra-budget-item-definition.module';
+import { ZentraBudgetItemModule } from './zentra/zentra-master/zentra-budget-item/zentra-budget-item.module';
 
 
 // Zentra Transaction
@@ -50,6 +53,8 @@ import { ZentraMovementModule } from './zentra/zentra-transaction/zentra-movemen
     ZentraPartyModule,
     ZentraPartyRoleModule,
     ZentraBankAccountModule,
+
+    ZentraBudgetCategoryModule,
     ZentraBudgetItemModule,
     ZentraPartyBankAccountModule,
     ZentraBudgetItemDefinitionModule,
