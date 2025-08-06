@@ -33,7 +33,7 @@ export class ZentraBudgetItemCategoryService {
       budgetCategoryId: item.budgetCategory.id,
       budgetCategoryName: item.budgetCategory.name,
 
-      idFirebase: item.name,
+      idFirebase: item.idFirebase,
 
     }));
   }
