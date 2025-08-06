@@ -8,18 +8,22 @@ export class UpdateZentraBudgetItemDto {
   @IsNumber()
   @IsOptional()
   executedAmount?: number;
-  
+
+  @IsNumber()
+  @IsOptional()
+  executedSoles?: number;
+
+  @IsNumber()
+  @IsOptional()
+  executedDolares?: number;
+
   @IsString()
   @IsOptional()
   currencyId?: string;
 
   @IsString()
   @IsOptional()
-  definitionId?: string; // Enlace a la partida (ZentraBudgetItemDefinition)
-
-  @IsString()
-  @IsOptional()
-  projectId?: string;
+  definitionId?: string; // Enlace a la partida
 
   @IsString()
   @IsOptional()

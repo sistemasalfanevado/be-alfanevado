@@ -3,23 +3,27 @@ import { IsString, IsNumber, IsNotEmpty, IsOptional, MaxLength } from 'class-val
 export class CreateZentraBudgetItemDto {
   @IsNumber()
   @IsNotEmpty()
-  amount: number;
+  amount: number; // Monto presupuestado en la moneda base
 
   @IsNumber()
-  @IsNotEmpty()
-  executedAmount: number;
-  
-  @IsString()
-  @IsNotEmpty()
-  currencyId: string;
+  @IsOptional()
+  executedAmount?: number; // Normalmente debería inicializarse en 0
+
+  @IsNumber()
+  @IsOptional()
+  executedSoles?: number; // Normalmente 0 al crear
+
+  @IsNumber()
+  @IsOptional()
+  executedDolares?: number; // Normalmente 0 al crear
 
   @IsString()
   @IsNotEmpty()
-  definitionId: string; // Enlace a la partida (ZentraBudgetItemDefinition)
+  currencyId: string; // Moneda base
 
   @IsString()
   @IsNotEmpty()
-  projectId: string;
+  definitionId: string; // Enlace a la definición (partida)
 
   @IsString()
   @IsOptional()

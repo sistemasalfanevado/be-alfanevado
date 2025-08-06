@@ -5,86 +5,83 @@ import { UpdateZentraBudgetItemDto } from './dto/update-zentra-budget-item.dto';
 
 @Injectable()
 export class ZentraBudgetItemService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
+  // Crear un presupuesto
   async create(createDto: CreateZentraBudgetItemDto) {
-    const { currencyId, definitionId, projectId, ...data } = createDto;
+    const { currencyId, definitionId, ...data } = createDto;
 
     return this.prisma.zentraBudgetItem.create({
       data: {
         ...data,
         currency: { connect: { id: currencyId } },
-        definition: { connect: { id: definitionId } },
-        project: { connect: { id: projectId } }
+        definition: { connect: { id: definitionId } }
       },
       include: {
         currency: true,
-        definition: true,
-        project: true
+        definition: true
       }
     });
   }
 
+  // Obtener todos los presupuestos
   async findAll(): Promise<any[]> {
     const results = await this.prisma.zentraBudgetItem.findMany({
       where: { deletedAt: null },
       include: {
         currency: true,
-        definition: true,
-        project: true
+        definition: true
       }
     });
 
     return results.map((item) => ({
       id: item.id,
       amount: item.amount,
+      
       executedAmount: item.executedAmount,
+      executedSoles: item.executedSoles,
+      executedDolares: item.executedDolares,
 
       definitionId: item.definition.id,
       definitionName: item.definition.name,
-      
-      projectId: item.project.id,
-      projectName: item.project.name,
 
       currencyId: item.currency.id,
-      currencyName: item.currency.name,
+      currencyName: item.currency.name
     }));
   }
 
-
-
+  // Obtener un presupuesto específico
   async findOne(id: string) {
     return this.prisma.zentraBudgetItem.findUnique({
-      where: { id, deletedAt: null },
+      where: { id },
       include: {
         currency: true,
         definition: true,
-        project: true,
         documents: true,
         movements: true
       }
     });
   }
 
+  // Actualizar un presupuesto
   async update(id: string, updateDto: UpdateZentraBudgetItemDto) {
-    const { currencyId, definitionId, projectId, ...data } = updateDto;
+    const { currencyId, definitionId, ...data } = updateDto;
     const updateData: any = { ...data };
 
     if (currencyId) updateData.currency = { connect: { id: currencyId } };
     if (definitionId) updateData.definition = { connect: { id: definitionId } };
-    if (projectId) updateData.project = { connect: { id: projectId } };
 
     return this.prisma.zentraBudgetItem.update({
       where: { id },
       data: updateData,
       include: {
         currency: true,
-        definition: true,
-        project: true
+        definition: true
       }
     });
   }
 
+  // Eliminación lógica
   async remove(id: string) {
     return this.prisma.zentraBudgetItem.update({
       where: { id },
@@ -92,6 +89,7 @@ export class ZentraBudgetItemService {
     });
   }
 
+  // Restaurar un presupuesto
   async restore(id: string) {
     return this.prisma.zentraBudgetItem.update({
       where: { id },
