@@ -5,7 +5,7 @@ import { UpdateZentraBudgetItemCategoryDto } from './dto/update-zentra-budget-it
 
 @Injectable()
 export class ZentraBudgetItemCategoryService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createDto: CreateZentraBudgetItemCategoryDto) {
     const { budgetCategoryId, ...data } = createDto;
@@ -19,17 +19,20 @@ export class ZentraBudgetItemCategoryService {
   }
 
   async findAll() {
-    const results = await  this.prisma.zentraBudgetItemCategory.findMany({
+    const results = await this.prisma.zentraBudgetItemCategory.findMany({
       where: { deletedAt: null },
       include: {
         budgetCategory: true,
+      },
+      orderBy: {
+        name: 'asc', // 'asc' para ascendente, 'desc' para descendente
       },
     });
 
     return results.map((item) => ({
       id: item.id,
       name: item.name,
-      
+
       budgetCategoryId: item.budgetCategory.id,
       budgetCategoryName: item.budgetCategory.name,
 

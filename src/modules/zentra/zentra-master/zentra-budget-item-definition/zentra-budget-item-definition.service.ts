@@ -5,7 +5,7 @@ import { UpdateZentraBudgetItemDefinitionDto } from './dto/update-zentra-budget-
 
 @Injectable()
 export class ZentraBudgetItemDefinitionService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createZentraBudgetItemDefinitionDto: CreateZentraBudgetItemDefinitionDto) {
     return this.prisma.zentraBudgetItemDefinition.create({
@@ -14,9 +14,30 @@ export class ZentraBudgetItemDefinitionService {
   }
 
   async findAll() {
-    return this.prisma.zentraBudgetItemDefinition.findMany({
+    const results = await this.prisma.zentraBudgetItemDefinition.findMany({
       where: { deletedAt: null },
+      include: {
+        category: true,
+        project: true,
+      },
+      orderBy: {
+        name: 'asc', // 'asc' para ascendente, 'desc' para descendente
+      },
     });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+
+      categoryId: item.category.id,
+      categoryName: item.category.name,
+
+      projectId: item.project.id,
+      projectName: item.project.name,
+
+      idFirebase: item.idFirebase,
+
+    }));
   }
 
   async findOne(id: string) {
