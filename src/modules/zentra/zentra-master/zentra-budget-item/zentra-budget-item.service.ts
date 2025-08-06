@@ -8,18 +8,18 @@ export class ZentraBudgetItemService {
   constructor(private prisma: PrismaService) { }
 
   async create(createDto: CreateZentraBudgetItemDto) {
-    const { currencyId, categoryId, projectId, ...data } = createDto;
+    const { currencyId, definitionId, projectId, ...data } = createDto;
 
     return this.prisma.zentraBudgetItem.create({
       data: {
         ...data,
         currency: { connect: { id: currencyId } },
-        category: { connect: { id: categoryId } },
+        definition: { connect: { id: definitionId } },
         project: { connect: { id: projectId } }
       },
       include: {
         currency: true,
-        category: true,
+        definition: true,
         project: true
       }
     });
@@ -30,20 +30,19 @@ export class ZentraBudgetItemService {
       where: { deletedAt: null },
       include: {
         currency: true,
-        category: true,
+        definition: true,
         project: true
       }
     });
 
     return results.map((item) => ({
       id: item.id,
-      name: item.name,
       amount: item.amount,
       executedAmount: item.executedAmount,
 
-      categoryId: item.category.id,
-      categoryName: item.category.name,
-
+      definitionId: item.definition.id,
+      definitionName: item.definition.name,
+      
       projectId: item.project.id,
       projectName: item.project.name,
 
@@ -59,7 +58,7 @@ export class ZentraBudgetItemService {
       where: { id, deletedAt: null },
       include: {
         currency: true,
-        category: true,
+        definition: true,
         project: true,
         documents: true,
         movements: true
@@ -68,11 +67,11 @@ export class ZentraBudgetItemService {
   }
 
   async update(id: string, updateDto: UpdateZentraBudgetItemDto) {
-    const { currencyId, categoryId, projectId, ...data } = updateDto;
+    const { currencyId, definitionId, projectId, ...data } = updateDto;
     const updateData: any = { ...data };
 
     if (currencyId) updateData.currency = { connect: { id: currencyId } };
-    if (categoryId) updateData.category = { connect: { id: categoryId } };
+    if (definitionId) updateData.definition = { connect: { id: definitionId } };
     if (projectId) updateData.project = { connect: { id: projectId } };
 
     return this.prisma.zentraBudgetItem.update({
@@ -80,7 +79,7 @@ export class ZentraBudgetItemService {
       data: updateData,
       include: {
         currency: true,
-        category: true,
+        definition: true,
         project: true
       }
     });

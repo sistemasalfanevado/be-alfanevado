@@ -1,11 +1,6 @@
-import { IsString, IsNumber, IsNotEmpty, MaxLength, IsOptional } from 'class-validator';
+import { IsString, IsNumber, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
 
 export class CreateZentraBudgetItemDto {
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(100)
-  name: string;
-
   @IsNumber()
   @IsNotEmpty()
   amount: number;
@@ -20,7 +15,7 @@ export class CreateZentraBudgetItemDto {
 
   @IsString()
   @IsNotEmpty()
-  categoryId: string;
+  definitionId: string; // Enlace a la partida (ZentraBudgetItemDefinition)
 
   @IsString()
   @IsNotEmpty()

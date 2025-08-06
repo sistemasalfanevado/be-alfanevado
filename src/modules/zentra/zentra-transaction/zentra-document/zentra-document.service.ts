@@ -80,8 +80,7 @@ export class ZentraDocumentService {
       partyName: item.party.name,
 
       budgetItemId: item.budgetItem.id,
-      budgetItemName: item.budgetItem.name,
-
+      
       bankAccountId: item.bankAccount.id,
       bankAccountName: item.bankAccount.name,
 
