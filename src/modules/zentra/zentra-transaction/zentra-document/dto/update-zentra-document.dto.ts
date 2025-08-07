@@ -3,7 +3,7 @@ import { IsString, IsOptional, IsNumber, MaxLength, IsDateString } from 'class-v
 export class UpdateZentraDocumentDto {
   @IsString()
   @IsOptional()
-  @MaxLength(50)
+  @MaxLength(150)
   code?: string;
 
   @IsString()

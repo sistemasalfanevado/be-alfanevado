@@ -595,7 +595,7 @@ model ZentraDocument {
   documentType       ZentraDocumentType @relation(fields: [documentTypeId], references: [id])
   documentTypeId     String
 
-  code               String                @db.VarChar(50)
+  code               String                @db.VarChar(150)
   description        String                @db.VarChar(500)
   
   totalAmount         Decimal  @default(0.00) @db.Decimal(12, 2)
