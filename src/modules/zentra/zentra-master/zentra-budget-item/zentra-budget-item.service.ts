@@ -23,7 +23,7 @@ export class ZentraBudgetItemService {
       }
     });
   }
-
+   
   async findAll(): Promise<any[]> {
     const results = await this.prisma.zentraBudgetItem.findMany({
       where: { deletedAt: null },
@@ -45,7 +45,9 @@ export class ZentraBudgetItemService {
       definitionName: item.definition.name,
 
       currencyId: item.currency.id,
-      currencyName: item.currency.name
+      currencyName: item.currency.name,
+
+      completeName: item.definition.name + ' - ' + item.currency.name
     }));
   }
 

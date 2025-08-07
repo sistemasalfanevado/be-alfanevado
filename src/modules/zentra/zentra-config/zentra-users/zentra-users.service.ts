@@ -58,6 +58,8 @@ export class ZentraUsersService {
       roleId: item.role.id,
       roleName: item.role.name,
 
+      completeName: item.firstName + ' ' + item.lastName
+
     }));
   }
   
