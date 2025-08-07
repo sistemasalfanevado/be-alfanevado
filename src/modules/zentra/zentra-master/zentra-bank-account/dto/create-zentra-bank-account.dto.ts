@@ -2,7 +2,7 @@ import { IsString, IsNumber, MaxLength, IsNotEmpty, IsOptional } from 'class-val
 
 export class CreateZentraBankAccountDto {
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   amount: number;
 
   @IsString()
