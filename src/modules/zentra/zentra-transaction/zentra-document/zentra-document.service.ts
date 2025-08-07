@@ -6,7 +6,7 @@ import * as moment from 'moment';
 
 @Injectable()
 export class ZentraDocumentService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   private includeRelations = {
     transactionType: true,
@@ -94,6 +94,61 @@ export class ZentraDocumentService {
       idFirebase: item.idFirebase
     }));
   }
+
+
+  async findAllByProject(projectId: string): Promise<any[]> {
+    const results = await this.prisma.zentraDocument.findMany({
+      where: {
+        deletedAt: null,
+        budgetItem: {
+          definition: {
+            projectId: projectId
+          }
+        }
+      },
+      include: this.includeRelations // Asegúrate de incluir al menos: budgetItem → definition → project
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      code: item.code,
+      description: item.description,
+
+      totalAmount: item.totalAmount,
+      taxAmount: item.taxAmount,
+      netAmount: item.netAmount,
+      detractionRate: item.detractionRate,
+      detractionAmount: item.detractionAmount,
+      amountToPay: item.amountToPay,
+      guaranteeFundAmount: item.guaranteeFundAmount,
+      paidAmount: item.paidAmount,
+
+      registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
+      documentDate: moment(item.documentDate).format('DD/MM/YYYY'),
+      expireDate: moment(item.expireDate).format('DD/MM/YYYY'),
+
+      transactionTypeId: item.transactionType.id,
+      transactionTypeName: item.transactionType.name,
+
+      documentTypeId: item.documentType.id,
+      documentTypeName: item.documentType.name,
+
+      partyId: item.party.id,
+      partyName: item.party.name,
+
+      budgetItemId: item.budgetItem.id,
+      //budgetItemName: item.budgetItem.name,
+
+      currencyId: item.currency.id,
+      currencyName: item.currency.name,
+
+      userId: item.user.id,
+
+      observation: item.observation,
+      idFirebase: item.idFirebase
+    }));
+  }
+
 
   async findOne(id: string) {
     const item = await this.prisma.zentraDocument.findUnique({

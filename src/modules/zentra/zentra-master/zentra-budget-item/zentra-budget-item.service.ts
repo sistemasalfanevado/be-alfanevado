@@ -5,7 +5,7 @@ import { UpdateZentraBudgetItemDto } from './dto/update-zentra-budget-item.dto';
 
 @Injectable()
 export class ZentraBudgetItemService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   // Crear un presupuesto
   async create(createDto: CreateZentraBudgetItemDto) {
@@ -24,7 +24,6 @@ export class ZentraBudgetItemService {
     });
   }
 
-  // Obtener todos los presupuestos
   async findAll(): Promise<any[]> {
     const results = await this.prisma.zentraBudgetItem.findMany({
       where: { deletedAt: null },
@@ -37,7 +36,37 @@ export class ZentraBudgetItemService {
     return results.map((item) => ({
       id: item.id,
       amount: item.amount,
-      
+
+      executedAmount: item.executedAmount,
+      executedSoles: item.executedSoles,
+      executedDolares: item.executedDolares,
+
+      definitionId: item.definition.id,
+      definitionName: item.definition.name,
+
+      currencyId: item.currency.id,
+      currencyName: item.currency.name
+    }));
+  }
+
+  async findAllByProject(projectId: string): Promise<any[]> {
+    const results = await this.prisma.zentraBudgetItem.findMany({
+      where: {
+        deletedAt: null,
+        definition: {
+          projectId: projectId
+        }
+      },
+      include: {
+        currency: true,
+        definition: true
+      }
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      amount: item.amount,
+
       executedAmount: item.executedAmount,
       executedSoles: item.executedSoles,
       executedDolares: item.executedDolares,
