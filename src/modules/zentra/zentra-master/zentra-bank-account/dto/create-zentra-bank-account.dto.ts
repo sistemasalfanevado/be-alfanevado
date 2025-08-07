@@ -16,7 +16,7 @@ export class CreateZentraBankAccountDto {
 
   @IsString()
   @IsNotEmpty()
-  companyId: string;
+  projectId: string;
 
   @IsString()
   @IsNotEmpty()

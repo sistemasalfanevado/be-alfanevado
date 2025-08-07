@@ -16,7 +16,7 @@ export class UpdateZentraBankAccountDto {
 
   @IsString()
   @IsOptional()
-  companyId?: string;
+  projectId?: string;
 
   @IsString()
   @IsOptional()
