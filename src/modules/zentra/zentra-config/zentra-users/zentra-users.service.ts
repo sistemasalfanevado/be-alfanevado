@@ -58,7 +58,9 @@ export class ZentraUsersService {
       roleId: item.role.id,
       roleName: item.role.name,
 
-      completeName: item.firstName + ' ' + item.lastName
+      completeName: item.firstName + ' ' + item.lastName,
+
+      idFirebase: item.idFirebase,
 
     }));
   }
