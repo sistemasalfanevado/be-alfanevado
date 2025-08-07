@@ -1,64 +1,62 @@
-import { IsString, IsOptional, IsNumber, IsNotEmpty, MaxLength, IsDateString } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsNumber, MaxLength, IsDateString } from 'class-validator';
 
 export class UpdateZentraMovementDto {
-  
   @IsString()
-  @IsOptional()
-  @MaxLength(50)
-  code?: string;
-  
+  @IsNotEmpty()
+  @MaxLength(150)
+  code: string;
+
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   @MaxLength(500)
-  description?: string;
+  description: string;
 
   @IsNumber()
   @IsNotEmpty()
-  amount?: number;
+  amount: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  exchangeRate: number;
 
   @IsString()
-  @IsOptional()
-  documentId?: string;
+  @IsNotEmpty()
+  documentId: string;
 
   @IsString()
-  @IsOptional()
-  transactionTypeId?: string;
+  @IsNotEmpty()
+  transactionTypeId: string;
 
   @IsString()
-  @IsOptional()
-  movementCategoryId?: string;
+  @IsNotEmpty()
+  movementCategoryId: string;
 
   @IsString()
-  @IsOptional()
-  documentTypeId?: string;
+  @IsNotEmpty()
+  budgetItemId: string;
 
   @IsString()
-  @IsOptional()
-  partyId?: string;
+  @IsNotEmpty()
+  bankAccountId: string;
 
   @IsString()
-  @IsOptional()
-  budgetItemId?: string;
-
-  @IsString()
-  @IsOptional()
-  bankAccountId?: string;
-
-  @IsString()
-  @IsOptional()
-  currencyId?: string;
+  @IsNotEmpty()
+  currencyId: string;
 
   @IsDateString()
-  @IsOptional()
-  registeredAt?: string;
+  @IsNotEmpty()
+  autorizeDate: string;
 
   @IsDateString()
-  @IsOptional()
-  movementDate?: string;
+  @IsNotEmpty()
+  generateDate: string;
+
+  @IsDateString()
+  @IsNotEmpty()
+  paymentDate: string;
 
   @IsString()
   @IsOptional()
   @MaxLength(30)
   idFirebase?: string;
-
 }

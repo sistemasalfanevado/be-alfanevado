@@ -13,52 +13,79 @@ export class ZentraMovementService {
     document: true,
     transactionType: true,
     movementCategory: true,
-    documentType: true,
-    party: true,
     budgetItem: true,
     bankAccount: true,
-    currency: true
+    currency: true,
   };
+
 
   async create(createDto: CreateZentraMovementDto) {
     const {
       documentId,
       transactionTypeId,
       movementCategoryId,
-      documentTypeId,
-      partyId,
       budgetItemId,
       bankAccountId,
       currencyId,
-      registeredAt,
-      movementDate,
+      autorizeDate,
+      generateDate,
+      paymentDate,
+      code,
+      description,
       amount,
-      ...data
+      exchangeRate = 1,
+      idFirebase = '',
     } = createDto;
 
-    // Detectar si es entrada o salida
+    // Verificar tipo de transacción
     const isEntry = transactionTypeId === 'fe14bee6-9be4-43a5-9d8f-7fc032751415'; // Entrada
     const isExit = transactionTypeId === '8b190f70-cc43-42fa-8d7b-6afde6ed10b5';  // Salida
-
-    // Factor de signo
     const factor = isEntry ? 1 : isExit ? -1 : 0;
+
     if (factor === 0) {
       throw new Error('Tipo de transacción no válido');
     }
 
     return this.prisma.$transaction(async (tx) => {
-      // 1. Crear el movimiento
+      // Obtener moneda
+      const currency = await tx.zentraCurrency.findUnique({
+        where: { id: currencyId },
+      });
+      if (!currency) {
+        throw new Error('Moneda no encontrada');
+      }
+
+      const amountNumber = Number(amount);
+      const rateNumber = Number(exchangeRate);
+
+      const executedAmount = factor * amountNumber;
+
+      const executedSoles =
+        currencyId === '70684299-05fc-4720-8fca-be3a2ecb67ab'
+          ? amountNumber
+          : amountNumber * rateNumber;
+
+      const executedDolares =
+        currencyId === 'a1831dfc-a1f7-4075-a66e-fe3f5694e1e4'
+          ? amountNumber
+          : amountNumber / rateNumber;
+
+      // Crear movimiento
       const movement = await tx.zentraMovement.create({
         data: {
-          ...data,
           amount,
-          registeredAt: new Date(registeredAt),
-          movementDate: new Date(movementDate),
+          exchangeRate: rateNumber,
+          autorizeDate: new Date(autorizeDate),
+          generateDate: new Date(generateDate),
+          paymentDate: new Date(paymentDate),
+
+          code,
+          description,
+          idFirebase,
+
           document: { connect: { id: documentId } },
           transactionType: { connect: { id: transactionTypeId } },
           movementCategory: { connect: { id: movementCategoryId } },
-          documentType: { connect: { id: documentTypeId } },
-          party: { connect: { id: partyId } },
           budgetItem: { connect: { id: budgetItemId } },
           bankAccount: { connect: { id: bankAccountId } },
           currency: { connect: { id: currencyId } },
@@ -66,22 +93,28 @@ export class ZentraMovementService {
         include: this.includeRelations,
       });
 
-      // 2. Actualizar bankAccount.amount
+      // Actualizar cuenta bancaria
       await tx.zentraBankAccount.update({
         where: { id: bankAccountId },
         data: {
           amount: {
-            increment: factor * Number(amount),
+            increment: executedAmount,
           },
         },
       });
 
-      // 3. Actualizar budgetItem.executedAmount
+      // Actualizar presupuesto
       await tx.zentraBudgetItem.update({
         where: { id: budgetItemId },
         data: {
           executedAmount: {
-            increment: factor * Number(amount),
+            increment: executedAmount,
+          },
+          executedSoles: {
+            increment: factor * Number(executedSoles.toFixed(2)),
+          },
+          executedDolares: {
+            increment: factor * Number(executedDolares.toFixed(2)),
           },
         },
       });
@@ -89,7 +122,6 @@ export class ZentraMovementService {
       return movement;
     });
   }
-
 
   async findAll(): Promise<any[]> {
     const results = await this.prisma.zentraMovement.findMany({
@@ -110,118 +142,13 @@ export class ZentraMovementService {
 
   async update(id: string, updateDto: UpdateZentraMovementDto) {
     return this.prisma.$transaction(async (tx) => {
-      // 1. Obtener el movimiento original
-      const oldMovement = await tx.zentraMovement.findUnique({
-        where: { id },
-        select: {
-          amount: true,
-          transactionTypeId: true,
-          bankAccountId: true,
-          budgetItemId: true,
-        },
-      });
-
-      if (!oldMovement) throw new Error('Movimiento no encontrado');
-
-      // 2. Revertir impacto del movimiento anterior
-      const oldFactor = oldMovement.transactionTypeId === 'fe14bee6-9be4-43a5-9d8f-7fc032751415' ? 1
-        : oldMovement.transactionTypeId === '8b190f70-cc43-42fa-8d7b-6afde6ed10b5' ? -1
-          : 0;
-
-      await tx.zentraBankAccount.update({
-        where: { id: oldMovement.bankAccountId },
-        data: {
-          amount: {
-            increment: -oldFactor * Number(oldMovement.amount),
-          },
-        },
-      });
-
-      await tx.zentraBudgetItem.update({
-        where: { id: oldMovement.budgetItemId },
-        data: {
-          executedAmount: {
-            increment: -oldFactor * Number(oldMovement.amount),
-          },
-        },
-      });
-
-      // 3. Preparar nueva data
-      const {
-        documentId,
-        transactionTypeId,
-        movementCategoryId,
-        documentTypeId,
-        partyId,
-        budgetItemId,
-        bankAccountId,
-        currencyId,
-        amount,
-        registeredAt,
-        movementDate,
-        ...rest
-      } = updateDto;
-
-      const updateData: any = {
-        ...rest,
-      };
-
-      if (documentId) updateData.document = { connect: { id: documentId } };
-      if (transactionTypeId) updateData.transactionType = { connect: { id: transactionTypeId } };
-      if (movementCategoryId) updateData.movementCategory = { connect: { id: movementCategoryId } };
-      if (documentTypeId) updateData.documentType = { connect: { id: documentTypeId } };
-      if (partyId) updateData.party = { connect: { id: partyId } };
-      if (budgetItemId) updateData.budgetItem = { connect: { id: budgetItemId } };
-      if (bankAccountId) updateData.bankAccount = { connect: { id: bankAccountId } };
-      if (currencyId) updateData.currency = { connect: { id: currencyId } };
-      if (amount !== undefined) updateData.amount = amount;
-      if (registeredAt) updateData.registeredAt = new Date(registeredAt);
-      if (movementDate) updateData.movementDate = new Date(movementDate);
-
-      // 4. Actualizar el movimiento
-      const updated = await tx.zentraMovement.update({
-        where: { id },
-        data: updateData,
-        include: this.includeRelations,
-      });
-
-      // 5. Aplicar nuevo impacto
-      const newFactor = transactionTypeId === 'fe14bee6-9be4-43a5-9d8f-7fc032751415' ? 1
-        : transactionTypeId === '8b190f70-cc43-42fa-8d7b-6afde6ed10b5' ? -1
-          : oldFactor; // fallback si no se cambia tipo
-
-      const finalAmount = amount !== undefined ? amount : oldMovement.amount;
-      const finalBankAccountId = bankAccountId ?? oldMovement.bankAccountId;
-      const finalBudgetItemId = budgetItemId ?? oldMovement.budgetItemId;
-
-      await tx.zentraBankAccount.update({
-        where: { id: finalBankAccountId },
-        data: {
-          amount: {
-            increment: newFactor * Number(finalAmount),
-          },
-        },
-      });
-
-      await tx.zentraBudgetItem.update({
-        where: { id: finalBudgetItemId },
-        data: {
-          executedAmount: {
-            increment: newFactor * Number(finalAmount),
-          },
-        },
-      });
-
-      return updated;
-    });
-  }
-
-  async remove(id: string) {
-    return this.prisma.$transaction(async (tx) => {
+      // 1. Obtener movimiento actual
       const movement = await tx.zentraMovement.findUnique({
         where: { id },
         select: {
           amount: true,
+          exchangeRate: true,
+          currencyId: true,
           transactionTypeId: true,
           bankAccountId: true,
           budgetItemId: true,
@@ -230,32 +157,222 @@ export class ZentraMovementService {
 
       if (!movement) throw new Error('Movimiento no encontrado');
 
-      const factor = movement.transactionTypeId === 'fe14bee6-9be4-43a5-9d8f-7fc032751415' ? 1
-        : movement.transactionTypeId === '8b190f70-cc43-42fa-8d7b-6afde6ed10b5' ? -1
-          : 0;
+      const {
+        amount,
+        exchangeRate,
+        currencyId,
+        transactionTypeId,
+        bankAccountId,
+        budgetItemId,
+      } = movement;
 
+      const isEntry = transactionTypeId === 'fe14bee6-9be4-43a5-9d8f-7fc032751415';
+      const isExit = transactionTypeId === '8b190f70-cc43-42fa-8d7b-6afde6ed10b5';
+      const factor = isEntry ? 1 : isExit ? -1 : 0;
       if (factor === 0) throw new Error('Tipo de transacción no válido');
 
-      // Revertir impacto en cuenta y partida
+      const amountNumber = Number(amount);
+      const rateNumber = Number(exchangeRate);
+
+      const executedAmount = factor * amountNumber;
+
+      const executedSoles =
+        currencyId === '70684299-05fc-4720-8fca-be3a2ecb67ab'
+          ? amountNumber
+          : amountNumber * rateNumber;
+
+      const executedDolares =
+        currencyId === 'a1831dfc-a1f7-4075-a66e-fe3f5694e1e4'
+          ? amountNumber
+          : amountNumber / rateNumber;
+
+      // 2. Revertir efectos contables
       await tx.zentraBankAccount.update({
-        where: { id: movement.bankAccountId },
+        where: { id: bankAccountId },
         data: {
           amount: {
-            increment: -factor * Number(movement.amount),
+            increment: -executedAmount,
           },
         },
       });
 
       await tx.zentraBudgetItem.update({
-        where: { id: movement.budgetItemId },
+        where: { id: budgetItemId },
         data: {
           executedAmount: {
-            increment: -factor * Number(movement.amount),
+            increment: -executedAmount,
+          },
+          executedSoles: {
+            increment: -factor * Number(executedSoles.toFixed(2)),
+          },
+          executedDolares: {
+            increment: -factor * Number(executedDolares.toFixed(2)),
           },
         },
       });
 
-      // Eliminar lógicamente
+      // 3. Eliminar movimiento de forma definitiva
+      await tx.zentraMovement.delete({
+        where: { id },
+      });
+
+      // 4. Crear nuevo movimiento con los datos actualizados
+      const {
+        documentId,
+        transactionTypeId: newTransactionTypeId,
+        movementCategoryId,
+        budgetItemId: newBudgetItemId,
+        bankAccountId: newBankAccountId,
+        currencyId: newCurrencyId,
+        autorizeDate,
+        generateDate,
+        paymentDate,
+        code,
+        description,
+        amount: newAmount,
+        exchangeRate: newExchangeRate = 1,
+        idFirebase = '',
+      } = updateDto;
+
+      const newIsEntry = newTransactionTypeId === 'fe14bee6-9be4-43a5-9d8f-7fc032751415';
+      const newIsExit = newTransactionTypeId === '8b190f70-cc43-42fa-8d7b-6afde6ed10b5';
+      const newFactor = newIsEntry ? 1 : newIsExit ? -1 : 0;
+      if (newFactor === 0) throw new Error('Tipo de transacción no válido');
+
+      const newAmountNumber = Number(newAmount);
+      const newRateNumber = Number(newExchangeRate);
+
+      const newExecutedAmount = newFactor * newAmountNumber;
+
+      const newExecutedSoles =
+        newCurrencyId === '70684299-05fc-4720-8fca-be3a2ecb67ab'
+          ? newAmountNumber
+          : newAmountNumber * newRateNumber;
+
+      const newExecutedDolares =
+        newCurrencyId === 'a1831dfc-a1f7-4075-a66e-fe3f5694e1e4'
+          ? newAmountNumber
+          : newAmountNumber / newRateNumber;
+
+      const newMovement = await tx.zentraMovement.create({
+        data: {
+          amount: newAmount,
+          exchangeRate: newRateNumber,
+          autorizeDate: new Date(autorizeDate),
+          generateDate: new Date(generateDate),
+          paymentDate: new Date(paymentDate),
+          code,
+          description,
+          idFirebase,
+          document: { connect: { id: documentId } },
+          transactionType: { connect: { id: newTransactionTypeId } },
+          movementCategory: { connect: { id: movementCategoryId } },
+          budgetItem: { connect: { id: newBudgetItemId } },
+          bankAccount: { connect: { id: newBankAccountId } },
+          currency: { connect: { id: newCurrencyId } },
+        },
+        include: this.includeRelations,
+      });
+
+      await tx.zentraBankAccount.update({
+        where: { id: newBankAccountId },
+        data: {
+          amount: {
+            increment: newExecutedAmount,
+          },
+        },
+      });
+
+      await tx.zentraBudgetItem.update({
+        where: { id: newBudgetItemId },
+        data: {
+          executedAmount: {
+            increment: newExecutedAmount,
+          },
+          executedSoles: {
+            increment: newFactor * Number(newExecutedSoles.toFixed(2)),
+          },
+          executedDolares: {
+            increment: newFactor * Number(newExecutedDolares.toFixed(2)),
+          },
+        },
+      });
+
+      return newMovement;
+    });
+  }
+
+  async remove(id: string) {
+    return this.prisma.$transaction(async (tx) => {
+      // 1. Obtener movimiento
+      const movement = await tx.zentraMovement.findUnique({
+        where: { id },
+        select: {
+          amount: true,
+          exchangeRate: true,
+          currencyId: true,
+          transactionTypeId: true,
+          bankAccountId: true,
+          budgetItemId: true,
+        },
+      });
+
+      if (!movement) {
+        throw new Error('Movimiento no encontrado');
+      }
+
+      const { transactionTypeId, currencyId, exchangeRate, amount, bankAccountId, budgetItemId } = movement;
+
+      // 2. Determinar factor
+      const isEntry = transactionTypeId === 'fe14bee6-9be4-43a5-9d8f-7fc032751415'; // Entrada
+      const isExit = transactionTypeId === '8b190f70-cc43-42fa-8d7b-6afde6ed10b5';  // Salida
+      const factor = isEntry ? 1 : isExit ? -1 : 0;
+
+      if (factor === 0) throw new Error('Tipo de transacción no válido');
+
+      const amountNumber = Number(amount);
+      const rateNumber = Number(exchangeRate);
+
+      // 3. Calcular montos
+      const executedAmount = factor * amountNumber;
+
+      const executedSoles =
+        currencyId === '70684299-05fc-4720-8fca-be3a2ecb67ab'
+          ? amountNumber
+          : amountNumber * rateNumber;
+
+      const executedDolares =
+        currencyId === 'a1831dfc-a1f7-4075-a66e-fe3f5694e1e4'
+          ? amountNumber
+          : amountNumber / rateNumber;
+
+      // 4. Revertir cuenta bancaria
+      await tx.zentraBankAccount.update({
+        where: { id: bankAccountId },
+        data: {
+          amount: {
+            increment: -executedAmount,
+          },
+        },
+      });
+
+      // 5. Revertir presupuesto
+      await tx.zentraBudgetItem.update({
+        where: { id: budgetItemId },
+        data: {
+          executedAmount: {
+            increment: -executedAmount,
+          },
+          executedSoles: {
+            increment: -factor * Number(executedSoles.toFixed(2)),
+          },
+          executedDolares: {
+            increment: -factor * Number(executedDolares.toFixed(2)),
+          },
+        },
+      });
+
+      // 6. Eliminar lógicamente
       return tx.zentraMovement.update({
         where: { id },
         data: { deletedAt: new Date() },
@@ -334,7 +451,7 @@ export class ZentraMovementService {
       partyName: item.party.name,
 
       budgetItemId: item.budgetItem.id,
-      
+
 
       bankAccountId: item.bankAccount.id,
       //bankAccountName: item.bankAccount.name,

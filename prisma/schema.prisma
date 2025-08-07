@@ -367,12 +367,15 @@ model ZentraMovementCategory {
 model ZentraDocumentType {
   id          String    @id @default(uuid())
   name        String    @db.VarChar(50)
+  
   documents   ZentraDocument[]
-  movements   ZentraMovement[]
+  
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
+
   idFirebase String? @default("") @db.VarChar(30)
+  
   @@map("zentra_document_type")
 }
 
@@ -473,7 +476,7 @@ model ZentraParty {
   partyRoleId   String
 
   documents     ZentraDocument[]
-  movements     ZentraMovement[]
+  
   partyBankAccounts ZentraPartyBankAccount[]
 
   createdAt     DateTime           @default(now())
@@ -632,40 +635,40 @@ model ZentraDocument {
 model ZentraMovement {
   id                 String                @id @default(uuid())
 
-  code               String                @db.VarChar(50)
-  description        String                @db.VarChar(500)
   amount             Decimal               @db.Decimal(12, 2)
 
-  document           ZentraDocument        @relation(fields: [documentId], references: [id])
-  documentId         String
+  autorizeDate       DateTime              
+  generateDate       DateTime              
+  paymentDate        DateTime             
 
-  transactionType    ZentraTransactionType @relation(fields: [transactionTypeId], references: [id])
-  transactionTypeId  String
-
-  movementCategory   ZentraMovementCategory @relation(fields: [movementCategoryId], references: [id])
-  movementCategoryId String
-
-  documentType       ZentraDocumentType @relation(fields: [documentTypeId], references: [id])
-  documentTypeId     String
-
-  party              ZentraParty           @relation(fields: [partyId], references: [id])
-  partyId            String
-
-  budgetItem         ZentraBudgetItem      @relation(fields: [budgetItemId], references: [id])
-  budgetItemId       String
+  description        String                @db.VarChar(500)
 
   bankAccount        ZentraBankAccount     @relation(fields: [bankAccountId], references: [id])
   bankAccountId      String
 
+  movementCategory   ZentraMovementCategory @relation(fields: [movementCategoryId], references: [id])
+  movementCategoryId String
+
+  budgetItem         ZentraBudgetItem      @relation(fields: [budgetItemId], references: [id])
+  budgetItemId       String
+
   currency           ZentraCurrency        @relation(fields: [currencyId], references: [id])
   currencyId         String
 
-  registeredAt       DateTime              // Fecha registrada por el usuario
-  movementDate       DateTime              // Fecha del movimiento
+  transactionType    ZentraTransactionType @relation(fields: [transactionTypeId], references: [id])
+  transactionTypeId  String
+
+  document           ZentraDocument        @relation(fields: [documentId], references: [id])
+  documentId         String
+
+  code               String                @db.VarChar(150)
+  
+  exchangeRate       Decimal @db.Decimal(12, 2) @default(1)
 
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
   deletedAt          DateTime?
+  
   idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_movement")
 }

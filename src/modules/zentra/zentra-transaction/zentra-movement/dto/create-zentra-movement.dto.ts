@@ -1,10 +1,9 @@
 import { IsString, IsNotEmpty, IsNumber, MaxLength, IsDateString, IsOptional } from 'class-validator';
 
 export class CreateZentraMovementDto {
-  
   @IsString()
   @IsNotEmpty()
-  @MaxLength(50)
+  @MaxLength(150)
   code: string;
 
   @IsString()
@@ -15,7 +14,11 @@ export class CreateZentraMovementDto {
   @IsNumber()
   @IsNotEmpty()
   amount: number;
-  
+
+  @IsNumber()
+  @IsNotEmpty()
+  exchangeRate: number;
+
   @IsString()
   @IsNotEmpty()
   documentId: string;
@@ -27,14 +30,6 @@ export class CreateZentraMovementDto {
   @IsString()
   @IsNotEmpty()
   movementCategoryId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  documentTypeId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  partyId: string;
 
   @IsString()
   @IsNotEmpty()
@@ -50,11 +45,15 @@ export class CreateZentraMovementDto {
 
   @IsDateString()
   @IsNotEmpty()
-  registeredAt: string;
+  autorizeDate: string;
 
   @IsDateString()
   @IsNotEmpty()
-  movementDate: string;
+  generateDate: string;
+
+  @IsDateString()
+  @IsNotEmpty()
+  paymentDate: string;
 
   @IsString()
   @IsOptional()
