@@ -559,7 +559,7 @@ model ZentraBudgetItem {
 
 model ZentraBankAccount {
   id           String         @id @default(uuid())
-  name         String         @db.VarChar(100)
+  
   amount       Decimal        @db.Decimal(12, 2)
   
   bank         ZentraBank     @relation(fields: [bankId], references: [id])

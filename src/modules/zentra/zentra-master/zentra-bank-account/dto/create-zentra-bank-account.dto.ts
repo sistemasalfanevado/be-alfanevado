@@ -1,11 +1,6 @@
 import { IsString, IsNumber, MaxLength, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateZentraBankAccountDto {
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(100)
-  name: string;
-
   @IsNumber()
   @IsNotEmpty()
   amount: number;

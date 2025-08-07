@@ -37,7 +37,7 @@ export class ZentraBankAccountService {
 
     return results.map((item) => ({
       id: item.id,
-      name: item.name,
+      
       amount: item.amount,
 
       bankId: item.bank.id,
@@ -48,6 +48,9 @@ export class ZentraBankAccountService {
 
       currencyId: item.currency.id,
       currencyName: item.currency.name,
+
+      completeName: item.project.name + ' - ' + item.bank.name + ' - ' + item.currency.name
+ 
     }));
   }
 

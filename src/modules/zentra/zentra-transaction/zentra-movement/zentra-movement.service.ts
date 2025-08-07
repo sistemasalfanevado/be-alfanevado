@@ -337,7 +337,7 @@ export class ZentraMovementService {
       
 
       bankAccountId: item.bankAccount.id,
-      bankAccountName: item.bankAccount.name,
+      //bankAccountName: item.bankAccount.name,
 
       currencyId: item.currency.id,
       currencyName: item.currency.name,
