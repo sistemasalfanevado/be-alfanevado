@@ -1,28 +1,51 @@
-import { IsString, IsOptional, IsNumber, IsNotEmpty, MaxLength, IsDateString } from 'class-validator';
+import { IsString, IsOptional, IsNumber, MaxLength, IsDateString } from 'class-validator';
 
 export class UpdateZentraDocumentDto {
-  
   @IsString()
   @IsOptional()
   @MaxLength(50)
   code?: string;
-  
+
   @IsString()
   @IsOptional()
   @MaxLength(500)
   description?: string;
 
   @IsNumber()
-  @IsNotEmpty()
-  totalAmount?: number;
-  
-  @IsString()
   @IsOptional()
-  transactionTypeId?: string;
+  totalAmount?: number;
+
+  @IsNumber()
+  @IsOptional()
+  taxAmount?: number;
+
+  @IsNumber()
+  @IsOptional()
+  netAmount?: number;
+
+  @IsNumber()
+  @IsOptional()
+  detractionRate?: number;
+
+  @IsNumber()
+  @IsOptional()
+  detractionAmount?: number;
+
+  @IsNumber()
+  @IsOptional()
+  amountToPay?: number;
+
+  @IsNumber()
+  @IsOptional()
+  guaranteeFundAmount?: number;
+
+  @IsNumber()
+  @IsOptional()
+  paidAmount?: number;
 
   @IsString()
   @IsOptional()
-  movementCategoryId?: string;
+  transactionTypeId?: string;
 
   @IsString()
   @IsOptional()
@@ -38,11 +61,11 @@ export class UpdateZentraDocumentDto {
 
   @IsString()
   @IsOptional()
-  bankAccountId?: string;
+  currencyId?: string;
 
   @IsString()
   @IsOptional()
-  currencyId?: string;
+  userId?: string;
 
   @IsDateString()
   @IsOptional()
@@ -52,9 +75,17 @@ export class UpdateZentraDocumentDto {
   @IsOptional()
   documentDate?: string;
 
+  @IsDateString()
+  @IsOptional()
+  expireDate?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(500)
+  observation?: string;
+
   @IsString()
   @IsOptional()
   @MaxLength(30)
   idFirebase?: string;
-
 }

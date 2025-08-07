@@ -2,35 +2,33 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraDocumentDto } from './dto/create-zentra-document.dto';
 import { UpdateZentraDocumentDto } from './dto/update-zentra-document.dto';
-
 import * as moment from 'moment';
 
 @Injectable()
 export class ZentraDocumentService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   private includeRelations = {
     transactionType: true,
-    movementCategory: true,
     documentType: true,
     party: true,
     budgetItem: true,
-    bankAccount: true,
     currency: true,
+    user: true,
     movements: true
   };
 
   async create(createDto: CreateZentraDocumentDto) {
     const {
       transactionTypeId,
-      movementCategoryId,
       documentTypeId,
       partyId,
       budgetItemId,
-      bankAccountId,
       currencyId,
+      userId,
       registeredAt,
       documentDate,
+      expireDate,
       ...data
     } = createDto;
 
@@ -39,13 +37,13 @@ export class ZentraDocumentService {
         ...data,
         registeredAt: new Date(registeredAt),
         documentDate: new Date(documentDate),
+        expireDate: new Date(expireDate),
         transactionType: { connect: { id: transactionTypeId } },
-        movementCategory: { connect: { id: movementCategoryId } },
         documentType: { connect: { id: documentTypeId } },
         party: { connect: { id: partyId } },
         budgetItem: { connect: { id: budgetItemId } },
-        bankAccount: { connect: { id: bankAccountId } },
-        currency: { connect: { id: currencyId } }
+        currency: { connect: { id: currencyId } },
+        user: { connect: { id: userId } }
       },
       include: this.includeRelations
     });
@@ -59,19 +57,24 @@ export class ZentraDocumentService {
 
     return results.map((item) => ({
       id: item.id,
-
       code: item.code,
       description: item.description,
+
       totalAmount: item.totalAmount,
+      taxAmount: item.taxAmount,
+      netAmount: item.netAmount,
+      detractionRate: item.detractionRate,
+      detractionAmount: item.detractionAmount,
+      amountToPay: item.amountToPay,
+      guaranteeFundAmount: item.guaranteeFundAmount,
+      paidAmount: item.paidAmount,
 
       registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
       documentDate: moment(item.documentDate).format('DD/MM/YYYY'),
-      
+      expireDate: moment(item.expireDate).format('DD/MM/YYYY'),
+
       transactionTypeId: item.transactionType.id,
       transactionTypeName: item.transactionType.name,
-
-      movementCategoryId: item.movementCategory.id,
-      movementCategoryName: item.movementCategory.name,
 
       documentTypeId: item.documentType.id,
       documentTypeName: item.documentType.name,
@@ -80,49 +83,92 @@ export class ZentraDocumentService {
       partyName: item.party.name,
 
       budgetItemId: item.budgetItem.id,
-      
-      bankAccountId: item.bankAccount.id,
-      //bankAccountName: item.bankAccount.name,
+      //budgetItemName: item.budgetItem.name,
 
       currencyId: item.currency.id,
       currencyName: item.currency.name,
+
+      userId: item.user.id,
+
+      observation: item.observation,
+      idFirebase: item.idFirebase
     }));
   }
 
-
-
-
   async findOne(id: string) {
-    return this.prisma.zentraDocument.findUnique({
+    const item = await this.prisma.zentraDocument.findUnique({
       where: { id, deletedAt: null },
       include: this.includeRelations
     });
+
+    if (!item) return null;
+
+    return {
+      id: item.id,
+      code: item.code,
+      description: item.description,
+
+      totalAmount: item.totalAmount,
+      taxAmount: item.taxAmount,
+      netAmount: item.netAmount,
+      detractionRate: item.detractionRate,
+      detractionAmount: item.detractionAmount,
+      amountToPay: item.amountToPay,
+      guaranteeFundAmount: item.guaranteeFundAmount,
+      paidAmount: item.paidAmount,
+
+      registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
+      documentDate: moment(item.documentDate).format('DD/MM/YYYY'),
+      expireDate: moment(item.expireDate).format('DD/MM/YYYY'),
+
+      transactionTypeId: item.transactionType.id,
+      transactionTypeName: item.transactionType.name,
+
+      documentTypeId: item.documentType.id,
+      documentTypeName: item.documentType.name,
+
+      partyId: item.party.id,
+      partyName: item.party.name,
+
+      budgetItemId: item.budgetItem.id,
+      //budgetItemName: item.budgetItem.name,
+
+      currencyId: item.currency.id,
+      currencyName: item.currency.name,
+
+      userId: item.user.id,
+
+      observation: item.observation,
+      idFirebase: item.idFirebase
+    };
   }
-
-
-
 
   async update(id: string, updateDto: UpdateZentraDocumentDto) {
     const {
       transactionTypeId,
-      movementCategoryId,
       documentTypeId,
       partyId,
       budgetItemId,
-      bankAccountId,
       currencyId,
+      userId,
+      expireDate,
+      registeredAt,
+      documentDate,
       ...data
     } = updateDto;
 
     const updateData: any = { ...data };
 
+    if (expireDate) updateData.expireDate = new Date(expireDate);
+    if (registeredAt) updateData.registeredAt = new Date(registeredAt);
+    if (documentDate) updateData.documentDate = new Date(documentDate);
+
     if (transactionTypeId) updateData.transactionType = { connect: { id: transactionTypeId } };
-    if (movementCategoryId) updateData.movementCategory = { connect: { id: movementCategoryId } };
     if (documentTypeId) updateData.documentType = { connect: { id: documentTypeId } };
     if (partyId) updateData.party = { connect: { id: partyId } };
     if (budgetItemId) updateData.budgetItem = { connect: { id: budgetItemId } };
-    if (bankAccountId) updateData.bankAccount = { connect: { id: bankAccountId } };
     if (currencyId) updateData.currency = { connect: { id: currencyId } };
+    if (userId) updateData.user = { connect: { id: userId } };
 
     return this.prisma.zentraDocument.update({
       where: { id },

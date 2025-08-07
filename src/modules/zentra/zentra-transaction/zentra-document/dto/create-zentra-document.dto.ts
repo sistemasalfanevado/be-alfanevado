@@ -1,28 +1,51 @@
 import { IsString, IsNotEmpty, IsNumber, MaxLength, IsDateString, IsOptional } from 'class-validator';
 
 export class CreateZentraDocumentDto {
-  
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(50)
   code: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(500)
   description: string;
 
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   totalAmount: number;
-  
-  @IsString()
-  @IsNotEmpty()
-  transactionTypeId: string;
+
+  @IsNumber()
+  @IsOptional()
+  taxAmount?: number;
+
+  @IsNumber()
+  @IsOptional()
+  netAmount?: number;
+
+  @IsNumber()
+  @IsOptional()
+  detractionRate?: number;
+
+  @IsNumber()
+  @IsOptional()
+  detractionAmount?: number;
+
+  @IsNumber()
+  @IsOptional()
+  amountToPay?: number;
+
+  @IsNumber()
+  @IsOptional()
+  guaranteeFundAmount?: number;
+
+  @IsNumber()
+  @IsOptional()
+  paidAmount?: number;
 
   @IsString()
   @IsNotEmpty()
-  movementCategoryId: string;
+  transactionTypeId: string;
 
   @IsString()
   @IsNotEmpty()
@@ -38,11 +61,11 @@ export class CreateZentraDocumentDto {
 
   @IsString()
   @IsNotEmpty()
-  bankAccountId: string;
+  currencyId: string;
 
   @IsString()
   @IsNotEmpty()
-  currencyId: string;
+  userId: string;
 
   @IsDateString()
   @IsNotEmpty()
@@ -52,9 +75,17 @@ export class CreateZentraDocumentDto {
   @IsNotEmpty()
   documentDate: string;
 
+  @IsDateString()
+  @IsNotEmpty()
+  expireDate: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(500)
+  observation?: string;
+
   @IsString()
   @IsOptional()
   @MaxLength(30)
   idFirebase?: string;
-
 }

@@ -249,6 +249,9 @@ model ZentraUser {
   profileUrl   String?      @db.VarChar(300)
   roleId       String
   role         ZentraRole   @relation(fields: [roleId], references: [id])
+
+  documents    ZentraDocument[]
+
   deletedAt    DateTime?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
@@ -334,7 +337,6 @@ model ZentraCurrency {
   @@map("zentra_currency")
 }
 
-
 model ZentraBank {
   id            String    @id @default(uuid())
   name          String    @db.VarChar(50)
@@ -353,7 +355,6 @@ model ZentraMovementCategory {
   id          String    @id @default(uuid())
   name        String    @db.VarChar(50)
   
-  documents   ZentraDocument[]
   movements   ZentraMovement[]
   
   createdAt   DateTime  @default(now())
@@ -555,8 +556,6 @@ model ZentraBudgetItem {
   @@map("zentra_budget_item")
 }
 
-
-
 model ZentraBankAccount {
   id           String         @id @default(uuid())
   
@@ -571,7 +570,6 @@ model ZentraBankAccount {
   currency     ZentraCurrency  @relation(fields: [currencyId], references: [id])
   currencyId   String
 
-  documents    ZentraDocument[]
   movements    ZentraMovement[]
 
   createdAt    DateTime       @default(now())
@@ -584,40 +582,50 @@ model ZentraBankAccount {
 model ZentraDocument {
   id                 String                @id @default(uuid())
   
-  code               String                @db.VarChar(50)
-  description        String                @db.VarChar(500)
-  totalAmount        Decimal               @db.Decimal(12, 2)
-
-  transactionType    ZentraTransactionType @relation(fields: [transactionTypeId], references: [id])
-  transactionTypeId  String
-
-  movementCategory   ZentraMovementCategory @relation(fields: [movementCategoryId], references: [id])
-  movementCategoryId String
-
-  documentType       ZentraDocumentType @relation(fields: [documentTypeId], references: [id])
-  documentTypeId     String
+  documentDate       DateTime              // Fecha del documento
+  registeredAt       DateTime              // Fecha registrada por el usuario
+  expireDate         DateTime              // Fecha registrada por el usuario
 
   party              ZentraParty           @relation(fields: [partyId], references: [id])
   partyId            String
 
-  budgetItem         ZentraBudgetItem      @relation(fields: [budgetItemId], references: [id])
-  budgetItemId       String
-
-  bankAccount        ZentraBankAccount     @relation(fields: [bankAccountId], references: [id])
-  bankAccountId      String
-
   currency           ZentraCurrency        @relation(fields: [currencyId], references: [id])
   currencyId         String
 
-  movements          ZentraMovement[]
+  documentType       ZentraDocumentType @relation(fields: [documentTypeId], references: [id])
+  documentTypeId     String
 
-  registeredAt       DateTime              // Fecha registrada por el usuario
-  documentDate       DateTime              // Fecha del documento
+  code               String                @db.VarChar(50)
+  description        String                @db.VarChar(500)
+  
+  totalAmount         Decimal  @default(0.00) @db.Decimal(12, 2)
+  taxAmount           Decimal  @default(0.00) @db.Decimal(12, 2)
+  netAmount           Decimal  @default(0.00) @db.Decimal(12, 2)
+  detractionRate      Decimal  @default(0.00) @db.Decimal(12, 2)
+  detractionAmount    Decimal  @default(0.00) @db.Decimal(12, 2)
+  amountToPay         Decimal  @default(0.00) @db.Decimal(12, 2)
+  guaranteeFundAmount Decimal  @default(0.00) @db.Decimal(12, 2) 
+  paidAmount          Decimal  @default(0.00) @db.Decimal(12, 2)
+  
+  observation         String? @db.VarChar(500)
+
+  transactionType    ZentraTransactionType @relation(fields: [transactionTypeId], references: [id])
+  transactionTypeId  String
+
+  budgetItem         ZentraBudgetItem      @relation(fields: [budgetItemId], references: [id])
+  budgetItemId       String
+  
+  user               ZentraUser            @relation(fields: [userId], references: [id])
+  userId             String
+  
+  movements          ZentraMovement[]
   
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
   deletedAt          DateTime?
-  idFirebase String? @default("") @db.VarChar(30)
+  
+  idFirebase         String? @default("") @db.VarChar(30)
+
   @@map("zentra_document")
 }
 
