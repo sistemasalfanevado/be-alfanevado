@@ -6,7 +6,7 @@ import * as moment from 'moment';
 
 @Injectable()
 export class ZentraDocumentService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   private includeRelations = {
     documentStatus: true,
@@ -175,5 +175,46 @@ export class ZentraDocumentService {
       where: { id },
       data: { deletedAt: null }
     });
+  }
+
+  async findByFilters(filters: {
+    documentStatusId?: string;
+    partyId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    const { documentStatusId, partyId, startDate, endDate } = filters;
+
+    const where: any = {
+      deletedAt: null,
+    };
+
+    // Filtrar por fechas solo si vienen definidas
+    if (startDate || endDate) {
+      where.documentDate = {};
+      if (startDate) {
+        where.documentDate.gte = moment(startDate).startOf('day').toDate();
+      }
+      if (endDate) {
+        where.documentDate.lte = moment(endDate).endOf('day').toDate();
+      }
+    }
+
+    // Agregar condicionalmente documentStatusId si no es vacío
+    if (documentStatusId && documentStatusId.trim() !== '') {
+      where.documentStatus = { id: documentStatusId };
+    }
+
+    // Agregar condicionalmente partyId si no es vacío
+    if (partyId && partyId.trim() !== '') {
+      where.party = { id: partyId };
+    }
+
+    const results = await this.prisma.zentraDocument.findMany({
+      where,
+      include: this.includeRelations
+    });
+
+    return results.map(item => this.mapEntityToDto(item));
   }
 }

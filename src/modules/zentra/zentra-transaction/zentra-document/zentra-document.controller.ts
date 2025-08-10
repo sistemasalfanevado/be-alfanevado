@@ -8,7 +8,7 @@ import { Public } from '../../../../auth/shared/decorators/public.decorator';
 @Controller('zentra-documents')
 //@UseGuards(JwtAuthGuard)
 export class ZentraDocumentController {
-  constructor(private readonly zentraDocumentService: ZentraDocumentService) {}
+  constructor(private readonly zentraDocumentService: ZentraDocumentService) { }
 
   @Post()
   create(@Body() createZentraDocumentDto: CreateZentraDocumentDto) {
@@ -40,4 +40,17 @@ export class ZentraDocumentController {
   restore(@Param('id') id: string) {
     return this.zentraDocumentService.restore(id);
   }
+
+  // Nuevo endpoint para búsqueda filtrada
+  @Post('search')
+  @Public()
+  search(@Body() filters: {
+    documentStatusId?: string;
+    partyId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    return this.zentraDocumentService.findByFilters(filters);
+  }
+
 }
