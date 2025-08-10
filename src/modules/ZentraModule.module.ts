@@ -27,6 +27,9 @@ import { ZentraBudgetItemCategoryModule } from './zentra/zentra-master/zentra-bu
 import { ZentraBudgetItemDefinitionModule } from './zentra/zentra-master/zentra-budget-item-definition/zentra-budget-item-definition.module';
 import { ZentraBudgetItemModule } from './zentra/zentra-master/zentra-budget-item/zentra-budget-item.module';
 
+import { ZentraDocumentStatusModule } from './zentra/zentra-master/zentra-document-status/zentra-document-status.module';
+import { ZentraMovementStatusModule } from './zentra/zentra-master/zentra-movement-status/zentra-movement-status.module';
+
 
 // Zentra Transaction
 import { ZentraDocumentModule } from './zentra/zentra-transaction/zentra-document/zentra-document.module';
@@ -59,6 +62,8 @@ import { ZentraMovementModule } from './zentra/zentra-transaction/zentra-movemen
     ZentraPartyBankAccountModule,
     ZentraBudgetItemDefinitionModule,
 
+    ZentraDocumentStatusModule,
+    ZentraMovementStatusModule,
 
     ZentraDocumentModule,
     ZentraMovementModule
