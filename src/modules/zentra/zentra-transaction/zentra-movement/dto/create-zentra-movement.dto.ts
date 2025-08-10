@@ -43,6 +43,10 @@ export class CreateZentraMovementDto {
   @IsNotEmpty()
   currencyId: string;
 
+  @IsString()
+  @IsNotEmpty()
+  movementStatusId: string;
+
   @IsDateString()
   @IsNotEmpty()
   autorizeDate: string;

@@ -67,6 +67,10 @@ export class CreateZentraDocumentDto {
   @IsNotEmpty()
   userId: string;
 
+  @IsString()
+  @IsNotEmpty()
+  documentStatusId: string;
+
   @IsDateString()
   @IsNotEmpty()
   registeredAt: string;

@@ -6,9 +6,10 @@ import * as moment from 'moment';
 
 @Injectable()
 export class ZentraDocumentService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   private includeRelations = {
+    documentStatus: true,
     transactionType: true,
     documentType: true,
     party: true,
@@ -18,146 +19,8 @@ export class ZentraDocumentService {
     movements: true
   };
 
-  async create(createDto: CreateZentraDocumentDto) {
-    const {
-      transactionTypeId,
-      documentTypeId,
-      partyId,
-      budgetItemId,
-      currencyId,
-      userId,
-      registeredAt,
-      documentDate,
-      expireDate,
-      ...data
-    } = createDto;
-
-    return this.prisma.zentraDocument.create({
-      data: {
-        ...data,
-        registeredAt: new Date(registeredAt),
-        documentDate: new Date(documentDate),
-        expireDate: new Date(expireDate),
-        transactionType: { connect: { id: transactionTypeId } },
-        documentType: { connect: { id: documentTypeId } },
-        party: { connect: { id: partyId } },
-        budgetItem: { connect: { id: budgetItemId } },
-        currency: { connect: { id: currencyId } },
-        user: { connect: { id: userId } }
-      },
-      include: this.includeRelations
-    });
-  }
-
-  async findAll(): Promise<any[]> {
-    const results = await this.prisma.zentraDocument.findMany({
-      where: { deletedAt: null },
-      include: this.includeRelations
-    });
-
-    return results.map((item) => ({
-      id: item.id,
-      code: item.code,
-      description: item.description,
-
-      totalAmount: item.totalAmount,
-      taxAmount: item.taxAmount,
-      netAmount: item.netAmount,
-      detractionRate: item.detractionRate,
-      detractionAmount: item.detractionAmount,
-      amountToPay: item.amountToPay,
-      guaranteeFundAmount: item.guaranteeFundAmount,
-      paidAmount: item.paidAmount,
-
-      registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
-      documentDate: moment(item.documentDate).format('DD/MM/YYYY'),
-      expireDate: moment(item.expireDate).format('DD/MM/YYYY'),
-
-      transactionTypeId: item.transactionType.id,
-      transactionTypeName: item.transactionType.name,
-
-      documentTypeId: item.documentType.id,
-      documentTypeName: item.documentType.name,
-
-      partyId: item.party.id,
-      partyName: item.party.name,
-
-      budgetItemId: item.budgetItem.id,
-      //budgetItemName: item.budgetItem.name,
-
-      currencyId: item.currency.id,
-      currencyName: item.currency.name,
-
-      userId: item.user.id,
-
-      observation: item.observation,
-      idFirebase: item.idFirebase
-    }));
-  }
-
-
-  async findAllByProject(projectId: string): Promise<any[]> {
-    const results = await this.prisma.zentraDocument.findMany({
-      where: {
-        deletedAt: null,
-        budgetItem: {
-          definition: {
-            projectId: projectId
-          }
-        }
-      },
-      include: this.includeRelations // Asegúrate de incluir al menos: budgetItem → definition → project
-    });
-
-    return results.map((item) => ({
-      id: item.id,
-      code: item.code,
-      description: item.description,
-
-      totalAmount: item.totalAmount,
-      taxAmount: item.taxAmount,
-      netAmount: item.netAmount,
-      detractionRate: item.detractionRate,
-      detractionAmount: item.detractionAmount,
-      amountToPay: item.amountToPay,
-      guaranteeFundAmount: item.guaranteeFundAmount,
-      paidAmount: item.paidAmount,
-
-      registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
-      documentDate: moment(item.documentDate).format('DD/MM/YYYY'),
-      expireDate: moment(item.expireDate).format('DD/MM/YYYY'),
-
-      transactionTypeId: item.transactionType.id,
-      transactionTypeName: item.transactionType.name,
-
-      documentTypeId: item.documentType.id,
-      documentTypeName: item.documentType.name,
-
-      partyId: item.party.id,
-      partyName: item.party.name,
-
-      budgetItemId: item.budgetItem.id,
-      //budgetItemName: item.budgetItem.name,
-
-      currencyId: item.currency.id,
-      currencyName: item.currency.name,
-
-      userId: item.user.id,
-
-      observation: item.observation,
-      idFirebase: item.idFirebase
-    }));
-  }
-
-
-  async findOne(id: string) {
-    const item = await this.prisma.zentraDocument.findUnique({
-      where: { id, deletedAt: null },
-      include: this.includeRelations
-    });
-
-    if (!item) return null;
-
+  /** Mapea un registro de Prisma a DTO */
+  private mapEntityToDto(item: any) {
     return {
       id: item.id,
       code: item.code,
@@ -185,6 +48,9 @@ export class ZentraDocumentService {
       partyId: item.party.id,
       partyName: item.party.name,
 
+      documentStatusId: item.documentStatus.id,
+      documentStatusName: item.documentStatus.name,
+
       budgetItemId: item.budgetItem.id,
       //budgetItemName: item.budgetItem.name,
 
@@ -198,8 +64,72 @@ export class ZentraDocumentService {
     };
   }
 
+  /** Método reutilizable para búsquedas con mapeo */
+  private async findManyWithMapping(where: any) {
+    const results = await this.prisma.zentraDocument.findMany({
+      where,
+      include: this.includeRelations
+    });
+    return results.map(this.mapEntityToDto);
+  }
+
+  async create(createDto: CreateZentraDocumentDto) {
+    const {
+      documentStatusId,
+      transactionTypeId,
+      documentTypeId,
+      partyId,
+      budgetItemId,
+      currencyId,
+      userId,
+      registeredAt,
+      documentDate,
+      expireDate,
+      ...data
+    } = createDto;
+
+    return this.prisma.zentraDocument.create({
+      data: {
+        ...data,
+        registeredAt: new Date(registeredAt),
+        documentDate: new Date(documentDate),
+        expireDate: new Date(expireDate),
+        documentStatus: { connect: { id: documentStatusId } },
+        transactionType: { connect: { id: transactionTypeId } },
+        documentType: { connect: { id: documentTypeId } },
+        party: { connect: { id: partyId } },
+        budgetItem: { connect: { id: budgetItemId } },
+        currency: { connect: { id: currencyId } },
+        user: { connect: { id: userId } }
+      },
+      include: this.includeRelations
+    });
+  }
+
+  async findAll(): Promise<any[]> {
+    return this.findManyWithMapping({ deletedAt: null });
+  }
+
+  async findAllByProject(projectId: string): Promise<any[]> {
+    return this.findManyWithMapping({
+      deletedAt: null,
+      budgetItem: {
+        definition: { projectId }
+      }
+    });
+  }
+
+  async findOne(id: string) {
+    const item = await this.prisma.zentraDocument.findUnique({
+      where: { id, deletedAt: null },
+      include: this.includeRelations
+    });
+    return item ? this.mapEntityToDto(item) : null;
+  }
+
   async update(id: string, updateDto: UpdateZentraDocumentDto) {
     const {
+      documentStatusId,
       transactionTypeId,
       documentTypeId,
       partyId,
@@ -218,6 +148,7 @@ export class ZentraDocumentService {
     if (registeredAt) updateData.registeredAt = new Date(registeredAt);
     if (documentDate) updateData.documentDate = new Date(documentDate);
 
+    if (documentStatusId) updateData.documentStatus = { connect: { id: documentStatusId } };
     if (transactionTypeId) updateData.transactionType = { connect: { id: transactionTypeId } };
     if (documentTypeId) updateData.documentType = { connect: { id: documentTypeId } };
     if (partyId) updateData.party = { connect: { id: partyId } };

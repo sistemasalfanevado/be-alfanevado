@@ -67,6 +67,10 @@ export class UpdateZentraDocumentDto {
   @IsOptional()
   userId?: string;
 
+  @IsString()
+  @IsOptional()
+  documentStatusId?: string;
+
   @IsDateString()
   @IsOptional()
   registeredAt?: string;
