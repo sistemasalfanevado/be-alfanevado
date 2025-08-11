@@ -33,6 +33,8 @@ import { ZentraMovementStatusModule } from './zentra/zentra-master/zentra-moveme
 
 // Zentra Transaction
 import { ZentraDocumentModule } from './zentra/zentra-transaction/zentra-document/zentra-document.module';
+import { ZentraDocumentFileModule } from './zentra/zentra-transaction/zentra-document-file/zentra-document-file.module';
+
 import { ZentraMovementModule } from './zentra/zentra-transaction/zentra-movement/zentra-movement.module';
 
 
@@ -66,6 +68,7 @@ import { ZentraMovementModule } from './zentra/zentra-transaction/zentra-movemen
     ZentraMovementStatusModule,
 
     ZentraDocumentModule,
+    ZentraDocumentFileModule,
     ZentraMovementModule
 
 

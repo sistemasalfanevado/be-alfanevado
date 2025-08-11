@@ -625,6 +625,7 @@ model ZentraDocument {
   userId             String
   
   movements          ZentraMovement[]
+  files              ZentraDocumentFile[]
   
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
@@ -679,7 +680,6 @@ model ZentraMovement {
   @@map("zentra_movement")
 }
 
-
 model ZentraDocumentStatus {
 
   id          String            @id @default(uuid())
@@ -691,7 +691,6 @@ model ZentraDocumentStatus {
   deletedAt   DateTime?
   
   @@map("zentra_document_status")
-
 }
 
 model ZentraMovementStatus {
@@ -705,5 +704,20 @@ model ZentraMovementStatus {
   deletedAt   DateTime?
   
   @@map("zentra_movement_status")
+}
 
+model ZentraDocumentFile {
+  id           String         @id @default(uuid())
+  
+  document     ZentraDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  documentId   String
+
+  fileName     String         @db.VarChar(255) // Nombre original del archivo
+  fileUrl      String         @db.VarChar(700) // URL completa en Firebase Storage
+  
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  deletedAt   DateTime?
+  
+  @@map("zentra_document_file")
 }
