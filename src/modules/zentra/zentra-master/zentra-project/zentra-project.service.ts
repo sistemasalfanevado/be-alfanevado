@@ -22,10 +22,23 @@ export class ZentraProjectService {
   }
 
   async findAll() {
-    return this.prisma.zentraProject.findMany({
+    const results = await this.prisma.zentraProject.findMany({
       where: { deletedAt: null },
-      include: { company: true }
+      include: { company: true },
+      orderBy: {
+        name: 'asc',
+      },
     });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+      
+      companyId: item.company.id,
+      companyName: item.company.name,
+      
+    }));
+
   }
 
   async findOne(id: string) {

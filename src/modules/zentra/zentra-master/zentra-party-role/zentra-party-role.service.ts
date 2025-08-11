@@ -17,7 +17,10 @@ export class ZentraPartyRoleService {
     return this.prisma.zentraPartyRole.findMany({
       where: {
         deletedAt: null,
-      }
+      },
+      orderBy: {
+        name: 'asc',
+      },
     });
   }
 

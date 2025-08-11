@@ -16,6 +16,9 @@ export class ZentraBudgetCategoryService {
   async findAll(): Promise<any[]> {
     return this.prisma.zentraBudgetCategory.findMany({
       where: { deletedAt: null },
+      orderBy: {
+        name: 'asc',
+      },
     });
 
   }

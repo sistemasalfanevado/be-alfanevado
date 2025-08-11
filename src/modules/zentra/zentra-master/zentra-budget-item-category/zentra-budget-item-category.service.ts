@@ -24,9 +24,10 @@ export class ZentraBudgetItemCategoryService {
       include: {
         budgetCategory: true,
       },
-      orderBy: {
-        name: 'asc', // 'asc' para ascendente, 'desc' para descendente
-      },
+      orderBy: [
+        { budgetCategory: { name: 'asc' } },
+      ]
+
     });
 
     return results.map((item) => ({

@@ -18,6 +18,9 @@ export class ZentraDocumentStatusService {
       where: {
         deletedAt: null,
       },
+      orderBy: {
+        name: 'asc',
+      },
     });
   }
 

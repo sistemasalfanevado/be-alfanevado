@@ -30,7 +30,11 @@ export class ZentraBudgetItemService {
       include: {
         currency: true,
         definition: true
-      }
+      },
+      orderBy: [
+        { definition: { name: 'asc' } },
+        { currency: { name: 'asc' } }
+      ]
     });
 
     return results.map((item) => ({

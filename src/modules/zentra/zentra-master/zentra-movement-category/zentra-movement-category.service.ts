@@ -18,6 +18,9 @@ export class ZentraMovementCategoryService {
       where: {
         deletedAt: null,
       },
+      orderBy: {
+        name: 'asc',
+      },
     });
   }
 

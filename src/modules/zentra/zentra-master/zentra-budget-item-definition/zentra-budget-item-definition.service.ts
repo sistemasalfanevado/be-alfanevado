@@ -21,7 +21,7 @@ export class ZentraBudgetItemDefinitionService {
         project: true,
       },
       orderBy: {
-        name: 'asc', // 'asc' para ascendente, 'desc' para descendente
+        name: 'asc',
       },
     });
 

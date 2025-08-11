@@ -18,7 +18,11 @@ export class ZentraTransactionTypeService {
       where: {
         deletedAt: null,
       },
+      orderBy: {
+        name: 'asc',
+      },
     });
+
   }
 
   async findOne(id: string) {

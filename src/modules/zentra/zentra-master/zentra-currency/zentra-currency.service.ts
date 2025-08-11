@@ -18,6 +18,9 @@ export class ZentraCurrencyService {
       where: {
         deletedAt: null,
       },
+      orderBy: {
+        name: 'asc',
+      },
     });
   }
 

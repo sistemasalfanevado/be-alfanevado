@@ -68,7 +68,10 @@ export class ZentraDocumentService {
   private async findManyWithMapping(where: any) {
     const results = await this.prisma.zentraDocument.findMany({
       where,
-      include: this.includeRelations
+      include: this.includeRelations,
+      orderBy: {
+        documentDate: 'desc'
+      }
     });
     return results.map(this.mapEntityToDto);
   }

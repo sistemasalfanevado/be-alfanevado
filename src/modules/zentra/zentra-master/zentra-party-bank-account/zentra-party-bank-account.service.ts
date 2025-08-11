@@ -17,6 +17,11 @@ export class ZentraPartyBankAccountService {
   async findAll(): Promise<any[]> {
     const results = await this.prisma.zentraPartyBankAccount.findMany({
       where: { deletedAt: null },
+      orderBy: [
+        { bank: { name: 'asc' } },
+        { party: { name: 'asc' } },
+        { currency: { name: 'asc' } }
+      ],
       include: {
         bank: true,
         currency: true,
@@ -30,14 +35,17 @@ export class ZentraPartyBankAccountService {
       cci: item.cci,
       description: item.description,
 
-      bankId: item.bank ? item.bank.id : null,
-      bankName: item.bank ? item.bank.name : null,
+      bankId: item.bank ? item.bank.id : '',
+      bankName: item.bank ? item.bank.name : '',
 
       partyId: item.party.id,
       partyName: item.party.name,
 
-      currencyId: item.currency ? item.currency.id : null,
-      currencyName: item.currency ? item.currency.name : null,
+      currencyId: item.currency ? item.currency.id : '',
+      currencyName: item.currency ? item.currency.name : '',
+
+      completeName: `${item.bank ? item.bank.name : ''} - ${item.party.name} - ${item.currency ? item.currency.name : ''}`
+
     }));
   }
 

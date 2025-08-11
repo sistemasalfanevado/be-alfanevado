@@ -5,7 +5,7 @@ import { UpdateZentraBankDto } from './dto/update-zentra-bank.dto';
 
 @Injectable()
 export class ZentraBankService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createZentraBankDto: CreateZentraBankDto) {
     return this.prisma.zentraBank.create({
@@ -17,6 +17,9 @@ export class ZentraBankService {
     return this.prisma.zentraBank.findMany({
       where: {
         deletedAt: null,
+      },
+      orderBy: {
+        name: 'asc',
       },
     });
   }

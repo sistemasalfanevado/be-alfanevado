@@ -24,10 +24,32 @@ export class ZentraPartyService {
   }
 
   async findAll() {
-    return this.prisma.zentraParty.findMany({
+    const results = await this.prisma.zentraParty.findMany({
       where: { deletedAt: null },
-      include: { partyRole: true }
+      include: { partyRole: true },
+      orderBy: {
+        name: 'asc',
+      },
     });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+      document: item.document,
+      email: item.email,
+      phone: item.phone,
+      address: item.address,
+
+      partyRoleId: item.partyRole.id,
+      partyRoleName: item.partyRole.name,
+
+      completeName: `${item.name} - ${item.document}`,
+
+      idFirebase: item.idFirebase,
+
+    }));
+
+
   }
 
   async findOne(id: string) {

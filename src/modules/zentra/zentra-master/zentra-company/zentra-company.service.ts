@@ -18,6 +18,9 @@ export class ZentraCompanyService {
       where: {
         deletedAt: null,
       },
+      orderBy: {
+        name: 'asc',
+      },
     });
   }
 
