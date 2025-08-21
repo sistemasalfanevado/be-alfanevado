@@ -37,10 +37,6 @@ export class CreateZentraDocumentDto {
 
   @IsNumber()
   @IsOptional()
-  guaranteeFundAmount?: number;
-
-  @IsNumber()
-  @IsOptional()
   paidAmount?: number;
 
   @IsString()

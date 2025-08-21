@@ -32,7 +32,6 @@ export class ZentraDocumentService {
       detractionRate: item.detractionRate,
       detractionAmount: item.detractionAmount,
       amountToPay: item.amountToPay,
-      guaranteeFundAmount: item.guaranteeFundAmount,
       paidAmount: item.paidAmount,
 
       registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),

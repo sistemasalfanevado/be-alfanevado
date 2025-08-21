@@ -610,7 +610,6 @@ model ZentraDocument {
   detractionRate      Decimal  @default(0.00) @db.Decimal(12, 2)
   detractionAmount    Decimal  @default(0.00) @db.Decimal(12, 2)
   amountToPay         Decimal  @default(0.00) @db.Decimal(12, 2)
-  guaranteeFundAmount Decimal  @default(0.00) @db.Decimal(12, 2) 
   paidAmount          Decimal  @default(0.00) @db.Decimal(12, 2)
   
   observation         String? @db.VarChar(500)
