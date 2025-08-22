@@ -2,21 +2,31 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraDocumentDto } from './dto/create-zentra-document.dto';
 import { UpdateZentraDocumentDto } from './dto/update-zentra-document.dto';
+import { ZentraExchangeRateService } from '../../zentra-master/zentra-exchange-rate/zentra-exchange-rate.service';
 import * as moment from 'moment';
 
 @Injectable()
 export class ZentraDocumentService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService, 
+    private zentraExchangeRateService: ZentraExchangeRateService
+  ) { }
 
   private includeRelations = {
     documentStatus: true,
     transactionType: true,
     documentType: true,
     party: true,
-    budgetItem: true,
+    budgetItem: {
+      include: {
+        definition: true,
+        currency: true
+      }
+    },
     currency: true,
     user: true,
-    movements: true
+    movements: true,
+    documentCategory: true,
+    exchangeRate: true
   };
 
   /** Mapea un registro de Prisma a DTO */
@@ -51,12 +61,21 @@ export class ZentraDocumentService {
       documentStatusName: item.documentStatus.name,
 
       budgetItemId: item.budgetItem.id,
-      //budgetItemName: item.budgetItem.name,
+      budgetItemName: item.budgetItem
+        ? `${item.budgetItem.definition.name} - ${item.budgetItem.currency.name}`
+        : null,
 
       currencyId: item.currency.id,
       currencyName: item.currency.name,
 
       userId: item.user.id,
+
+      documentCategoryId: item.documentCategory?.id,
+      documentCategoryName: item.documentCategory?.name,
+
+      exchangeRateId: item.exchangeRate?.id,
+      exchangeRateBuyRate: item.exchangeRate?.buyRate,
+      exchangeRateSellRate: item.exchangeRate?.sellRate,
 
       observation: item.observation,
       idFirebase: item.idFirebase
@@ -76,6 +95,19 @@ export class ZentraDocumentService {
   }
 
   async create(createDto: CreateZentraDocumentDto) {
+
+    // 1. Obtener tipo de cambio del día
+    let exchangeRate = await this.prisma.zentraExchangeRate.findFirst({
+      where: { date: moment().startOf('day').toDate() },
+    });
+
+    if (!exchangeRate) {
+      // 2. Si no existe, obtenerlo de SUNAT y guardarlo
+      const { date, buyRate, sellRate } = await this.zentraExchangeRateService.fetchTodayRateFromSunat();
+      exchangeRate = await this.zentraExchangeRateService.upsertTodayRateFromSunat();
+    }
+
+
     const {
       documentStatusId,
       transactionTypeId,
@@ -84,6 +116,7 @@ export class ZentraDocumentService {
       budgetItemId,
       currencyId,
       userId,
+      documentCategoryId,
       registeredAt,
       documentDate,
       expireDate,
@@ -102,8 +135,11 @@ export class ZentraDocumentService {
         party: { connect: { id: partyId } },
         budgetItem: { connect: { id: budgetItemId } },
         currency: { connect: { id: currencyId } },
-        user: { connect: { id: userId } }
+        user: { connect: { id: userId } },
+        documentCategory: { connect: { id: documentCategoryId } },
+        exchangeRate: { connect: { id: exchangeRate.id } },
       },
+
       include: this.includeRelations
     });
   }
@@ -138,6 +174,7 @@ export class ZentraDocumentService {
       budgetItemId,
       currencyId,
       userId,
+      documentCategoryId,
       expireDate,
       registeredAt,
       documentDate,
@@ -158,6 +195,9 @@ export class ZentraDocumentService {
     if (currencyId) updateData.currency = { connect: { id: currencyId } };
     if (userId) updateData.user = { connect: { id: userId } };
 
+    if (documentCategoryId)
+      updateData.documentCategory = { connect: { id: documentCategoryId } };
+    
     return this.prisma.zentraDocument.update({
       where: { id },
       data: updateData,
@@ -182,16 +222,16 @@ export class ZentraDocumentService {
   async findByFilters(filters: {
     documentStatusId?: string;
     partyId?: string;
+    documentCategoryId?: string;
     startDate?: string;
     endDate?: string;
   }) {
-    const { documentStatusId, partyId, startDate, endDate } = filters;
+    const { documentStatusId, partyId, documentCategoryId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
     };
 
-    // Filtrar por fechas solo si vienen definidas
     if (startDate || endDate) {
       where.documentDate = {};
       if (startDate) {
@@ -202,19 +242,21 @@ export class ZentraDocumentService {
       }
     }
 
-    // Agregar condicionalmente documentStatusId si no es vacío
     if (documentStatusId && documentStatusId.trim() !== '') {
       where.documentStatus = { id: documentStatusId };
     }
 
-    // Agregar condicionalmente partyId si no es vacío
     if (partyId && partyId.trim() !== '') {
       where.party = { id: partyId };
     }
 
+    if (documentCategoryId && documentCategoryId.trim() !== '') {
+      where.documentCategory = { id: documentCategoryId };
+    }
+
     const results = await this.prisma.zentraDocument.findMany({
       where,
-      include: this.includeRelations
+      include: this.includeRelations,
     });
 
     return results.map(item => this.mapEntityToDto(item));

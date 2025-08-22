@@ -1,4 +1,11 @@
-import { IsString, IsOptional, IsNumber, MaxLength, IsDateString } from 'class-validator';
+import { 
+  IsString, 
+  IsOptional, 
+  IsNumber, 
+  MaxLength, 
+  IsDateString, 
+  IsBoolean 
+} from 'class-validator';
 
 export class UpdateZentraDocumentDto {
   @IsString()
@@ -67,6 +74,10 @@ export class UpdateZentraDocumentDto {
   @IsOptional()
   documentStatusId?: string;
 
+  @IsString()
+  @IsOptional()
+  documentCategoryId?: string;
+
   @IsDateString()
   @IsOptional()
   registeredAt?: string;
@@ -88,4 +99,8 @@ export class UpdateZentraDocumentDto {
   @IsOptional()
   @MaxLength(30)
   idFirebase?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  hasMovements?: boolean;
 }

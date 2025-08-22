@@ -46,7 +46,7 @@ export class ZentraBudgetItemService {
       executedDolares: item.executedDolares,
 
       definitionId: item.definition.id,
-      definitionName: item.definition.name,
+      definitionName: item.definition.name, 
 
       currencyId: item.currency.id,
       currencyName: item.currency.name,

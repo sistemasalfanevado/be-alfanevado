@@ -614,6 +614,8 @@ model ZentraDocument {
   
   observation         String? @db.VarChar(500)
 
+  hasMovements       Boolean @default(false)
+  
   transactionType    ZentraTransactionType @relation(fields: [transactionTypeId], references: [id])
   transactionTypeId  String
 
@@ -623,6 +625,12 @@ model ZentraDocument {
   user               ZentraUser            @relation(fields: [userId], references: [id])
   userId             String
   
+  documentCategory   ZentraDocumentCategory @relation(fields: [documentCategoryId], references: [id])
+  documentCategoryId String
+
+  exchangeRateId     String?
+  exchangeRate       ZentraExchangeRate? @relation(fields: [exchangeRateId], references: [id])
+
   movements          ZentraMovement[]
   files              ZentraDocumentFile[]
   
@@ -692,6 +700,20 @@ model ZentraDocumentStatus {
   @@map("zentra_document_status")
 }
 
+
+model ZentraDocumentCategory {
+  id          String            @id @default(uuid())
+  name        String            @db.VarChar(50)
+  documents   ZentraDocument[]
+
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  deletedAt   DateTime?
+  
+  @@map("zentra_document_category")
+}
+
+
 model ZentraMovementStatus {
 
   id          String            @id @default(uuid())
@@ -719,4 +741,19 @@ model ZentraDocumentFile {
   deletedAt   DateTime?
   
   @@map("zentra_document_file")
+}
+
+model ZentraExchangeRate {
+  id         String   @id @default(uuid())
+  date       DateTime @unique          // Fecha del tipo de cambio (ej: 2025-08-21)
+  buyRate    Decimal  @db.Decimal(10,4) // Tipo de cambio compra
+  sellRate   Decimal  @db.Decimal(10,4) // Tipo de cambio venta
+  
+  // Relación con documentos (opcional, si quieres fijar el cambio usado)
+  documents  ZentraDocument[]
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("zentra_exchange_rate")
 }

@@ -47,6 +47,7 @@ export class ZentraDocumentController {
   search(@Body() filters: {
     documentStatusId?: string;
     partyId?: string;
+    documentCategoryId?: string;
     startDate?: string;
     endDate?: string;
   }) {
