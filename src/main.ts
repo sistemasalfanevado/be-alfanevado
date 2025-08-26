@@ -7,22 +7,26 @@ async function bootstrap() {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // ❗ Elimina campos que no están en el DTO
+      whitelist: true,
+      transform: true, // convierte payloads a la clase DTO
+      transformOptions: {
+        enableImplicitConversion: true, // permite casting automático (string -> number)
+      },
     }),
   );
 
   // Habilitar CORS
   app.enableCors({
     origin: [
-        'http://localhost:4200', 
-        'https://alfa-nevado-a8c64.web.app', 
-        'https://admin-alfa-nevado-78d3d.web.app',
-        'https://alfa-nevado-landing-admin.web.app', 
-        'https://alfa-nevado-landing-uat.web.app',
-        'https://alfanevado.pe',
-        'https://www.alfanevado.pe',
-        'https://alfa-nevado-landing-prod.web.app',
-        'https://angular-demo-zentra.web.app',],
+      'http://localhost:4200',
+      'https://alfa-nevado-a8c64.web.app',
+      'https://admin-alfa-nevado-78d3d.web.app',
+      'https://alfa-nevado-landing-admin.web.app',
+      'https://alfa-nevado-landing-uat.web.app',
+      'https://alfanevado.pe',
+      'https://www.alfanevado.pe',
+      'https://alfa-nevado-landing-prod.web.app',
+      'https://angular-demo-zentra.web.app',],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });

@@ -27,7 +27,7 @@ export class CreateLotDto {
 
   @IsNumber()
   @IsNotEmpty()
-  perimeter: number;
+  perimeter: number; 
 
   @IsString()
   @IsNotEmpty()
