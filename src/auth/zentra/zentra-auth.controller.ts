@@ -3,7 +3,7 @@ import { ZentraAuthService } from './zentra-auth.service';
 import { ZentraLoginDto } from '../shared/dto/zentra-login.dto';
 import { AuthGuard } from '@nestjs/passport'; // Importa AuthGuard
 
-@Controller('auth')
+@Controller('zentra-auth') 
 export class ZentraAuthController {
   constructor(private zentraAuthService: ZentraAuthService) {}
 

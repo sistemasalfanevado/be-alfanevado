@@ -8,9 +8,9 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      transform: true, // convierte payloads a la clase DTO
+      transform: true,
       transformOptions: {
-        enableImplicitConversion: true, // permite casting automático (string -> number)
+        enableImplicitConversion: true,
       },
     }),
   );
