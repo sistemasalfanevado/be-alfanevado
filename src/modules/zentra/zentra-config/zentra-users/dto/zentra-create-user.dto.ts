@@ -21,11 +21,6 @@ export class ZentraCreateUserDto {
   @MinLength(8)
   password: string;
 
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(20)
-  gender: string;
-
   @IsOptional()
   @IsUrl()
   @MaxLength(300)

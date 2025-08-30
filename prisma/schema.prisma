@@ -245,7 +245,7 @@ model ZentraUser {
   lastName     String       @db.VarChar(100)
   email        String       @unique @db.VarChar(255)
   password     String
-  gender       String       @db.VarChar(20)
+  
   profileUrl   String?      @db.VarChar(300)
   roleId       String
   role         ZentraRole   @relation(fields: [roleId], references: [id])

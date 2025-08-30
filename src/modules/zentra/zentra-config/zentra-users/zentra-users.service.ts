@@ -11,7 +11,7 @@ export class ZentraUsersService {
   constructor(private prisma: PrismaService) { }
 
   async create(createUserDto: ZentraCreateUserDto) {
-    const { email, password, firstName, lastName, gender, profileUrl, roleId, genreId } = createUserDto;
+    const { email, password, firstName, lastName, profileUrl, roleId, genreId } = createUserDto;
 
     const existingUser = await this.prisma.zentraUser.findUnique({ where: { email } });
     if (existingUser) {
@@ -26,7 +26,6 @@ export class ZentraUsersService {
         lastName,
         email,
         password: hashedPassword,
-        gender,
         profileUrl,
         roleId,
         genreId,
@@ -54,8 +53,7 @@ export class ZentraUsersService {
       firstName: item.firstName,
       lastName: item.lastName,
       email: item.email,
-      gender: item.gender,
-      profileUrl: item.gender,
+      profileUrl: item.profileUrl,
 
       roleId: item.role.id,
       roleName: item.role.name,
