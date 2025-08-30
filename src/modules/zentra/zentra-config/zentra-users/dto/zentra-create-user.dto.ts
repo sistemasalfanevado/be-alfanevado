@@ -22,7 +22,6 @@ export class ZentraCreateUserDto {
   password: string;
 
   @IsOptional()
-  @IsUrl()
   @MaxLength(300)
   profileUrl?: string;
 

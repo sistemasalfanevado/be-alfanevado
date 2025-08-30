@@ -17,7 +17,6 @@ export class ZentraUpdateUserDto {
   email?: string;
 
   @IsOptional()
-  @IsUrl()
   @MaxLength(300)
   profileUrl?: string;
 
