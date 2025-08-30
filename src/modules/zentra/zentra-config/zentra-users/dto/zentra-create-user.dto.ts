@@ -35,6 +35,10 @@ export class ZentraCreateUserDto {
   @IsString()
   roleId: string;
 
+  @IsOptional()
+  @IsString()
+  genreId?: string;
+
   @IsString()
   @IsOptional()
   @MaxLength(30)

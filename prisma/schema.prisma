@@ -250,6 +250,9 @@ model ZentraUser {
   roleId       String
   role         ZentraRole   @relation(fields: [roleId], references: [id])
 
+  genreId      String?
+  genre        ZentraGenre? @relation(fields: [genreId], references: [id])
+
   documents    ZentraDocument[]
 
   deletedAt    DateTime?
@@ -257,6 +260,16 @@ model ZentraUser {
   updatedAt    DateTime     @updatedAt
   idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_user")
+}
+
+model ZentraGenre {
+  id           String                    @id @default(uuid())
+  name         String                    @unique @db.VarChar(20)
+  users        ZentraUser[]
+  deletedAt    DateTime?
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @updatedAt
+  @@map("zentra_genre")
 }
 
 model ZentraRole {

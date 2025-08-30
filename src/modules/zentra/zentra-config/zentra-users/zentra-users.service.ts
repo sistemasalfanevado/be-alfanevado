@@ -8,10 +8,10 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class ZentraUsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createUserDto: ZentraCreateUserDto) {
-    const { email, password, firstName, lastName, gender, profileUrl, roleId } = createUserDto;
+    const { email, password, firstName, lastName, gender, profileUrl, roleId, genreId } = createUserDto;
 
     const existingUser = await this.prisma.zentraUser.findUnique({ where: { email } });
     if (existingUser) {
@@ -29,6 +29,7 @@ export class ZentraUsersService {
         gender,
         profileUrl,
         roleId,
+        genreId,
       },
     });
 
@@ -44,6 +45,7 @@ export class ZentraUsersService {
       where: { deletedAt: null },
       include: {
         role: true,
+        genre: true,
       }
     });
 
@@ -58,17 +60,20 @@ export class ZentraUsersService {
       roleId: item.role.id,
       roleName: item.role.name,
 
+      genreId: item.genre?.id ?? null,
+      genreName: item.genre?.name ?? null,
+
       completeName: item.firstName + ' ' + item.lastName,
 
       idFirebase: item.idFirebase,
 
     }));
   }
-  
+
   async findOne(id: string) {
     return this.prisma.zentraUser.findUnique({
       where: { id, deletedAt: null }
-    }); 
+    });
   }
 
   async update(id: string, zentraUpdateUserDto: ZentraUpdateUserDto) {
