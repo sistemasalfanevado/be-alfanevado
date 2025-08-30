@@ -75,10 +75,6 @@ export class ZentraUsersService {
   }
 
   async update(id: string, zentraUpdateUserDto: ZentraUpdateUserDto) {
-    if (zentraUpdateUserDto.password) {
-      zentraUpdateUserDto.password = await bcrypt.hash(zentraUpdateUserDto.password, 10);
-    }
-
     return this.prisma.zentraUser.update({
       where: { id },
       data: zentraUpdateUserDto,
