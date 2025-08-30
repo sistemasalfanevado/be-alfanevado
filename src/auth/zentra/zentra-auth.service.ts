@@ -25,6 +25,9 @@ export class ZentraAuthService {
 
     return {
       access_token: this.jwtService.sign(payload),
+      fullName: `${user.firstName} ${user.lastName}`,
+      gender: user.gender,
+      profileUrl: user.profileUrl,
     };
   }
 }
