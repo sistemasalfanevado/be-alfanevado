@@ -5,7 +5,7 @@ import { UpdateZentraRolePermissionDto } from './dto/update-zentra-role-permissi
 
 @Injectable()
 export class ZentraRolePermissionService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createDto: CreateZentraRolePermissionDto) {
     // Validación manual por el constraint único
@@ -28,28 +28,41 @@ export class ZentraRolePermissionService {
       },
     });
   }
-  
+
   async findAll(): Promise<any[]> {
     const results = await this.prisma.zentraRolePermission.findMany({
       where: { deletedAt: null },
       include: {
-        page: true,
+        page: {
+          include: {
+            pageGroup: true,
+          },
+        },
         role: true,
-      }
+      },
+      orderBy: [
+        { role: { name: 'asc' } },
+        { page: { pageGroup: { name: 'asc' } } },
+      ],
     });
 
     return results.map((item) => ({
       id: item.id,
-      
+
       pageId: item.page.id,
       pageName: item.page.name,
 
+      pageGroupId: item.page.pageGroup.id,
+      pageGroupName: item.page.pageGroup.name,
+
       roleId: item.role.id,
       roleName: item.role.name,
-
     }));
   }
-  
+
+
+
+
   async findOne(id: string) {
     return this.prisma.zentraRolePermission.findUnique({
       where: { id, deletedAt: null },
