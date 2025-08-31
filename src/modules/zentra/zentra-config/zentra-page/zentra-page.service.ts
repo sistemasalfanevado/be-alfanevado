@@ -37,6 +37,9 @@ export class ZentraPageService {
       pageGroupId: item.pageGroup.id,
       pageGroupName: item.pageGroup.name,
 
+      completeName: item.pageGroup.name + ' ' + item.name,
+
+
     }));
   }
 
