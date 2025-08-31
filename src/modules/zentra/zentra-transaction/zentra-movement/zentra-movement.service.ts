@@ -2,11 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraMovementDto } from './dto/create-zentra-movement.dto';
 import { UpdateZentraMovementDto } from './dto/update-zentra-movement.dto';
+import { ZentraExchangeRateService } from '../../zentra-master/zentra-exchange-rate/zentra-exchange-rate.service';
+
 import * as moment from 'moment';
 
 @Injectable()
 export class ZentraMovementService {
-  constructor(private prisma: PrismaService) { }
+  constructor(
+    private prisma: PrismaService,
+    private zentraExchangeRateService: ZentraExchangeRateService
+  ) { }
 
   private includeRelations = {
     movementStatus: true,
@@ -26,7 +31,6 @@ export class ZentraMovementService {
   private SOLES_ID = '70684299-05fc-4720-8fca-be3a2ecb67ab';
   private DOLARES_ID = 'a1831dfc-a1f7-4075-a66e-fe3f5694e1e4';
 
-  /** Calcula factor y montos ejecutados */
   private calculateAmounts(transactionTypeId: string, currencyId: string, amount: number, exchangeRate: number) {
     const isEntry = transactionTypeId === this.ENTRY_ID;
     const isExit = transactionTypeId === this.EXIT_ID;
@@ -46,7 +50,6 @@ export class ZentraMovementService {
     };
   }
 
-  /** Actualiza saldos de cuenta y presupuesto */
   private async adjustBalances(tx: any, bankAccountId: string, budgetItemId: string, executedAmount: number, executedSoles: number, executedDolares: number) {
     await tx.zentraBankAccount.update({
       where: { id: bankAccountId },
@@ -63,12 +66,25 @@ export class ZentraMovementService {
     });
   }
 
-  /** Reversión de saldos (solo cambia el signo) */
   private async reverseBalances(tx: any, bankAccountId: string, budgetItemId: string, executedAmount: number, executedSoles: number, executedDolares: number) {
     return this.adjustBalances(tx, bankAccountId, budgetItemId, -executedAmount, -executedSoles, -executedDolares);
   }
 
   async create(createDto: CreateZentraMovementDto) {
+
+    // 1. Tomar la fecha de referencia del movimiento
+    const movementDate = moment(createDto.paymentDate || new Date()).startOf('day').toDate();
+
+    // 2. Buscar en el histórico
+    let exchangeRate = await this.prisma.zentraExchangeRate.findUnique({
+      where: { date: movementDate },
+    });
+
+    // 3. Si no existe, usar el TC actual de SUNAT (fallback)
+    if (!exchangeRate) {
+      exchangeRate = await this.zentraExchangeRateService.upsertTodayRateFromSunat();
+    }
+
     const {
       movementStatusId,
       documentId,
@@ -83,18 +99,16 @@ export class ZentraMovementService {
       code,
       description,
       amount,
-      exchangeRate = 1,
       idFirebase = '',
     } = createDto;
 
     const { factor, executedAmount, executedSoles, executedDolares } =
-      this.calculateAmounts(transactionTypeId, currencyId, Number(amount), Number(exchangeRate));
+      this.calculateAmounts(transactionTypeId, currencyId, Number(amount), Number(exchangeRate.buyRate));
 
     return this.prisma.$transaction(async (tx) => {
       const movement = await tx.zentraMovement.create({
         data: {
           amount,
-          exchangeRate,
           autorizeDate: new Date(autorizeDate),
           generateDate: new Date(generateDate),
           paymentDate: new Date(paymentDate),
@@ -108,6 +122,7 @@ export class ZentraMovementService {
           budgetItem: { connect: { id: budgetItemId } },
           bankAccount: { connect: { id: bankAccountId } },
           currency: { connect: { id: currencyId } },
+          exchangeRate: { connect: { id: exchangeRate.id } },
         },
         include: this.includeRelations,
       });
@@ -134,27 +149,43 @@ export class ZentraMovementService {
 
   async update(id: string, updateDto: UpdateZentraMovementDto) {
     return this.prisma.$transaction(async (tx) => {
-      // Obtener y revertir movimiento actual
+      // 1. Obtener y revertir movimiento actual
       const current = await tx.zentraMovement.findUnique({
         where: { id },
         select: {
           amount: true,
-          exchangeRate: true,
           currencyId: true,
           transactionTypeId: true,
           bankAccountId: true,
           budgetItemId: true,
+          exchangeRate: {
+            select: { buyRate: true }, // ✅ Solo traemos el buyRate
+          },
         },
       });
+
       if (!current) throw new Error('Movimiento no encontrado');
 
-      const currentAmounts = this.calculateAmounts(current.transactionTypeId, current.currencyId, Number(current.amount), Number(current.exchangeRate));
-      await this.reverseBalances(tx, current.bankAccountId, current.budgetItemId, currentAmounts.executedAmount, currentAmounts.executedSoles, currentAmounts.executedDolares);
+      const currentAmounts = this.calculateAmounts(
+        current.transactionTypeId,
+        current.currencyId,
+        Number(current.amount),
+        Number(current.exchangeRate!.buyRate) // ✅ usamos buyRate
+      );
 
-      // Eliminar movimiento anterior
+      await this.reverseBalances(
+        tx,
+        current.bankAccountId,
+        current.budgetItemId,
+        currentAmounts.executedAmount,
+        currentAmounts.executedSoles,
+        currentAmounts.executedDolares
+      );
+
+      // 2. Eliminar movimiento anterior (soft-delete si prefieres)
       await tx.zentraMovement.delete({ where: { id } });
 
-      // Crear nuevo
+      // 3. Crear nuevo movimiento
       const {
         documentId,
         transactionTypeId,
@@ -169,16 +200,34 @@ export class ZentraMovementService {
         code,
         description,
         amount,
-        exchangeRate = 1,
         idFirebase = '',
       } = updateDto;
 
-      const newAmounts = this.calculateAmounts(transactionTypeId, currencyId, Number(amount), Number(exchangeRate));
+      // Obtener fecha de referencia del movimiento
+      const movementDate = moment(generateDate || paymentDate || new Date())
+        .startOf('day')
+        .toDate();
+
+      // Buscar tipo de cambio en esa fecha
+      let exchangeRate = await this.prisma.zentraExchangeRate.findUnique({
+        where: { date: movementDate },
+      });
+
+      // Si no existe, usar TC actual de Sunat (fallback)
+      if (!exchangeRate) {
+        exchangeRate = await this.zentraExchangeRateService.upsertTodayRateFromSunat();
+      }
+
+      const newAmounts = this.calculateAmounts(
+        transactionTypeId,
+        currencyId,
+        Number(amount),
+        Number(exchangeRate.buyRate)
+      );
 
       const newMovement = await tx.zentraMovement.create({
         data: {
           amount,
-          exchangeRate,
           autorizeDate: new Date(autorizeDate),
           generateDate: new Date(generateDate),
           paymentDate: new Date(paymentDate),
@@ -192,11 +241,20 @@ export class ZentraMovementService {
           budgetItem: { connect: { id: budgetItemId } },
           bankAccount: { connect: { id: bankAccountId } },
           currency: { connect: { id: currencyId } },
+          exchangeRate: { connect: { id: exchangeRate.id } }, // ✅ Relacionar con TC
         },
         include: this.includeRelations,
       });
 
-      await this.adjustBalances(tx, bankAccountId, budgetItemId, newAmounts.executedAmount, newAmounts.executedSoles, newAmounts.executedDolares);
+      await this.adjustBalances(
+        tx,
+        bankAccountId,
+        budgetItemId,
+        newAmounts.executedAmount,
+        newAmounts.executedSoles,
+        newAmounts.executedDolares
+      );
+
       return newMovement;
     });
   }
@@ -207,19 +265,39 @@ export class ZentraMovementService {
         where: { id },
         select: {
           amount: true,
-          exchangeRate: true,
           currencyId: true,
           transactionTypeId: true,
           bankAccountId: true,
           budgetItemId: true,
+          exchangeRate: {
+            select: { buyRate: true },
+          },
         },
       });
+
       if (!movement) throw new Error('Movimiento no encontrado');
 
-      const amounts = this.calculateAmounts(movement.transactionTypeId, movement.currencyId, Number(movement.amount), Number(movement.exchangeRate));
-      await this.reverseBalances(tx, movement.bankAccountId, movement.budgetItemId, amounts.executedAmount, amounts.executedSoles, amounts.executedDolares);
+      const amounts = this.calculateAmounts(
+        movement.transactionTypeId,
+        movement.currencyId,
+        Number(movement.amount),
+        Number(movement.exchangeRate!.buyRate)
+      );
 
-      return tx.zentraMovement.update({ where: { id }, data: { deletedAt: new Date() } });
+      await this.reverseBalances(
+        tx,
+        movement.bankAccountId,
+        movement.budgetItemId,
+        amounts.executedAmount,
+        amounts.executedSoles,
+        amounts.executedDolares
+      );
+
+      // Soft delete (mantienes el historial) ✅
+      return tx.zentraMovement.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      });
     });
   }
 

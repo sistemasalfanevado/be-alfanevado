@@ -15,10 +15,6 @@ export class UpdateZentraMovementDto {
   @IsNotEmpty()
   amount: number;
 
-  @IsNumber()
-  @IsNotEmpty()
-  exchangeRate: number;
-
   @IsString()
   @IsNotEmpty()
   documentId: string;

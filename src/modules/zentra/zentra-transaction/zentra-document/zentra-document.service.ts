@@ -14,7 +14,7 @@ import * as moment from 'moment';
 export class ZentraDocumentService {
   constructor(private prisma: PrismaService,
     private zentraExchangeRateService: ZentraExchangeRateService,
-    
+    private zentraMovementService: ZentraMovementService
   ) { }
 
   private includeRelations = {
@@ -112,7 +112,6 @@ export class ZentraDocumentService {
       const { date, buyRate, sellRate } = await this.zentraExchangeRateService.fetchTodayRateFromSunat();
       exchangeRate = await this.zentraExchangeRateService.upsertTodayRateFromSunat();
     }
-
 
     const {
       documentStatusId,
@@ -269,7 +268,29 @@ export class ZentraDocumentService {
   }
 
 
-  async createExchangeRate(createDto: any) {
+  async createExchangeRate(dataDocument: any) {
+
+
+    const bankAccountOrigin = await this.prisma.zentraBankAccount.findUnique({
+      where: { id: dataDocument.backAccountOriginId },
+      select: { currencyId: true },
+    });
+
+    if (!bankAccountOrigin) {
+      throw new Error('Cuenta bancaria no encontrada');
+    }
+
+    const bankAccountDestiny = await this.prisma.zentraBankAccount.findUnique({
+      where: { id: dataDocument.backAccountDestinyId },
+      select: { currencyId: true },
+    });
+
+    if (!bankAccountDestiny) {
+      throw new Error('Cuenta bancaria no encontrada');
+    }
+
+
+
     // 🔹 1. Obtener tipo de cambio vigente
     let exchangeRate = await this.prisma.zentraExchangeRate.findFirst({
       where: { date: moment().startOf('day').toDate() },
@@ -293,7 +314,7 @@ export class ZentraDocumentService {
       documentDate,
       expireDate,
       ...data
-    } = createDto;
+    } = dataDocument;
 
     // 🔹 3. Crear documento en BD
     const document = await this.prisma.zentraDocument.create({
@@ -314,7 +335,52 @@ export class ZentraDocumentService {
       },
       include: this.includeRelations,
     });
-    
+
+    // 3. Movimientos: Origen Salida
+    await this.zentraMovementService.create({
+      code: `TC / Transf / Salida`,
+      description: `TC / Transf ${document.code}`,
+
+      documentId: document.id,
+
+      amount: dataDocument.amountOrigin,
+      transactionTypeId: dataDocument.transactionTypeOrigin,
+      movementCategoryId: dataDocument.movementCategoryId,
+      budgetItemId: dataDocument.budgetItemId,
+      bankAccountId: dataDocument.backAccountOriginId,
+      movementStatusId: dataDocument.movementStatusId,
+
+      currencyId: bankAccountOrigin.currencyId,
+
+      autorizeDate: dataDocument.documentDate,
+      generateDate: dataDocument.documentDate,
+      paymentDate: dataDocument.documentDate,
+    });
+
+    // 4. Movimientos: Destino Entrada
+    await this.zentraMovementService.create({
+      code: `TC / Transf / Entrada`,
+      description: `TC / Transf ${document.code}`,
+
+      documentId: document.id,
+
+      amount: dataDocument.amountDestiny,
+      transactionTypeId: dataDocument.transactionTypeDestiny,
+      movementCategoryId: dataDocument.movementCategoryId,
+      budgetItemId: dataDocument.budgetItemId,
+      bankAccountId: dataDocument.backAccountDestinyId,
+      movementStatusId: dataDocument.movementStatusId,
+
+      currencyId: bankAccountDestiny.currencyId,
+
+      autorizeDate: dataDocument.documentDate,
+      generateDate: dataDocument.documentDate,
+      paymentDate: dataDocument.documentDate,
+    });
+
+
+
+
     return this.mapEntityToDto(document);
   }
 
