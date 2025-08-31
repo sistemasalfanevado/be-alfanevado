@@ -34,11 +34,7 @@ export class ZentraUsersService {
 
     return user;
   }
-
-  async findByEmail(email: string) {
-    return this.prisma.zentraUser.findUnique({ where: { email } });
-  }
-
+  
   async findAll(): Promise<any[]> {
     const results = await this.prisma.zentraUser.findMany({
       where: { deletedAt: null },
@@ -94,4 +90,28 @@ export class ZentraUsersService {
       data: { deletedAt: null }, // Restaurar registro
     });
   }
+
+  async findByEmail(email: string) {
+    return this.prisma.zentraUser.findUnique({
+      where: { email },
+      include: {
+        role: {
+          include: {
+            permissions: {
+              include: {
+                page: {
+                  include: {
+                    pageGroup: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        genre: true,
+      },
+    });
+  }
+
+
 }
