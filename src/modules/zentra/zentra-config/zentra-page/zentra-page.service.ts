@@ -70,4 +70,27 @@ export class ZentraPageService {
       data: { deletedAt: null },
     });
   }
+
+  async findByEmail(email: string) {
+    return this.prisma.zentraUser.findUnique({
+      where: { email },
+      include: {
+        role: {
+          include: {
+            permissions: {
+              include: {
+                page: {
+                  include: {
+                    pageGroup: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        genre: true,
+      },
+    });
+  }
+
 }
