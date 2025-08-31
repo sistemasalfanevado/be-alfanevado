@@ -56,6 +56,7 @@ export class ZentraAuthService {
       gender: user.genre?.name,
       profileUrl: user.profileUrl,
       role: user.role?.name,
+      id: user.id,
       menuItems,
     };
   }
