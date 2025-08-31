@@ -41,7 +41,6 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.restore(id);
   }
 
-  // Nuevo endpoint para búsqueda filtrada
   @Post('search')
   @Public()
   search(@Body() filters: {
@@ -52,6 +51,11 @@ export class ZentraDocumentController {
     endDate?: string;
   }) {
     return this.zentraDocumentService.findByFilters(filters);
+  }
+
+  @Post('exchange-rate')
+  createExchangeRate(@Body() createZentraDocumentDto: CreateZentraDocumentDto) {
+    return this.zentraDocumentService.createExchangeRate(createZentraDocumentDto);
   }
 
 }

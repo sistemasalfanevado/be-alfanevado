@@ -1,14 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
+
 import { CreateZentraDocumentDto } from './dto/create-zentra-document.dto';
 import { UpdateZentraDocumentDto } from './dto/update-zentra-document.dto';
+
 import { ZentraExchangeRateService } from '../../zentra-master/zentra-exchange-rate/zentra-exchange-rate.service';
+import { ZentraMovementService } from '../../zentra-transaction/zentra-movement/zentra-movement.service';
+
 import * as moment from 'moment';
+
 
 @Injectable()
 export class ZentraDocumentService {
-  constructor(private prisma: PrismaService, 
-    private zentraExchangeRateService: ZentraExchangeRateService
+  constructor(private prisma: PrismaService,
+    private zentraExchangeRateService: ZentraExchangeRateService,
+    
   ) { }
 
   private includeRelations = {
@@ -197,7 +203,7 @@ export class ZentraDocumentService {
 
     if (documentCategoryId)
       updateData.documentCategory = { connect: { id: documentCategoryId } };
-    
+
     return this.prisma.zentraDocument.update({
       where: { id },
       data: updateData,
@@ -261,4 +267,56 @@ export class ZentraDocumentService {
 
     return results.map(item => this.mapEntityToDto(item));
   }
+
+
+  async createExchangeRate(createDto: any) {
+    // 🔹 1. Obtener tipo de cambio vigente
+    let exchangeRate = await this.prisma.zentraExchangeRate.findFirst({
+      where: { date: moment().startOf('day').toDate() },
+    });
+
+    if (!exchangeRate) {
+      exchangeRate = await this.zentraExchangeRateService.upsertTodayRateFromSunat();
+    }
+
+    // 🔹 2. Desestructurar los ids para conectarlos
+    const {
+      documentStatusId,
+      transactionTypeId,
+      documentTypeId,
+      partyId,
+      budgetItemId,
+      currencyId,
+      userId,
+      documentCategoryId,
+      registeredAt,
+      documentDate,
+      expireDate,
+      ...data
+    } = createDto;
+
+    // 🔹 3. Crear documento en BD
+    const document = await this.prisma.zentraDocument.create({
+      data: {
+        ...data,
+        registeredAt: new Date(registeredAt),
+        documentDate: new Date(documentDate),
+        expireDate: new Date(expireDate),
+        documentStatus: { connect: { id: documentStatusId } },
+        transactionType: { connect: { id: transactionTypeId } },
+        documentType: { connect: { id: documentTypeId } },
+        party: { connect: { id: partyId } },
+        budgetItem: { connect: { id: budgetItemId } },
+        currency: { connect: { id: currencyId } },
+        user: { connect: { id: userId } },
+        documentCategory: { connect: { id: documentCategoryId } },
+        exchangeRate: { connect: { id: exchangeRate.id } },
+      },
+      include: this.includeRelations,
+    });
+    
+    return this.mapEntityToDto(document);
+  }
+
+
 }
