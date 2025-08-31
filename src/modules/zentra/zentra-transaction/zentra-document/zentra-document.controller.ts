@@ -58,4 +58,11 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.createExchangeRate(createZentraDocumentDto);
   }
 
+
+  @Delete('exchange-rate/:id')
+  removeExchangeRate(@Param('id') id: string) {
+    return this.zentraDocumentService.removeExchangeRate(id);
+  }
+
+
 }

@@ -384,5 +384,30 @@ export class ZentraDocumentService {
     return this.mapEntityToDto(document);
   }
 
+  async removeExchangeRate(id: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const document = await tx.zentraDocument.findUnique({
+        where: { id },
+        include: { movements: true },
+      });
+
+      if (!document) {
+        throw new Error('Documento no encontrado');
+      }
+
+      await tx.zentraDocument.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      });
+
+      for (const movement of document.movements) {
+        await this.zentraMovementService.remove(movement.id);
+      }
+
+      return { message: 'Documento y movimientos eliminados correctamente' };
+    });
+  }
+
+
 
 }
