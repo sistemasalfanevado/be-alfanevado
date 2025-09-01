@@ -414,7 +414,7 @@ export class ZentraDocumentService {
       return { message: 'Documento y movimientos eliminados correctamente' };
     });
   }
-  
+
   async findByFiltersExchangeRate(filters: {
     partyId?: string;
     documentCategoryId?: string;
@@ -504,8 +504,7 @@ export class ZentraDocumentService {
     if (!bankAccountOrigin) {
       throw new Error('Cuenta bancaria no encontrada');
     }
-    
-    // 🔹 1. Obtener tipo de cambio vigente
+
     let exchangeRate = await this.prisma.zentraExchangeRate.findFirst({
       where: { date: moment().startOf('day').toDate() },
     });
@@ -547,7 +546,7 @@ export class ZentraDocumentService {
     });
 
     await this.zentraMovementService.create({
-      code: !dataDocument.codeMovement ? dataDocument.code : dataDocument.codeMovement, 
+      code: !dataDocument.codeMovement ? dataDocument.code : dataDocument.codeMovement,
       description: dataDocument.description,
 
       documentId: document.id,
@@ -566,8 +565,95 @@ export class ZentraDocumentService {
       paymentDate: dataDocument.documentDate,
     });
 
-    
+
     return this.mapEntityToDto(document);
+  }
+
+  async removeFinancialExpense(id: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const document = await tx.zentraDocument.findUnique({
+        where: { id },
+        include: { movements: true },
+      });
+
+      if (!document) {
+        throw new Error('Documento no encontrado');
+      }
+
+      await tx.zentraDocument.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      });
+
+      for (const movement of document.movements) {
+        await this.zentraMovementService.remove(movement.id);
+      }
+
+      return { message: 'Documento y movimientos eliminados correctamente' };
+    });
+  }
+
+  async findByFiltersFinancialExpense(filters: {
+    documentCategoryId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    const { documentCategoryId, startDate, endDate } = filters;
+
+    const where: any = {
+      deletedAt: null,
+    };
+
+    if (startDate || endDate) {
+      where.documentDate = {};
+      if (startDate) {
+        where.documentDate.gte = moment(startDate).startOf('day').toDate();
+      }
+      if (endDate) {
+        where.documentDate.lte = moment(endDate).endOf('day').toDate();
+      }
+    }
+    
+    if (documentCategoryId && documentCategoryId.trim() !== '') {
+      where.documentCategoryId = documentCategoryId;
+    }
+
+    const results = await this.prisma.zentraDocument.findMany({
+      where,
+      select: {
+        id: true,
+        documentDate: true,
+        movements: {
+          where: { deletedAt: null },
+          select: {
+            amount: true,
+            transactionTypeId: true,
+            bankAccount: {
+              select: {
+                bank: { select: { name: true } },
+                currency: { select: { name: true } },
+              },
+            },
+          },
+        },
+      },
+    });
+
+
+    return results.map((doc) => {
+      const originMovement = doc.movements.find(
+        (m) => m.transactionTypeId === this.EXIT_ID,
+      );
+      
+      return {
+        id: doc.id,
+        documentDate: moment(doc.documentDate).format('DD/MM/YYYY'),
+        originBankAccount: originMovement
+          ? `${originMovement.bankAccount.bank.name} ${originMovement.bankAccount.currency.name}`
+          : null,
+        amountOrigin: originMovement?.amount ?? null,
+      };
+    });
   }
 
 }

@@ -81,7 +81,7 @@ export class ZentraDocumentController {
   
   @Delete('financial-expense/:id')
   removeFinancialExpense(@Param('id') id: string) {
-    //return this.zentraDocumentService.removeFinancialExpense(id);
+    return this.zentraDocumentService.removeFinancialExpense(id);
   }
 
   @Post('financial-expense/search')
@@ -91,7 +91,7 @@ export class ZentraDocumentController {
     startDate?: string;
     endDate?: string;
   }) {
-    //return this.zentraDocumentService.findByFiltersFinancialExpense(filters);
+    return this.zentraDocumentService.findByFiltersFinancialExpense(filters);
   }
 
 
