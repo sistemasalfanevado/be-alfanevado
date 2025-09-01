@@ -628,14 +628,14 @@ export class ZentraDocumentService {
     if (startDate || endDate) {
       where.documentDate = {};
       if (startDate) {
-        where.documentDate.gte = moment(startDate).startOf('day').toDate();
+        where.documentDate.gte = moment(startDate).startOf("day").toDate();
       }
       if (endDate) {
-        where.documentDate.lte = moment(endDate).endOf('day').toDate();
+        where.documentDate.lte = moment(endDate).endOf("day").toDate();
       }
     }
-    
-    if (documentCategoryId && documentCategoryId.trim() !== '') {
+
+    if (documentCategoryId && documentCategoryId.trim() !== "") {
       where.documentCategoryId = documentCategoryId;
     }
 
@@ -644,11 +644,12 @@ export class ZentraDocumentService {
       select: {
         id: true,
         documentDate: true,
+        description: true, // 👈 asumo que lo tienes en tu tabla
         movements: {
           where: { deletedAt: null },
           select: {
             amount: true,
-            transactionTypeId: true,
+            transactionType: { select: { name: true } }, // 👈 necesitas traer el nombre
             bankAccount: {
               select: {
                 bank: { select: { name: true } },
@@ -660,19 +661,20 @@ export class ZentraDocumentService {
       },
     });
 
-
     return results.map((doc) => {
-      const originMovement = doc.movements.find(
-        (m) => m.transactionTypeId === this.EXIT_ID,
-      );
-      
+      // si un documento puede tener varios movimientos,
+      // decides si tomas el primero o si quieres mapearlos todos
+      const mov = doc.movements[0];
+
       return {
         id: doc.id,
-        documentDate: moment(doc.documentDate).format('DD/MM/YYYY'),
-        originBankAccount: originMovement
-          ? `${originMovement.bankAccount.bank.name} ${originMovement.bankAccount.currency.name}`
+        documentDate: moment(doc.documentDate).format("DD/MM/YYYY"),
+        bankAccount: mov
+          ? `${mov.bankAccount.bank.name} ${mov.bankAccount.currency.name}`
           : null,
-        amountOrigin: originMovement?.amount ?? null,
+        typeTransaction: mov?.transactionType?.name ?? null,
+        amount: mov?.amount ?? null,
+        description: doc.description ?? null,
       };
     });
   }
