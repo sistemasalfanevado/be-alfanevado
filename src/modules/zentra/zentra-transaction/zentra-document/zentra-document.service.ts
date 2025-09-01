@@ -479,7 +479,7 @@ export class ZentraDocumentService {
       );
 
       return {
-        documentDate: doc.documentDate,
+        documentDate: moment(doc.documentDate).format('DD/MM/YYYY'),
         partyName: doc.party?.name ?? null,
         originBankAccount: originMovement
           ? `${originMovement.bankAccount.bank.name} ${originMovement.bankAccount.currency.name}`
