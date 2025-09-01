@@ -545,6 +545,27 @@ export class ZentraDocumentService {
       include: this.includeRelations,
     });
 
+    console.log('Documento creado:', document);
+    console.log('Movimiento creado:', {
+      code: !dataDocument.codeMovement ? dataDocument.code : dataDocument.codeMovement,
+      description: dataDocument.description,
+
+      documentId: document.id,
+
+      amount: dataDocument.amountOrigin,
+      transactionTypeId: dataDocument.transactionTypeId,
+      movementCategoryId: dataDocument.movementCategoryId,
+      budgetItemId: dataDocument.budgetItemId,
+      bankAccountId: dataDocument.backAccountOriginId,
+      movementStatusId: dataDocument.movementStatusId,
+
+      currencyId: bankAccountOrigin.currencyId,
+
+      autorizeDate: dataDocument.documentDate,
+      generateDate: dataDocument.documentDate,
+      paymentDate: dataDocument.documentDate,
+    });
+
     await this.zentraMovementService.create({
       code: !dataDocument.codeMovement ? dataDocument.code : dataDocument.codeMovement,
       description: dataDocument.description,
@@ -552,7 +573,7 @@ export class ZentraDocumentService {
       documentId: document.id,
 
       amount: dataDocument.amountOrigin,
-      transactionTypeId: dataDocument.transactionTypeOrigin,
+      transactionTypeId: dataDocument.transactionTypeId,
       movementCategoryId: dataDocument.movementCategoryId,
       budgetItemId: dataDocument.budgetItemId,
       bankAccountId: dataDocument.backAccountOriginId,
