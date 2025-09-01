@@ -270,12 +270,11 @@ export class ZentraDocumentService {
 
   async createExchangeRate(dataDocument: any) {
 
-
     const bankAccountOrigin = await this.prisma.zentraBankAccount.findUnique({
       where: { id: dataDocument.backAccountOriginId },
       select: { currencyId: true },
     });
-
+    
     if (!bankAccountOrigin) {
       throw new Error('Cuenta bancaria no encontrada');
     }
@@ -300,37 +299,33 @@ export class ZentraDocumentService {
       exchangeRate = await this.zentraExchangeRateService.upsertTodayRateFromSunat();
     }
 
-    // 🔹 2. Desestructurar los ids para conectarlos
-    const {
-      documentStatusId,
-      transactionTypeId,
-      documentTypeId,
-      partyId,
-      budgetItemId,
-      currencyId,
-      userId,
-      documentCategoryId,
-      registeredAt,
-      documentDate,
-      expireDate,
-      ...data
-    } = dataDocument;
-
-    // 🔹 3. Crear documento en BD
     const document = await this.prisma.zentraDocument.create({
       data: {
-        ...data,
-        registeredAt: new Date(registeredAt),
-        documentDate: new Date(documentDate),
-        expireDate: new Date(expireDate),
-        documentStatus: { connect: { id: documentStatusId } },
-        transactionType: { connect: { id: transactionTypeId } },
-        documentType: { connect: { id: documentTypeId } },
-        party: { connect: { id: partyId } },
-        budgetItem: { connect: { id: budgetItemId } },
-        currency: { connect: { id: currencyId } },
-        user: { connect: { id: userId } },
-        documentCategory: { connect: { id: documentCategoryId } },
+        code: dataDocument.code,
+        description: dataDocument.description,
+        totalAmount: dataDocument.totalAmount,
+        taxAmount: dataDocument.taxAmount,
+        netAmount: dataDocument.netAmount,
+        detractionRate: dataDocument.detractionRate,
+        detractionAmount: dataDocument.detractionAmount,
+        amountToPay: dataDocument.amountToPay,
+        paidAmount: dataDocument.paidAmount,
+        observation: dataDocument.observation,
+        idFirebase: dataDocument.idFirebase,
+        hasMovements: dataDocument.hasMovements ?? false,
+
+        registeredAt: new Date(dataDocument.registeredAt),
+        documentDate: new Date(dataDocument.documentDate),
+        expireDate: new Date(dataDocument.expireDate),
+
+        documentStatus: { connect: { id: dataDocument.documentStatusId } },
+        transactionType: { connect: { id: dataDocument.transactionTypeId } },
+        documentType: { connect: { id: dataDocument.documentTypeId } },
+        party: { connect: { id: dataDocument.partyId } },
+        budgetItem: { connect: { id: dataDocument.budgetItemId } },
+        currency: { connect: { id: dataDocument.currencyId } },
+        user: { connect: { id: dataDocument.userId } },
+        documentCategory: { connect: { id: dataDocument.documentCategoryId } },
         exchangeRate: { connect: { id: exchangeRate.id } },
       },
       include: this.includeRelations,
@@ -338,8 +333,8 @@ export class ZentraDocumentService {
 
     // 3. Movimientos: Origen Salida
     await this.zentraMovementService.create({
-      code: `TC / Transf / Salida`,
-      description: `TC / Transf ${document.code}`,
+      code: `Mov. Salida`,
+      description: `${document.code}`,
 
       documentId: document.id,
 
@@ -359,8 +354,8 @@ export class ZentraDocumentService {
 
     // 4. Movimientos: Destino Entrada
     await this.zentraMovementService.create({
-      code: `TC / Transf / Entrada`,
-      description: `TC / Transf ${document.code}`,
+      code: `Mov. Entrada`,
+      description: `${document.code}`,
 
       documentId: document.id,
 

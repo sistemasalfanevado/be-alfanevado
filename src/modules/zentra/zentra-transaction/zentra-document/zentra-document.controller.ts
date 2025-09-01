@@ -54,7 +54,7 @@ export class ZentraDocumentController {
   }
 
   @Post('exchange-rate')
-  createExchangeRate(@Body() createZentraDocumentDto: CreateZentraDocumentDto) {
+  createExchangeRate(@Body() createZentraDocumentDto: any) {
     return this.zentraDocumentService.createExchangeRate(createZentraDocumentDto);
   }
 

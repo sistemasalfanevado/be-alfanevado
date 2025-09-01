@@ -72,15 +72,12 @@ export class ZentraMovementService {
 
   async create(createDto: CreateZentraMovementDto) {
 
-    // 1. Tomar la fecha de referencia del movimiento
     const movementDate = moment(createDto.paymentDate || new Date()).startOf('day').toDate();
 
-    // 2. Buscar en el histórico
     let exchangeRate = await this.prisma.zentraExchangeRate.findUnique({
       where: { date: movementDate },
     });
 
-    // 3. Si no existe, usar el TC actual de SUNAT (fallback)
     if (!exchangeRate) {
       exchangeRate = await this.zentraExchangeRateService.upsertTodayRateFromSunat();
     }
@@ -128,6 +125,7 @@ export class ZentraMovementService {
       });
 
       await this.adjustBalances(tx, bankAccountId, budgetItemId, executedAmount, executedSoles, executedDolares);
+
       return movement;
     });
   }
