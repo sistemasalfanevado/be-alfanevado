@@ -449,6 +449,7 @@ export class ZentraDocumentService {
     const results = await this.prisma.zentraDocument.findMany({
       where,
       select: {
+        id: true,
         documentDate: true,
         party: {
           select: { name: true },
@@ -479,6 +480,7 @@ export class ZentraDocumentService {
       );
 
       return {
+        id: doc.id,
         documentDate: moment(doc.documentDate).format('DD/MM/YYYY'),
         partyName: doc.party?.name ?? null,
         originBankAccount: originMovement
