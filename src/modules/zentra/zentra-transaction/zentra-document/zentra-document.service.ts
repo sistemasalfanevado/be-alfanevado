@@ -12,6 +12,18 @@ import * as moment from 'moment';
 
 @Injectable()
 export class ZentraDocumentService {
+
+
+
+  /** Códigos de tipo de transacción */
+  private ENTRY_ID = 'fe14bee6-9be4-43a5-9d8f-7fc032751415';
+  private EXIT_ID = '8b190f70-cc43-42fa-8d7b-6afde6ed10b5';
+
+  /** IDs de moneda */
+  private SOLES_ID = '70684299-05fc-4720-8fca-be3a2ecb67ab';
+  private DOLARES_ID = 'a1831dfc-a1f7-4075-a66e-fe3f5694e1e4';
+
+
   constructor(private prisma: PrismaService,
     private zentraExchangeRateService: ZentraExchangeRateService,
     private zentraMovementService: ZentraMovementService
@@ -274,7 +286,7 @@ export class ZentraDocumentService {
       where: { id: dataDocument.backAccountOriginId },
       select: { currencyId: true },
     });
-    
+
     if (!bankAccountOrigin) {
       throw new Error('Cuenta bancaria no encontrada');
     }
@@ -400,6 +412,84 @@ export class ZentraDocumentService {
       }
 
       return { message: 'Documento y movimientos eliminados correctamente' };
+    });
+  }
+
+
+  async findByFiltersExchangeRate(filters: {
+    partyId?: string;
+    documentCategoryId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    const { partyId, documentCategoryId, startDate, endDate } = filters;
+
+    const where: any = {
+      deletedAt: null,
+    };
+
+    if (startDate || endDate) {
+      where.documentDate = {};
+      if (startDate) {
+        where.documentDate.gte = moment(startDate).startOf('day').toDate();
+      }
+      if (endDate) {
+        where.documentDate.lte = moment(endDate).endOf('day').toDate();
+      }
+    }
+
+    if (partyId && partyId.trim() !== '') {
+      where.partyId = partyId;
+    }
+
+    if (documentCategoryId && documentCategoryId.trim() !== '') {
+      where.documentCategoryId = documentCategoryId;
+    }
+
+    const results = await this.prisma.zentraDocument.findMany({
+      where,
+      select: {
+        documentDate: true,
+        party: {
+          select: { name: true },
+        },
+        movements: {
+          where: { deletedAt: null },
+          select: {
+            amount: true,
+            transactionTypeId: true,
+            bankAccount: {
+              select: {
+                bank: { select: { name: true } },
+                currency: { select: { name: true } },
+              },
+            },
+          },
+        },
+      },
+    });
+
+
+    return results.map((doc) => {
+      const originMovement = doc.movements.find(
+        (m) => m.transactionTypeId === this.EXIT_ID,
+      );
+      const destinyMovement = doc.movements.find(
+        (m) => m.transactionTypeId === this.ENTRY_ID,
+      );
+
+      return {
+        documentDate: doc.documentDate,
+        partyName: doc.party?.name ?? null,
+        originBankAccount: originMovement
+          ? `${originMovement.bankAccount.bank.name} ${originMovement.bankAccount.currency.name}`
+          : null,
+        destinyBankAccount: destinyMovement
+          ? `${destinyMovement.bankAccount.bank.name} ${destinyMovement.bankAccount.currency.name}`
+          : null,
+        amountOrigin: originMovement?.amount ?? null,
+        amountDestiny: destinyMovement?.amount ?? null,
+      };
     });
   }
 

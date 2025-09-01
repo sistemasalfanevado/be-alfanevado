@@ -57,12 +57,24 @@ export class ZentraDocumentController {
   createExchangeRate(@Body() createZentraDocumentDto: any) {
     return this.zentraDocumentService.createExchangeRate(createZentraDocumentDto);
   }
-
-
+  
   @Delete('exchange-rate/:id')
   removeExchangeRate(@Param('id') id: string) {
     return this.zentraDocumentService.removeExchangeRate(id);
   }
+
+  @Post('exchange-rate/search')
+  @Public()
+  searchExchangeRate(@Body() filters: {
+    partyId?: string;
+    documentCategoryId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    return this.zentraDocumentService.findByFiltersExchangeRate(filters);
+  }
+
+
 
 
 }

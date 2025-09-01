@@ -39,9 +39,11 @@ export class ZentraDocumentFileController {
     return this.zentraDocumentFileService.restore(id);
   }
 
-  // 📌 Nuevo endpoint: obtener todos los archivos de un documento
   @Get('/by-document/:documentId')
   findByDocument(@Param('documentId') documentId: string) {
     return this.zentraDocumentFileService.findByDocumentId(documentId);
   }
+
+  
+
 }
