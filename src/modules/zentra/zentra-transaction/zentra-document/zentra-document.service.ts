@@ -345,8 +345,8 @@ export class ZentraDocumentService {
 
     // 3. Movimientos: Origen Salida
     await this.zentraMovementService.create({
-      code: `Mov. Salida`,
-      description: `${document.code}`,
+      code: `${document.code}`,
+      description: `Mov. Salida`,
 
       documentId: document.id,
 
@@ -366,8 +366,8 @@ export class ZentraDocumentService {
 
     // 4. Movimientos: Destino Entrada
     await this.zentraMovementService.create({
-      code: `Mov. Entrada`,
-      description: `${document.code}`,
+      code: `${document.code}`,
+      description: `Mov. Entrada`,
 
       documentId: document.id,
 
@@ -414,8 +414,7 @@ export class ZentraDocumentService {
       return { message: 'Documento y movimientos eliminados correctamente' };
     });
   }
-
-
+  
   async findByFiltersExchangeRate(filters: {
     partyId?: string;
     documentCategoryId?: string;
@@ -495,6 +494,80 @@ export class ZentraDocumentService {
     });
   }
 
+  async createFinancialExpense(dataDocument: any) {
 
+    const bankAccountOrigin = await this.prisma.zentraBankAccount.findUnique({
+      where: { id: dataDocument.backAccountOriginId },
+      select: { currencyId: true },
+    });
+
+    if (!bankAccountOrigin) {
+      throw new Error('Cuenta bancaria no encontrada');
+    }
+    
+    // 🔹 1. Obtener tipo de cambio vigente
+    let exchangeRate = await this.prisma.zentraExchangeRate.findFirst({
+      where: { date: moment().startOf('day').toDate() },
+    });
+
+    if (!exchangeRate) {
+      exchangeRate = await this.zentraExchangeRateService.upsertTodayRateFromSunat();
+    }
+
+    const document = await this.prisma.zentraDocument.create({
+      data: {
+        code: dataDocument.code,
+        description: dataDocument.description,
+        totalAmount: dataDocument.totalAmount,
+        taxAmount: dataDocument.taxAmount,
+        netAmount: dataDocument.netAmount,
+        detractionRate: dataDocument.detractionRate,
+        detractionAmount: dataDocument.detractionAmount,
+        amountToPay: dataDocument.amountToPay,
+        paidAmount: dataDocument.paidAmount,
+        observation: dataDocument.observation,
+        idFirebase: dataDocument.idFirebase,
+        hasMovements: dataDocument.hasMovements ?? false,
+
+        registeredAt: new Date(dataDocument.registeredAt),
+        documentDate: new Date(dataDocument.documentDate),
+        expireDate: new Date(dataDocument.expireDate),
+
+        documentStatus: { connect: { id: dataDocument.documentStatusId } },
+        transactionType: { connect: { id: dataDocument.transactionTypeId } },
+        documentType: { connect: { id: dataDocument.documentTypeId } },
+        party: { connect: { id: dataDocument.partyId } },
+        budgetItem: { connect: { id: dataDocument.budgetItemId } },
+        currency: { connect: { id: dataDocument.currencyId } },
+        user: { connect: { id: dataDocument.userId } },
+        documentCategory: { connect: { id: dataDocument.documentCategoryId } },
+        exchangeRate: { connect: { id: exchangeRate.id } },
+      },
+      include: this.includeRelations,
+    });
+
+    await this.zentraMovementService.create({
+      code: !dataDocument.codeMovement ? dataDocument.code : dataDocument.codeMovement, 
+      description: dataDocument.description,
+
+      documentId: document.id,
+
+      amount: dataDocument.amountOrigin,
+      transactionTypeId: dataDocument.transactionTypeOrigin,
+      movementCategoryId: dataDocument.movementCategoryId,
+      budgetItemId: dataDocument.budgetItemId,
+      bankAccountId: dataDocument.backAccountOriginId,
+      movementStatusId: dataDocument.movementStatusId,
+
+      currencyId: bankAccountOrigin.currencyId,
+
+      autorizeDate: dataDocument.documentDate,
+      generateDate: dataDocument.documentDate,
+      paymentDate: dataDocument.documentDate,
+    });
+
+    
+    return this.mapEntityToDto(document);
+  }
 
 }

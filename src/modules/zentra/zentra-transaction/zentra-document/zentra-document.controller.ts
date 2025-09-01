@@ -74,7 +74,25 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.findByFiltersExchangeRate(filters);
   }
 
+  @Post('financial-expense')
+  createFinancialExpense(@Body() createZentraDocumentDto: any) {
+    return this.zentraDocumentService.createFinancialExpense(createZentraDocumentDto);
+  }
+  
+  @Delete('financial-expense/:id')
+  removeFinancialExpense(@Param('id') id: string) {
+    //return this.zentraDocumentService.removeFinancialExpense(id);
+  }
 
+  @Post('financial-expense/search')
+  @Public()
+  searchFinancialExpense(@Body() filters: {
+    documentCategoryId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    //return this.zentraDocumentService.findByFiltersFinancialExpense(filters);
+  }
 
 
 }
