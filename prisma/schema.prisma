@@ -339,8 +339,8 @@ model ZentraCurrency {
   idFirebase String? @default("") @db.VarChar(30)
   bankAccounts  ZentraBankAccount[]
   partyBankAccounts ZentraPartyBankAccount[]
+  
   documents     ZentraDocument[]
-  movements     ZentraMovement[]
   budgetItems   ZentraBudgetItem[]
   
   createdAt     DateTime  @default(now())
@@ -641,9 +641,6 @@ model ZentraDocument {
   documentCategory   ZentraDocumentCategory @relation(fields: [documentCategoryId], references: [id])
   documentCategoryId String
 
-  exchangeRate       ZentraExchangeRate? @relation(fields: [exchangeRateId], references: [id])
-  exchangeRateId     String?
-
   movements          ZentraMovement[]
   files              ZentraDocumentFile[]
   
@@ -675,10 +672,7 @@ model ZentraMovement {
 
   budgetItem         ZentraBudgetItem      @relation(fields: [budgetItemId], references: [id])
   budgetItemId       String
-
-  currency           ZentraCurrency        @relation(fields: [currencyId], references: [id])
-  currencyId         String
-
+  
   transactionType    ZentraTransactionType @relation(fields: [transactionTypeId], references: [id])
   transactionTypeId  String
 
@@ -692,6 +686,10 @@ model ZentraMovement {
   exchangeRateId     String?
 
   code               String                @db.VarChar(150)
+
+  executedAmount  Decimal @db.Decimal(12,2)
+  executedSoles   Decimal @db.Decimal(12,2)
+  executedDolares Decimal @db.Decimal(12,2)
   
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
@@ -763,7 +761,6 @@ model ZentraExchangeRate {
   buyRate    Decimal  @db.Decimal(10,4) // Tipo de cambio compra
   sellRate   Decimal  @db.Decimal(10,4) // Tipo de cambio venta
   
-  documents  ZentraDocument[]
   movements  ZentraMovement[]
 
   createdAt  DateTime @default(now())

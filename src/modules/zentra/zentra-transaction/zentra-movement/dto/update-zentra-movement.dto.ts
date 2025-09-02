@@ -37,10 +37,6 @@ export class UpdateZentraMovementDto {
 
   @IsString()
   @IsOptional()
-  currencyId: string;
-
-  @IsString()
-  @IsOptional()
   movementStatusId: string;
 
   @IsDateString()
@@ -59,4 +55,5 @@ export class UpdateZentraMovementDto {
   @IsOptional()
   @MaxLength(30)
   idFirebase: string;
+
 }

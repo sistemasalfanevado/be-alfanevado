@@ -96,7 +96,7 @@ export class ZentraDocumentController {
 
   @Put('financial-expense/:id')
   updateFinancialExpense(@Param('id') id: string, @Body() updateZentraDocumentDto: any) {
-    return this.zentraDocumentService.update(id, updateZentraDocumentDto);
+    return this.zentraDocumentService.updateFinancialExpense(id, updateZentraDocumentDto);
   }
 
 

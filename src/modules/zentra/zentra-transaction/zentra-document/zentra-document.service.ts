@@ -44,7 +44,6 @@ export class ZentraDocumentService {
     user: true,
     movements: true,
     documentCategory: true,
-    exchangeRate: true
   };
 
   /** Mapea un registro de Prisma a DTO */
@@ -114,17 +113,6 @@ export class ZentraDocumentService {
 
   async create(createDto: CreateZentraDocumentDto) {
 
-    // 1. Obtener tipo de cambio del día
-    let exchangeRate = await this.prisma.zentraExchangeRate.findFirst({
-      where: { date: moment().startOf('day').toDate() },
-    });
-
-    if (!exchangeRate) {
-      // 2. Si no existe, obtenerlo de SUNAT y guardarlo
-      const { date, buyRate, sellRate } = await this.zentraExchangeRateService.fetchTodayRateFromSunat();
-      exchangeRate = await this.zentraExchangeRateService.upsertTodayRateFromSunat();
-    }
-
     const {
       documentStatusId,
       transactionTypeId,
@@ -154,7 +142,6 @@ export class ZentraDocumentService {
         currency: { connect: { id: currencyId } },
         user: { connect: { id: userId } },
         documentCategory: { connect: { id: documentCategoryId } },
-        exchangeRate: { connect: { id: exchangeRate.id } },
       },
 
       include: this.includeRelations
@@ -279,21 +266,7 @@ export class ZentraDocumentService {
     return results.map(item => this.mapEntityToDto(item));
   }
 
-
-  // 🔹 Helpers centralizados
-  private async getTodayExchangeRate() {
-    let exchangeRate = await this.prisma.zentraExchangeRate.findFirst({
-      where: { date: moment().startOf("day").toDate() },
-    });
-
-    if (!exchangeRate) {
-      exchangeRate = await this.zentraExchangeRateService.upsertTodayRateFromSunat();
-    }
-
-    return exchangeRate;
-  }
-
-  private async createDocument(dataDocument: any, exchangeRateId: string) {
+  private async createDocument(dataDocument: any) {
     return this.prisma.zentraDocument.create({
       data: {
         code: dataDocument.code,
@@ -321,7 +294,6 @@ export class ZentraDocumentService {
         currency: { connect: { id: dataDocument.currencyId } },
         user: { connect: { id: dataDocument.userId } },
         documentCategory: { connect: { id: dataDocument.documentCategoryId } },
-        exchangeRate: { connect: { id: exchangeRateId } },
       },
       include: this.includeRelations,
     });
@@ -350,7 +322,6 @@ export class ZentraDocumentService {
       budgetItemId: data.budgetItemId,
       bankAccountId: data.bankAccountId,
       movementStatusId: data.movementStatusId,
-      currencyId: data.currencyId,
       autorizeDate: data.date,
       generateDate: data.date,
       paymentDate: data.date,
@@ -376,6 +347,9 @@ export class ZentraDocumentService {
       }
 
       return { message: "Documento y movimientos eliminados correctamente" };
+    }, {
+      timeout: 20000, // Aumentar timeout para operaciones largas
+      maxWait: 15000, // Tiempo máximo de espera para adquirir la transacción
     });
   }
 
@@ -425,9 +399,7 @@ export class ZentraDocumentService {
     const bankAccountOriginCurrency = await this.getBankAccountCurrency(dataDocument.backAccountOriginId);
     const bankAccountDestinyCurrency = await this.getBankAccountCurrency(dataDocument.backAccountDestinyId);
 
-    const exchangeRate = await this.getTodayExchangeRate();
-
-    const document = await this.createDocument(dataDocument, exchangeRate.id);
+    const document = await this.createDocument(dataDocument);
 
     await this.createMovement({
       code: document.code,
@@ -517,9 +489,7 @@ export class ZentraDocumentService {
   async createFinancialExpense(dataDocument: any) {
     const bankAccountOriginCurrency = await this.getBankAccountCurrency(dataDocument.backAccountOriginId);
 
-    const exchangeRate = await this.getTodayExchangeRate();
-
-    const document = await this.createDocument(dataDocument, exchangeRate.id);
+    const document = await this.createDocument(dataDocument);
 
     await this.createMovement({
       code: dataDocument.codeMovement ?? dataDocument.code,
@@ -553,15 +523,28 @@ export class ZentraDocumentService {
       where,
       select: {
         id: true,
-        documentDate: true,
-        description: true,
         movements: {
           where: { deletedAt: null },
           select: {
+            id: true,
             amount: true,
-            transactionType: { select: { name: true } },
+            code: true,
+            paymentDate: true,
+            description: true,
+            budgetItem: {
+              select: {
+                id: true,
+              }
+            },
+            transactionType: {
+              select: {
+                id: true,
+                name: true
+              }
+            },
             bankAccount: {
               select: {
+                id: true,
                 bank: { select: { name: true } },
                 currency: { select: { name: true } },
               },
@@ -577,15 +560,19 @@ export class ZentraDocumentService {
         const mov = doc.movements[0];
         return {
           id: doc.id,
-          documentDate: moment(doc.documentDate).format("DD/MM/YYYY"),
-          description: doc.description ?? null,
+          documentDate: moment(mov.paymentDate).format("DD/MM/YYYY"),
+          description: mov.description ?? null,
           bankAccount: `${mov.bankAccount.bank.name} ${mov.bankAccount.currency.name}`,
           typeTransaction: mov.transactionType.name,
-          amount: mov.amount,
+          amountOrigin: mov.amount,
+          movementId: mov.id,
+          backAccountOriginId: mov.bankAccount.id,
+          transactionTypeId: mov.transactionType.id,
+          budgetItemId: mov.budgetItem.id,
+          codeMovement: mov.code,
         };
       });
   }
-
 
   async updateFinancialExpense(id: string, updateData: any) {
 
@@ -610,14 +597,18 @@ export class ZentraDocumentService {
           transactionTypeId: updateData.transactionTypeId,
           bankAccountId: updateData.backAccountOriginId,
           budgetItemId: updateData.budgetItemId,
-          currencyId: bankAccountOriginCurrency,
           movementCategoryId: movement.movementCategoryId,
           movementStatusId: movement.movementStatusId,
         });
       }
 
       // 5. Retornar DTO unificado
-      return this.mapEntityToDto(updateData);
+      return {
+
+      };
+    }, {
+      timeout: 20000, // Aumentar timeout para operaciones largas
+      maxWait: 15000, // Tiempo máximo de espera para adquirir la transacción
     });
   }
 

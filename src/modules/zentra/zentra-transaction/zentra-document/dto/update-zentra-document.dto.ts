@@ -11,96 +11,96 @@ export class UpdateZentraDocumentDto {
   @IsString()
   @IsOptional()
   @MaxLength(150)
-  code?: string;
+  code: string;
 
   @IsString()
   @IsOptional()
   @MaxLength(500)
-  description?: string;
+  description: string;
 
   @IsNumber()
   @IsOptional()
-  totalAmount?: number;
+  totalAmount: number;
 
   @IsNumber()
   @IsOptional()
-  taxAmount?: number;
+  taxAmount: number;
 
   @IsNumber()
   @IsOptional()
-  netAmount?: number;
+  netAmount: number;
 
   @IsNumber()
   @IsOptional()
-  detractionRate?: number;
+  detractionRate: number;
 
   @IsNumber()
   @IsOptional()
-  detractionAmount?: number;
+  detractionAmount: number;
 
   @IsNumber()
   @IsOptional()
-  amountToPay?: number;
+  amountToPay: number;
 
   @IsNumber()
   @IsOptional()
-  paidAmount?: number;
+  paidAmount: number;
 
   @IsString()
   @IsOptional()
-  transactionTypeId?: string;
+  transactionTypeId: string;
 
   @IsString()
   @IsOptional()
-  documentTypeId?: string;
+  documentTypeId: string;
 
   @IsString()
   @IsOptional()
-  partyId?: string;
+  partyId: string;
 
   @IsString()
   @IsOptional()
-  budgetItemId?: string;
+  budgetItemId: string;
 
   @IsString()
   @IsOptional()
-  currencyId?: string;
+  currencyId: string;
 
   @IsString()
   @IsOptional()
-  userId?: string;
+  userId: string;
 
   @IsString()
   @IsOptional()
-  documentStatusId?: string;
+  documentStatusId: string;
 
   @IsString()
   @IsOptional()
-  documentCategoryId?: string;
+  documentCategoryId: string;
 
   @IsDateString()
   @IsOptional()
-  registeredAt?: string;
+  registeredAt: string;
 
   @IsDateString()
   @IsOptional()
-  documentDate?: string;
+  documentDate: string;
 
   @IsDateString()
   @IsOptional()
-  expireDate?: string;
+  expireDate: string;
 
   @IsString()
   @IsOptional()
   @MaxLength(500)
-  observation?: string;
+  observation: string;
 
   @IsString()
   @IsOptional()
   @MaxLength(30)
-  idFirebase?: string;
+  idFirebase: string;
 
   @IsBoolean()
   @IsOptional()
-  hasMovements?: boolean;
+  hasMovements: boolean;
 }

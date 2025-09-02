@@ -34,11 +34,7 @@ export class CreateZentraMovementDto {
   @IsString()
   @IsNotEmpty()
   bankAccountId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  currencyId: string;
-
+  
   @IsString()
   @IsNotEmpty()
   movementStatusId: string;
@@ -59,4 +55,6 @@ export class CreateZentraMovementDto {
   @IsOptional()
   @MaxLength(30)
   idFirebase?: string;
+
+ 
 }
