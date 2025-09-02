@@ -57,7 +57,7 @@ export class ZentraDocumentController {
   createExchangeRate(@Body() createZentraDocumentDto: any) {
     return this.zentraDocumentService.createExchangeRate(createZentraDocumentDto);
   }
-  
+
   @Delete('exchange-rate/:id')
   removeExchangeRate(@Param('id') id: string) {
     return this.zentraDocumentService.removeExchangeRate(id);
@@ -78,7 +78,7 @@ export class ZentraDocumentController {
   createFinancialExpense(@Body() createZentraDocumentDto: any) {
     return this.zentraDocumentService.createFinancialExpense(createZentraDocumentDto);
   }
-  
+
   @Delete('financial-expense/:id')
   removeFinancialExpense(@Param('id') id: string) {
     return this.zentraDocumentService.removeFinancialExpense(id);
@@ -92,6 +92,11 @@ export class ZentraDocumentController {
     endDate?: string;
   }) {
     return this.zentraDocumentService.findByFiltersFinancialExpense(filters);
+  }
+
+  @Put('financial-expense/:id')
+  updateFinancialExpense(@Param('id') id: string, @Body() updateZentraDocumentDto: any) {
+    return this.zentraDocumentService.update(id, updateZentraDocumentDto);
   }
 
 

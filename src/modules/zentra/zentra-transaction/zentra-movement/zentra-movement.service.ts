@@ -168,7 +168,7 @@ export class ZentraMovementService {
         current.transactionTypeId,
         current.currencyId,
         Number(current.amount),
-        Number(current.exchangeRate!.buyRate) // ✅ usamos buyRate
+        Number(current.exchangeRate!.buyRate)
       );
 
       await this.reverseBalances(
@@ -371,6 +371,7 @@ export class ZentraMovementService {
   }
 
 
+  
 
 
 

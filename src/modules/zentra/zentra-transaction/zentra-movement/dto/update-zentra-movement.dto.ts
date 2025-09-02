@@ -2,61 +2,61 @@ import { IsString, IsNotEmpty, IsOptional, IsNumber, MaxLength, IsDateString } f
 
 export class UpdateZentraMovementDto {
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(150)
   code: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(500)
   description: string;
 
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   amount: number;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   documentId: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   transactionTypeId: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   movementCategoryId: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   budgetItemId: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   bankAccountId: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   currencyId: string;
 
   @IsString()
   @IsOptional()
-  movementStatusId?: string;
+  movementStatusId: string;
 
   @IsDateString()
-  @IsNotEmpty()
+  @IsOptional()
   autorizeDate: string;
 
   @IsDateString()
-  @IsNotEmpty()
+  @IsOptional()
   generateDate: string;
 
   @IsDateString()
-  @IsNotEmpty()
+  @IsOptional()
   paymentDate: string;
 
   @IsString()
   @IsOptional()
   @MaxLength(30)
-  idFirebase?: string;
+  idFirebase: string;
 }
