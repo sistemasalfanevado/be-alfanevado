@@ -463,6 +463,8 @@ model ZentraProject {
   bankAccounts  ZentraBankAccount[]
   
   landingProjects ZentraLandingProjectRelation[]
+
+  imageUrl      String?      @db.VarChar(300)
   
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt

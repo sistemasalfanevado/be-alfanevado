@@ -10,6 +10,10 @@ export class CreateZentraProjectDto {
   @IsNotEmpty()
   companyId: string;
 
+  @IsOptional()
+  @MaxLength(300)
+  imageUrl?: string;
+
   @IsString()
   @IsOptional()
   @MaxLength(30)

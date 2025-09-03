@@ -9,6 +9,10 @@ export class UpdateZentraProjectDto {
   @IsString()
   @IsOptional()
   companyId?: string;
+
+  @IsOptional()
+  @MaxLength(300)
+  imageUrl?: string;
   
   @IsString()
   @IsOptional()

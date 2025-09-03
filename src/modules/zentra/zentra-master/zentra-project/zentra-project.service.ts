@@ -36,6 +36,8 @@ export class ZentraProjectService {
       
       companyId: item.company.id,
       companyName: item.company.name,
+
+      imageUrl: item.imageUrl,
       
     }));
 

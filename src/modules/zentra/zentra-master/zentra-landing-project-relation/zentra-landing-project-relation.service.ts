@@ -31,7 +31,9 @@ export class ZentraLandingProjectRelationService {
 
     return results.map((item) => ({
       id: item.id,
+      zentraProjectId: item.zentraProjectId,
       zentraProjectName: item.zentraProject.name,
+      landingProjectId: item.landingProjectId,
       landingProjectTitle: item.landingProject.title,
     }));
   }
