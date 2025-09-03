@@ -190,7 +190,7 @@ model LandingLotStatus {
 model LandingLot {
   id        String           @id @default(uuid())
   name      String           @db.VarChar(50)
-  number    String           @db.VarChar(50)
+  number    String           @db.VarChar(50) 
   block     String           @db.VarChar(50)
   code      String           @db.VarChar(50)
   statusId  String
@@ -203,6 +203,9 @@ model LandingLot {
   perimeter Decimal?         @db.Decimal(6, 2)
   page      LandingPage      @relation(fields: [pageId], references: [id])
   status    LandingLotStatus @relation(fields: [statusId], references: [id])
+
+
+  scheduledIncomeDocuments ZentraScheduledIncomeDocument[]
 
   @@map("landing_lot")
 }
@@ -649,6 +652,7 @@ model ZentraDocument {
 
   movements          ZentraMovement[]
   files              ZentraDocumentFile[]
+  scheduledIncomeDocuments ZentraScheduledIncomeDocument[]
   
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
@@ -787,3 +791,55 @@ model ZentraLandingProjectRelation {
 
   @@map("zentra_landing_project_relation")
 }
+
+
+model ZentraSaleType {
+  id          String                   @id @default(uuid())
+  name        String                   @db.VarChar(50)
+
+  scheduledIncomeDocuments ZentraScheduledIncomeDocument[]
+
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+  deletedAt   DateTime?
+  idFirebase String? @default("") @db.VarChar(30)
+  
+  @@map("zentra_sale_type")
+}
+
+model ZentraBroker {
+  id          String                   @id @default(uuid())
+  name        String                   @db.VarChar(100)
+
+  scheduledIncomeDocuments ZentraScheduledIncomeDocument[]
+
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+  deletedAt   DateTime?
+  idFirebase String? @default("") @db.VarChar(30)
+
+  @@map("zentra_broker")
+}
+
+model ZentraScheduledIncomeDocument {
+  id           String         @id @default(uuid())
+
+  document     ZentraDocument @relation(fields: [documentId], references: [id])
+  documentId   String
+
+  broker       ZentraBroker?  @relation(fields: [brokerId], references: [id])
+  brokerId     String?
+
+  saleType     ZentraSaleType? @relation(fields: [saleTypeId], references: [id])
+  saleTypeId   String?
+
+  lot          LandingLot?    @relation(fields: [lotId], references: [id])
+  lotId        String?
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  deletedAt    DateTime?
+
+  @@map("zentra_scheduled_income_document")
+}
+

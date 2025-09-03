@@ -11,8 +11,9 @@ export class ZentraProjectService {
     return this.prisma.zentraProject.create({
       data: {
         name: createZentraProjectDto.name,
+        imageUrl: createZentraProjectDto.imageUrl,
         company: {
-          connect: { id: createZentraProjectDto.companyId } 
+          connect: { id: createZentraProjectDto.companyId }
         }
       },
       include: {
@@ -33,12 +34,12 @@ export class ZentraProjectService {
     return results.map((item) => ({
       id: item.id,
       name: item.name,
-      
+
       companyId: item.company.id,
       companyName: item.company.name,
 
       imageUrl: item.imageUrl,
-      
+
     }));
 
   }
@@ -52,7 +53,8 @@ export class ZentraProjectService {
 
   async update(id: string, updateZentraProjectDto: UpdateZentraProjectDto) {
     const data: any = {
-      name: updateZentraProjectDto.name
+      name: updateZentraProjectDto.name,
+      imageUrl: updateZentraProjectDto.imageUrl,
     };
 
     if (updateZentraProjectDto.companyId) {
@@ -83,4 +85,67 @@ export class ZentraProjectService {
       data: { deletedAt: null },
     });
   }
+
+
+  async findAllWithDetails() {
+    
+    const results = await this.prisma.zentraProject.findMany({
+      where: { deletedAt: null },
+      include: {
+        company: true,
+        bankAccounts: {
+          where: { deletedAt: null },
+          include: {
+            bank: true,
+            currency: true,
+          },
+        },
+        budgetItemDefinitions: {
+          where: { deletedAt: null },
+          include: {
+            category: true,
+            budgetItems: {
+              where: { deletedAt: null },
+              include: {
+                currency: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+    
+    return results.map((project) => ({
+      id: project.id,
+      name: project.name,
+      imageUrl: project.imageUrl,
+      company: {
+        id: project.company.id,
+        name: project.company.name,
+      },
+      bankAccounts: project.bankAccounts.map((acc) => ({
+        id: acc.id,
+        amount: acc.amount,
+        bank: acc.bank.name,
+        currency: acc.currency.name,
+      })),
+      budgetItemDefinitions: project.budgetItemDefinitions.map((def) => ({
+        id: def.id,
+        name: def.name,
+        category: def.category.name,
+        budgetItems: def.budgetItems.map((item) => ({
+          id: item.id,
+          amount: item.amount,
+          executedAmount: item.executedAmount,
+          executedSoles: item.executedSoles,
+          executedDolares: item.executedDolares,
+          currency: item.currency.name,
+        })),
+      })),
+    }));
+  }
+
 }
