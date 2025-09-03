@@ -8,5 +8,6 @@ import { AuthModule } from '../../../../auth/landing/auth.module';
   imports: [PrismaModule, AuthModule],
   providers: [ZentraScheduledIncomeDocumentService],
   controllers: [ZentraScheduledIncomeDocumentController],
+  exports: [ZentraScheduledIncomeDocumentService]
 })
 export class ZentraScheduledIncomeDocumentModule {}

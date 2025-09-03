@@ -3,17 +3,17 @@ import { IsString, IsNotEmpty, MaxLength, IsOptional, IsDateString } from 'class
 export class CreateZentraDocumentFileDto {
   @IsString()
   @IsNotEmpty()
-  documentId: string; // Relación con ZentraDocument
+  documentId: string;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
-  fileName: string; // Nombre original del archivo
+  fileName: string;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(700)
-  fileUrl: string; // URL completa en Firebase Storage
+  fileUrl: string;
 
   @IsDateString()
   @IsOptional()

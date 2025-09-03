@@ -4,16 +4,13 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraDocumentDto } from './dto/create-zentra-document.dto';
 import { UpdateZentraDocumentDto } from './dto/update-zentra-document.dto';
 
-import { ZentraExchangeRateService } from '../../zentra-master/zentra-exchange-rate/zentra-exchange-rate.service';
 import { ZentraMovementService } from '../../zentra-transaction/zentra-movement/zentra-movement.service';
+import { ZentraScheduledIncomeDocumentService } from '../../zentra-master/zentra-scheduled-income-document/zentra-scheduled-income-document.service';
 
 import * as moment from 'moment';
 
-
 @Injectable()
 export class ZentraDocumentService {
-
-
 
   /** Códigos de tipo de transacción */
   private ENTRY_ID = 'fe14bee6-9be4-43a5-9d8f-7fc032751415';
@@ -23,9 +20,8 @@ export class ZentraDocumentService {
   private SOLES_ID = '70684299-05fc-4720-8fca-be3a2ecb67ab';
   private DOLARES_ID = 'a1831dfc-a1f7-4075-a66e-fe3f5694e1e4';
 
-
   constructor(private prisma: PrismaService,
-    private zentraExchangeRateService: ZentraExchangeRateService,
+    private zentraScheduledIncomeDocumentService: ZentraScheduledIncomeDocumentService,
     private zentraMovementService: ZentraMovementService
   ) { }
 
@@ -89,11 +85,7 @@ export class ZentraDocumentService {
 
       documentCategoryId: item.documentCategory?.id,
       documentCategoryName: item.documentCategory?.name,
-
-      exchangeRateId: item.exchangeRate?.id,
-      exchangeRateBuyRate: item.exchangeRate?.buyRate,
-      exchangeRateSellRate: item.exchangeRate?.sellRate,
-
+      
       observation: item.observation,
       idFirebase: item.idFirebase
     };
@@ -356,6 +348,7 @@ export class ZentraDocumentService {
   private buildDocumentFilters(filters: {
     partyId?: string;
     documentCategoryId?: string;
+    documentStatusId?: string;
     startDate?: string;
     endDate?: string;
   }) {
@@ -369,6 +362,10 @@ export class ZentraDocumentService {
       if (filters.endDate) {
         where.documentDate.lte = moment(filters.endDate).endOf("day").toDate();
       }
+    }
+
+    if (filters.documentStatusId?.trim()) {
+      where.documentStatusId = filters.documentStatusId;
     }
 
     if (filters.partyId?.trim()) {
@@ -394,6 +391,8 @@ export class ZentraDocumentService {
 
     return account.currencyId;
   }
+
+  // Scheduled Exchange Rate
 
   async createExchangeRate(dataDocument: any) {
     const bankAccountOriginCurrency = await this.getBankAccountCurrency(dataDocument.backAccountOriginId);
@@ -485,6 +484,8 @@ export class ZentraDocumentService {
       };
     });
   }
+
+  // Scheduled Financial Expense
 
   async createFinancialExpense(dataDocument: any) {
     const bankAccountOriginCurrency = await this.getBankAccountCurrency(dataDocument.backAccountOriginId);
@@ -612,4 +613,118 @@ export class ZentraDocumentService {
     });
   }
 
+  // Scheduled Income Document
+
+  async createScheduledIncome(dataDocument: any) {
+    const document = await this.createDocument(dataDocument);
+    await this.zentraScheduledIncomeDocumentService.create({
+      documentId: document.id,
+      brokerId: dataDocument.brokerId,
+      saleTypeId: dataDocument.saleTypeId,
+      lotId: dataDocument.lotId,
+    });
+    return this.mapEntityToDto(document);
+  }
+
+  async findByFiltersScheduledIncome(filters: {
+    documentCategoryId?: string;
+    documentStatusId?: string;
+    partyId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    const where = this.buildDocumentFilters(filters);
+
+    const results = await this.prisma.zentraDocument.findMany({
+      where,
+      include: {
+        transactionType: true,
+        documentStatus: true,
+        documentType: true,
+        party: true,
+        currency: true,
+        budgetItem: {
+          include: {
+            definition: true,
+            currency: true,
+          },
+        },
+        user: true,
+        documentCategory: true,
+        scheduledIncomeDocuments: {
+          where: { deletedAt: null },
+          include: {
+            broker: true,
+            saleType: true,
+            lot: true,
+          },
+        },
+      },
+      orderBy: {
+        documentDate: 'desc',
+      },
+    });
+
+    return results.map((doc) => {
+      const sched = doc.scheduledIncomeDocuments?.[0];
+
+      return {
+        // 🔹 Información del documento
+        id: doc.id,
+        code: doc.code,
+        description: doc.description,
+
+        totalAmount: doc.totalAmount,
+        taxAmount: doc.taxAmount,
+        netAmount: doc.netAmount,
+        detractionRate: doc.detractionRate,
+        detractionAmount: doc.detractionAmount,
+        amountToPay: doc.amountToPay,
+        paidAmount: doc.paidAmount,
+
+        registeredAt: doc.registeredAt,
+        documentDate: doc.documentDate,
+        expireDate: doc.expireDate,
+
+        transactionTypeId: doc.transactionType?.id,
+        transactionTypeName: doc.transactionType?.name,
+
+        documentTypeId: doc.documentType?.id,
+        documentTypeName: doc.documentType?.name,
+
+        partyId: doc.party?.id,
+        partyName: doc.party?.name,
+
+        documentStatusId: doc.documentStatus?.id,
+        documentStatusName: doc.documentStatus?.name,
+
+        budgetItemId: doc.budgetItem?.id,
+        budgetItemName: doc.budgetItem
+          ? `${doc.budgetItem.definition.name} - ${doc.budgetItem.currency.name}`
+          : null,
+
+        currencyId: doc.currency?.id,
+        currencyName: doc.currency?.name,
+
+        userId: doc.user?.id,
+
+        documentCategoryId: doc.documentCategory?.id,
+        documentCategoryName: doc.documentCategory?.name,
+
+        observation: doc.observation,
+        idFirebase: doc.idFirebase,
+        
+        brokerId: sched?.broker?.id ?? null,
+        brokerName: sched?.broker?.name ?? null,
+
+        saleTypeId: sched?.saleType?.id ?? null,
+        saleTypeName: sched?.saleType?.name ?? null,
+
+        lotId: sched?.lot?.id ?? null,
+        lotName: sched?.lot?.name ?? null,
+        lotCode: sched?.lot?.code ?? null,
+      };
+    });
+    
+  }
 }
