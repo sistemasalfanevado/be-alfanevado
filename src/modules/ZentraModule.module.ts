@@ -32,6 +32,8 @@ import { ZentraDocumentCategoryModule } from './zentra/zentra-master/zentra-docu
 import { ZentraMovementStatusModule } from './zentra/zentra-master/zentra-movement-status/zentra-movement-status.module';
 import { ZentraExchangeRateModule } from './zentra/zentra-master/zentra-exchange-rate/zentra-exchange-rate.module';
 
+import { ZentraLandingProjectRelationModule } from './zentra/zentra-master/zentra-landing-project-relation/zentra-landing-project-relation.module';
+
 
 // Zentra Transaction
 import { ZentraDocumentModule } from './zentra/zentra-transaction/zentra-document/zentra-document.module';
@@ -61,6 +63,7 @@ import { ZentraMovementModule } from './zentra/zentra-transaction/zentra-movemen
     ZentraPartyModule,
     ZentraPartyRoleModule,
     ZentraBankAccountModule,
+    ZentraLandingProjectRelationModule,
 
     ZentraBudgetCategoryModule,
     ZentraBudgetItemModule,

@@ -119,6 +119,8 @@ model LandingProject {
   position      Int         @default(0)
   page          LandingPage @relation(fields: [pageId], references: [id])
 
+  zentraProjects ZentraLandingProjectRelation[]
+
   @@map("landing_project")
 }
 
@@ -460,6 +462,8 @@ model ZentraProject {
   budgetItemDefinitions  ZentraBudgetItemDefinition[]
   bankAccounts  ZentraBankAccount[]
   
+  landingProjects ZentraLandingProjectRelation[]
+  
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
   deletedAt     DateTime?
@@ -712,7 +716,6 @@ model ZentraDocumentStatus {
   @@map("zentra_document_status")
 }
 
-
 model ZentraDocumentCategory {
   id          String            @id @default(uuid())
   name        String            @db.VarChar(50)
@@ -724,7 +727,6 @@ model ZentraDocumentCategory {
   
   @@map("zentra_document_category")
 }
-
 
 model ZentraMovementStatus {
 
@@ -767,4 +769,19 @@ model ZentraExchangeRate {
   updatedAt  DateTime @updatedAt
 
   @@map("zentra_exchange_rate")
+}
+
+model ZentraLandingProjectRelation {
+  id              String         @id @default(uuid())
+  
+  zentraProject   ZentraProject  @relation(fields: [zentraProjectId], references: [id])
+  zentraProjectId String
+  landingProject  LandingProject @relation(fields: [landingProjectId], references: [id])
+  landingProjectId String
+
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  deletedAt   DateTime?
+
+  @@map("zentra_landing_project_relation")
 }
