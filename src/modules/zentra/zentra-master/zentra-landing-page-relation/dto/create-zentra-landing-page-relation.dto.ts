@@ -1,11 +1,11 @@
-import { IsString, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty} from 'class-validator';
 
-export class CreateZentraLandingProjectRelationDto {
+export class CreateZentraLandingPageRelationDto {
   @IsString()
   @IsNotEmpty({ message: 'El ID del proyecto Zentra es obligatorio' })
   zentraProjectId: string;
 
   @IsString()
   @IsNotEmpty({ message: 'El ID del proyecto Landing es obligatorio' })
-  landingProjectId: string;
+  landingPageId: string;
 }

@@ -1,26 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
-import { CreateZentraLandingProjectRelationDto } from './dto/create-zentra-landing-project-relation.dto';
-import { UpdateZentraLandingProjectRelationDto } from './dto/update-zentra-landing-project-relation.dto';
+import { CreateZentraLandingPageRelationDto } from './dto/create-zentra-landing-page-relation.dto';
+import { UpdateZentraLandingPageRelationDto } from './dto/update-zentra-landing-page-relation.dto';
 
 @Injectable()
-export class ZentraLandingProjectRelationService {
+export class ZentraLandingPageRelationService {
   constructor(private prisma: PrismaService) { }
 
-  async create(createDto: CreateZentraLandingProjectRelationDto) {
-    return this.prisma.zentraLandingProjectRelation.create({
+  async create(createDto: CreateZentraLandingPageRelationDto) {
+    return this.prisma.zentraLandingPageRelation.create({
       data: createDto,
     });
   }
 
   async findAll(): Promise<any[]> {
-    const results = await this.prisma.zentraLandingProjectRelation.findMany({
+    const results = await this.prisma.zentraLandingPageRelation.findMany({
       where: { deletedAt: null },
       include: {
         zentraProject: {
           select: { name: true },
         },
-        landingProject: {
+        landingPage: {
           select: { title: true },
         },
       },
@@ -33,38 +33,38 @@ export class ZentraLandingProjectRelationService {
       id: item.id,
       zentraProjectId: item.zentraProjectId,
       zentraProjectName: item.zentraProject.name,
-      landingProjectId: item.landingProjectId,
-      landingProjectTitle: item.landingProject.title,
+      landingPageId: item.landingPageId,
+      landingPageTitle: item.landingPage.title,
     }));
   }
 
 
   async findOne(id: string) {
-    return this.prisma.zentraLandingProjectRelation.findUnique({
+    return this.prisma.zentraLandingPageRelation.findUnique({
       where: { id },
       include: {
         zentraProject: true,
-        landingProject: true,
+        landingPage: true,
       },
     });
   }
 
-  async update(id: string, updateDto: UpdateZentraLandingProjectRelationDto) {
-    return this.prisma.zentraLandingProjectRelation.update({
+  async update(id: string, updateDto: UpdateZentraLandingPageRelationDto) {
+    return this.prisma.zentraLandingPageRelation.update({
       where: { id },
       data: updateDto,
     });
   }
 
   async remove(id: string) {
-    return this.prisma.zentraLandingProjectRelation.update({
+    return this.prisma.zentraLandingPageRelation.update({
       where: { id },
       data: { deletedAt: new Date() },
     });
   }
 
   async restore(id: string) {
-    return this.prisma.zentraLandingProjectRelation.update({
+    return this.prisma.zentraLandingPageRelation.update({
       where: { id },
       data: { deletedAt: null },
     });

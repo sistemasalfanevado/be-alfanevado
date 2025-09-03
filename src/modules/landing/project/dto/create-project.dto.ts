@@ -51,7 +51,7 @@ export class CreateProjectDto {
   @MaxLength(200)
   linkRedirect2?: string;
 
-  @IsUUID() // Valida que sea un UUID válido
+  @IsUUID()
   @IsNotEmpty()
-  pageId: string; // ID del page al que pertenece el proyecto
+  pageId: string;
 }

@@ -32,7 +32,7 @@ import { ZentraDocumentCategoryModule } from './zentra/zentra-master/zentra-docu
 import { ZentraMovementStatusModule } from './zentra/zentra-master/zentra-movement-status/zentra-movement-status.module';
 import { ZentraExchangeRateModule } from './zentra/zentra-master/zentra-exchange-rate/zentra-exchange-rate.module';
 
-import { ZentraLandingProjectRelationModule } from './zentra/zentra-master/zentra-landing-project-relation/zentra-landing-project-relation.module';
+import { ZentraLandingPageRelationModule } from './zentra/zentra-master/zentra-landing-page-relation/zentra-landing-page-relation.module';
 import { ZentraBrokerModule } from './zentra/zentra-master/zentra-broker/zentra-broker.module';
 import { ZentraSaleTypeModule } from './zentra/zentra-master/zentra-sale-type/zentra-sale-type.module';
 import { ZentraScheduledIncomeDocumentModule } from './zentra/zentra-master/zentra-scheduled-income-document/zentra-scheduled-income-document.module';
@@ -66,7 +66,7 @@ import { ZentraMovementModule } from './zentra/zentra-transaction/zentra-movemen
     ZentraPartyModule,
     ZentraPartyRoleModule,
     ZentraBankAccountModule,
-    ZentraLandingProjectRelationModule,
+    ZentraLandingPageRelationModule,
 
     ZentraBudgetCategoryModule,
     ZentraBudgetItemModule,
