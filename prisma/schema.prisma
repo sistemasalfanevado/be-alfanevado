@@ -869,10 +869,11 @@ model ZentraInstallment {
   installmentStatus   ZentraInstallmentStatus @relation(fields: [installmentStatusId], references: [id])
   installmentStatusId String
 
-  number       Int
+  letra       Int
   capital      Decimal @db.Decimal(12, 2)
   interest     Decimal @db.Decimal(12, 2)
   totalAmount  Decimal @db.Decimal(12, 2)
+  extra        Decimal @db.Decimal(12, 2)
   dueDate      DateTime
 
   createdAt    DateTime @default(now())

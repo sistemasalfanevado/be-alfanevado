@@ -1,5 +1,5 @@
-import { 
-  Controller, Get, Post, Body, Param, Patch, Put, Delete, UseGuards 
+import {
+  Controller, Get, Post, Body, Param, Patch, Put, Delete, UseGuards
 } from '@nestjs/common';
 import { ZentraInstallmentService } from './zentra-installment.service';
 import { CreateZentraInstallmentDto } from './dto/create-zentra-installment.dto';
@@ -13,7 +13,7 @@ import { Public } from '../../../../auth/shared/decorators/public.decorator';
 export class ZentraInstallmentController {
   constructor(
     private readonly zentraInstallmentService: ZentraInstallmentService,
-  ) {}
+  ) { }
 
   @Post()
   create(@Body() createZentraInstallmentDto: CreateZentraInstallmentDto) {
@@ -31,9 +31,15 @@ export class ZentraInstallmentController {
     return this.zentraInstallmentService.findOne(id);
   }
 
+  @Get('scheduled/:id')
+  @Public()
+  findAllByScheduled(@Param('id') scheduledIncomeDocumentId: string) {
+    return this.zentraInstallmentService.findAllByScheduled(scheduledIncomeDocumentId);
+  }
+  
   @Put(':id')
   update(
-    @Param('id') id: string, 
+    @Param('id') id: string,
     @Body() updateZentraInstallmentDto: UpdateZentraInstallmentDto
   ) {
     return this.zentraInstallmentService.update(id, updateZentraInstallmentDto);
@@ -48,4 +54,7 @@ export class ZentraInstallmentController {
   restore(@Param('id') id: string) {
     return this.zentraInstallmentService.restore(id);
   }
+
+
+
 }

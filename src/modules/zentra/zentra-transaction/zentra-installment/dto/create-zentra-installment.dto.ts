@@ -18,7 +18,11 @@ export class CreateZentraInstallmentDto {
 
   @IsNumber()
   @IsNotEmpty()
-  number: number;
+  letra: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  extra: number;
 
   @IsNumber()
   @IsNotEmpty()

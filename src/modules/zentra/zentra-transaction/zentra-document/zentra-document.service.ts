@@ -739,6 +739,8 @@ export class ZentraDocumentService {
         observation: doc.observation,
         idFirebase: doc.idFirebase,
 
+        scheduledIncomeDocumentId: sched?.id, 
+
         brokerId: sched?.broker?.id ?? null,
         brokerName: sched?.broker?.name ?? null,
 

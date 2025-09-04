@@ -17,7 +17,7 @@ export class UpdateZentraInstallmentDto {
 
   @IsNumber()
   @IsOptional()
-  number?: number;
+  letra?: number;
 
   @IsNumber()
   @IsOptional()
@@ -26,6 +26,10 @@ export class UpdateZentraInstallmentDto {
   @IsNumber()
   @IsOptional()
   interest?: number;
+
+  @IsNumber()
+  @IsOptional()
+  extra?: number;
 
   @IsNumber()
   @IsOptional()
