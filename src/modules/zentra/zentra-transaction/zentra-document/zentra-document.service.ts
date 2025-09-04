@@ -85,7 +85,7 @@ export class ZentraDocumentService {
 
       documentCategoryId: item.documentCategory?.id,
       documentCategoryName: item.documentCategory?.name,
-      
+
       observation: item.observation,
       idFirebase: item.idFirebase
     };
@@ -339,6 +339,31 @@ export class ZentraDocumentService {
       }
 
       return { message: "Documento y movimientos eliminados correctamente" };
+    }, {
+      timeout: 20000, // Aumentar timeout para operaciones largas
+      maxWait: 15000, // Tiempo máximo de espera para adquirir la transacción
+    });
+  }
+
+  private async removeDocumentWithScheduledIncome(id: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const document = await tx.zentraDocument.findUnique({
+        where: { id },
+        include: { scheduledIncomeDocuments: true },
+      });
+
+      if (!document) throw new Error("Documento no encontrado");
+
+      await tx.zentraDocument.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      });
+
+      for (const item of document.scheduledIncomeDocuments) {
+        await this.zentraScheduledIncomeDocumentService.remove(item.id);
+      }
+
+      return { message: "Documento y schedule incomes delete" };
     }, {
       timeout: 20000, // Aumentar timeout para operaciones largas
       maxWait: 15000, // Tiempo máximo de espera para adquirir la transacción
@@ -682,9 +707,9 @@ export class ZentraDocumentService {
         amountToPay: doc.amountToPay,
         paidAmount: doc.paidAmount,
 
-        registeredAt: doc.registeredAt,
-        documentDate: doc.documentDate,
-        expireDate: doc.expireDate,
+        registeredAt: moment(doc.registeredAt).format('DD/MM/YYYY'),
+        documentDate: moment(doc.documentDate).format('DD/MM/YYYY'),
+        expireDate: moment(doc.expireDate).format('DD/MM/YYYY'),
 
         transactionTypeId: doc.transactionType?.id,
         transactionTypeName: doc.transactionType?.name,
@@ -713,7 +738,7 @@ export class ZentraDocumentService {
 
         observation: doc.observation,
         idFirebase: doc.idFirebase,
-        
+
         brokerId: sched?.broker?.id ?? null,
         brokerName: sched?.broker?.name ?? null,
 
@@ -723,8 +748,135 @@ export class ZentraDocumentService {
         lotId: sched?.lot?.id ?? null,
         lotName: sched?.lot?.name ?? null,
         lotCode: sched?.lot?.code ?? null,
+
+        lotComplete: `${sched?.lot?.name ?? null} ${sched?.saleType?.name ?? null}` 
       };
     });
-    
+
   }
+
+  async updateScheduledIncome(id: string, updateData: any) {
+    return this.prisma.$transaction(async (tx) => {
+      // 1. Actualizar el documento principal
+      const updatedDocument = await tx.zentraDocument.update({
+        where: { id },
+        data: {
+          code: updateData.code,
+          description: updateData.description,
+          totalAmount: updateData.totalAmount,
+          taxAmount: updateData.taxAmount,
+          netAmount: updateData.netAmount,
+          detractionRate: updateData.detractionRate,
+          detractionAmount: updateData.detractionAmount,
+          amountToPay: updateData.amountToPay,
+          paidAmount: updateData.paidAmount,
+          registeredAt: new Date(updateData.registeredAt),
+          documentDate: new Date(updateData.documentDate),
+          expireDate: new Date(updateData.expireDate),
+          transactionTypeId: updateData.transactionTypeId,
+          documentTypeId: updateData.documentTypeId,
+          partyId: updateData.partyId,
+          documentStatusId: updateData.documentStatusId,
+          budgetItemId: updateData.budgetItemId,
+          currencyId: updateData.currencyId,
+          userId: updateData.userId,
+          documentCategoryId: updateData.documentCategoryId,
+          observation: updateData.observation,
+          idFirebase: updateData.idFirebase,
+        },
+        include: {
+          transactionType: true,
+          documentStatus: true,
+          documentType: true,
+          party: true,
+          currency: true,
+          budgetItem: {
+            include: {
+              definition: true,
+              currency: true,
+            },
+          },
+          user: true,
+          documentCategory: true,
+          scheduledIncomeDocuments: true,
+        },
+      });
+
+      // 2. Actualizar ScheduledIncomeDocument (si existe)
+      let scheduled = await tx.zentraScheduledIncomeDocument.findFirst({
+        where: { documentId: id, deletedAt: null },
+      });
+
+      if (scheduled) {
+        scheduled = await tx.zentraScheduledIncomeDocument.update({
+          where: { id: scheduled.id },
+          data: {
+            brokerId: updateData.brokerId,
+            saleTypeId: updateData.saleTypeId,
+            lotId: updateData.lotId,
+          },
+        });
+      }
+
+      // 3. Retornar con el mismo formato de findByFiltersScheduledIncome
+      return {
+        id: updatedDocument.id,
+        code: updatedDocument.code,
+        description: updatedDocument.description,
+
+        totalAmount: updatedDocument.totalAmount,
+        taxAmount: updatedDocument.taxAmount,
+        netAmount: updatedDocument.netAmount,
+        detractionRate: updatedDocument.detractionRate,
+        detractionAmount: updatedDocument.detractionAmount,
+        amountToPay: updatedDocument.amountToPay,
+        paidAmount: updatedDocument.paidAmount,
+
+        registeredAt: moment(updatedDocument.registeredAt).format('DD/MM/YYYY'),
+        documentDate: moment(updatedDocument.documentDate).format('DD/MM/YYYY'),
+        expireDate: moment(updatedDocument.expireDate).format('DD/MM/YYYY'),
+
+        transactionTypeId: updatedDocument.transactionType?.id,
+        transactionTypeName: updatedDocument.transactionType?.name,
+
+        documentTypeId: updatedDocument.documentType?.id,
+        documentTypeName: updatedDocument.documentType?.name,
+
+        partyId: updatedDocument.party?.id,
+        partyName: updatedDocument.party?.name,
+
+        documentStatusId: updatedDocument.documentStatus?.id,
+        documentStatusName: updatedDocument.documentStatus?.name,
+
+        budgetItemId: updatedDocument.budgetItem?.id,
+        budgetItemName: updatedDocument.budgetItem
+          ? `${updatedDocument.budgetItem.definition.name} - ${updatedDocument.budgetItem.currency.name}`
+          : null,
+
+        currencyId: updatedDocument.currency?.id,
+        currencyName: updatedDocument.currency?.name,
+
+        userId: updatedDocument.user?.id,
+
+        documentCategoryId: updatedDocument.documentCategory?.id,
+        documentCategoryName: updatedDocument.documentCategory?.name,
+
+        observation: updatedDocument.observation,
+        idFirebase: updatedDocument.idFirebase,
+
+        // Datos del ScheduledIncome
+        brokerId: scheduled?.brokerId ?? null,
+        saleTypeId: scheduled?.saleTypeId ?? null,
+        lotId: scheduled?.lotId ?? null,
+      };
+    }, {
+      timeout: 20000,
+      maxWait: 15000,
+    });
+  }
+
+  async removeScheduledIncome(id: string) {
+    return this.removeDocumentWithScheduledIncome(id);
+  }
+
 }

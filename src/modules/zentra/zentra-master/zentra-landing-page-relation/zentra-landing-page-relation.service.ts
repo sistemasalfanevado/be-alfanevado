@@ -69,4 +69,41 @@ export class ZentraLandingPageRelationService {
       data: { deletedAt: null },
     });
   }
+
+
+  async getLotsByProjectId(zentraProjectId: string) {
+    // 1. Buscar la relación para obtener el landingPageId
+    const relation = await this.prisma.zentraLandingPageRelation.findFirst({
+      where: { zentraProjectId, deletedAt: null },
+      include: {
+        landingPage: {
+          include: {
+            lots: {
+              include: {
+                status: true,
+              },
+              where: { deletedAt: null },
+            },
+          },
+        },
+      },
+    });
+
+    if (!relation) {
+      throw new Error('No se encontró una LandingPage para este proyecto');
+    }
+
+    return relation.landingPage.lots.map((lot) => ({
+      id: lot.id,
+      title: `${lot.name} - ${lot.status.title}`, // Concatenar nombre + estado
+      number: lot.number,
+      block: lot.block,
+      code: lot.code,
+      status: lot.status.title,
+      area: lot.area,
+      perimeter: lot.perimeter,
+    }));
+  }
+
+
 }

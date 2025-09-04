@@ -36,11 +36,13 @@ import { ZentraLandingPageRelationModule } from './zentra/zentra-master/zentra-l
 import { ZentraBrokerModule } from './zentra/zentra-master/zentra-broker/zentra-broker.module';
 import { ZentraSaleTypeModule } from './zentra/zentra-master/zentra-sale-type/zentra-sale-type.module';
 import { ZentraScheduledIncomeDocumentModule } from './zentra/zentra-master/zentra-scheduled-income-document/zentra-scheduled-income-document.module';
+import { ZentraInstallmentStatusModule } from './zentra/zentra-master/zentra-installment-status/zentra-installment-status.module';
 
 
 // Zentra Transaction
 import { ZentraDocumentModule } from './zentra/zentra-transaction/zentra-document/zentra-document.module';
 import { ZentraDocumentFileModule } from './zentra/zentra-transaction/zentra-document-file/zentra-document-file.module';
+import { ZentraInstallmentModule } from './zentra/zentra-transaction/zentra-installment/zentra-installment.module';
 
 import { ZentraMovementModule } from './zentra/zentra-transaction/zentra-movement/zentra-movement.module';
 
@@ -73,6 +75,8 @@ import { ZentraMovementModule } from './zentra/zentra-transaction/zentra-movemen
     ZentraPartyBankAccountModule,
     ZentraBudgetItemDefinitionModule,
     ZentraExchangeRateModule,
+    ZentraInstallmentStatusModule,
+
 
     ZentraBrokerModule,
     ZentraSaleTypeModule,
@@ -84,7 +88,8 @@ import { ZentraMovementModule } from './zentra/zentra-transaction/zentra-movemen
 
     ZentraDocumentModule,
     ZentraDocumentFileModule,
-    ZentraMovementModule
+    ZentraMovementModule,
+    ZentraInstallmentModule
 
 
 

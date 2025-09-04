@@ -118,8 +118,15 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.findByFiltersScheduledIncome(filters);
   }
 
+  @Put('scheduled-income/:id')
+  updateScheduledIncome(@Param('id') id: string, @Body() updateZentraDocumentDto: any) {
+    return this.zentraDocumentService.updateScheduledIncome(id, updateZentraDocumentDto);
+  }
 
-
+  @Delete('scheduled-income/:id')
+  removeScheduledIncome(@Param('id') id: string) {
+    return this.zentraDocumentService.removeScheduledIncome(id);
+  }
 
 
 }

@@ -6,7 +6,7 @@ import { UpdateZentraScheduledIncomeDocumentDto } from './dto/update-zentra-sche
 @Injectable()
 export class ZentraScheduledIncomeDocumentService {
   constructor(private prisma: PrismaService) { }
-
+  
   async create(createDto: CreateZentraScheduledIncomeDocumentDto) {
     return this.prisma.zentraScheduledIncomeDocument.create({
       data: createDto,
@@ -41,11 +41,12 @@ export class ZentraScheduledIncomeDocumentService {
       lotId: doc.lot?.id,
       lotName: doc.lot?.name,
       lotCode: doc.lot?.code,
+
+      lotComplete: doc.lot?.name + ' ' + doc.saleType?.name
+
     }));
   }
-
-
-
+  
   async findOne(id: string) {
     return this.prisma.zentraScheduledIncomeDocument.findUnique({
       where: { id },

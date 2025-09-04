@@ -793,7 +793,6 @@ model ZentraLandingPageRelation {
   @@map("zentra_landing_page_relation")
 }
 
-
 model ZentraSaleType {
   id          String                   @id @default(uuid())
   name        String                   @db.VarChar(50)
@@ -837,10 +836,54 @@ model ZentraScheduledIncomeDocument {
   lot          LandingLot?    @relation(fields: [lotId], references: [id])
   lotId        String?
 
+  installments ZentraInstallment[]
+
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   deletedAt    DateTime?
 
   @@map("zentra_scheduled_income_document")
 }
+
+model ZentraInstallmentStatus {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(100)
+
+  installments ZentraInstallment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  idFirebase String? @default("") @db.VarChar(30)
+
+  @@map("zentra_installment_status")
+}
+
+model ZentraInstallment {
+  id          String    @id @default(uuid())
+
+  scheduledIncomeDocument   ZentraScheduledIncomeDocument @relation(fields: [scheduledIncomeDocumentId], references: [id])
+  scheduledIncomeDocumentId String
+
+  installmentStatus   ZentraInstallmentStatus @relation(fields: [installmentStatusId], references: [id])
+  installmentStatusId String
+
+  number       Int
+  capital      Decimal @db.Decimal(12, 2)
+  interest     Decimal @db.Decimal(12, 2)
+  totalAmount  Decimal @db.Decimal(12, 2)
+  dueDate      DateTime
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  deletedAt    DateTime?
+
+  idFirebase String? @default("") @db.VarChar(30)
+  
+  @@map("zentra_installment")
+}
+
+
+
 
