@@ -1,59 +1,80 @@
-import { IsString, IsNotEmpty, IsOptional, IsNumber, MaxLength, IsDateString } from 'class-validator';
+import { 
+  IsString, 
+  IsOptional, 
+  IsNumber, 
+  MaxLength, 
+  IsDateString 
+} from 'class-validator';
 
 export class UpdateZentraMovementDto {
   @IsString()
   @IsOptional()
   @MaxLength(150)
-  code: string;
+  code?: string;
 
   @IsString()
   @IsOptional()
   @MaxLength(500)
-  description: string;
+  description?: string;
 
   @IsNumber()
   @IsOptional()
-  amount: number;
+  amount?: number;
 
   @IsString()
   @IsOptional()
-  documentId: string;
+  documentId?: string;
 
   @IsString()
   @IsOptional()
-  transactionTypeId: string;
+  transactionTypeId?: string;
 
   @IsString()
   @IsOptional()
-  movementCategoryId: string;
+  movementCategoryId?: string;
 
   @IsString()
   @IsOptional()
-  budgetItemId: string;
+  budgetItemId?: string;
 
   @IsString()
   @IsOptional()
-  bankAccountId: string;
+  bankAccountId?: string;
 
   @IsString()
   @IsOptional()
-  movementStatusId: string;
+  movementStatusId?: string;
 
   @IsDateString()
   @IsOptional()
-  autorizeDate: string;
+  autorizeDate?: string;
 
   @IsDateString()
   @IsOptional()
-  generateDate: string;
+  generateDate?: string;
 
   @IsDateString()
   @IsOptional()
-  paymentDate: string;
+  paymentDate?: string;
+
+  // 🔹 Relación opcional con una cuota
+  @IsString()
+  @IsOptional()
+  installmentId?: string;
+
+  // 🔹 Campos opcionales de documentos
+  @IsString()
+  @IsOptional()
+  @MaxLength(300)
+  documentUrl?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(150)
+  documentName?: string;
 
   @IsString()
   @IsOptional()
   @MaxLength(30)
-  idFirebase: string;
-
+  idFirebase?: string;
 }

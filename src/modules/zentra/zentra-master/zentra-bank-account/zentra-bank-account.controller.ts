@@ -8,7 +8,7 @@ import { Public } from '../../../../auth/shared/decorators/public.decorator';
 @Controller('zentra-bank-accounts')
 //@UseGuards(JwtAuthGuard)
 export class ZentraBankAccountController {
-  constructor(private readonly zentraBankAccountService: ZentraBankAccountService) {}
+  constructor(private readonly zentraBankAccountService: ZentraBankAccountService) { }
 
   @Post()
   create(@Body() createZentraBankAccountDto: CreateZentraBankAccountDto) {
@@ -40,4 +40,10 @@ export class ZentraBankAccountController {
   restore(@Param('id') id: string) {
     return this.zentraBankAccountService.restore(id);
   }
+
+  @Get('project/:projectId')
+  findAllByProject(@Param('projectId') projectId: string) {
+    return this.zentraBankAccountService.findAllByProject(projectId);
+  }
+
 }

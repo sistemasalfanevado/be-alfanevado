@@ -389,5 +389,14 @@ export class ZentraMovementService {
     return results.map(this.formatMovement);
   }
 
+  async findByInstallment(installmentId: string) {
+    const results = await this.prisma.zentraMovement.findMany({
+      where: { installmentId },
+      include: this.includeRelations,
+      orderBy: { createdAt: 'desc' },
+    });
+    return results.map(this.formatMovement);
+  }
+
 
 }

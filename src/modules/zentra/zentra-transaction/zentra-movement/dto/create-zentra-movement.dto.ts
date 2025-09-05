@@ -1,4 +1,11 @@
-import { IsString, IsNotEmpty, IsNumber, MaxLength, IsDateString, IsOptional } from 'class-validator';
+import { 
+  IsString, 
+  IsNotEmpty, 
+  IsNumber, 
+  MaxLength, 
+  IsDateString, 
+  IsOptional 
+} from 'class-validator';
 
 export class CreateZentraMovementDto {
   @IsString()
@@ -51,10 +58,24 @@ export class CreateZentraMovementDto {
   @IsNotEmpty()
   paymentDate: string;
 
+  // 🔹 Relación opcional con una cuota
+  @IsString()
+  @IsOptional()
+  installmentId?: string;
+
+  // 🔹 Campos opcionales de documentos
+  @IsString()
+  @IsOptional()
+  @MaxLength(300)
+  documentUrl?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(150)
+  documentName?: string;
+
   @IsString()
   @IsOptional()
   @MaxLength(30)
   idFirebase?: string;
-
- 
 }

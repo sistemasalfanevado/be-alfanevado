@@ -65,4 +65,11 @@ export class ZentraMovementController {
     return this.zentraMovementService.findByBudgetItemAndCurrency(budgetItemId, currencyId);
   }
 
+  // 2. Movimientos por InstallmentId
+  @Get('by-installment/:installmentId')
+  @Public()
+  findByInstallment(@Param('installmentId') installmentId: string) {
+    return this.zentraMovementService.findByInstallment(installmentId);
+  }
+
 }

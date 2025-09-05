@@ -16,14 +16,30 @@ export class ZentraInstallmentService {
   }
 
   async findAll() {
-    return this.prisma.zentraInstallment.findMany({
-      where: { deletedAt: null },
+    const installments = await this.prisma.zentraInstallment.findMany({
+      where: {
+        deletedAt: null,
+      },
       orderBy: { letra: 'asc' },
       include: {
-        installmentStatus: true,
-        scheduledIncomeDocument: true,
+        installmentStatus: {
+          select: { id: true, name: true },
+        },
       },
     });
+
+    return installments.map(i => ({
+      id: i.id,
+      letra: i.letra,
+      capital: i.capital,
+      interest: i.interest,
+      totalAmount: i.totalAmount,
+      extra: i.extra,
+      dueDate: moment(i.dueDate).format('DD/MM/YYYY'),
+      installmentStatusId: i.installmentStatus.id,
+      installmentStatusName: i.installmentStatus.name,
+      scheduledIncomeDocumentId: i.scheduledIncomeDocumentId,
+    }));
   }
 
   async findOne(id: string) {
@@ -81,7 +97,10 @@ export class ZentraInstallmentService {
       dueDate: moment(i.dueDate).format('DD/MM/YYYY'),
       installmentStatusId: i.installmentStatus.id,
       installmentStatusName: i.installmentStatus.name,
+      scheduledIncomeDocumentId: i.scheduledIncomeDocumentId,
     }));
+
+
   }
 
 

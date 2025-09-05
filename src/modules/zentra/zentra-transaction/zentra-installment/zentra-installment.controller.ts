@@ -54,7 +54,6 @@ export class ZentraInstallmentController {
   restore(@Param('id') id: string) {
     return this.zentraInstallmentService.restore(id);
   }
-
-
+  
 
 }
