@@ -14,13 +14,29 @@ export class ZentraMovementService {
 
   private includeRelations = {
     movementStatus: true,
-    document: true,
+    document: {
+      include: {
+        party: true,
+      },
+    },
     transactionType: true,
     movementCategory: true,
-    budgetItem: true,
-    bankAccount: true,
+    budgetItem: {
+      include: {
+        definition: true,
+        currency: true,
+      },
+    },
+    bankAccount: {
+      include: {
+        bank: true,
+        currency: true,
+      },
+    },
     exchangeRate: true,
+    installment: true,
   };
+
 
   /** Códigos de tipo de transacción */
   private ENTRY_ID = 'fe14bee6-9be4-43a5-9d8f-7fc032751415';
@@ -143,12 +159,15 @@ export class ZentraMovementService {
         movementCategoryId,
         budgetItemId,
         bankAccountId,
+        installmentId = null,
         autorizeDate,
         generateDate,
         paymentDate,
         code,
         description,
         amount,
+        documentUrl = '',
+        documentName = '',
         idFirebase = '',
       } = createDto;
 
@@ -173,6 +192,8 @@ export class ZentraMovementService {
           code,
           description,
           idFirebase,
+          documentUrl,
+          documentName,
           movementStatus: { connect: { id: movementStatusId } },
           document: { connect: { id: documentId } },
           transactionType: { connect: { id: transactionTypeId } },
@@ -180,6 +201,7 @@ export class ZentraMovementService {
           budgetItem: { connect: { id: budgetItemId } },
           bankAccount: { connect: { id: bankAccountId } },
           exchangeRate: { connect: { id: exchangeRate.id } },
+          installment: installmentId ? { connect: { id: installmentId } } : undefined,
         },
         include: this.includeRelations,
       });
@@ -278,7 +300,10 @@ export class ZentraMovementService {
           bankAccountId: updateDto.bankAccountId ?? existing.bankAccountId,
           budgetItemId: updateDto.budgetItemId ?? existing.budgetItemId,
           documentId: updateDto.documentId ?? existing.documentId,
+          installmentId: updateDto.installmentId ?? existing.installmentId,
           idFirebase: updateDto.idFirebase ?? existing.idFirebase,
+          documentUrl: updateDto.documentUrl ?? existing.documentUrl,
+          documentName: updateDto.documentName ?? existing.documentName,
           executedAmount,
           executedSoles,
           executedDolares,
@@ -341,24 +366,40 @@ export class ZentraMovementService {
       code: item.code,
       description: item.description,
       amount: item.amount,
-      registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
-      movementDate: moment(item.movementDate).format('DD/MM/YYYY'),
+
+      autorizeDate: moment(item.autorizeDate).format('DD/MM/YYYY'),
+      generateDate: moment(item.generateDate).format('DD/MM/YYYY'),
+      paymentDate: moment(item.paymentDate).format('DD/MM/YYYY'),
+
       documentId: item.document.id,
       documentCode: item.document.code,
+
       transactionTypeId: item.transactionType.id,
       transactionTypeName: item.transactionType.name,
+
       movementCategoryId: item.movementCategory.id,
       movementCategoryName: item.movementCategory.name,
-      documentTypeId: item.documentType?.id,
-      documentTypeName: item.documentType?.name,
-      partyId: item.party?.id,
-      partyName: item.party?.name,
+
+      partyId: item.document.party.id,
+      partyName: item.document.party.name,
+
       movementStatusId: item.movementStatus.id,
       movementStatusName: item.movementStatus.name,
-      budgetItemId: item.budgetItem.id,
+
+      budgetItemId: item.budgetItem?.id,
+      budgetItemName: item.budgetItem
+        ? `${item.budgetItem.definition.name} - ${item.budgetItem.currency.name}`
+        : null,
+
       bankAccountId: item.bankAccount.id,
-      currencyId: item.currency.id,
-      currencyName: item.currency.name,
+      bankAccountName: `${item.bankAccount.bank.name} - ${item.bankAccount.currency.name}`,
+      
+      installmentId: item.installment?.id,
+      installmentCuota: 'Cuota: ' + item.installment?.letra,
+      
+      documentUrl: item.documentUrl,
+      documentName: item.documentName
+
     };
   }
 
