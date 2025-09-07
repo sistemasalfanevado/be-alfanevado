@@ -72,4 +72,10 @@ export class ZentraMovementController {
     return this.zentraMovementService.findByInstallment(installmentId);
   }
 
+  @Get('by-document/:documentId')
+  @Public()
+  findByDocument(@Param('documentId') documentId: string) {
+    return this.zentraMovementService.findByDocument(documentId);
+  }
+
 }

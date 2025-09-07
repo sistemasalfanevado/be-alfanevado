@@ -208,7 +208,7 @@ export class ZentraDocumentService {
     if (financialNatureId) {
       updateData.financialNature = { connect: { id: financialNatureId } };
     }
-    
+
     await this.prisma.zentraDocument.update({
       where: { id },
       data: updateData,
@@ -225,11 +225,43 @@ export class ZentraDocumentService {
     });
   }
 
-  async remove(id: string) {
+  async updateDocumentDebtInvestment(id: string, updateDto: any) {
     return this.prisma.zentraDocument.update({
       where: { id },
-      data: { deletedAt: new Date() }
+      data: {
+        paidAmount: updateDto.paidAmount,
+        totalInflow: updateDto.totalInflow,
+        totalOutflow: updateDto.totalOutflow
+      },
     });
+  }
+
+  async updateDocumentSale(id: string, updateDto: any) {
+    return this.prisma.zentraDocument.update({
+      where: { id },
+      data: {
+        documentStatusId: updateDto.documentStatusId,
+        paidAmount: updateDto.paidAmount,
+        totalInflow: updateDto.totalInflow,
+        totalOutflow: updateDto.totalOutflow
+      },
+    });
+  }
+
+  async updateDocumentExpense(id: string, updateDto: any) {
+    return this.prisma.zentraDocument.update({
+      where: { id },
+      data: {
+        documentStatusId: updateDto.documentStatusId,
+        paidAmount: updateDto.paidAmount,
+        totalInflow: updateDto.totalInflow,
+        totalOutflow: updateDto.totalOutflow
+      },
+    });
+  }
+
+  async remove(id: string) {
+    return this.removeDocumentWithMovements(id)
   }
 
   async restore(id: string) {
@@ -240,6 +272,7 @@ export class ZentraDocumentService {
   }
 
   async findByFilters(filters: {
+    transactionTypeId?: string,
     documentStatusId?: string;
     partyId?: string;
     documentCategoryId?: string;
@@ -247,7 +280,7 @@ export class ZentraDocumentService {
     startDate?: string;
     endDate?: string;
   }) {
-    const { documentStatusId, partyId, documentCategoryId, financialNatureId, startDate, endDate } = filters;
+    const { documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -279,11 +312,15 @@ export class ZentraDocumentService {
       where.financialNature = { id: financialNatureId };
     }
 
+    if (transactionTypeId && transactionTypeId.trim() !== '') {
+      where.transactionType = { id: transactionTypeId };
+    }
+    
     const results = await this.prisma.zentraDocument.findMany({
       where,
       include: this.includeRelations,
       orderBy: {
-        documentDate: 'desc', // o 'asc'
+        documentDate: 'desc',
       },
     });
 
@@ -352,29 +389,33 @@ export class ZentraDocumentService {
     });
   }
 
-  private async removeDocumentWithMovements(id: string) {
-    return this.prisma.$transaction(async (tx) => {
-      const document = await tx.zentraDocument.findUnique({
-        where: { id },
-        include: { movements: true },
-      });
-
-      if (!document) throw new Error("Documento no encontrado");
-
-      await tx.zentraDocument.update({
-        where: { id },
-        data: { deletedAt: new Date() },
-      });
-
-      for (const movement of document.movements) {
-        await this.zentraMovementService.remove(movement.id);
-      }
-
-      return { message: "Documento y movimientos eliminados correctamente" };
-    }, {
-      timeout: 20000, // Aumentar timeout para operaciones largas
-      maxWait: 15000, // Tiempo máximo de espera para adquirir la transacción
+  private async removeDocumentWithMovements(documentId: string) {
+    // 1. Buscar el documento con sus movimientos
+    const document = await this.prisma.zentraDocument.findUnique({
+      where: { id: documentId },
+      include: { movements: true },
     });
+
+    if (!document) {
+      throw new Error("Documento no encontrado");
+    }
+
+    // 2. Marcar el documento como eliminado
+    await this.prisma.zentraDocument.update({
+      where: { id: documentId },
+      data: { deletedAt: new Date() },
+    });
+
+    // 3. Eliminar movimientos relacionados
+    for (const movement of document.movements) {
+      try {
+        await this.zentraMovementService.remove(movement.id);
+      } catch (error) {
+        console.error(`Error al eliminar movimiento ${movement.id}:`, error);
+      }
+    }
+
+    return { message: "Documento y movimientos eliminados correctamente" };
   }
 
   private async removeDocumentWithScheduledIncome(id: string) {

@@ -46,6 +46,7 @@ export class ZentraDocumentController {
   @Post('search')
   @Public()
   search(@Body() filters: {
+    transactionTypeId?: string,
     documentStatusId?: string;
     partyId?: string;
     documentCategoryId?: string;

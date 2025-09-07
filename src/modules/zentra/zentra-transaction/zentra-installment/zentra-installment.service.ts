@@ -12,9 +12,6 @@ import { INSTALLMENT_STATUS, DOCUMENT_STATUS, CURRENCY } from 'src/shared/consta
 @Injectable()
 export class ZentraInstallmentService {
 
-
-
-
   constructor(
     private prisma: PrismaService,
     private zentraMovementService: ZentraMovementService,
@@ -282,7 +279,7 @@ export class ZentraInstallmentService {
     });
   }
 
-
+  
 
 
 

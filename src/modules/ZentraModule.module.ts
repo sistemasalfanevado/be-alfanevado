@@ -47,6 +47,9 @@ import { ZentraDocumentFileModule } from './zentra/zentra-transaction/zentra-doc
 import { ZentraInstallmentModule } from './zentra/zentra-transaction/zentra-installment/zentra-installment.module';
 import { ZentraMovementModule } from './zentra/zentra-transaction/zentra-movement/zentra-movement.module';
 import { ZentraMovementFileModule } from './zentra/zentra-transaction/zentra-movement-file/zentra-movement-file.module';
+import { ZentraDebtInvestmentModule } from './zentra/zentra-transaction/zentra-debt-investment/zentra-debt-investment.module';
+import { ZentraDocumentSalesModule } from './zentra/zentra-transaction/zentra-document-sales/zentra-document-sales.module';
+import { ZentraDocumentExpenseModule } from './zentra/zentra-transaction/zentra-document-expense/zentra-document-expense.module';
 
 
 @Module({
@@ -93,6 +96,9 @@ import { ZentraMovementFileModule } from './zentra/zentra-transaction/zentra-mov
     ZentraMovementModule,
     ZentraMovementFileModule,
     ZentraInstallmentModule,
+    ZentraDebtInvestmentModule,
+    ZentraDocumentSalesModule,
+    ZentraDocumentExpenseModule,
 
 
     // Utils
