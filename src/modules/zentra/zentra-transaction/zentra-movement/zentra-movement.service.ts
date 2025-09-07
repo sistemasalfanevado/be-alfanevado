@@ -5,6 +5,9 @@ import { UpdateZentraMovementDto } from './dto/update-zentra-movement.dto';
 import { ZentraExchangeRateService } from '../../zentra-master/zentra-exchange-rate/zentra-exchange-rate.service';
 import * as moment from 'moment';
 
+import { TRANSACTION_TYPE, CURRENCY } from 'src/shared/constants/app.constants';
+
+
 @Injectable()
 export class ZentraMovementService {
   constructor(
@@ -34,12 +37,15 @@ export class ZentraMovementService {
       },
     },
     exchangeRate: true,
-    installment: true,
+    installment: {
+      include: {
+        currency: true,
+      },
+    },
   };
 
 
   /** Códigos de tipo de transacción */
-  private ENTRY_ID = 'fe14bee6-9be4-43a5-9d8f-7fc032751415';
   private EXIT_ID = '8b190f70-cc43-42fa-8d7b-6afde6ed10b5';
 
   /** IDs de moneda */
@@ -52,17 +58,17 @@ export class ZentraMovementService {
     amount: number,
     exchangeRate: number
   ) {
-    const isEntry = transactionTypeId === this.ENTRY_ID;
-    const isExit = transactionTypeId === this.EXIT_ID;
+    const isEntry = transactionTypeId === TRANSACTION_TYPE.ENTRY;
+    const isExit = transactionTypeId === TRANSACTION_TYPE.EXIT;
     const factor = isEntry ? 1 : isExit ? -1 : 0;
 
     if (factor === 0) throw new Error('Tipo de transacción no válido');
 
     const executedAmount = factor * amount;
     const executedSoles =
-      currencyId === this.SOLES_ID ? amount : amount * exchangeRate;
+      currencyId === CURRENCY.SOLES ? amount : amount * exchangeRate;
     const executedDolares =
-      currencyId === this.DOLARES_ID ? amount : amount / exchangeRate;
+      currencyId === CURRENCY.DOLARES ? amount : amount / exchangeRate;
 
     return {
       factor,
@@ -128,6 +134,54 @@ export class ZentraMovementService {
 
     return account.currencyId;
   }
+
+  private formatMovement(item: any) {
+    return {
+      id: item.id,
+      code: item.code,
+      description: item.description,
+      amount: item.amount,
+
+      autorizeDate: moment(item.autorizeDate).format('DD/MM/YYYY'),
+      generateDate: moment(item.generateDate).format('DD/MM/YYYY'),
+      paymentDate: moment(item.paymentDate).format('DD/MM/YYYY'),
+
+      documentId: item.document.id,
+      documentCode: item.document.code,
+
+      transactionTypeId: item.transactionType.id,
+      transactionTypeName: item.transactionType.name,
+
+      movementCategoryId: item.movementCategory.id,
+      movementCategoryName: item.movementCategory.name,
+
+      partyId: item.document.party.id,
+      partyName: item.document.party.name,
+
+      movementStatusId: item.movementStatus.id,
+      movementStatusName: item.movementStatus.name,
+
+      budgetItemId: item.budgetItem?.id,
+      budgetItemName: item.budgetItem
+        ? `${item.budgetItem.definition.name} - ${item.budgetItem.currency.name}`
+        : null,
+
+      bankAccountId: item.bankAccount.id,
+      bankAccountName: `${item.bankAccount.bank.name} - ${item.bankAccount.currency.name}`,
+
+      installmentId: !item.installment?.id ? '' : item.installment?.id,
+      installmentCuota: !item.installment?.letra ? '': 'Cuota: ' + item.installment?.letra,
+
+      documentUrl: item.documentUrl,
+      documentName: item.documentName,
+
+      executedAmount: item.executedAmount,
+      executedSoles: item.executedSoles,
+      executedDolares: item.executedDolares,
+
+    };
+  }
+
 
   async create(createDto: CreateZentraMovementDto) {
     const movementDate = moment(createDto.paymentDate || new Date())
@@ -346,7 +400,11 @@ export class ZentraMovementService {
         Number(movement.executedDolares)
       );
 
-      return tx.zentraMovement.delete({ where: { id } });
+      return tx.zentraMovement.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      });
+    
     }, {
       timeout: 20000, // Aumentar timeout para operaciones largas
       maxWait: 15000, // Tiempo máximo de espera para adquirir la transacción
@@ -360,48 +418,7 @@ export class ZentraMovementService {
     });
   }
 
-  private formatMovement(item: any) {
-    return {
-      id: item.id,
-      code: item.code,
-      description: item.description,
-      amount: item.amount,
 
-      autorizeDate: moment(item.autorizeDate).format('DD/MM/YYYY'),
-      generateDate: moment(item.generateDate).format('DD/MM/YYYY'),
-      paymentDate: moment(item.paymentDate).format('DD/MM/YYYY'),
-
-      documentId: item.document.id,
-      documentCode: item.document.code,
-
-      transactionTypeId: item.transactionType.id,
-      transactionTypeName: item.transactionType.name,
-
-      movementCategoryId: item.movementCategory.id,
-      movementCategoryName: item.movementCategory.name,
-
-      partyId: item.document.party.id,
-      partyName: item.document.party.name,
-
-      movementStatusId: item.movementStatus.id,
-      movementStatusName: item.movementStatus.name,
-
-      budgetItemId: item.budgetItem?.id,
-      budgetItemName: item.budgetItem
-        ? `${item.budgetItem.definition.name} - ${item.budgetItem.currency.name}`
-        : null,
-
-      bankAccountId: item.bankAccount.id,
-      bankAccountName: `${item.bankAccount.bank.name} - ${item.bankAccount.currency.name}`,
-      
-      installmentId: item.installment?.id,
-      installmentCuota: 'Cuota: ' + item.installment?.letra,
-      
-      documentUrl: item.documentUrl,
-      documentName: item.documentName
-
-    };
-  }
 
   async findByBudgetItem(budgetItemId: string) {
     const results = await this.prisma.zentraMovement.findMany({
@@ -433,6 +450,15 @@ export class ZentraMovementService {
   async findByInstallment(installmentId: string) {
     const results = await this.prisma.zentraMovement.findMany({
       where: { installmentId },
+      include: this.includeRelations,
+      orderBy: { createdAt: 'desc' },
+    });
+    return results.map(this.formatMovement);
+  }
+
+  async findByDocument(documentId: string) {
+    const results = await this.prisma.zentraMovement.findMany({
+      where: { documentId },
       include: this.includeRelations,
       orderBy: { createdAt: 'desc' },
     });

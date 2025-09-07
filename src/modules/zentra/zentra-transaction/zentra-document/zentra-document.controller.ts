@@ -11,8 +11,9 @@ export class ZentraDocumentController {
   constructor(private readonly zentraDocumentService: ZentraDocumentService) { }
 
   @Post()
-  create(@Body() createZentraDocumentDto: CreateZentraDocumentDto) {
-    return this.zentraDocumentService.create(createZentraDocumentDto);
+  async create(@Body() createZentraDocumentDto: CreateZentraDocumentDto) {
+    await this.zentraDocumentService.create(createZentraDocumentDto);
+    return { message: 'Documento creado exitosamente' };
   }
 
   @Get()
@@ -27,8 +28,9 @@ export class ZentraDocumentController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateZentraDocumentDto: UpdateZentraDocumentDto) {
-    return this.zentraDocumentService.update(id, updateZentraDocumentDto);
+  async update(@Param('id') id: string, @Body() updateZentraDocumentDto: UpdateZentraDocumentDto) {
+    await this.zentraDocumentService.update(id, updateZentraDocumentDto);
+    return { message: 'Documento actualizado exitosamente' };
   }
 
   @Delete(':id')
@@ -47,6 +49,7 @@ export class ZentraDocumentController {
     documentStatusId?: string;
     partyId?: string;
     documentCategoryId?: string;
+    financialNatureId?: string;
     startDate?: string;
     endDate?: string;
   }) {
@@ -126,6 +129,12 @@ export class ZentraDocumentController {
   @Delete('scheduled-income/:id')
   removeScheduledIncome(@Param('id') id: string) {
     return this.zentraDocumentService.removeScheduledIncome(id);
+  }
+
+
+  @Delete('scheduled-document/:id')
+  removeScheduledDocument(@Param('id') id: string) {
+    return this.zentraDocumentService.removeScheduledDocument(id);
   }
 
 

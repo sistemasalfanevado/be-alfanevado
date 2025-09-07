@@ -341,12 +341,14 @@ model ZentraCurrency {
   code          String    @db.VarChar(3)
   name          String    @db.VarChar(50)
   symbol        String    @db.VarChar(5)
+  
   idFirebase String? @default("") @db.VarChar(30)
   bankAccounts  ZentraBankAccount[]
   partyBankAccounts ZentraPartyBankAccount[]
   
-  documents     ZentraDocument[]
-  budgetItems   ZentraBudgetItem[]
+  documents      ZentraDocument[]
+  budgetItems    ZentraBudgetItem[]
+  installments   ZentraInstallment[]
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -374,6 +376,7 @@ model ZentraMovementCategory {
   name        String    @db.VarChar(50)
   
   movements   ZentraMovement[]
+  financialNatures ZentraFinancialNature[]
   
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -653,6 +656,9 @@ model ZentraDocument {
   documentCategory   ZentraDocumentCategory @relation(fields: [documentCategoryId], references: [id])
   documentCategoryId String
 
+  financialNature    ZentraFinancialNature? @relation(fields: [financialNatureId], references: [id])
+  financialNatureId  String?
+
   movements          ZentraMovement[]
   files              ZentraDocumentFile[]
   scheduledIncomeDocuments ZentraScheduledIncomeDocument[]
@@ -660,6 +666,9 @@ model ZentraDocument {
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
   deletedAt          DateTime?
+  
+  totalInflow        Decimal? @default(0.00) @db.Decimal(12, 2)   // Entradas
+  totalOutflow       Decimal? @default(0.00) @db.Decimal(12, 2)   // Salidas
   
   idFirebase         String? @default("") @db.VarChar(30)
 
@@ -879,6 +888,9 @@ model ZentraInstallment {
   installmentStatus   ZentraInstallmentStatus @relation(fields: [installmentStatusId], references: [id])
   installmentStatusId String
 
+  currency   ZentraCurrency @relation(fields: [currencyId], references: [id])
+  currencyId String
+
   letra       Int
   capital      Decimal @db.Decimal(12, 2)
   interest     Decimal @db.Decimal(12, 2)
@@ -886,6 +898,8 @@ model ZentraInstallment {
   extra        Decimal @db.Decimal(12, 2)
   dueDate      DateTime
 
+  paidAmount    Decimal  @default(0.00) @db.Decimal(12, 2)
+  description   String                @db.VarChar(200)
   movements     ZentraMovement[]
 
   createdAt    DateTime @default(now())
@@ -938,3 +952,19 @@ model ZentraMovementFile {
   @@map("zentra_movement_file")
 }
 
+model ZentraFinancialNature {
+  id          String    @id @default(uuid())
+  name        String    @db.VarChar(50)
+
+  movementCategory   ZentraMovementCategory @relation(fields: [movementCategoryId], references: [id])
+  movementCategoryId String
+
+  documents   ZentraDocument[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  idFirebase  String? @default("") @db.VarChar(30)
+
+  @@map("zentra_financial_nature")
+}

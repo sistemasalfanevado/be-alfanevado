@@ -15,6 +15,10 @@ export class UpdateZentraInstallmentDto {
   @IsOptional()
   installmentStatusId?: string;
 
+  @IsString()
+  @IsOptional()
+  currencyId?: string;
+
   @IsNumber()
   @IsOptional()
   letra?: number;
@@ -39,6 +43,15 @@ export class UpdateZentraInstallmentDto {
   @IsOptional()
   dueDate?: string;
 
+  @IsNumber()
+  @IsOptional()
+  paidAmount: number;
+  
+  @IsString()
+  @IsOptional()
+  @MaxLength(200)
+  description: string;
+  
   @IsString()
   @IsOptional()
   @MaxLength(30)

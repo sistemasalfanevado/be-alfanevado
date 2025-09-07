@@ -38,6 +38,7 @@ import { ZentraSaleTypeModule } from './zentra/zentra-master/zentra-sale-type/ze
 import { ZentraScheduledIncomeDocumentModule } from './zentra/zentra-master/zentra-scheduled-income-document/zentra-scheduled-income-document.module';
 import { ZentraInstallmentStatusModule } from './zentra/zentra-master/zentra-installment-status/zentra-installment-status.module';
 import { ZentraBankStatementModule } from './zentra/zentra-utils/zentra-bank-statement/zentra-bank-statement.module';
+import { ZentraFinancialNatureModule } from './zentra/zentra-master/zentra-financial-nature/zentra-financial-nature.module';
 
 
 // Zentra Transaction
@@ -77,7 +78,7 @@ import { ZentraMovementFileModule } from './zentra/zentra-transaction/zentra-mov
     ZentraBudgetItemDefinitionModule,
     ZentraExchangeRateModule,
     ZentraInstallmentStatusModule,
-
+    ZentraFinancialNatureModule,
 
     ZentraBrokerModule,
     ZentraSaleTypeModule,

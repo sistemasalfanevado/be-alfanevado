@@ -16,6 +16,10 @@ export class CreateZentraInstallmentDto {
   @IsNotEmpty()
   installmentStatusId: string;
 
+  @IsString()
+  @IsNotEmpty()
+  currencyId: string;
+
   @IsNumber()
   @IsNotEmpty()
   letra: number;
@@ -35,6 +39,14 @@ export class CreateZentraInstallmentDto {
   @IsNumber()
   @IsNotEmpty()
   totalAmount: number;
+
+  @IsNumber()
+  @IsOptional()
+  paidAmount: number;
+  
+  @IsString()
+  @MaxLength(200)
+  description: string;
 
   @IsDateString()
   @IsNotEmpty()

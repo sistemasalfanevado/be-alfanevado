@@ -103,4 +103,16 @@ export class UpdateZentraDocumentDto {
   @IsBoolean()
   @IsOptional()
   hasMovements: boolean;
+
+  @IsNumber()
+  @IsOptional()
+  totalInflow?: number;
+
+  @IsNumber()
+  @IsOptional()
+  totalOutflow?: number;
+
+  @IsString()
+  @IsOptional()
+  financialNatureId?: string;
 }

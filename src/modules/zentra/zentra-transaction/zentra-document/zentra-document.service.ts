@@ -1,28 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 
 import { CreateZentraDocumentDto } from './dto/create-zentra-document.dto';
 import { UpdateZentraDocumentDto } from './dto/update-zentra-document.dto';
 
+import { ZentraInstallmentService } from '../../zentra-transaction/zentra-installment/zentra-installment.service';
 import { ZentraMovementService } from '../../zentra-transaction/zentra-movement/zentra-movement.service';
 import { ZentraScheduledIncomeDocumentService } from '../../zentra-master/zentra-scheduled-income-document/zentra-scheduled-income-document.service';
+import { TRANSACTION_TYPE, CURRENCY } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
 
 @Injectable()
 export class ZentraDocumentService {
 
-  /** Códigos de tipo de transacción */
-  private ENTRY_ID = 'fe14bee6-9be4-43a5-9d8f-7fc032751415';
-  private EXIT_ID = '8b190f70-cc43-42fa-8d7b-6afde6ed10b5';
-
-  /** IDs de moneda */
-  private SOLES_ID = '70684299-05fc-4720-8fca-be3a2ecb67ab';
-  private DOLARES_ID = 'a1831dfc-a1f7-4075-a66e-fe3f5694e1e4';
-
   constructor(private prisma: PrismaService,
     private zentraScheduledIncomeDocumentService: ZentraScheduledIncomeDocumentService,
-    private zentraMovementService: ZentraMovementService
+    private zentraMovementService: ZentraMovementService,
+
+    @Inject(forwardRef(() => ZentraInstallmentService))
+    private readonly zentraInstallmentService: ZentraInstallmentService,
   ) { }
 
   private includeRelations = {
@@ -40,6 +37,11 @@ export class ZentraDocumentService {
     user: true,
     movements: true,
     documentCategory: true,
+    financialNature: {
+      include: {
+        movementCategory: true,
+      }
+    },
   };
 
   /** Mapea un registro de Prisma a DTO */
@@ -87,7 +89,16 @@ export class ZentraDocumentService {
       documentCategoryName: item.documentCategory?.name,
 
       observation: item.observation,
-      idFirebase: item.idFirebase
+      idFirebase: item.idFirebase,
+
+      totalInflow: item.totalInflow ?? 0,
+      totalOutflow: item.totalOutflow ?? 0,
+
+      financialNatureId: item.financialNature?.id ?? null,
+      financialNatureName: item.financialNature?.name ?? null,
+      movementCategoryId: item.financialNature?.movementCategory?.id ?? null,
+      movementCategoryName: item.financialNature?.movementCategory?.name ?? null,
+
     };
   }
 
@@ -103,8 +114,7 @@ export class ZentraDocumentService {
     return results.map(this.mapEntityToDto);
   }
 
-  async create(createDto: CreateZentraDocumentDto) {
-
+  async create(createDto: CreateZentraDocumentDto): Promise<void> {
     const {
       documentStatusId,
       transactionTypeId,
@@ -117,10 +127,11 @@ export class ZentraDocumentService {
       registeredAt,
       documentDate,
       expireDate,
+      financialNatureId,
       ...data
     } = createDto;
 
-    return this.prisma.zentraDocument.create({
+    await this.prisma.zentraDocument.create({
       data: {
         ...data,
         registeredAt: new Date(registeredAt),
@@ -134,9 +145,10 @@ export class ZentraDocumentService {
         currency: { connect: { id: currencyId } },
         user: { connect: { id: userId } },
         documentCategory: { connect: { id: documentCategoryId } },
+        ...(financialNatureId && {
+          financialNature: { connect: { id: financialNatureId } },
+        }),
       },
-
-      include: this.includeRelations
     });
   }
 
@@ -161,7 +173,7 @@ export class ZentraDocumentService {
     return item ? this.mapEntityToDto(item) : null;
   }
 
-  async update(id: string, updateDto: UpdateZentraDocumentDto) {
+  async update(id: string, updateDto: UpdateZentraDocumentDto): Promise<void> {
     const {
       documentStatusId,
       transactionTypeId,
@@ -171,6 +183,7 @@ export class ZentraDocumentService {
       currencyId,
       userId,
       documentCategoryId,
+      financialNatureId, // 👈 añadimos aquí
       expireDate,
       registeredAt,
       documentDate,
@@ -190,14 +203,25 @@ export class ZentraDocumentService {
     if (budgetItemId) updateData.budgetItem = { connect: { id: budgetItemId } };
     if (currencyId) updateData.currency = { connect: { id: currencyId } };
     if (userId) updateData.user = { connect: { id: userId } };
+    if (documentCategoryId) updateData.documentCategory = { connect: { id: documentCategoryId } };
 
-    if (documentCategoryId)
-      updateData.documentCategory = { connect: { id: documentCategoryId } };
-
-    return this.prisma.zentraDocument.update({
+    if (financialNatureId) {
+      updateData.financialNature = { connect: { id: financialNatureId } };
+    }
+    
+    await this.prisma.zentraDocument.update({
       where: { id },
       data: updateData,
-      include: this.includeRelations
+    });
+  }
+
+  async updateStatusAndPaidAmount(id: string, updateDto: any) {
+    return this.prisma.zentraDocument.update({
+      where: { id },
+      data: {
+        paidAmount: updateDto.paidAmount,
+        documentStatusId: updateDto.documentStatusId
+      },
     });
   }
 
@@ -219,10 +243,11 @@ export class ZentraDocumentService {
     documentStatusId?: string;
     partyId?: string;
     documentCategoryId?: string;
+    financialNatureId?: string;
     startDate?: string;
     endDate?: string;
   }) {
-    const { documentStatusId, partyId, documentCategoryId, startDate, endDate } = filters;
+    const { documentStatusId, partyId, documentCategoryId, financialNatureId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -250,9 +275,16 @@ export class ZentraDocumentService {
       where.documentCategory = { id: documentCategoryId };
     }
 
+    if (financialNatureId && financialNatureId.trim() !== '') {
+      where.financialNature = { id: financialNatureId };
+    }
+
     const results = await this.prisma.zentraDocument.findMany({
       where,
       include: this.includeRelations,
+      orderBy: {
+        documentDate: 'desc', // o 'asc'
+      },
     });
 
     return results.map(item => this.mapEntityToDto(item));
@@ -346,28 +378,43 @@ export class ZentraDocumentService {
   }
 
   private async removeDocumentWithScheduledIncome(id: string) {
-    return this.prisma.$transaction(async (tx) => {
-      const document = await tx.zentraDocument.findUnique({
-        where: { id },
-        include: { scheduledIncomeDocuments: true },
-      });
 
-      if (!document) throw new Error("Documento no encontrado");
-
-      await tx.zentraDocument.update({
-        where: { id },
-        data: { deletedAt: new Date() },
-      });
-
-      for (const item of document.scheduledIncomeDocuments) {
-        await this.zentraScheduledIncomeDocumentService.remove(item.id);
-      }
-
-      return { message: "Documento y schedule incomes delete" };
-    }, {
-      timeout: 20000, // Aumentar timeout para operaciones largas
-      maxWait: 15000, // Tiempo máximo de espera para adquirir la transacción
+    const document = await this.prisma.zentraDocument.findMany({
+      where: { id },
+      include: {
+        scheduledIncomeDocuments: {
+          include: {
+            installments: true
+          }
+        }
+      },
     });
+
+    if (document.length === 0) throw new Error("Documento no encontrado");
+
+    // Remueveb los installments con sus movimientos
+    for (let itemDocument of document) {
+      for (let itemScheduledIncomeDocuments of itemDocument.scheduledIncomeDocuments) {
+        for (let itemInstallment of itemScheduledIncomeDocuments.installments) {
+          await this.zentraInstallmentService.remove(itemInstallment.id)
+        }
+      }
+    }
+
+    // Remuven los schedule income document
+    for (let itemDocument of document) {
+      for (let itemScheduledIncomeDocuments of itemDocument.scheduledIncomeDocuments) {
+        await this.zentraScheduledIncomeDocumentService.remove(itemScheduledIncomeDocuments.id);
+      }
+    }
+
+    await this.prisma.zentraDocument.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+
+    return { message: "Documento y schedule incomes delete" };
+
   }
 
   private buildDocumentFilters(filters: {
@@ -491,8 +538,8 @@ export class ZentraDocumentService {
     });
 
     return results.map((doc) => {
-      const originMovement = doc.movements.find((m) => m.transactionTypeId === this.EXIT_ID);
-      const destinyMovement = doc.movements.find((m) => m.transactionTypeId === this.ENTRY_ID);
+      const originMovement = doc.movements.find((m) => m.transactionTypeId === TRANSACTION_TYPE.EXIT);
+      const destinyMovement = doc.movements.find((m) => m.transactionTypeId === TRANSACTION_TYPE.ENTRY);
 
       return {
         id: doc.id,
@@ -739,7 +786,7 @@ export class ZentraDocumentService {
         observation: doc.observation,
         idFirebase: doc.idFirebase,
 
-        scheduledIncomeDocumentId: sched?.id, 
+        scheduledIncomeDocumentId: sched?.id,
 
         brokerId: sched?.broker?.id ?? null,
         brokerName: sched?.broker?.name ?? null,
@@ -751,7 +798,7 @@ export class ZentraDocumentService {
         lotName: sched?.lot?.name ?? null,
         lotCode: sched?.lot?.code ?? null,
 
-        lotComplete: `${sched?.lot?.name ?? null} ${sched?.saleType?.name ?? null}` 
+        lotComplete: `${sched?.lot?.name ?? null} ${sched?.saleType?.name ?? null}`
       };
     });
 
@@ -879,6 +926,17 @@ export class ZentraDocumentService {
 
   async removeScheduledIncome(id: string) {
     return this.removeDocumentWithScheduledIncome(id);
+  }
+
+  async removeScheduledDocument(id: string) {
+
+
+
+
+    return this.prisma.zentraDocument.update({
+      where: { id },
+      data: { deletedAt: new Date() }
+    });
   }
 
 }
