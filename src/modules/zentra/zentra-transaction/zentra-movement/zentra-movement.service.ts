@@ -449,21 +449,21 @@ export class ZentraMovementService {
 
   async findByInstallment(installmentId: string) {
     const results = await this.prisma.zentraMovement.findMany({
-      where: { installmentId },
+      where: { installmentId, deletedAt: null },
       include: this.includeRelations,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { paymentDate: 'desc' },
     });
     return results.map(this.formatMovement);
   }
 
   async findByDocument(documentId: string) {
     const results = await this.prisma.zentraMovement.findMany({
-      where: { documentId },
+      where: { documentId, deletedAt: null }, 
       include: this.includeRelations,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { paymentDate: 'desc' },
     });
     return results.map(this.formatMovement);
   }
-
+  
 
 }

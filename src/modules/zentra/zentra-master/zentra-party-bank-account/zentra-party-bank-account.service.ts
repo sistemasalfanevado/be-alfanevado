@@ -8,11 +8,12 @@ export class ZentraPartyBankAccountService {
   constructor(private prisma: PrismaService) { }
 
   async create(createZentraPartyBankAccountDto: CreateZentraPartyBankAccountDto) {
-    return this.prisma.zentraPartyBankAccount.create({
+    await this.prisma.zentraPartyBankAccount.create({
       data: createZentraPartyBankAccountDto,
     });
-  }
 
+    return { message: "Cuenta bancaria creada correctamente" };
+  }
 
   async findAll(): Promise<any[]> {
     const results = await this.prisma.zentraPartyBankAccount.findMany({
@@ -33,7 +34,6 @@ export class ZentraPartyBankAccountService {
       id: item.id,
       account: item.account,
       cci: item.cci,
-      description: item.description,
 
       bankId: item.bank ? item.bank.id : '',
       bankName: item.bank ? item.bank.name : '',
@@ -66,7 +66,6 @@ export class ZentraPartyBankAccountService {
       id: item.id,
       account: item.account,
       cci: item.cci,
-      description: item.description,
 
       bankId: item.bank ? item.bank.id : null,
       bankName: item.bank ? item.bank.name : null,

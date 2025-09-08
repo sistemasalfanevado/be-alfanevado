@@ -34,7 +34,7 @@ export class ZentraDocumentExpenseService {
   
   async removeMovement(id: string) {
     const movementData = await this.zentraMovementService.findOne(id);
-
+    
     await this.zentraMovementService.remove(id);
 
     if (!movementData || !movementData.id) {

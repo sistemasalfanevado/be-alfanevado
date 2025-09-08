@@ -517,14 +517,12 @@ model ZentraPartyBankAccount {
   id          String   @id @default(uuid())
   account     String   @db.VarChar(30)
   cci         String   @db.VarChar(50)
-  description String   @db.VarChar(100)
 
-  // Relaciones opcionales
-  bank        ZentraBank?    @relation(fields: [bankId], references: [id])
-  bankId      String?        @db.VarChar(36)
+  bank        ZentraBank    @relation(fields: [bankId], references: [id])
+  bankId      String        @db.VarChar(36)
 
-  currency    ZentraCurrency? @relation(fields: [currencyId], references: [id])
-  currencyId  String?         @db.VarChar(36)
+  currency    ZentraCurrency @relation(fields: [currencyId], references: [id])
+  currencyId  String         @db.VarChar(36)
 
   party       ZentraParty     @relation(fields: [partyId], references: [id])
   partyId     String

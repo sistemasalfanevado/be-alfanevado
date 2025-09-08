@@ -26,10 +26,13 @@ export class ZentraPartyService {
   async findAll() {
     const results = await this.prisma.zentraParty.findMany({
       where: { deletedAt: null },
-      include: { partyRole: true },
-      orderBy: {
-        name: 'asc',
+      include: {
+        partyRole: true,
+        _count: {
+          select: { partyBankAccounts: true }
+        }
       },
+      orderBy: { name: 'asc' },
     });
 
     return results.map((item) => ({
@@ -41,15 +44,11 @@ export class ZentraPartyService {
       address: item.address,
 
       partyRoleId: item.partyRole.id,
-      partyRoleName: item.partyRole.name,
-
       completeName: `${item.name} - ${item.document}`,
-
       idFirebase: item.idFirebase,
 
+      bankAccountsCount: item._count.partyBankAccounts,
     }));
-
-
   }
 
   async findOne(id: string) {

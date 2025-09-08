@@ -8,11 +8,7 @@ export class CreateZentraPartyBankAccountDto {
   @IsString()
   @MaxLength(50, { message: 'CCI must not exceed 50 characters' })
   cci: string;
-
-  @IsString()
-  @MaxLength(100, { message: 'Description must not exceed 100 characters' })
-  description: string;
-
+  
   @IsString()
   @IsNotEmpty()
   partyId: string;
@@ -20,10 +16,10 @@ export class CreateZentraPartyBankAccountDto {
   @IsString()
   @IsOptional()
   @MaxLength(36)
-  bankId?: string;
+  bankId: string;
 
   @IsString()
   @IsOptional()
   @MaxLength(36)
-  currencyId?: string;
+  currencyId: string;
 }
