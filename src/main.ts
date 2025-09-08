@@ -26,7 +26,9 @@ async function bootstrap() {
       'https://alfanevado.pe',
       'https://www.alfanevado.pe',
       'https://alfa-nevado-landing-prod.web.app',
-      'https://angular-demo-zentra.web.app',],
+      'https://angular-demo-zentra.web.app',
+      'https://alfa-nevado-v2.web.app'
+      ,],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
