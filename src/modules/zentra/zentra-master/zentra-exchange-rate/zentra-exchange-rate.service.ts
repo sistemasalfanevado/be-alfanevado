@@ -45,6 +45,13 @@ export class ZentraExchangeRateService {
     throw new Error('Restore no implementado. Para soft delete agrega deletedAt al modelo.');
   }
 
+  async findOneByDate(date: Date) {
+    return this.prisma.zentraExchangeRate.findUnique({
+      where: { date },
+    });
+  }
+
+
   /** Obtiene el tipo de cambio del día de hoy */
   async getTodayRate() {
     const today = moment().startOf('day').toDate();
@@ -57,17 +64,6 @@ export class ZentraExchangeRateService {
     }
 
     return rate;
-  }
-
-  /** Inserta o actualiza el tipo de cambio para hoy */
-  async upsertTodayRate(buyRate: number, sellRate: number) {
-    const today = moment().startOf('day').toDate();
-
-    return this.prisma.zentraExchangeRate.upsert({
-      where: { date: today },
-      update: { buyRate, sellRate },
-      create: { date: today, buyRate, sellRate },
-    });
   }
 
   /** Obtiene el tipo de cambio actual desde Sunat */
@@ -92,5 +88,18 @@ export class ZentraExchangeRateService {
       update: { buyRate, sellRate },
     });
   }
+
+  async getLatestRate() {
+    const rate = await this.prisma.zentraExchangeRate.findFirst({
+      orderBy: { date: 'desc' },
+    });
+
+    if (!rate) {
+      throw new Error('No se encontró ningún tipo de cambio registrado.');
+    }
+
+    return rate;
+  }
+
 
 }

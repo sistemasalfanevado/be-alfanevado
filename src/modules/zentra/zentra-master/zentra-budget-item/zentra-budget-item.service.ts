@@ -11,19 +11,12 @@ export class ZentraBudgetItemService {
   async create(createDto: CreateZentraBudgetItemDto) {
     const { currencyId, definitionId, ...data } = createDto;
 
-    return this.prisma.zentraBudgetItem.create({
-      data: {
-        ...data,
-        currency: { connect: { id: currencyId } },
-        definition: { connect: { id: definitionId } }
-      },
-      include: {
-        currency: true,
-        definition: true
-      }
+    await this.prisma.zentraBudgetItem.create({
+      data: createDto,
     });
+
   }
-   
+
   async findAll(): Promise<any[]> {
     const results = await this.prisma.zentraBudgetItem.findMany({
       where: { deletedAt: null },
@@ -46,7 +39,7 @@ export class ZentraBudgetItemService {
       executedDolares: item.executedDolares,
 
       definitionId: item.definition.id,
-      definitionName: item.definition.name, 
+      definitionName: item.definition.name,
 
       currencyId: item.currency.id,
       currencyName: item.currency.name,
@@ -66,23 +59,41 @@ export class ZentraBudgetItemService {
       include: {
         currency: true,
         definition: true
-      }
+      },
+      orderBy: [
+        { definition: { name: 'asc' } },
+        { currency: { name: 'asc' } }
+      ]
     });
 
-    return results.map((item) => ({
-      id: item.id,
-      amount: item.amount,
+    return results.map((item) => {
+      const available = Number(item.amount) - Number(item.executedAmount);
 
-      executedAmount: item.executedAmount,
-      executedSoles: item.executedSoles,
-      executedDolares: item.executedDolares,
+      const formatter = new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 
-      definitionId: item.definition.id,
-      definitionName: item.definition.name,
+      return {
+        id: item.id,
+        amount: item.amount,
+        executedAmount: item.executedAmount,
+        executedSoles: item.executedSoles,
+        executedDolares: item.executedDolares,
 
-      currencyId: item.currency.id,
-      currencyName: item.currency.name
-    }));
+        definitionId: item.definition.id,
+        definitionName: item.definition.name,
+
+        currencyId: item.currency.id,
+        currencyName: item.currency.name,
+
+        available: available,
+        
+        completeName: `${item.definition.name} - ${item.currency.name} - ${formatter.format(available)}`,
+      };
+    });
+
+
   }
 
   // Obtener un presupuesto específico

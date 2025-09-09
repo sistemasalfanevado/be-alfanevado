@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ZentraUsersService } from '../../modules/zentra/zentra-config/zentra-users/zentra-users.service';
+import { ZentraExchangeRateService } from '../../modules/zentra/zentra-master/zentra-exchange-rate/zentra-exchange-rate.service';
+
 
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class ZentraAuthService {
   constructor(
+    private zentraExchangeRateService: ZentraExchangeRateService,
     private zentraUsersService: ZentraUsersService, // Asegúrate de que esto esté inyectado
     private jwtService: JwtService, // Asegúrate de que esto esté inyectado
   ) { }
@@ -50,6 +53,14 @@ export class ZentraAuthService {
 
     const menuItems = Object.values(grouped);
 
+    const today = new Date();
+    const normalizedDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    let exchangeRate = await this.zentraExchangeRateService.findOneByDate(normalizedDate);
+    if (!exchangeRate) {
+      exchangeRate = await this.zentraExchangeRateService.upsertTodayRateFromSunat();
+    }
+
     return {
       access_token: this.jwtService.sign(payload),
       id: user.id,
@@ -60,9 +71,11 @@ export class ZentraAuthService {
       role: user.role?.name,
       roleId: user.role?.id,
       gender: user.genre?.name,
-      genreId: user.genre?.id, 
+      genreId: user.genre?.id,
       email: user.email,
       menuItems,
+      exchangeRate,
     };
   }
 }
+

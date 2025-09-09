@@ -259,6 +259,10 @@ model ZentraUser {
   genre        ZentraGenre? @relation(fields: [genreId], references: [id])
 
   documents    ZentraDocument[]
+  increaseRequests ZentraBudgetIncreaseRequest[]
+
+  // 👇 Relación inversa
+  budgetItemHistories ZentraBudgetItemHistory[]
 
   deletedAt    DateTime?
   createdAt    DateTime     @default(now())
@@ -345,6 +349,7 @@ model ZentraCurrency {
   idFirebase String? @default("") @db.VarChar(30)
   bankAccounts  ZentraBankAccount[]
   partyBankAccounts ZentraPartyBankAccount[]
+  increaseRequests ZentraBudgetIncreaseRequest[]
   
   documents      ZentraDocument[]
   budgetItems    ZentraBudgetItem[]
@@ -541,6 +546,10 @@ model ZentraBudgetItemDefinition {
   category  ZentraBudgetItemCategory @relation(fields: [categoryId], references: [id])
   categoryId String
 
+  // Relación con la naturaleza (Ingreso o Gasto)
+  natureId   String
+  nature     ZentraBudgetNature @relation(fields: [natureId], references: [id])
+
   project   ZentraProject         @relation(fields: [projectId], references: [id])
   projectId String
 
@@ -552,6 +561,20 @@ model ZentraBudgetItemDefinition {
   idFirebase String?              @default("") @db.VarChar(30)
 
   @@map("zentra_budget_item_definition")
+}
+
+model ZentraBudgetNature {
+  id          String   @id @default(uuid())
+  name        String   @db.VarChar(50) // Ej: "Ingreso", "Gasto"
+
+  definitions ZentraBudgetItemDefinition[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+  idFirebase  String?  @default("") @db.VarChar(30)
+
+  @@map("zentra_budget_nature")
 }
 
 model ZentraBudgetItem {
@@ -575,6 +598,10 @@ model ZentraBudgetItem {
   documents       ZentraDocument[]
   movements       ZentraMovement[]
 
+  // 👇 Relación inversa
+  budgetItemHistories ZentraBudgetItemHistory[]
+  increaseRequests ZentraBudgetIncreaseRequest[]
+
   // Metadata
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -583,6 +610,34 @@ model ZentraBudgetItem {
 
   @@map("zentra_budget_item")
 }
+
+model ZentraBudgetItemHistory {
+  id                String   @id @default(uuid())
+
+  // Relación con el presupuesto
+  budgetItemId      String
+  budgetItem        ZentraBudgetItem @relation(fields: [budgetItemId], references: [id])
+
+  // Relación con el usuario que hizo el cambio
+  userId            String
+  user              ZentraUser @relation(fields: [userId], references: [id])
+
+  // Valores del cambio
+  oldAmount         Decimal  @db.Decimal(12, 2) // Monto anterior
+  newAmount         Decimal  @db.Decimal(12, 2) // Monto nuevo
+  percentageChange  Decimal  @db.Decimal(5, 2)  // % de variación respecto al anterior
+
+  registeredAt      DateTime              // Fecha registrada por el usuario
+
+  // Metadata
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
+  idFirebase      String?  @default("") @db.VarChar(30)
+
+  @@map("zentra_budget_item_history")
+}
+
 
 model ZentraBankAccount {
   id           String         @id @default(uuid())
@@ -965,4 +1020,48 @@ model ZentraFinancialNature {
   idFirebase  String? @default("") @db.VarChar(30)
 
   @@map("zentra_financial_nature")
+}
+
+model ZentraBudgetIncreaseRequest {
+  id              String   @id @default(uuid())
+  
+  budgetItemId    String
+  budgetItem      ZentraBudgetItem @relation(fields: [budgetItemId], references: [id])
+
+  currencyId      String
+  currency        ZentraCurrency @relation(fields: [currencyId], references: [id])
+  
+  userId          String
+  user            ZentraUser @relation(fields: [userId], references: [id])
+  
+  requestedAmount Decimal  @db.Decimal(12, 2) // Monto total solicitado en el documento
+  availableAmount Decimal  @db.Decimal(12, 2) // Lo disponible en el presupuesto
+  extraNeeded     Decimal  @db.Decimal(12, 2) // Diferencia: lo que falta
+
+  documentCode        String   @db.VarChar(50)
+  documentDescription String   @db.VarChar(255)
+
+  statusId        String
+  status          ZentraBudgetIncreaseStatus @relation(fields: [statusId], references: [id])
+
+  registeredAt      DateTime              // Fecha registrada por el usuario
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  @@map("zentra_budget_increase_request")
+}
+
+model ZentraBudgetIncreaseStatus {
+  id          String   @id @default(uuid())
+  name        String   @db.VarChar(20)
+
+  requests    ZentraBudgetIncreaseRequest[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  @@map("zentra_budget_increase_status")
 }

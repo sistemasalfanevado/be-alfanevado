@@ -8,9 +8,11 @@ export class ZentraBudgetItemDefinitionService {
   constructor(private prisma: PrismaService) { }
 
   async create(createZentraBudgetItemDefinitionDto: CreateZentraBudgetItemDefinitionDto) {
-    return this.prisma.zentraBudgetItemDefinition.create({
+    await this.prisma.zentraBudgetItemDefinition.create({
       data: createZentraBudgetItemDefinitionDto,
     });
+
+    return { message: 'Definición de partida creada correctamente' };
   }
 
   async findAll() {
@@ -19,6 +21,7 @@ export class ZentraBudgetItemDefinitionService {
       include: {
         category: true,
         project: true,
+        nature: true, // 👈 incluimos la relación con BudgetNature
       },
       orderBy: {
         name: 'asc',
@@ -35,15 +38,40 @@ export class ZentraBudgetItemDefinitionService {
       projectId: item.project.id,
       projectName: item.project.name,
 
-      idFirebase: item.idFirebase,
+      natureId: item.nature?.id ?? null,
+      natureName: item.nature?.name ?? null,
 
+      idFirebase: item.idFirebase,
     }));
   }
 
   async findOne(id: string) {
-    return this.prisma.zentraBudgetItemDefinition.findFirst({
+    const item = await this.prisma.zentraBudgetItemDefinition.findFirst({
       where: { id, deletedAt: null },
+      include: {
+        category: true,
+        project: true,
+        nature: true,
+      },
     });
+
+    if (!item) return null;
+
+    return {
+      id: item.id,
+      name: item.name,
+
+      categoryId: item.category.id,
+      categoryName: item.category.name,
+
+      projectId: item.project.id,
+      projectName: item.project.name,
+
+      natureId: item.nature?.id ?? null,
+      natureName: item.nature?.name ?? null,
+
+      idFirebase: item.idFirebase,
+    };
   }
 
   async update(id: string, updateZentraBudgetItemDefinitionDto: UpdateZentraBudgetItemDefinitionDto) {

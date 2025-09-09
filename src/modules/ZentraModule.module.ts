@@ -26,6 +26,8 @@ import { ZentraBudgetCategoryModule } from './zentra/zentra-master/zentra-budget
 import { ZentraBudgetItemCategoryModule } from './zentra/zentra-master/zentra-budget-item-category/zentra-budget-item-category.module';
 import { ZentraBudgetItemDefinitionModule } from './zentra/zentra-master/zentra-budget-item-definition/zentra-budget-item-definition.module';
 import { ZentraBudgetItemModule } from './zentra/zentra-master/zentra-budget-item/zentra-budget-item.module';
+import { ZentraBudgetNatureModule } from './zentra/zentra-master/zentra-budget-nature/zentra-budget-nature.module';
+import { ZentraBudgetItemHistoryModule } from './zentra/zentra-master/zentra-budget-item-history/zentra-budget-item-history.module';
 
 import { ZentraDocumentStatusModule } from './zentra/zentra-master/zentra-document-status/zentra-document-status.module';
 import { ZentraDocumentCategoryModule } from './zentra/zentra-master/zentra-document-category/zentra-document-category.module';
@@ -39,6 +41,8 @@ import { ZentraScheduledIncomeDocumentModule } from './zentra/zentra-master/zent
 import { ZentraInstallmentStatusModule } from './zentra/zentra-master/zentra-installment-status/zentra-installment-status.module';
 import { ZentraBankStatementModule } from './zentra/zentra-utils/zentra-bank-statement/zentra-bank-statement.module';
 import { ZentraFinancialNatureModule } from './zentra/zentra-master/zentra-financial-nature/zentra-financial-nature.module';
+import { ZentraBudgetIncreaseRequestModule } from './zentra/zentra-master/zentra-budget-increase-request/zentra-budget-increase-request.module';
+import { ZentraBudgetIncreaseStatusModule } from './zentra/zentra-master/zentra-budget-increase-status/zentra-budget-increase-status.module';
 
 
 // Zentra Transaction
@@ -79,6 +83,9 @@ import { ZentraDocumentExpenseModule } from './zentra/zentra-transaction/zentra-
     ZentraBudgetItemModule,
     ZentraPartyBankAccountModule,
     ZentraBudgetItemDefinitionModule,
+    ZentraBudgetNatureModule,
+    ZentraBudgetItemHistoryModule,
+    
     ZentraExchangeRateModule,
     ZentraInstallmentStatusModule,
     ZentraFinancialNatureModule,
@@ -90,6 +97,9 @@ import { ZentraDocumentExpenseModule } from './zentra/zentra-transaction/zentra-
     ZentraDocumentStatusModule,
     ZentraDocumentCategoryModule,
     ZentraMovementStatusModule,
+    ZentraBudgetIncreaseRequestModule,
+    ZentraBudgetIncreaseStatusModule,
+    
 
     ZentraDocumentModule,
     ZentraDocumentFileModule,
