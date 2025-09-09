@@ -20,6 +20,10 @@ export class CreateZentraBudgetIncreaseRequestDto {
   @IsNotEmpty()
   userId: string;
 
+  @IsString()
+  @IsNotEmpty()
+  partyId: string;
+
   @IsNumber()
   @IsNotEmpty()
   requestedAmount: number;

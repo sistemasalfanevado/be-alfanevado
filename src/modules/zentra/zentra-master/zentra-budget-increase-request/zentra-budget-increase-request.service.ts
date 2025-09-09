@@ -3,6 +3,9 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraBudgetIncreaseRequestDto } from './dto/create-zentra-budget-increase-request.dto';
 import { UpdateZentraBudgetIncreaseRequestDto } from './dto/update-zentra-budget-increase-request.dto';
 
+import * as moment from 'moment';
+import { CURRENCY } from 'src/shared/constants/app.constants';
+
 @Injectable()
 export class ZentraBudgetIncreaseRequestService {
   constructor(private prisma: PrismaService) {}
@@ -16,7 +19,8 @@ export class ZentraBudgetIncreaseRequestService {
   }
 
   async findAll() {
-    return this.prisma.zentraBudgetIncreaseRequest.findMany({
+    
+    const results = await this.prisma.zentraBudgetIncreaseRequest.findMany({
       where: {
         deletedAt: null,
       },
@@ -24,12 +28,44 @@ export class ZentraBudgetIncreaseRequestService {
         registeredAt: 'desc',
       },
       include: {
-        budgetItem: true,
+        budgetItem: {
+          include: {
+            definition: true,
+            currency: true,
+          }
+        },
         currency: true,
         user: true,
         status: true,
+        party: true,
       },
     });
+    
+    return results.map((item) => {
+      
+      return {
+        
+        id: item.id,
+        documentCurrency: item.currency.name,
+        userName: `${item.user.firstName} ${item.user.lastName}`,
+        statusName: item.status.name, 
+
+        budgetItemId: item.budgetItem.id,
+        budgetItemName: `${item.budgetItem.definition.name} - ${item.budgetItem.currency.name}`,
+        
+        registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
+        documentDescription: `${item.party.name} ${item.documentCode} ${item.documentDescription}`,
+        
+        requestedAmount: item.requestedAmount,
+        availableAmount: item.availableAmount,
+        extraNeeded: item.extraNeeded,
+
+      };
+    });
+
+
+
+
   }
 
   async findOne(id: string) {

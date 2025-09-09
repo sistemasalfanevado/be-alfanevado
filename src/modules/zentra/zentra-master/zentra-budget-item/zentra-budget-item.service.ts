@@ -87,7 +87,7 @@ export class ZentraBudgetItemService {
         currencyId: item.currency.id,
         currencyName: item.currency.name,
 
-        available: available,
+        available: available, 
         
         completeName: `${item.definition.name} - ${item.currency.name} - ${formatter.format(available)}`,
       };

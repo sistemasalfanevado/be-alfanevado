@@ -510,6 +510,7 @@ model ZentraParty {
   documents     ZentraDocument[]
   
   partyBankAccounts ZentraPartyBankAccount[]
+  increaseRequests ZentraBudgetIncreaseRequest[]
 
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
@@ -1034,6 +1035,9 @@ model ZentraBudgetIncreaseRequest {
   userId          String
   user            ZentraUser @relation(fields: [userId], references: [id])
   
+  partyId         String
+  party           ZentraParty @relation(fields: [partyId], references: [id])
+
   requestedAmount Decimal  @db.Decimal(12, 2) // Monto total solicitado en el documento
   availableAmount Decimal  @db.Decimal(12, 2) // Lo disponible en el presupuesto
   extraNeeded     Decimal  @db.Decimal(12, 2) // Diferencia: lo que falta

@@ -19,6 +19,10 @@ export class UpdateZentraBudgetIncreaseRequestDto {
   @IsOptional()
   userId?: string;
 
+  @IsString()
+  @IsOptional()
+  partyId?: string;
+
   @IsNumber()
   @IsOptional()
   requestedAmount?: number;
