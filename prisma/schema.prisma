@@ -683,7 +683,7 @@ model ZentraDocument {
   documentStatus     ZentraDocumentStatus @relation(fields: [documentStatusId], references: [id])
   documentStatusId   String
 
-  code               String                @db.VarChar(150)
+  code               String                @db.VarChar(250) 
   description        String                @db.VarChar(500)
   
   totalAmount         Decimal  @default(0.00) @db.Decimal(12, 2)

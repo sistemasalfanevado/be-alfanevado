@@ -44,7 +44,9 @@ export class ZentraBudgetItemService {
       currencyId: item.currency.id,
       currencyName: item.currency.name,
 
-      completeName: item.definition.name + ' - ' + item.currency.name
+      completeName: item.definition.name + ' - ' + item.currency.name,
+
+      idFirebase: item.idFirebase
     }));
   }
 
@@ -90,6 +92,7 @@ export class ZentraBudgetItemService {
         available: available, 
         
         completeName: `${item.definition.name} - ${item.currency.name} - ${formatter.format(available)}`,
+        idFirebase: item.idFirebase
       };
     });
 

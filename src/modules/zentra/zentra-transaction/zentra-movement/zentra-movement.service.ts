@@ -170,7 +170,7 @@ export class ZentraMovementService {
       bankAccountName: `${item.bankAccount.bank.name} - ${item.bankAccount.currency.name}`,
 
       installmentId: !item.installment?.id ? '' : item.installment?.id,
-      installmentCuota: !item.installment?.letra ? '': 'Cuota: ' + item.installment?.letra,
+      installmentCuota: !item.installment?.letra ? '' : 'Cuota: ' + item.installment?.letra,
 
       documentUrl: item.documentUrl,
       documentName: item.documentName,
@@ -178,6 +178,8 @@ export class ZentraMovementService {
       executedAmount: item.executedAmount,
       executedSoles: item.executedSoles,
       executedDolares: item.executedDolares,
+
+      idFirebase: !item.idFirebase ? '' : item.idFirebase,
 
     };
   }
@@ -257,7 +259,7 @@ export class ZentraMovementService {
           exchangeRate: { connect: { id: exchangeRate.id } },
           installment: installmentId ? { connect: { id: installmentId } } : undefined,
         },
-        include: this.includeRelations,
+        select: { id: true }, // 👈 solo devolvemos el id
       });
 
       // Ajustar saldos
@@ -288,7 +290,9 @@ export class ZentraMovementService {
   async findOne(id: string) {
     return this.prisma.zentraMovement.findUnique({
       where: { id, deletedAt: null },
-      include: this.includeRelations,
+      include: {
+        installment: true
+      },
     });
   }
 
@@ -404,7 +408,7 @@ export class ZentraMovementService {
         where: { id },
         data: { deletedAt: new Date() },
       });
-    
+
     }, {
       timeout: 20000, // Aumentar timeout para operaciones largas
       maxWait: 15000, // Tiempo máximo de espera para adquirir la transacción
@@ -417,8 +421,6 @@ export class ZentraMovementService {
       data: { deletedAt: null },
     });
   }
-
-
 
   async findByBudgetItem(budgetItemId: string) {
     const results = await this.prisma.zentraMovement.findMany({
@@ -447,6 +449,17 @@ export class ZentraMovementService {
     return results.map(this.formatMovement);
   }
 
+  async findByInstallmentSimple(installmentId: string) {
+    return this.prisma.zentraMovement.findMany({
+      where: { installmentId, deletedAt: null },
+      select: {
+        executedSoles: true,
+        executedDolares: true,
+        paymentDate: true, // si realmente necesitas ordenar
+      },
+    });
+  }
+
   async findByInstallment(installmentId: string) {
     const results = await this.prisma.zentraMovement.findMany({
       where: { installmentId, deletedAt: null },
@@ -456,14 +469,100 @@ export class ZentraMovementService {
     return results.map(this.formatMovement);
   }
 
+  async findByDocumentSimple(documentId: string) {
+    return this.prisma.zentraMovement.findMany({
+      where: { documentId, deletedAt: null },
+      select: {
+        executedSoles: true,
+        executedDolares: true,
+        paymentDate: true,
+        transactionTypeId: true,
+      },
+    });
+  }
+
   async findByDocument(documentId: string) {
     const results = await this.prisma.zentraMovement.findMany({
-      where: { documentId, deletedAt: null }, 
+      where: { documentId, deletedAt: null },
       include: this.includeRelations,
       orderBy: { paymentDate: 'desc' },
     });
     return results.map(this.formatMovement);
   }
-  
+
+
+
+  async findByFilters(filters: {
+    bankAccountId?: string,
+    partyId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    const { partyId, bankAccountId, startDate, endDate } = filters;
+
+    const where: any = {
+      deletedAt: null,
+    };
+
+    if (startDate || endDate) {
+      where.paymentDate = {};
+      if (startDate) {
+        where.paymentDate.gte = moment(startDate).startOf('day').toDate();
+      }
+      if (endDate) {
+        where.paymentDate.lte = moment(endDate).endOf('day').toDate();
+      }
+    }
+
+    if (bankAccountId && bankAccountId.trim() !== '') {
+      where.bankAccount = { id: bankAccountId };
+    }
+
+    if (partyId && partyId.trim() !== '') {
+      where.party = { id: partyId };
+    }
+
+    const results = await this.prisma.zentraMovement.findMany({
+      where,
+      include: this.includeRelations,
+      orderBy: {
+        paymentDate: 'desc',
+      },
+    });
+
+    // agrupar por cuenta bancaria
+    const bankSummary: Record<string, { bankAccountName: string, entry: number, exit: number, balance: number }> = {};
+
+    for (const item of results) {
+      const accountId = item.bankAccount.id;
+
+      if (!bankSummary[accountId]) {
+        bankSummary[accountId] = {
+          bankAccountName: `${item.bankAccount.bank.name} - ${item.bankAccount.currency.name}`,
+          entry: 0,
+          exit: 0,
+          balance: 0,
+        };
+      }
+
+      if (item.transactionType.id === TRANSACTION_TYPE.ENTRY) {
+        bankSummary[accountId].entry += Number(item.amount);
+        bankSummary[accountId].balance += Number(item.amount);
+      } else if (item.transactionType.id === TRANSACTION_TYPE.EXIT) {
+        bankSummary[accountId].exit += Number(item.amount);
+        bankSummary[accountId].balance -= Number(item.amount);
+      }
+    }
+
+    return {
+      movements: results.map(item => this.formatMovement(item)),
+      bankSummary: Object.values(bankSummary),
+    };
+    
+  }
+
+
+
+
 
 }

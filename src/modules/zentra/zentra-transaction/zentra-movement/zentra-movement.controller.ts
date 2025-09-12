@@ -78,4 +78,16 @@ export class ZentraMovementController {
     return this.zentraMovementService.findByDocument(documentId);
   }
 
+  @Post('search')
+  @Public()
+  search(@Body() filters: {
+    partyId?: string;
+    bankAccountId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    return this.zentraMovementService.findByFilters(filters);
+  }
+  
+
 }

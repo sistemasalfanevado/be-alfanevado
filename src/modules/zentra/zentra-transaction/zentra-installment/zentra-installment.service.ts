@@ -37,7 +37,13 @@ export class ZentraInstallmentService {
         },
         currency: {
           select: { id: true, name: true },
-        }
+        },
+        scheduledIncomeDocument: {
+          select: {
+            id: true,
+            documentId: true, // 👈 aquí obtienes el documentId
+          },
+        },
       },
     });
 
@@ -49,15 +55,18 @@ export class ZentraInstallmentService {
       totalAmount: i.totalAmount,
       extra: i.extra,
       dueDate: moment(i.dueDate).format('DD/MM/YYYY'),
+
       installmentStatusId: i.installmentStatus.id,
       installmentStatusName: i.installmentStatus.name,
       scheduledIncomeDocumentId: i.scheduledIncomeDocumentId,
+      documentId: i.scheduledIncomeDocument?.documentId ?? null,
+
       paidAmount: i.paidAmount,
       description: i.description,
 
       currencyId: i.currency.id,
       currencyName: i.currency.name,
-
+      idFirebase: !i.idFirebase ? '' : i.idFirebase
     }));
   }
 
@@ -89,8 +98,8 @@ export class ZentraInstallmentService {
       await this.zentraMovementService.remove(item.id)
     }
 
-    await this.recalculateInstallmentAndDocument(id); 
-    
+    await this.recalculateInstallmentAndDocument(id);
+
     return this.prisma.zentraInstallment.update({
       where: { id },
       data: { deletedAt: new Date() },
@@ -117,7 +126,13 @@ export class ZentraInstallmentService {
         },
         currency: {
           select: { id: true, name: true },
-        }
+        },
+        scheduledIncomeDocument: {
+          select: {
+            id: true,
+            documentId: true, // 👈 aquí obtienes el documentId
+          },
+        },
       },
     });
 
@@ -137,6 +152,7 @@ export class ZentraInstallmentService {
 
       currencyId: i.currency.id,
       currencyName: i.currency.name,
+      documentId: i.scheduledIncomeDocument?.documentId ?? null,
     }));
 
 
@@ -155,6 +171,7 @@ export class ZentraInstallmentService {
       movementStatusId: data.movementStatusId,
       date: data.paymentDate,
       installmentId: data.installmentId,
+      idFirebase: !data.idFirebase ? '' : data.idFirebase,
     });
 
     return this.recalculateInstallmentAndDocument(data.installmentId);
@@ -179,16 +196,17 @@ export class ZentraInstallmentService {
   }
 
   private async recalculateInstallmentAndDocument(installmentId: string) {
-    const installmentData = await this.findOne(installmentId);
+    const installmentData = await this.findOne(installmentId); 
+
 
     const listMovementInstallment =
-      await this.zentraMovementService.findByInstallment(installmentId);
+      await this.zentraMovementService.findByInstallmentSimple(installmentId);
 
     const documentData = await this.zentraDocumentService.findOne(
       installmentData?.scheduledIncomeDocument.documentId + '',
     );
     const listMovementDocument =
-      await this.zentraMovementService.findByDocument(documentData?.id);
+      await this.zentraMovementService.findByDocumentSimple(documentData?.id);
 
     let paidAmountInstallment = 0;
     let paidAmountDocument = 0;
@@ -261,6 +279,7 @@ export class ZentraInstallmentService {
     movementStatusId: string;
     installmentId: string;
     date: string;
+    idFirebase: string;
   }) {
     return this.zentraMovementService.create({
       code: data.code,
@@ -276,10 +295,11 @@ export class ZentraInstallmentService {
       autorizeDate: data.date,
       generateDate: data.date,
       paymentDate: data.date,
+      idFirebase: !data.idFirebase ? '' : data.idFirebase
     });
   }
 
-  
+
 
 
 

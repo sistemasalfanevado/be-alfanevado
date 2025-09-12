@@ -28,6 +28,9 @@ export class ZentraDebtInvestmentService {
       bankAccountId: data.bankAccountId,
       movementStatusId: data.movementStatusId,
       date: data.paymentDate,
+      idFirebase: !data.idFirebase ? '' : data.idFirebase,
+      documentUrl: !data.documentUrl ? '' : data.documentUrl,
+      documentName: !data.documentName ? '' : data.documentName,
     });
     return this.recalculateDocument(data.documentId);
   }
@@ -54,7 +57,7 @@ export class ZentraDebtInvestmentService {
     const documentData = await this.zentraDocumentService.findOne(documentId);
 
     const listMovementDocument =
-      await this.zentraMovementService.findByDocument(documentData?.id);
+      await this.zentraMovementService.findByDocumentSimple(documentData?.id);
 
     let paidAmountDocumentEntry = 0;
     let paidAmountDocumentExit = 0;
@@ -65,16 +68,16 @@ export class ZentraDebtInvestmentService {
       if (item.transactionTypeId === TRANSACTION_TYPE.ENTRY) {
         paidAmountDocumentEntry += Number(
           documentData?.currencyId === CURRENCY.SOLES
-            ? Math.abs(item.executedSoles)
-            : Math.abs(item.executedDolares),
+            ? Math.abs(Number(item.executedSoles))
+            : Math.abs(Number(item.executedDolares)),
         );
       }
 
       if (item.transactionTypeId === TRANSACTION_TYPE.EXIT) {
         paidAmountDocumentExit += Number(
           documentData?.currencyId === CURRENCY.SOLES
-            ? Math.abs(item.executedSoles)
-            : Math.abs(item.executedDolares),
+            ? Math.abs(Number(item.executedSoles))
+            : Math.abs(Number(item.executedDolares)),
         );
       }
     }
@@ -100,6 +103,9 @@ export class ZentraDebtInvestmentService {
     bankAccountId: string;
     movementStatusId: string;
     date: string;
+    idFirebase: string,
+    documentUrl: string,
+    documentName: string,
   }) {
     return this.zentraMovementService.create({
       code: data.code,
@@ -114,6 +120,9 @@ export class ZentraDebtInvestmentService {
       autorizeDate: data.date,
       generateDate: data.date,
       paymentDate: data.date,
+      idFirebase: !data.idFirebase ? '' : data.idFirebase,
+      documentUrl: !data.documentUrl ? '' : data.documentUrl,
+      documentName: !data.documentName ? '' : data.documentName,
     });
   }
 

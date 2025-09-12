@@ -11,7 +11,7 @@ import {
 export class CreateZentraDocumentDto {
   @IsString()
   @IsOptional()
-  @MaxLength(150)
+  @MaxLength(250)
   code: string;
 
   @IsString()
