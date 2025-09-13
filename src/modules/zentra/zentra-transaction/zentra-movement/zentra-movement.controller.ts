@@ -85,9 +85,17 @@ export class ZentraMovementController {
     bankAccountId?: string;
     startDate?: string;
     endDate?: string;
+
   }) {
     return this.zentraMovementService.findByFilters(filters);
   }
-  
+
+  @Get('by-project-profitability/:projectId')
+  @Public()
+  async getByProjectProfitability(@Param('projectId') projectId: string) {
+    return this.zentraMovementService.getYearlyProfitability(projectId);
+  }
+
+
 
 }

@@ -279,10 +279,11 @@ export class ZentraDocumentService {
     partyId?: string;
     documentCategoryId?: string;
     financialNatureId?: string;
+    projectId?: string;
     startDate?: string;
     endDate?: string;
   }) {
-    const { documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, startDate, endDate } = filters;
+    const { documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -317,6 +318,15 @@ export class ZentraDocumentService {
     if (transactionTypeId && transactionTypeId.trim() !== '') {
       where.transactionType = { id: transactionTypeId };
     }
+
+    if (projectId && projectId.trim() !== '') {
+      where.budgetItem = {
+        definition: {
+          projectId: projectId,
+        },
+      };
+    }
+
 
     const results = await this.prisma.zentraDocument.findMany({
       where,

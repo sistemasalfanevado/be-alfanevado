@@ -22,3 +22,10 @@ export const DOCUMENT_STATUS = {
   PAGADO: '98ecd655-c699-4922-97a8-a998931c5226',
   PENDIENTE: 'b194c9a5-4874-4108-a35b-951c898c9c49',
 };
+
+export const BUDGET_NATURE = {
+  GASTO: '230d0901-b36b-4356-b709-1518eccf7b81',
+  COSTO_DIRECTO: 'c2f6ef95-04dd-4a3f-8ecf-1739dd5b4849',
+  INGRESO: 'eccee710-3022-4af9-83d1-42f47a9bb3fb',
+};
+

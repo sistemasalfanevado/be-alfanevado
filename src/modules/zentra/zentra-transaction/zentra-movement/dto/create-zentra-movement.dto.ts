@@ -27,8 +27,8 @@ export class CreateZentraMovementDto {
   documentId: string;
 
   @IsString()
-  @IsNotEmpty()
-  transactionTypeId: string;
+  @IsNotEmpty() 
+  transactionTypeId: string; 
 
   @IsString()
   @IsNotEmpty()

@@ -17,87 +17,6 @@ export class ZentraBudgetItemService {
 
   }
 
-  async findAll(): Promise<any[]> {
-    const results = await this.prisma.zentraBudgetItem.findMany({
-      where: { deletedAt: null },
-      include: {
-        currency: true,
-        definition: true
-      },
-      orderBy: [
-        { definition: { name: 'asc' } },
-        { currency: { name: 'asc' } }
-      ]
-    });
-
-    return results.map((item) => ({
-      id: item.id,
-      amount: item.amount,
-
-      executedAmount: item.executedAmount,
-      executedSoles: item.executedSoles,
-      executedDolares: item.executedDolares,
-
-      definitionId: item.definition.id,
-      definitionName: item.definition.name,
-
-      currencyId: item.currency.id,
-      currencyName: item.currency.name,
-
-      completeName: item.definition.name + ' - ' + item.currency.name,
-
-      idFirebase: item.idFirebase
-    }));
-  }
-
-  async findAllByProject(projectId: string): Promise<any[]> {
-    const results = await this.prisma.zentraBudgetItem.findMany({
-      where: {
-        deletedAt: null,
-        definition: {
-          projectId: projectId
-        }
-      },
-      include: {
-        currency: true,
-        definition: true
-      },
-      orderBy: [
-        { definition: { name: 'asc' } },
-        { currency: { name: 'asc' } }
-      ]
-    });
-
-    return results.map((item) => {
-      const available = Number(item.amount) - Number(item.executedAmount);
-
-      const formatter = new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
-
-      return {
-        id: item.id,
-        amount: item.amount,
-        executedAmount: item.executedAmount,
-        executedSoles: item.executedSoles,
-        executedDolares: item.executedDolares,
-
-        definitionId: item.definition.id,
-        definitionName: item.definition.name,
-
-        currencyId: item.currency.id,
-        currencyName: item.currency.name,
-
-        available: available, 
-        
-        completeName: `${item.definition.name} - ${item.currency.name} - ${formatter.format(available)}`,
-        idFirebase: item.idFirebase
-      };
-    });
-
-
-  }
 
   // Obtener un presupuesto específico
   async findOne(id: string) {
@@ -145,4 +64,129 @@ export class ZentraBudgetItemService {
       data: { deletedAt: null }
     });
   }
+
+
+
+
+
+
+  private mapToDto(item: any, includeCategory = false) {
+    const available =
+      item.amount !== null && item.executedAmount !== null
+        ? Number((Number(item.amount) - Number(item.executedAmount)).toFixed(2))
+        : null;
+
+
+    const formatter = new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+    const base = {
+      id: item.id,
+      amount: item.amount,
+      executedAmount: item.executedAmount,
+      executedSoles: item.executedSoles,
+      executedDolares: item.executedDolares,
+
+      definitionId: item.definition.id,
+      definitionName: item.definition.name,
+
+      currencyId: item.currency.id,
+      currencyName: item.currency.name,
+
+      available: available,
+      completeName: `${item.definition.name} - ${item.currency.name}${available !== null ? ' - ' + formatter.format(available) : ''
+        }`,
+
+      idFirebase: item.idFirebase,
+    };
+
+    if (includeCategory && item.definition.category) {
+      return {
+        ...base,
+        categoryId: item.definition.category.id,
+        categoryName: item.definition.category.name,
+      };
+    }
+
+    return base;
+  }
+
+  async findAll(): Promise<any[]> {
+    const results = await this.prisma.zentraBudgetItem.findMany({
+      where: { deletedAt: null },
+      include: { currency: true, definition: true },
+      orderBy: [
+        { definition: { name: 'asc' } },
+        { currency: { name: 'asc' } },
+      ],
+    });
+
+    return results.map((item) => this.mapToDto(item));
+  }
+
+  async findAllByProject(projectId: string): Promise<any[]> {
+    const results = await this.prisma.zentraBudgetItem.findMany({
+      where: { deletedAt: null, definition: { projectId } },
+      include: { currency: true, definition: true },
+      orderBy: [
+        { definition: { name: 'asc' } },
+        { currency: { name: 'asc' } },
+      ],
+    });
+
+    return results.map((item) => this.mapToDto(item));
+  }
+
+  async findAllByCategory(categoryId: string): Promise<any[]> {
+    const results = await this.prisma.zentraBudgetItem.findMany({
+      where: { deletedAt: null, definition: { categoryId } },
+      include: {
+        currency: true,
+        definition: { include: { category: true } },
+      },
+      orderBy: [
+        { definition: { name: 'asc' } },
+        { currency: { name: 'asc' } },
+      ],
+    });
+
+    return results.map((item) => this.mapToDto(item, true));
+  }
+
+
+  async findByFilters(filters: { natureId?: string; projectId?: string }) {
+    const { natureId, projectId } = filters;
+
+    const where: any = {
+      deletedAt: null,
+      definition: {},
+    };
+
+    if (natureId && natureId.trim() !== '') {
+      where.definition.natureId = natureId;
+    }
+
+    if (projectId && projectId.trim() !== '') {
+      where.definition.projectId = projectId;
+    }
+
+    const results = await this.prisma.zentraBudgetItem.findMany({
+      where,
+      include: {
+        currency: true,
+        definition: {
+          include: {
+            category: true,
+            nature: true,
+            project: true,
+          },
+        },
+      },
+    });
+
+    return results.map((item) => this.mapToDto(item, true));
+  }
+
 }

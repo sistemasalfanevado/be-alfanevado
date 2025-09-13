@@ -287,12 +287,28 @@ model ZentraRole {
   description  String                    @db.VarChar(200)
   users        ZentraUser[]
   permissions  ZentraRolePermission[]
+  actions      ZentraRoleAction[]
   deletedAt    DateTime?
   createdAt    DateTime                  @default(now())
   updatedAt    DateTime                  @updatedAt
   idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_role")
 }
+
+model ZentraRoleAction {
+  id        String     @id @default(uuid())
+  role      ZentraRole @relation(fields: [roleId], references: [id])
+  roleId    String
+
+  name      String                    @db.VarChar(20)
+
+  deletedAt    DateTime?
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @updatedAt
+
+  @@map("zentra_role_action")
+}
+
 
 model ZentraPageGroup {
   id           String       @id @default(uuid())

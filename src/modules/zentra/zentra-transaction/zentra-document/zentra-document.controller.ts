@@ -51,11 +51,15 @@ export class ZentraDocumentController {
     partyId?: string;
     documentCategoryId?: string;
     financialNatureId?: string;
+    projectId?: string;
     startDate?: string;
     endDate?: string;
   }) {
     return this.zentraDocumentService.findByFilters(filters);
   }
+
+
+
 
   @Post('exchange-rate')
   createExchangeRate(@Body() createZentraDocumentDto: any) {

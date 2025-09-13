@@ -5,7 +5,7 @@ import { UpdateZentraMovementDto } from './dto/update-zentra-movement.dto';
 import { ZentraExchangeRateService } from '../../zentra-master/zentra-exchange-rate/zentra-exchange-rate.service';
 import * as moment from 'moment';
 
-import { TRANSACTION_TYPE, CURRENCY } from 'src/shared/constants/app.constants';
+import { TRANSACTION_TYPE, CURRENCY, BUDGET_NATURE } from 'src/shared/constants/app.constants';
 
 
 @Injectable()
@@ -426,7 +426,7 @@ export class ZentraMovementService {
     const results = await this.prisma.zentraMovement.findMany({
       where: { budgetItemId },
       include: this.includeRelations,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { paymentDate: 'desc' },
     });
     return results.map(this.formatMovement);
   }
@@ -530,7 +530,6 @@ export class ZentraMovementService {
       },
     });
 
-    // agrupar por cuenta bancaria
     const bankSummary: Record<string, { bankAccountName: string, entry: number, exit: number, balance: number }> = {};
 
     for (const item of results) {
@@ -558,8 +557,79 @@ export class ZentraMovementService {
       movements: results.map(item => this.formatMovement(item)),
       bankSummary: Object.values(bankSummary),
     };
-    
+
   }
+
+  async getYearlyProfitability(projectId: string) {
+    const startOfYear = moment().startOf('year').toDate();
+    const endOfYear = moment().endOf('year').toDate();
+
+    const movements = await this.prisma.zentraMovement.findMany({
+      where: {
+        deletedAt: null,
+        paymentDate: {
+          gte: startOfYear,
+          lte: endOfYear,
+        },
+        budgetItem: {
+          definition: {
+            projectId,
+          },
+        },
+      },
+      include: {
+        budgetItem: {
+          include: {
+            definition: true,
+          },
+        },
+        transactionType: true,
+      },
+    });
+
+    const ingresos: typeof movements = [];
+    const gastos: typeof movements = [];
+
+    // Clasificamos los movimientos según la naturaleza
+    for (const mov of movements) {
+      const natureId = mov.budgetItem.definition.natureId;
+
+      if (natureId === BUDGET_NATURE.INGRESO) {
+        ingresos.push(mov);
+      } else if (natureId === BUDGET_NATURE.GASTO || natureId === BUDGET_NATURE.COSTO_DIRECTO) {
+        gastos.push(mov);
+      }
+    }
+
+    // Inicializamos el resultado por mes
+    const result = Array.from({ length: 12 }, (_, i) => ({
+      month: i + 1,
+      ingresos: 0,
+      gastos: 0,
+    }));
+
+    // Función para agregar valores mes a mes
+    const addToResult = (arr: typeof movements, key: 'ingresos' | 'gastos') => {
+      arr.forEach((mov) => {
+        const month = mov.paymentDate.getMonth(); // 0 = enero
+        let amount = Number(mov.executedDolares) || 0;
+
+        // Si es salida de dinero y es ingreso, invertimos la lógica
+        if (mov.transactionType.id === TRANSACTION_TYPE.EXIT && key === 'ingresos') {
+          amount = -amount;
+        }
+
+        result[month][key] += amount;
+      });
+    };
+
+    addToResult(ingresos, 'ingresos');
+    addToResult(gastos, 'gastos');
+
+    return result;
+  }
+
+
 
 
 

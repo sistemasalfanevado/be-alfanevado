@@ -8,7 +8,7 @@ import { Public } from '../../../../auth/shared/decorators/public.decorator';
 @Controller('zentra-budget-items')
 //@UseGuards(JwtAuthGuard)
 export class ZentraBudgetItemController {
-  constructor(private readonly zentraBudgetItemService: ZentraBudgetItemService) {}
+  constructor(private readonly zentraBudgetItemService: ZentraBudgetItemService) { }
 
   @Post()
   create(@Body() createZentraBudgetItemDto: CreateZentraBudgetItemDto) {
@@ -45,5 +45,22 @@ export class ZentraBudgetItemController {
   findAllByProject(@Param('projectId') projectId: string) {
     return this.zentraBudgetItemService.findAllByProject(projectId);
   }
+
+  @Get('category/:categoryId')
+  findAllByCategory(@Param('categoryId') categoryId: string) {
+    return this.zentraBudgetItemService.findAllByCategory(categoryId);
+  }
+
+  @Post('search')
+  @Public()
+  search(@Body() filters: {
+    natureId?: string;
+    projectId?: string;
+  }) {
+    return this.zentraBudgetItemService.findByFilters(filters);
+  }
+  
+
+
 
 }
