@@ -25,6 +25,10 @@ export class ZentraCreateUserDto {
   @MaxLength(300)
   profileUrl?: string;
 
+  @IsOptional()
+  @MaxLength(200)
+  mainRoute?: string;
+
   @IsNotEmpty()
   @IsString()
   roleId: string;

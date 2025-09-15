@@ -7,6 +7,8 @@ import { ZentraPageGroupModule } from './zentra/zentra-config/zentra-page-group/
 import { ZentraRoleModule } from './zentra/zentra-config/zentra-role/zentra-role.module';
 import { ZentraRolePermissionModule } from './zentra/zentra-config/zentra-role-permission/zentra-role-permission.module';
 import { ZentraGenreModule } from './zentra/zentra-config/zentra-genre/zentra-genre.module';
+import { ZentraActionModule } from './zentra/zentra-config/zentra-action/zentra-action.module';
+import { ZentraRoleActionModule } from './zentra/zentra-config/zentra-role-action/zentra-role-action.module';
 
 // Zentra Masters
 
@@ -65,6 +67,9 @@ import { ZentraDocumentExpenseModule } from './zentra/zentra-transaction/zentra-
     ZentraRoleModule,
     ZentraRolePermissionModule,
     ZentraGenreModule,
+    ZentraActionModule,
+    ZentraRoleActionModule,
+    
 
     ZentraBankModule,
     ZentraBudgetItemCategoryModule,

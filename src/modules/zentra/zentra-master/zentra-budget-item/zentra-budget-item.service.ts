@@ -65,15 +65,11 @@ export class ZentraBudgetItemService {
     });
   }
 
-
-
-
-
-
+  
   private mapToDto(item: any, includeCategory = false) {
-    const available =
-      item.amount !== null && item.executedAmount !== null
-        ? Number((Number(item.amount) - Number(item.executedAmount)).toFixed(2))
+    const available = 
+      item.amount !== null && item.executedDolares !== null
+        ? Number((Number(item.amount) - Number(Math.abs(item.executedDolares))).toFixed(2))
         : null;
 
 

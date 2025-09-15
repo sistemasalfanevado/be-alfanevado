@@ -11,7 +11,7 @@ export class ZentraUsersService {
   constructor(private prisma: PrismaService) { }
 
   async create(createUserDto: ZentraCreateUserDto) {
-    const { email, password, firstName, lastName, profileUrl, roleId, genreId } = createUserDto;
+    const { email, password, firstName, lastName, profileUrl, mainRoute, roleId, genreId } = createUserDto;
 
     const existingUser = await this.prisma.zentraUser.findUnique({ where: { email } });
     if (existingUser) {
@@ -27,6 +27,7 @@ export class ZentraUsersService {
         email,
         password: hashedPassword,
         profileUrl,
+        mainRoute,
         roleId,
         genreId,
       },
@@ -34,7 +35,7 @@ export class ZentraUsersService {
 
     return user;
   }
-  
+
   async findAll(): Promise<any[]> {
     const results = await this.prisma.zentraUser.findMany({
       where: { deletedAt: null },
@@ -50,6 +51,7 @@ export class ZentraUsersService {
       lastName: item.lastName,
       email: item.email,
       profileUrl: item.profileUrl,
+      mainRoute: item.mainRoute,
 
       roleId: item.role.id,
       roleName: item.role.name,
@@ -91,19 +93,28 @@ export class ZentraUsersService {
     });
   }
 
+
+
   async findByEmail(email: string) {
-    return this.prisma.zentraUser.findUnique({
-      where: { email },
+    const user = await this.prisma.zentraUser.findFirst({
+      where: { email, deletedAt: null }, // Usuario activo
       include: {
         role: {
           include: {
             permissions: {
+              where: { deletedAt: null },
               include: {
                 page: {
                   include: {
-                    pageGroup: true,
+                    pageGroup: true, // no se puede filtrar aquí
                   },
                 },
+              },
+            },
+            roleActions: {
+              where: { deletedAt: null },
+              include: {
+                action: true, // 👈 traemos la acción asociada
               },
             },
           },
@@ -111,6 +122,19 @@ export class ZentraUsersService {
         genre: true,
       },
     });
+
+    if (!user) return null;
+
+    // 🔹 Filtrar manualmente pageGroup y genre porque son belongsTo
+    user.role.permissions = user.role.permissions.filter(
+      (perm) => perm.page?.pageGroup?.deletedAt === null
+    );
+
+    if (user.genre?.deletedAt) {
+      user.genre = null;
+    }
+
+    return user;
   }
 
 

@@ -23,6 +23,7 @@ export class ZentraAuthService {
     return null;
   }
 
+
   async login(user: any) {
     const payload = { email: user.email, sub: user.id };
 
@@ -38,7 +39,7 @@ export class ZentraAuthService {
         acc[group.id] = {
           key: group.name.toLowerCase().replace(/\s+/g, '-'),
           label: group.name,
-          icon: group.name.toLowerCase(), // Aquí puedes mapear tus iconos personalizados
+          icon: group.name.toLowerCase(),
           children: [],
         };
       }
@@ -56,6 +57,9 @@ export class ZentraAuthService {
     const today = new Date();
     const normalizedDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
+    const actions = user.role?.roleActions?.map((ra) => ra.action.id) || [];
+
+
     let exchangeRate = await this.zentraExchangeRateService.findOneByDate(normalizedDate);
     if (!exchangeRate) {
       exchangeRate = await this.zentraExchangeRateService.upsertTodayRateFromSunat();
@@ -68,6 +72,7 @@ export class ZentraAuthService {
       firstName: `${user.firstName}`,
       lastName: `${user.firstName}`,
       profileUrl: user.profileUrl,
+      mainRoute: user.mainRoute,
       role: user.role?.name,
       roleId: user.role?.id,
       gender: user.genre?.name,
@@ -75,6 +80,7 @@ export class ZentraAuthService {
       email: user.email,
       menuItems,
       exchangeRate,
+      actions
     };
   }
 }

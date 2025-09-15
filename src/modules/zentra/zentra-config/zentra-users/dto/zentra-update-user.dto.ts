@@ -21,6 +21,10 @@ export class ZentraUpdateUserDto {
   profileUrl?: string;
 
   @IsOptional()
+  @MaxLength(200)
+  mainRoute?: string;
+
+  @IsOptional()
   @IsString()
   roleId?: string;
 

@@ -490,8 +490,6 @@ export class ZentraMovementService {
     return results.map(this.formatMovement);
   }
 
-
-
   async findByFilters(filters: {
     bankAccountId?: string,
     partyId?: string;
@@ -560,16 +558,14 @@ export class ZentraMovementService {
 
   }
 
-  async getYearlyProfitability(projectId: string) {
-    const startOfYear = moment().startOf('year').toDate();
-    const endOfYear = moment().endOf('year').toDate();
 
-    const movements = await this.prisma.zentraMovement.findMany({
+  private async getMovementsInRange(projectId: string, start: Date, end: Date) {
+    return this.prisma.zentraMovement.findMany({
       where: {
         deletedAt: null,
         paymentDate: {
-          gte: startOfYear,
-          lte: endOfYear,
+          gte: start,
+          lte: end,
         },
         budgetItem: {
           definition: {
@@ -586,51 +582,83 @@ export class ZentraMovementService {
         transactionType: true,
       },
     });
+  }
 
+  private classifyMovements(movements: any[]) {
     const ingresos: typeof movements = [];
     const gastos: typeof movements = [];
 
-    // Clasificamos los movimientos según la naturaleza
     for (const mov of movements) {
       const natureId = mov.budgetItem.definition.natureId;
 
       if (natureId === BUDGET_NATURE.INGRESO) {
         ingresos.push(mov);
-      } else if (natureId === BUDGET_NATURE.GASTO || natureId === BUDGET_NATURE.COSTO_DIRECTO) {
+      } else if (
+        natureId === BUDGET_NATURE.GASTO ||
+        natureId === BUDGET_NATURE.COSTO_DIRECTO
+      ) {
         gastos.push(mov);
       }
     }
 
-    // Inicializamos el resultado por mes
+    return { ingresos, gastos };
+  }
+
+  private sumMovements(
+    arr: any[],
+    key: 'ingresos' | 'gastos',
+    result: any
+  ) {
+    arr.forEach((mov) => {
+      let amount = Number(mov.executedDolares) || 0;
+      if (mov.transactionType.id === TRANSACTION_TYPE.EXIT && key === 'ingresos') {
+        amount = -amount;
+      }
+
+      if (Array.isArray(result)) {
+        // caso anual
+        const month = mov.paymentDate.getMonth(); // 0 = enero
+        result[month][key] += amount;
+      } else {
+        // caso mensual
+        result[key] += amount;
+      }
+    });
+  }
+
+  async getYearlyProfitability(projectId: string) {
+    const startOfYear = moment().startOf('year').toDate();
+    const endOfYear = moment().endOf('year').toDate();
+
+    const movements = await this.getMovementsInRange(projectId, startOfYear, endOfYear);
+    const { ingresos, gastos } = this.classifyMovements(movements);
+
     const result = Array.from({ length: 12 }, (_, i) => ({
       month: i + 1,
       ingresos: 0,
       gastos: 0,
     }));
 
-    // Función para agregar valores mes a mes
-    const addToResult = (arr: typeof movements, key: 'ingresos' | 'gastos') => {
-      arr.forEach((mov) => {
-        const month = mov.paymentDate.getMonth(); // 0 = enero
-        let amount = Number(mov.executedDolares) || 0;
-
-        // Si es salida de dinero y es ingreso, invertimos la lógica
-        if (mov.transactionType.id === TRANSACTION_TYPE.EXIT && key === 'ingresos') {
-          amount = -amount;
-        }
-
-        result[month][key] += amount;
-      });
-    };
-
-    addToResult(ingresos, 'ingresos');
-    addToResult(gastos, 'gastos');
+    this.sumMovements(ingresos, 'ingresos', result);
+    this.sumMovements(gastos, 'gastos', result);
 
     return result;
   }
 
+  async getMonthlyProfitability(projectId: string) {
+    const startOfMonth = moment().startOf('month').toDate();
+    const endOfMonth = moment().endOf('month').toDate();
 
+    const movements = await this.getMovementsInRange(projectId, startOfMonth, endOfMonth);
+    const { ingresos, gastos } = this.classifyMovements(movements);
 
+    const result = { ingresos: 0, gastos: 0 };
+
+    this.sumMovements(ingresos, 'ingresos', result);
+    this.sumMovements(gastos, 'gastos', result);
+
+    return result;
+  }
 
 
 

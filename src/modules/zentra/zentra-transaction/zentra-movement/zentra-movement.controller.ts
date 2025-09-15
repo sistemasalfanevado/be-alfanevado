@@ -90,12 +90,17 @@ export class ZentraMovementController {
     return this.zentraMovementService.findByFilters(filters);
   }
 
-  @Get('by-project-profitability/:projectId')
+  @Get('profitability/yearly/:projectId')
   @Public()
-  async getByProjectProfitability(@Param('projectId') projectId: string) {
+  async getYearlyProfitability(@Param('projectId') projectId: string) {
     return this.zentraMovementService.getYearlyProfitability(projectId);
   }
 
-
+  @Get('profitability/monthly/:projectId')
+  @Public()
+  async getMonthlyProfitability(@Param('projectId') projectId: string) {
+    return this.zentraMovementService.getMonthlyProfitability(projectId);
+  }
+  
 
 }

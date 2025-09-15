@@ -25,7 +25,12 @@ export class ZentraPageService {
       where: { deletedAt: null },
       include: {
         pageGroup: true,
-      }
+      },
+      orderBy: {
+        pageGroup: {
+          name: 'asc', // o 'desc'
+        },
+      },
     });
 
     return results.map((item) => ({
@@ -38,8 +43,6 @@ export class ZentraPageService {
       pageGroupName: item.pageGroup.name,
 
       completeName: item.pageGroup.name + ' ' + item.name,
-
-
     }));
   }
 
