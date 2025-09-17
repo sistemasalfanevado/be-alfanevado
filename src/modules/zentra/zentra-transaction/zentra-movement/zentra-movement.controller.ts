@@ -85,7 +85,7 @@ export class ZentraMovementController {
     bankAccountId?: string;
     startDate?: string;
     endDate?: string;
-
+    budgetItemId?: string;
   }) {
     return this.zentraMovementService.findByFilters(filters);
   }

@@ -297,7 +297,6 @@ model ZentraRole {
   @@map("zentra_role")
 }
 
-
 model ZentraAction {
   id        String               @id @default(uuid())
   name      String               @unique @db.VarChar(50)
@@ -671,7 +670,6 @@ model ZentraBudgetItemHistory {
 
   @@map("zentra_budget_item_history")
 }
-
 
 model ZentraBankAccount {
   id           String         @id @default(uuid())

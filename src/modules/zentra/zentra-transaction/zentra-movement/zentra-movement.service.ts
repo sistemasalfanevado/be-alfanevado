@@ -493,10 +493,11 @@ export class ZentraMovementService {
   async findByFilters(filters: {
     bankAccountId?: string,
     partyId?: string;
+    budgetItemId?: string;
     startDate?: string;
     endDate?: string;
   }) {
-    const { partyId, bankAccountId, startDate, endDate } = filters;
+    const { partyId, bankAccountId, budgetItemId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -510,6 +511,10 @@ export class ZentraMovementService {
       if (endDate) {
         where.paymentDate.lte = moment(endDate).endOf('day').toDate();
       }
+    }
+
+    if (budgetItemId && budgetItemId.trim() !== '') {
+      where.budgetItem = { id: budgetItemId };
     }
 
     if (bankAccountId && bankAccountId.trim() !== '') {

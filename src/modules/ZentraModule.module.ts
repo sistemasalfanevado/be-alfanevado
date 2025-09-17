@@ -11,7 +11,6 @@ import { ZentraActionModule } from './zentra/zentra-config/zentra-action/zentra-
 import { ZentraRoleActionModule } from './zentra/zentra-config/zentra-role-action/zentra-role-action.module';
 
 // Zentra Masters
-
 import { ZentraBankModule } from './zentra/zentra-master/zentra-bank/zentra-bank.module';
 import { ZentraCurrencyModule } from './zentra/zentra-master/zentra-currency/zentra-currency.module';
 import { ZentraDocumentTypeModule } from './zentra/zentra-master/zentra-document-type/zentra-document-type.module';
@@ -56,6 +55,9 @@ import { ZentraMovementFileModule } from './zentra/zentra-transaction/zentra-mov
 import { ZentraDebtInvestmentModule } from './zentra/zentra-transaction/zentra-debt-investment/zentra-debt-investment.module';
 import { ZentraDocumentSalesModule } from './zentra/zentra-transaction/zentra-document-sales/zentra-document-sales.module';
 import { ZentraDocumentExpenseModule } from './zentra/zentra-transaction/zentra-document-expense/zentra-document-expense.module';
+
+// Zentra Ollama
+import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-ollama.module';
 
 
 @Module({
@@ -117,8 +119,8 @@ import { ZentraDocumentExpenseModule } from './zentra/zentra-transaction/zentra-
 
 
     // Utils
-    ZentraBankStatementModule
-
+    ZentraBankStatementModule,
+    ZentraOllamaModule
 
   ],  
 })
