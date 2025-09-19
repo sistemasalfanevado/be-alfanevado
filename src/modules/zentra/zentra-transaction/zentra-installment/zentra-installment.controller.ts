@@ -37,6 +37,8 @@ export class ZentraInstallmentController {
     return this.zentraInstallmentService.findAllByScheduled(scheduledIncomeDocumentId);
   }
 
+
+
   @Put(':id')
   update(
     @Param('id') id: string,
@@ -59,7 +61,7 @@ export class ZentraInstallmentController {
   createMovement(@Body() createDataDto: any) {
     return this.zentraInstallmentService.addMovement(createDataDto);
   }
-  
+
   @Delete('movement/:id')
   removeMovement(@Param('id') id: string) {
     return this.zentraInstallmentService.removeMovement(id);
@@ -69,6 +71,13 @@ export class ZentraInstallmentController {
   updateMovement(@Param('id') id: string, @Body() updateDataDto: any) {
     return this.zentraInstallmentService.updateMovement(id, updateDataDto);
   }
-  
+
+
+  @Post('debts-this-year')
+  @Public()
+  findDebtsThisYear() {
+    return this.zentraInstallmentService.findDebtsThisYear();
+  }
+
 
 }

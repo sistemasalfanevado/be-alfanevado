@@ -196,7 +196,7 @@ export class ZentraInstallmentService {
   }
 
   private async recalculateInstallmentAndDocument(installmentId: string) {
-    const installmentData = await this.findOne(installmentId); 
+    const installmentData = await this.findOne(installmentId);
 
 
     const listMovementInstallment =
@@ -297,6 +297,87 @@ export class ZentraInstallmentService {
       paymentDate: data.date,
       idFirebase: !data.idFirebase ? '' : data.idFirebase
     });
+  }
+
+
+
+  async findDebtsThisYear() {
+    const startOfYear = moment().startOf('year').toDate();
+    const endOfYear = moment().endOf('year').toDate();
+
+    const installments = await this.prisma.zentraInstallment.findMany({
+      where: {
+        deletedAt: null,
+        dueDate: {
+          gte: startOfYear,
+          lte: endOfYear,
+        },
+        installmentStatusId: {
+          not: INSTALLMENT_STATUS.PAGADO, // Solo pendientes o parciales
+        },
+      },
+      include: {
+        currency: { select: { id: true, name: true } },
+        scheduledIncomeDocument: {
+          include: {
+            lot: {
+              select: { id: true, name: true }, // Lote
+            },
+            document: {
+              include: {
+                party: {
+                  select: { id: true, name: true }, // Proveedor
+                },
+                currency: { select: { id: true, name: true } },
+              },
+            },
+          },
+        },
+      },
+      orderBy: { dueDate: 'asc' },
+    });
+
+    // 🔹 Aquí necesitas tu servicio/tipo de cambio (ejemplo simple con fijo 3.8)
+    const exchangeRate = await this.getExchangeRateByDate(new Date());
+    
+    return installments.map(i => {
+      let amountUSD = Number(i.totalAmount);
+
+      // Si la cuota está en SOLES → convertir a dólares
+      if (i.currencyId === CURRENCY.SOLES && exchangeRate) {
+        amountUSD = amountUSD / Number(exchangeRate.buyRate);
+      }
+      
+      return {
+        installmentId: i.id,
+        dueDate: moment(i.dueDate).format('DD/MM/YYYY'),
+        status: i.installmentStatusId,
+        amountUSD: Number(amountUSD.toFixed(2)),
+
+        currencyName: i.currency.name,
+        letra: i.letra,
+        totalAmount: i.totalAmount,
+        paidAmount: i.paidAmount,
+        
+        lot: i.scheduledIncomeDocument?.lot?.name ?? null,
+        provider: i.scheduledIncomeDocument?.document?.party?.name ?? null,
+      };
+    });
+  }
+
+  async getExchangeRateByDate(date: Date) {
+    const normalizedDate = moment(date).startOf('day').toDate();
+
+    let exchangeRate = await this.prisma.zentraExchangeRate.findFirst({
+      where: {
+        date: {
+          lte: normalizedDate,
+        },
+      },
+      orderBy: { date: 'desc' },
+    });
+    
+    return exchangeRate;
   }
 
 

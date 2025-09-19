@@ -936,10 +936,6 @@ export class ZentraDocumentService {
   }
 
   async removeScheduledDocument(id: string) {
-
-
-
-
     return this.prisma.zentraDocument.update({
       where: { id },
       data: { deletedAt: new Date() }
