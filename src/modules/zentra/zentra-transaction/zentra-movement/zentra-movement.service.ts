@@ -148,6 +148,8 @@ export class ZentraMovementService {
 
       documentId: item.document.id,
       documentCode: item.document.code,
+      documentDescription: item.document.description,
+      documentDate: moment(item.document.documentDate).format('DD/MM/YYYY'),
 
       transactionTypeId: item.transactionType.id,
       transactionTypeName: item.transactionType.name,
