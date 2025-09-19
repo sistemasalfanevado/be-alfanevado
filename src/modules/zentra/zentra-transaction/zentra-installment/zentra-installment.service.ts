@@ -341,7 +341,11 @@ export class ZentraInstallmentService {
     const exchangeRate = await this.getExchangeRateByDate(new Date());
     
     return installments.map(i => {
-      let amountUSD = Number(i.totalAmount);
+      let totalAmount = Number(i.totalAmount);
+      let paidAmount = Number(i.paidAmount);
+
+      let amountUSD = Number(Math.abs(totalAmount - paidAmount));
+
 
       // Si la cuota está en SOLES → convertir a dólares
       if (i.currencyId === CURRENCY.SOLES && exchangeRate) {
