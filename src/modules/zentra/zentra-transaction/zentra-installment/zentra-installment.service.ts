@@ -334,12 +334,23 @@ export class ZentraInstallmentService {
           },
         },
       },
-      orderBy: { dueDate: 'asc' },
+      orderBy: [
+        {
+          scheduledIncomeDocument: {
+            lot: {
+              name: 'asc',
+            },
+          },
+        },
+        {
+          letra: 'asc',
+        },
+      ],
     });
 
     // 🔹 Aquí necesitas tu servicio/tipo de cambio (ejemplo simple con fijo 3.8)
     const exchangeRate = await this.getExchangeRateByDate(new Date());
-    
+
     return installments.map(i => {
       let totalAmount = Number(i.totalAmount);
       let paidAmount = Number(i.paidAmount);
@@ -351,7 +362,7 @@ export class ZentraInstallmentService {
       if (i.currencyId === CURRENCY.SOLES && exchangeRate) {
         amountUSD = amountUSD / Number(exchangeRate.buyRate);
       }
-      
+
       return {
         installmentId: i.id,
         dueDate: moment(i.dueDate).format('DD/MM/YYYY'),
@@ -362,7 +373,7 @@ export class ZentraInstallmentService {
         letra: i.letra,
         totalAmount: i.totalAmount,
         paidAmount: i.paidAmount,
-        
+
         lot: i.scheduledIncomeDocument?.lot?.name ?? null,
         provider: i.scheduledIncomeDocument?.document?.party?.name ?? null,
         document: i.scheduledIncomeDocument?.document?.party?.document ?? null,
@@ -381,7 +392,7 @@ export class ZentraInstallmentService {
       },
       orderBy: { date: 'desc' },
     });
-    
+
     return exchangeRate;
   }
 
