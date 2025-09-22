@@ -326,7 +326,7 @@ export class ZentraInstallmentService {
             document: {
               include: {
                 party: {
-                  select: { id: true, name: true }, // Proveedor
+                  select: { id: true, name: true, document: true }, // Proveedor
                 },
                 currency: { select: { id: true, name: true } },
               },
@@ -365,6 +365,7 @@ export class ZentraInstallmentService {
         
         lot: i.scheduledIncomeDocument?.lot?.name ?? null,
         provider: i.scheduledIncomeDocument?.document?.party?.name ?? null,
+        document: i.scheduledIncomeDocument?.document?.party?.document ?? null,
       };
     });
   }
