@@ -34,6 +34,8 @@ import { ZentraDocumentStatusModule } from './zentra/zentra-master/zentra-docume
 import { ZentraDocumentCategoryModule } from './zentra/zentra-master/zentra-document-category/zentra-document-category.module';
 import { ZentraMovementStatusModule } from './zentra/zentra-master/zentra-movement-status/zentra-movement-status.module';
 import { ZentraExchangeRateModule } from './zentra/zentra-master/zentra-exchange-rate/zentra-exchange-rate.module';
+import { ZentraProjectIncomeModule } from './zentra/zentra-master/zentra-project-income/zentra-project-income.module';
+
 
 import { ZentraLandingPageRelationModule } from './zentra/zentra-master/zentra-landing-page-relation/zentra-landing-page-relation.module';
 import { ZentraBrokerModule } from './zentra/zentra-master/zentra-broker/zentra-broker.module';
@@ -55,6 +57,9 @@ import { ZentraMovementFileModule } from './zentra/zentra-transaction/zentra-mov
 import { ZentraDebtInvestmentModule } from './zentra/zentra-transaction/zentra-debt-investment/zentra-debt-investment.module';
 import { ZentraDocumentSalesModule } from './zentra/zentra-transaction/zentra-document-sales/zentra-document-sales.module';
 import { ZentraDocumentExpenseModule } from './zentra/zentra-transaction/zentra-document-expense/zentra-document-expense.module';
+
+import { ZentraTransactionGeneralModule } from './zentra/zentra-transaction/zentra-transaction-general/zentra-transaction-general.module';
+
 
 // Zentra Ollama
 import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-ollama.module';
@@ -106,6 +111,8 @@ import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-o
     ZentraMovementStatusModule,
     ZentraBudgetIncreaseRequestModule,
     ZentraBudgetIncreaseStatusModule,
+
+    ZentraProjectIncomeModule,
     
 
     ZentraDocumentModule,
@@ -116,6 +123,7 @@ import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-o
     ZentraDebtInvestmentModule,
     ZentraDocumentSalesModule,
     ZentraDocumentExpenseModule,
+    ZentraTransactionGeneralModule,
 
 
     // Utils
