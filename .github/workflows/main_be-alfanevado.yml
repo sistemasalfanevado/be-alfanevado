@@ -9,19 +9,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Node.js version
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
+          node-version: '20.x' # 👈 mucho más estable que 22.x en Azure
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build project
         run: npm run build
@@ -29,14 +26,20 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r -x "node_modules/*" -x "*.spec.ts"
+      # 👇 empaquetar solo lo necesario
+      - name: Prepare artifact
+        run: |
+          mkdir output
+          cp -r dist output/
+          cp -r node_modules output/
+          cp package*.json output/
+          # Si usas .env en runtime, NO lo incluyas aquí
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: release.zip
+          path: output
 
   deploy:
     runs-on: ubuntu-latest
@@ -52,9 +55,6 @@ jobs:
           name: node-app
           path: .
 
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
-
       - name: Create .env file
         run: |
           echo "DATABASE_URL_PROD=${{ secrets.DATABASE_URL_PROD }}" > .env
@@ -67,9 +67,6 @@ jobs:
         run: npx prisma migrate deploy
         env:
           DATABASE_URL_PROD: ${{ secrets.DATABASE_URL_PROD }}
-          
-      - name: Wait before deploy
-        run: sleep 15
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
