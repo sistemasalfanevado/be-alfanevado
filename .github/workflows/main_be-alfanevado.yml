@@ -15,7 +15,7 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x' # estable en Azure
+          node-version: '20.x'
 
       - name: Install dependencies
         run: npm ci
@@ -26,17 +26,21 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # 👇 Migraciones ANTES de empaquetar
       - name: Apply database migrations
         run: npx prisma migrate deploy
         env:
-          DATABASE_URL_PROD: ${{ secrets.DATABASE_URL_PROD }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL_PROD }}
 
-      # 👇 Empaquetar todo en un zip listo para producción
+      # 👇 Incluir todos los archivos necesarios para producción
       - name: Prepare artifact
         run: |
-          mkdir output
-          cp -r dist node_modules package*.json output/
+          mkdir -p output
+          # Copiar archivos esenciales
+          cp -r dist node_modules package*.json prisma output/
+          # Incluir tsconfig.json para evitar errores
+          cp tsconfig*.json output/ 2>/dev/null || true
+          # Crear archivo de configuración para Oryx
+          echo '{ "buildCommand": "echo \"No build needed\"", "runCommand": "node dist/main.js" }' > output/oryx.build.json
           cd output
           zip -r ../release.zip .
 
@@ -66,5 +70,5 @@ jobs:
         with:
           app-name: 'be-alfanevado'
           slot-name: 'Production'
-          package: release.zip # 👈 aquí el zip, no la carpeta
+          package: release.zip
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DBA683BB3DAF41749D5C4548B9A609AC }}
