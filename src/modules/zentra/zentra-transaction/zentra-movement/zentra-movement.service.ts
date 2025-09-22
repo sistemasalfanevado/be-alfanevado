@@ -665,7 +665,7 @@ export class ZentraMovementService {
     this.sumMovements(gastos, 'gastos', result);
 
     return result;
-  }
+  } 
 
 
 

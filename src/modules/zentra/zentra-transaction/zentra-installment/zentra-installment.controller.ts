@@ -77,6 +77,6 @@ export class ZentraInstallmentController {
   findDebtsThisYear(@Body() body: { year: number }) {
     return this.zentraInstallmentService.findDebtsYear(body.year);
   }
-
+  
 
 }
