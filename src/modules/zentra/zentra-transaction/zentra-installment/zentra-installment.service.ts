@@ -301,9 +301,11 @@ export class ZentraInstallmentService {
 
 
 
-  async findDebtsThisYear() {
-    const startOfYear = moment().startOf('year').toDate();
-    const endOfYear = moment().endOf('year').toDate();
+  async findDebtsYear(year?: number) {
+    const targetYear = year ?? moment().year();
+
+    const startOfYear = moment().year(targetYear).startOf('year').toDate();
+    const endOfYear = moment().year(targetYear).endOf('year').toDate();
 
     const installments = await this.prisma.zentraInstallment.findMany({
       where: {

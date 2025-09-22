@@ -72,11 +72,10 @@ export class ZentraInstallmentController {
     return this.zentraInstallmentService.updateMovement(id, updateDataDto);
   }
 
-
-  @Post('debts-this-year')
+  @Post('debts-year')
   @Public()
-  findDebtsThisYear() {
-    return this.zentraInstallmentService.findDebtsThisYear();
+  findDebtsThisYear(@Body() body: { year: number }) {
+    return this.zentraInstallmentService.findDebtsYear(body.year);
   }
 
 
