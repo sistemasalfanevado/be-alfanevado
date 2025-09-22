@@ -29,17 +29,13 @@ jobs:
       - name: Apply database migrations
         run: npx prisma migrate deploy
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL_PROD }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL_PROD }}  # 👈 Cambiado aquí
 
-      # 👇 Incluir todos los archivos necesarios para producción
       - name: Prepare artifact
         run: |
           mkdir -p output
-          # Copiar archivos esenciales
           cp -r dist node_modules package*.json prisma output/
-          # Incluir tsconfig.json para evitar errores
           cp tsconfig*.json output/ 2>/dev/null || true
-          # Crear archivo de configuración para Oryx
           echo '{ "buildCommand": "echo \"No build needed\"", "runCommand": "node dist/main.js" }' > output/oryx.build.json
           cd output
           zip -r ../release.zip .
