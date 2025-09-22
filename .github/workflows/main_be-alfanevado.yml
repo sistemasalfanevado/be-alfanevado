@@ -15,25 +15,30 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x' # 👈 mucho más estable que 22.x en Azure
+          node-version: '20.x' # estable en Azure
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build project
-        run: npm run build
-
       - name: Generate Prisma client
         run: npx prisma generate
 
-      # 👇 empaquetar solo lo necesario
+      - name: Build project
+        run: npm run build
+
+      # 👇 Si quieres aplicar migraciones ANTES de desplegar
+      - name: Apply database migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL_PROD: ${{ secrets.DATABASE_URL_PROD }}
+
+      # 👇 Empaquetar solo lo necesario
       - name: Prepare artifact
         run: |
           mkdir output
           cp -r dist output/
           cp -r node_modules output/
           cp package*.json output/
-          # Si usas .env en runtime, NO lo incluyas aquí
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -54,19 +59,6 @@ jobs:
         with:
           name: node-app
           path: .
-
-      - name: Create .env file
-        run: |
-          echo "DATABASE_URL_PROD=${{ secrets.DATABASE_URL_PROD }}" > .env
-          echo "Archivo .env creado con éxito."
-
-      - name: Validate .env file
-        run: cat .env
-
-      - name: Apply database migrations
-        run: npx prisma migrate deploy
-        env:
-          DATABASE_URL_PROD: ${{ secrets.DATABASE_URL_PROD }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
