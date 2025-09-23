@@ -87,10 +87,10 @@ export class ZentraDocumentExpenseService {
     let documentStatusId = DOCUMENT_STATUS.PENDIENTE;
 
     // 🔹 Evaluar estado del documento
-    if (paidTotal >= Number(documentData?.totalAmount)) {
+    if (paidTotal >= Number(documentData?.amountToPay)) {
       documentStatusId = DOCUMENT_STATUS.PAGADO;
     } else if (
-      paidTotal < Number(documentData?.totalAmount) &&
+      paidTotal < Number(documentData?.amountToPay) &&
       paidTotal > 0
     ) {
       documentStatusId = DOCUMENT_STATUS.PENDIENTE;

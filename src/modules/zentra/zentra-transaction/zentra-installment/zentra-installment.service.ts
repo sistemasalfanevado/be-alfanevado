@@ -240,12 +240,12 @@ export class ZentraInstallmentService {
     ) {
       installmentStatusId = INSTALLMENT_STATUS.PARCIAL;
     }
-
+     
     // 🔹 Evaluar estado del documento
-    if (paidAmountDocument >= Number(documentData?.totalAmount)) {
-      documentStatusId = DOCUMENT_STATUS.PAGADO;
+    if (paidAmountDocument >= Number(documentData?.amountToPay)) {
+      documentStatusId = DOCUMENT_STATUS.PAGADO; 
     } else if (
-      paidAmountDocument < Number(documentData?.totalAmount) &&
+      paidAmountDocument < Number(documentData?.amountToPay) &&
       paidAmountDocument > 0
     ) {
       documentStatusId = DOCUMENT_STATUS.PENDIENTE;
