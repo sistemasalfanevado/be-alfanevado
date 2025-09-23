@@ -23,14 +23,30 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build project
-        run: npm run build
-
       - name: Generate Prisma client
         run: npx prisma generate
 
+      - name: Build project
+        run: npm run build
+
+      - name: Create .env file for build
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL_PROD }}" > .env
+          echo "Archivo .env creado con éxito."
+
+      - name: Validate .env file
+        run: cat .env
+
+      # Incluir solo los archivos necesarios para producción
+      - name: Create deployment package
+        run: |
+          mkdir -p deployment
+          cp -r dist package.json package-lock.json prisma deployment/
+          cp .env deployment/
+          cd deployment && npm ci --only=production
+
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -r -x "node_modules/*" -x "*.spec.ts"
+        run: cd deployment && zip -r ../release.zip .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -53,20 +69,11 @@ jobs:
           path: .
 
       - name: Unzip artifact for deployment
-        run: unzip release.zip
+        run: unzip release.zip -d deployment-files
 
-      - name: Create .env file
-        run: |
-          echo "DATABASE_URL_PROD=${{ secrets.DATABASE_URL_PROD }}" > .env
-          echo "Archivo .env creado con éxito."
-
-      - name: Validate .env file
-        run: cat .env
-
-      - name: Apply database migrations
-        run: npx prisma migrate deploy
-        env:
-          DATABASE_URL_PROD: ${{ secrets.DATABASE_URL_PROD }}
+      # Agregar delay para evitar conflicto con SCM
+      - name: Wait before deployment
+        run: sleep 45s
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -74,5 +81,13 @@ jobs:
         with:
           app-name: 'be-alfanevado'
           slot-name: 'Production'
-          package: .
+          package: deployment-files
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DBA683BB3DAF41749D5C4548B9A609AC }}
+
+      # Las migraciones se ejecutarán automáticamente después del deploy
+      - name: Wait for app to be ready
+        run: sleep 30s
+
+      - name: Check application health
+        run: |
+          curl -f https://be-alfanevado.azurewebsites.net/health || echo "App is starting..."
