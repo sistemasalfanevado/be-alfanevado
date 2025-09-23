@@ -41,8 +41,14 @@ jobs:
           [ -f nest-cli.json ] && cp nest-cli.json deployment/ || echo "nest-cli.json not found"
 
           cd deployment
-          # Instalar solo dependencias de producción
-          npm ci --only=production --ignore-scripts
+          # Instalar solo dependencias de producción (sin ignorar scripts)
+          npm ci --only=production
+
+      # Verificar que node_modules tenga NestJS
+      - name: Verify node_modules contents
+        run: |
+          cd deployment
+          ls -la node_modules/@nestjs || echo "@nestjs not found"
 
       # Generar Prisma Client dentro de deployment
       - name: Generate Prisma client in deployment folder
@@ -82,6 +88,8 @@ jobs:
           ls -la deployment-files/
           echo "¿Existe dist/?"
           [ -d deployment-files/dist ] && echo "SÍ" || echo "NO"
+          echo "¿Existe node_modules/@nestjs/core?"
+          [ -d deployment-files/node_modules/@nestjs/core ] && echo "SÍ" || echo "NO"
           echo "¿Existe node_modules/.prisma?"
           [ -d deployment-files/node_modules/.prisma ] && echo "SÍ" || echo "NO"
 
