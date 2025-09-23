@@ -23,18 +23,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Generate Prisma client
-        run: npx prisma generate
-
       - name: Build project
         run: npm run build
-
-      # Verificar que los archivos necesarios existen
-      - name: Check built files
-        run: |
-          ls -la dist/
-          ls -la prisma/
-          [ -f tsconfig.json ] && echo "tsconfig.json exists" || echo "WARNING: tsconfig.json not found"
 
       # Crear package de despliegue con SOLO lo necesario
       - name: Create deployment package
@@ -46,17 +36,19 @@ jobs:
           cp -r prisma/ deployment/
           # Copiar package.json y package-lock.json
           cp package.json package-lock.json deployment/
-          # Copiar tsconfig.json para referencia (si existe)
-          [ -f tsconfig.json ] && cp tsconfig.json deployment/ || echo "tsconfig.json not found"
           # Copiar otros archivos necesarios
+          [ -f tsconfig.json ] && cp tsconfig.json deployment/ || echo "tsconfig.json not found"
           [ -f nest-cli.json ] && cp nest-cli.json deployment/ || echo "nest-cli.json not found"
-          
-          # Instalar solo dependencias de producción
+
           cd deployment
+          # Instalar solo dependencias de producción
           npm ci --only=production --ignore-scripts
-          
-          echo "Contenido del directorio deployment:"
-          ls -la
+
+      # Generar Prisma Client dentro de deployment
+      - name: Generate Prisma client in deployment folder
+        run: |
+          cd deployment
+          npx prisma generate
 
       - name: Zip artifact for deployment
         run: cd deployment && zip -r ../release.zip .
@@ -88,14 +80,10 @@ jobs:
         run: |
           echo "Archivos en deployment-files:"
           ls -la deployment-files/
-          echo "¿Existe tsconfig.json?"
-          [ -f deployment-files/tsconfig.json ] && echo "SÍ" || echo "NO"
           echo "¿Existe dist/?"
           [ -d deployment-files/dist ] && echo "SÍ" || echo "NO"
-
-      # Agregar delay para evitar conflicto SCM
-      - name: Wait before deployment
-        run: sleep 30s
+          echo "¿Existe node_modules/.prisma?"
+          [ -d deployment-files/node_modules/.prisma ] && echo "SÍ" || echo "NO"
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -105,6 +93,3 @@ jobs:
           slot-name: 'Production'
           package: deployment-files
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DBA683BB3DAF41749D5C4548B9A609AC }}
-
-      - name: Wait for app to be ready
-        run: sleep 30s
