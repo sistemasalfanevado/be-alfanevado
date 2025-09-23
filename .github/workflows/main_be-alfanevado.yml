@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -17,10 +19,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '22.x'
-          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Generate Prisma client
         run: npx prisma generate
@@ -28,35 +29,34 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Verify build output
+      # Verificar que los archivos necesarios existen
+      - name: Check built files
         run: |
-          echo "=== Verificación del build ==="
-          echo "Contenido de dist/:"
           ls -la dist/
-          echo "¿Existe main.js?"
-          [ -f dist/main.js ] && echo "✅ SÍ - Build exitoso" || echo "❌ NO - Build falló"
-          echo "Tamaño de dist/:"
-          du -sh dist/
+          ls -la prisma/
+          [ -f tsconfig.json ] && echo "tsconfig.json exists" || echo "WARNING: tsconfig.json not found"
 
-      # Crear package SIN node_modules - Azure los instalará automáticamente
+      # Crear package de despliegue con SOLO lo necesario
       - name: Create deployment package
         run: |
           mkdir -p deployment
-          
-          # Copiar solo lo esencial
+          # Copiar archivos compilados
           cp -r dist/ deployment/
+          # Copiar archivos de Prisma
           cp -r prisma/ deployment/
+          # Copiar package.json y package-lock.json
           cp package.json package-lock.json deployment/
-          cp tsconfig.json deployment/
-          cp nest-cli.json deployment/ 2>/dev/null || echo "nest-cli.json no encontrado"
+          # Copiar tsconfig.json para referencia (si existe)
+          [ -f tsconfig.json ] && cp tsconfig.json deployment/ || echo "tsconfig.json not found"
+          # Copiar otros archivos necesarios
+          [ -f nest-cli.json ] && cp nest-cli.json deployment/ || echo "nest-cli.json not found"
           
-          # Crear archivo de configuración para Azure
-          echo "SCM_DO_BUILD_DURING_DEPLOYMENT=true" > deployment/.env
+          # Instalar solo dependencias de producción
+          cd deployment
+          npm ci --only=production --ignore-scripts
           
-          echo "=== Estructura del deployment ==="
-          ls -la deployment/
-          echo "=== Contenido de dist/ ==="
-          ls -la deployment/dist/
+          echo "Contenido del directorio deployment:"
+          ls -la
 
       - name: Zip artifact for deployment
         run: cd deployment && zip -r ../release.zip .
@@ -84,15 +84,16 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip -d deployment-files
 
-      - name: Verify deployment contents
+      - name: Verify deployment files
         run: |
-          echo "=== Verificación final ==="
           echo "Archivos en deployment-files:"
           ls -la deployment-files/
-          echo "¿dist/main.js existe?" && [ -f deployment-files/dist/main.js ] && echo "✅ SÍ" || echo "❌ NO"
-          echo "¿package.json existe?" && [ -f deployment-files/package.json ] && echo "✅ SÍ" || echo "❌ NO"
-          echo "¿prisma/schema.prisma existe?" && [ -f deployment-files/prisma/schema.prisma ] && echo "✅ SÍ" || echo "❌ NO"
+          echo "¿Existe tsconfig.json?"
+          [ -f deployment-files/tsconfig.json ] && echo "SÍ" || echo "NO"
+          echo "¿Existe dist/?"
+          [ -d deployment-files/dist ] && echo "SÍ" || echo "NO"
 
+      # Agregar delay para evitar conflicto SCM
       - name: Wait before deployment
         run: sleep 30s
 
@@ -103,13 +104,7 @@ jobs:
           app-name: 'be-alfanevado'
           slot-name: 'Production'
           package: deployment-files
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DBA683BB3DAF41749D5C4548B9A609AC }
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DBA683BB3DAF41749D5C4548B9A609AC }}
 
       - name: Wait for app to be ready
-        run: |
-          echo "Esperando que la aplicación se inicie..."
-          sleep 90
-          echo "Verificando estado de la aplicación..."
-          curl -f https://be-alfanevado.azurewebsites.net/ || \
-          curl -f https://be-alfanevado.azurewebsites.net/health || \
-          echo "La aplicación puede estar iniciándose..."
+        run: sleep 30s
