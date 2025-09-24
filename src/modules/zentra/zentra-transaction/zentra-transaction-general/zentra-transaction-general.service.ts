@@ -1,10 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
-
-import { ZentraInstallmentService } from '../../zentra-transaction/zentra-installment/zentra-installment.service';
-import { ZentraMovementService } from '../../zentra-transaction/zentra-movement/zentra-movement.service';
-import { ZentraExchangeRateService } from '../../zentra-master/zentra-exchange-rate/zentra-exchange-rate.service';
-
 import * as moment from 'moment';
 
 import { INSTALLMENT_STATUS, CURRENCY } from 'src/shared/constants/app.constants';
@@ -14,14 +9,11 @@ import { INSTALLMENT_STATUS, CURRENCY } from 'src/shared/constants/app.constants
 export class ZentraTransactionGeneralService {
   constructor(
     private prisma: PrismaService,
-    private zentraInstallmentService: ZentraInstallmentService,
-    private zentraMovementService: ZentraMovementService,
-    private zentraExchangeRateService: ZentraExchangeRateService
   ) { }
 
   async getWeeklySummary(projectId: string) {
-    const startOfMonth = moment().startOf('month');
-    const endOfMonth = moment().endOf('month');
+    const startOfMonth = moment().startOf('month').startOf('day');
+    const endOfMonth = moment().endOf('month').endOf('day');
 
     const projectIncome = await this.prisma.zentraProjectIncome.findFirst({
       where: { deletedAt: null, projectId },
@@ -29,75 +21,144 @@ export class ZentraTransactionGeneralService {
     });
 
     if (!projectIncome) {
-      return { ingresos: [], deudasPendientes: [] };
+      return { weeks: [] };
     }
 
     const ingresoVentasBudgetItemId = projectIncome.budgetItemId;
 
-    // INGRESOS (Movements)
-    const ingresos = await this.prisma.zentraMovement.findMany({
+    // Movements (incomes) - include document.party and installment -> scheduledIncomeDocument.lot
+    const incomes = await this.prisma.zentraMovement.findMany({
       where: {
         deletedAt: null,
         budgetItemId: ingresoVentasBudgetItemId,
         paymentDate: { gte: startOfMonth.toDate(), lte: endOfMonth.toDate() },
       },
-      select: { executedDolares: true, paymentDate: true },
+      select: {
+        executedDolares: true,
+        paymentDate: true,
+        document: {
+          select: {
+            party: { select: { name: true } },
+          },
+        },
+        installment: {
+          select: {
+            letra: true,
+            scheduledIncomeDocument: {
+              select: {
+                lot: { select: { name: true } },
+              },
+            },
+          },
+        },
+      },
     });
 
-    // DEUDAS (Installments)
-    const deudas = await this.prisma.zentraInstallment.findMany({
+    // Installments (pending debts) - include letra and scheduledIncomeDocument.lot and document.party
+    const debts = await this.prisma.zentraInstallment.findMany({
       where: {
         deletedAt: null,
         dueDate: { gte: startOfMonth.toDate(), lte: endOfMonth.toDate() },
         installmentStatusId: { not: INSTALLMENT_STATUS.PAGADO },
         scheduledIncomeDocument: { document: { budgetItemId: ingresoVentasBudgetItemId } },
       },
-      select: { totalAmount: true, paidAmount: true, dueDate: true, currencyId: true },
+      select: {
+        id: true,
+        letra: true,
+        totalAmount: true,
+        paidAmount: true,
+        dueDate: true,
+        currencyId: true,
+        scheduledIncomeDocument: {
+          select: {
+            lot: { select: { name: true } },
+            document: {
+              select: {
+                party: { select: { name: true } },
+              },
+            },
+          },
+        },
+      },
     });
 
     const exchangeRate = await this.getExchangeRateByDate(new Date());
 
-    // Función helper para obtener número de semana y rango de fecha
-    const getWeekInfo = (date: Date) => {
-      const mDate = moment(date);
-      const weekStart = moment.max(startOfMonth, mDate.clone().startOf('week'));
-      const weekEnd = moment.min(endOfMonth, mDate.clone().endOf('week'));
+    // 1) Build explicit week ranges for the month (ISO week: Monday - Sunday)
+    const weeksRanges: Array<{ weekNumber: number; start: moment.Moment; end: moment.Moment; weekRange: string }> = [];
+    let cursor = startOfMonth.clone();
+    let weekIndex = 1;
+    while (cursor.isSameOrBefore(endOfMonth, 'day')) {
+      const weekStart = cursor.clone();
+      // end of ISO week (Sunday). then cap to endOfMonth
+      const weekEnd = moment.min(endOfMonth.clone(), weekStart.clone().endOf('isoWeek'));
+      weeksRanges.push({
+        weekNumber: weekIndex,
+        start: weekStart,
+        end: weekEnd,
+        weekRange: `${weekStart.format('DD/MM')} - ${weekEnd.format('DD/MM')}`,
+      });
+      cursor = weekEnd.clone().add(1, 'day');
+      weekIndex++;
+    }
+
+    // Helper to check inclusive between date and week
+    const isDateInRange = (date: Date | string, start: moment.Moment, end: moment.Moment) =>
+      moment(date).isBetween(start, end, 'day', '[]');
+
+    // 2) For each week, filter incomes and debts and build detail arrays
+    const weeks = weeksRanges.map(w => {
+      // incomes in this week
+      const incomesInWeek = incomes
+        .filter(mov => isDateInRange(mov.paymentDate, w.start, w.end))
+        .map(mov => {
+          const amount = Number(mov.executedDolares ?? 0);
+          return {
+            provider: mov.document?.party?.name?.trim() ?? null,
+            amountDollars: Number(amount.toFixed(2)),
+            paymentDate: moment(mov.paymentDate).format('DD/MM/YYYY'),
+            installmentNumber: mov.installment?.letra ?? null,
+            lot: mov.installment?.scheduledIncomeDocument?.lot?.name ?? null,
+          };
+        });
+
+      const totalIncomes = incomesInWeek.reduce((s, it) => s + Number(it.amountDollars), 0);
+
+      // debts in this week
+      const debtsInWeek = debts
+        .filter(inst => isDateInRange(inst.dueDate, w.start, w.end))
+        .map(inst => {
+          let pending = Math.abs(Number(inst.totalAmount) - Number(inst.paidAmount));
+          // convert from soles to dollars if needed (assuming exchangeRate.buyRate present)
+          if (inst.currencyId === CURRENCY.SOLES && exchangeRate) {
+            pending = pending / Number(exchangeRate.buyRate);
+          }
+          const pendingFixed = Number(pending.toFixed(2));
+          return {
+            provider: inst.scheduledIncomeDocument?.document?.party?.name?.trim() ?? null,
+            dueDate: moment(inst.dueDate).format('DD/MM/YYYY'),
+            installmentNumber: inst.letra,
+            installmentAmount: Number(Number(inst.totalAmount).toFixed(2)),
+            paidAmount: Number(Number(inst.paidAmount).toFixed(2)),
+            pending: pendingFixed,
+            currency: inst.currencyId,
+            lot: inst.scheduledIncomeDocument?.lot?.name ?? null,
+          };
+        });
+
+      const totalPending = debtsInWeek.reduce((s, it) => s + Number(it.pending), 0);
+
       return {
-        weekText: `${weekStart.format('DD/MM')} - ${weekEnd.format('DD/MM')}`,
-        weekNumber: Math.floor(weekStart.diff(startOfMonth, 'days') / 7) + 1,
+        weekNumber: w.weekNumber,
+        weekRange: 'Semana: ' + w.weekNumber + ' - ' + w.weekRange,        // ex: "01/09 - 07/09"
+        incomes: incomesInWeek,        // array of income details for this week
+        pendingDebts: debtsInWeek,     // array of debt details for this week
+        totalIncomes: Number(totalIncomes.toFixed(2)),
+        totalPending: Number(totalPending.toFixed(2)),
       };
-    };
+    });
 
-    // Agrupar ingresos por semana
-    const ingresosSemanal = ingresos.reduce((acc, mov) => {
-      const { weekText, weekNumber } = getWeekInfo(mov.paymentDate);
-      if (!acc[weekNumber]) acc[weekNumber] = { weekText, total: 0 };
-      acc[weekNumber].total += Number(mov.executedDolares);
-      return acc;
-    }, {} as Record<number, { weekText: string; total: number }>);
-
-    // Agrupar deudas por semana
-    const deudasSemanal = deudas.reduce((acc, inst) => {
-      const { weekText, weekNumber } = getWeekInfo(inst.dueDate);
-      let pending = Math.abs(Number(inst.totalAmount) - Number(inst.paidAmount));
-      if (inst.currencyId === CURRENCY.SOLES && exchangeRate) {
-        pending = pending / Number(exchangeRate.buyRate);
-      }
-      if (!acc[weekNumber]) acc[weekNumber] = { weekText, total: 0 };
-      acc[weekNumber].total += pending;
-      return acc;
-    }, {} as Record<number, { weekText: string; total: number }>);
-
-    // Convertir a arrays y ordenar por número de semana
-    const ingresosArray = Object.entries(ingresosSemanal)
-      .map(([weekNumber, data]) => ({ weekNumber: Number(weekNumber), week: data.weekText, total: Number(data.total.toFixed(2)) }))
-      .sort((a, b) => a.weekNumber - b.weekNumber);
-
-    const deudasArray = Object.entries(deudasSemanal)
-      .map(([weekNumber, data]) => ({ weekNumber: Number(weekNumber), week: data.weekText, total: Number(data.total.toFixed(2)) }))
-      .sort((a, b) => a.weekNumber - b.weekNumber);
-
-    return { ingresos: ingresosArray, deudasPendientes: deudasArray };
+    return { weeks };
   }
 
 
