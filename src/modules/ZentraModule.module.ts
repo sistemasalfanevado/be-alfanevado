@@ -9,6 +9,8 @@ import { ZentraRolePermissionModule } from './zentra/zentra-config/zentra-role-p
 import { ZentraGenreModule } from './zentra/zentra-config/zentra-genre/zentra-genre.module';
 import { ZentraActionModule } from './zentra/zentra-config/zentra-action/zentra-action.module';
 import { ZentraRoleActionModule } from './zentra/zentra-config/zentra-role-action/zentra-role-action.module';
+import { ZentraPasswordResetTokenModule } from './zentra/zentra-config/zentra-password-reset-token/zentra-password-reset-token.module';
+
 
 // Zentra Masters
 import { ZentraBankModule } from './zentra/zentra-master/zentra-bank/zentra-bank.module';
@@ -76,6 +78,7 @@ import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-o
     ZentraGenreModule,
     ZentraActionModule,
     ZentraRoleActionModule,
+    ZentraPasswordResetTokenModule,
     
 
     ZentraBankModule,

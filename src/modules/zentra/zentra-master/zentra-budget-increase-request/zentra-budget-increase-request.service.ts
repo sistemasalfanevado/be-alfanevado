@@ -4,7 +4,6 @@ import { CreateZentraBudgetIncreaseRequestDto } from './dto/create-zentra-budget
 import { UpdateZentraBudgetIncreaseRequestDto } from './dto/update-zentra-budget-increase-request.dto';
 
 import * as moment from 'moment';
-import { CURRENCY } from 'src/shared/constants/app.constants';
 
 @Injectable()
 export class ZentraBudgetIncreaseRequestService {
