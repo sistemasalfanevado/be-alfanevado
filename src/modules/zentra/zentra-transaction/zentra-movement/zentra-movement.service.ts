@@ -652,9 +652,10 @@ export class ZentraMovementService {
     return result;
   }
 
-  async getMonthlyProfitability(projectId: string) {
-    const startOfMonth = moment().startOf('month').toDate();
-    const endOfMonth = moment().endOf('month').toDate();
+  async getMonthlyProfitability(projectId: string, month: number, year: number) {
+    
+    const startOfMonth = moment({ year, month }).startOf('month').toDate();
+    const endOfMonth = moment({ year, month }).endOf('month').toDate();
 
     const movements = await this.getMovementsInRange(projectId, startOfMonth, endOfMonth);
     const { ingresos, gastos } = this.classifyMovements(movements);
@@ -665,7 +666,7 @@ export class ZentraMovementService {
     this.sumMovements(gastos, 'gastos', result);
 
     return result;
-  } 
+  }
 
 
 
