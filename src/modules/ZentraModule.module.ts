@@ -18,6 +18,7 @@ import { ZentraCurrencyModule } from './zentra/zentra-master/zentra-currency/zen
 import { ZentraDocumentTypeModule } from './zentra/zentra-master/zentra-document-type/zentra-document-type.module';
 import { ZentraMovementCategoryModule } from './zentra/zentra-master/zentra-movement-category/zentra-movement-category.module';
 import { ZentraProjectModule } from './zentra/zentra-master/zentra-project/zentra-project.module';
+import { ZentraSubProjectModule } from './zentra/zentra-master/zentra-sub-project/zentra-sub-project.module';
 import { ZentraTransactionTypeModule } from './zentra/zentra-master/zentra-transaction-type/zentra-transaction-type.module';
 import { ZentraCompanyModule } from './zentra/zentra-master/zentra-company/zentra-company.module';
 import { ZentraPartyModule } from './zentra/zentra-master/zentra-party/zentra-party.module';
@@ -87,6 +88,7 @@ import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-o
     ZentraDocumentTypeModule,
     ZentraMovementCategoryModule,
     ZentraProjectModule,
+    ZentraSubProjectModule,
     ZentraTransactionTypeModule,
     ZentraCompanyModule,
     ZentraPartyModule,
