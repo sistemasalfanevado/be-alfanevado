@@ -46,4 +46,9 @@ export class ZentraPartyController {
     return this.zentraPartyService.findAllWithPrincipal();
   }
 
+  @Post('simple')
+  findAllSimple(@Body() body: any) {
+    return this.zentraPartyService.findAllSimple();
+  }
+
 }

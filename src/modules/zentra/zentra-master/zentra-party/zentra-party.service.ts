@@ -54,6 +54,18 @@ export class ZentraPartyService {
     }));
   }
 
+  async findAllSimple() {
+    const results = await this.prisma.zentraParty.findMany({
+      where: { deletedAt: null },
+      orderBy: { name: 'asc' },
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+    }));
+  }
+
   async findAllWithPrincipal() {
     const results = await this.prisma.zentraParty.findMany({
       where: { deletedAt: null },
@@ -65,6 +77,7 @@ export class ZentraPartyService {
           },
           include: {
             type: true,
+            bank: true,
           },
           take: 1, // solo la principal
         },
@@ -105,12 +118,14 @@ export class ZentraPartyService {
         bankAccountType: principalBankAccount?.type?.name || null,
         bankAccountCci: principalBankAccount?.cci || null,
 
+        bankName: principalBankAccount ? principalBankAccount.bank.name : null,
+
         partyDocumentComplete: principalDocument
           ? `${principalDocument.documentType?.name || ''}: ${principalDocument.document}`
           : null,
         bankAccountComplete: principalBankAccount
           ? `${principalBankAccount.type?.name || ''}: ${principalBankAccount.account} (CCI: ${principalBankAccount.cci})`
-          : null,
+          : null,  
       };
     });
   }
