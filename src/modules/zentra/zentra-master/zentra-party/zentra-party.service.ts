@@ -10,17 +10,16 @@ export class ZentraPartyService {
   async create(createZentraPartyDto: CreateZentraPartyDto) {
     const { partyRoleId, ...partyData } = createZentraPartyDto;
 
-    return this.prisma.zentraParty.create({
+    await this.prisma.zentraParty.create({
       data: {
         ...partyData,
         partyRole: {
-          connect: { id: partyRoleId }
-        }
+          connect: { id: partyRoleId },
+        },
       },
-      include: {
-        partyRole: true
-      }
     });
+
+    return { message: 'Zentra Party creada correctamente.' };
   }
 
   async findAll() {
@@ -66,11 +65,12 @@ export class ZentraPartyService {
       data.partyRole = { connect: { id: partyRoleId } };
     }
 
-    return this.prisma.zentraParty.update({
+    await this.prisma.zentraParty.update({
       where: { id },
       data,
-      include: { partyRole: true }
     });
+
+    return { message: 'Zentra Party actualizada correctamente.' };
   }
 
   async remove(id: string) {

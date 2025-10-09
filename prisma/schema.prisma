@@ -548,7 +548,6 @@ model ZentraSubProject {
   @@map("zentra_sub_project")
 }
 
-
 model ZentraPartyRole {
   id          String            @id @default(uuid())
   name        String            @db.VarChar(50)
@@ -563,44 +562,129 @@ model ZentraPartyRole {
 model ZentraParty {
   id            String             @id @default(uuid())
   name          String             @db.VarChar(100)
-  document      String             @db.VarChar(30)
+   
   email         String             @db.VarChar(50)
   phone         String             @db.VarChar(20)
   address       String             @db.VarChar(200)
+
+  document      String?            @db.VarChar(30)
+
   partyRole     ZentraPartyRole    @relation(fields: [partyRoleId], references: [id])
   partyRoleId   String
 
-  documents     ZentraDocument[]
-  
+  documents         ZentraDocument[]
+  partyDocuments    ZentraPartyDocument[]
   partyBankAccounts ZentraPartyBankAccount[]
-  increaseRequests ZentraBudgetIncreaseRequest[]
+  increaseRequests  ZentraBudgetIncreaseRequest[]
 
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
   deletedAt     DateTime?
+
   idFirebase String? @default("") @db.VarChar(30)
+  
   @@map("zentra_party")
 }
+
+model ZentraPartyDocumentType {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(100)
+
+  partyDocuments ZentraPartyDocument[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("zentra_party_document_type")
+}
+
+model ZentraPartyDocumentHierarchy {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(100)
+
+  partyDocuments ZentraPartyDocument[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("zentra_party_document_hierarchy")
+}
+
+model ZentraPartyDocument {
+  id                   String                        @id @default(uuid())
+  document             String                        @db.VarChar(50)
+  observation          String                        @db.VarChar(50)
+
+  partyId              String                        
+  party                ZentraParty                   @relation(fields: [partyId], references: [id])
+
+  documentTypeId       String
+  documentType         ZentraPartyDocumentType        @relation(fields: [documentTypeId], references: [id])
+
+  documentHierarchyId  String
+  documentHierarchy    ZentraPartyDocumentHierarchy   @relation(fields: [documentHierarchyId], references: [id])
+
+  createdAt            DateTime                      @default(now())
+  updatedAt            DateTime                      @updatedAt
+  deletedAt            DateTime?
+
+  @@map("zentra_party_document")
+}
+
 
 model ZentraPartyBankAccount {
   id          String   @id @default(uuid())
   account     String   @db.VarChar(30)
   cci         String   @db.VarChar(50)
 
-  bank        ZentraBank    @relation(fields: [bankId], references: [id])
-  bankId      String        @db.VarChar(36)
+  bank        ZentraBank      @relation(fields: [bankId], references: [id])
+  bankId      String          @db.VarChar(36)
 
-  currency    ZentraCurrency @relation(fields: [currencyId], references: [id])
-  currencyId  String         @db.VarChar(36)
+  currency    ZentraCurrency  @relation(fields: [currencyId], references: [id])
+  currencyId  String          @db.VarChar(36)
 
   party       ZentraParty     @relation(fields: [partyId], references: [id])
   partyId     String
 
+  type        ZentraBankAccountType? @relation(fields: [typeId], references: [id])
+  typeId      String? @db.VarChar(36)
+
+  hierarchy   ZentraBankAccountHierarchy? @relation(fields: [hierarchyId], references: [id])
+  hierarchyId String? @db.VarChar(36)
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   deletedAt   DateTime?
 
   @@map("zentra_party_bank_account")
+}
+
+model ZentraBankAccountType {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(100)
+
+  partyBankAccounts ZentraPartyBankAccount[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("zentra_bank_account_type")
+} 
+
+model ZentraBankAccountHierarchy {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(100)
+
+  partyBankAccounts ZentraPartyBankAccount[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("zentra_bank_account_hierarchy")
 }
 
 model ZentraBudgetItemDefinition {

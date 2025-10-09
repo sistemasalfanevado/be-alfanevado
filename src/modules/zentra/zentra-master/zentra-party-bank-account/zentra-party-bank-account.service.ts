@@ -21,12 +21,14 @@ export class ZentraPartyBankAccountService {
       orderBy: [
         { bank: { name: 'asc' } },
         { party: { name: 'asc' } },
-        { currency: { name: 'asc' } }
+        { currency: { name: 'asc' } },
       ],
       include: {
         bank: true,
         currency: true,
         party: true,
+        type: true,       // 🔹 nuevo
+        hierarchy: true,  // 🔹 nuevo
       },
     });
 
@@ -35,30 +37,34 @@ export class ZentraPartyBankAccountService {
       account: item.account,
       cci: item.cci,
 
-      bankId: item.bank ? item.bank.id : '',
-      bankName: item.bank ? item.bank.name : '',
+      bankId: item.bank?.id || '',
+      bankName: item.bank?.name || '',
 
-      partyId: item.party.id,
-      partyName: item.party.name,
+      partyId: item.party?.id || '',
+      partyName: item.party?.name || '',
 
-      currencyId: item.currency ? item.currency.id : '',
-      currencyName: item.currency ? item.currency.name : '',
+      currencyId: item.currency?.id || '',
+      currencyName: item.currency?.name || '',
 
-      completeName: `${item.bank ? item.bank.name : ''} - ${item.party.name} - ${item.currency ? item.currency.name : ''}`
+      typeId: item.type?.id || '',
+      typeName: item.type?.name || '',
 
+      hierarchyId: item.hierarchy?.id || '',
+      hierarchyName: item.hierarchy?.name || '',
+
+      completeName: `${item.bank?.name || ''} - ${item.party?.name || ''} - ${item.currency?.name || ''}`,
     }));
   }
 
   async findByPartyId(partyId: string): Promise<any[]> {
     const results = await this.prisma.zentraPartyBankAccount.findMany({
-      where: {
-        partyId,
-        deletedAt: null,
-      },
+      where: { partyId, deletedAt: null },
       include: {
         bank: true,
         currency: true,
         party: true,
+        type: true,
+        hierarchy: true,
       },
     });
 
@@ -67,14 +73,20 @@ export class ZentraPartyBankAccountService {
       account: item.account,
       cci: item.cci,
 
-      bankId: item.bank ? item.bank.id : null,
-      bankName: item.bank ? item.bank.name : null,
+      bankId: item.bank?.id || null,
+      bankName: item.bank?.name || null,
 
-      partyId: item.party.id,
-      partyName: item.party.name,
+      partyId: item.party?.id || null,
+      partyName: item.party?.name || null,
 
-      currencyId: item.currency ? item.currency.id : null,
-      currencyName: item.currency ? item.currency.name : null,
+      currencyId: item.currency?.id || null,
+      currencyName: item.currency?.name || null,
+
+      typeId: item.type?.id || null,
+      typeName: item.type?.name || null,
+
+      hierarchyId: item.hierarchy?.id || null,
+      hierarchyName: item.hierarchy?.name || null,
     }));
   }
 

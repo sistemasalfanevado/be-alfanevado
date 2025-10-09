@@ -23,8 +23,18 @@ import { ZentraTransactionTypeModule } from './zentra/zentra-master/zentra-trans
 import { ZentraCompanyModule } from './zentra/zentra-master/zentra-company/zentra-company.module';
 import { ZentraPartyModule } from './zentra/zentra-master/zentra-party/zentra-party.module';
 import { ZentraPartyRoleModule } from './zentra/zentra-master/zentra-party-role/zentra-party-role.module';
-import { ZentraBankAccountModule } from './zentra/zentra-master/zentra-bank-account/zentra-bank-account.module';
 import { ZentraPartyBankAccountModule } from './zentra/zentra-master/zentra-party-bank-account/zentra-party-bank-account.module';
+
+import { ZentraPartyDocumentModule } from './zentra/zentra-master/zentra-party-document/zentra-party-document.module';
+import { ZentraPartyDocumentHierarchyModule } from './zentra/zentra-master/zentra-party-document-hierarchy/zentra-party-document-hierarchy.module';
+import { ZentraPartyDocumentTypeModule } from './zentra/zentra-master/zentra-party-document-type/zentra-party-document-type.module';
+
+
+
+import { ZentraBankAccountModule } from './zentra/zentra-master/zentra-bank-account/zentra-bank-account.module';
+import { ZentraBankAccountHierarchyModule } from './zentra/zentra-master/zentra-bank-account-hierarchy/zentra-bank-account-hierarchy.module';
+import { ZentraBankAccountTypeModule } from './zentra/zentra-master/zentra-bank-account-type/zentra-bank-account-type.module';
+
 
 import { ZentraBudgetCategoryModule } from './zentra/zentra-master/zentra-budget-category/zentra-budget-category.module';
 import { ZentraBudgetItemCategoryModule } from './zentra/zentra-master/zentra-budget-item-category/zentra-budget-item-category.module';
@@ -93,7 +103,14 @@ import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-o
     ZentraCompanyModule,
     ZentraPartyModule,
     ZentraPartyRoleModule,
+    ZentraPartyDocumentModule,
+    ZentraPartyDocumentHierarchyModule,
+    ZentraPartyDocumentTypeModule,
+    
+
     ZentraBankAccountModule,
+    ZentraBankAccountHierarchyModule,
+    ZentraBankAccountTypeModule,
     ZentraLandingPageRelationModule,
 
     ZentraBudgetCategoryModule,

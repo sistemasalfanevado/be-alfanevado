@@ -22,4 +22,14 @@ export class CreateZentraPartyBankAccountDto {
   @IsOptional()
   @MaxLength(36)
   currencyId: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(36)
+  typeId?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(36)
+  hierarchyId?: string;
 }
