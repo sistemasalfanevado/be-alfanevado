@@ -10,6 +10,7 @@ import { ZentraGenreModule } from './zentra/zentra-config/zentra-genre/zentra-ge
 import { ZentraActionModule } from './zentra/zentra-config/zentra-action/zentra-action.module';
 import { ZentraRoleActionModule } from './zentra/zentra-config/zentra-role-action/zentra-role-action.module';
 import { ZentraPasswordResetTokenModule } from './zentra/zentra-config/zentra-password-reset-token/zentra-password-reset-token.module';
+import { ZentraTelecreditoConfigModule } from './zentra/zentra-config/zentra-telecredito-config/zentra-telecredito-config.module';
 
 
 // Zentra Masters
@@ -90,6 +91,7 @@ import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-o
     ZentraActionModule,
     ZentraRoleActionModule,
     ZentraPasswordResetTokenModule,
+    ZentraTelecreditoConfigModule,
     
 
     ZentraBankModule,

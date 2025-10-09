@@ -500,7 +500,8 @@ model ZentraCompany {
   id            String            @id @default(uuid())
   name          String            @db.VarChar(50)
   projects      ZentraProject[]
-  
+  telecreditoConfigs ZentraTelecreditoConfig[]
+
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   deletedAt     DateTime?
@@ -1231,4 +1232,26 @@ model ZentraProjectIncome {
   deletedAt   DateTime?
 
   @@map("zentra_project_income")
+}
+
+model ZentraTelecreditoConfig {
+  id              String   @id @default(uuid())
+
+  company         ZentraCompany  @relation(fields: [companyId], references: [id])
+  companyId       String
+
+  clientCode      String   // Código de cliente asignado por el BCP
+  payrollType     String   // Tipo de planilla (ej: PROV)
+
+  recordType      String   @default("C") // Siempre será "C" para el registro de cargo
+  accountType     String   // Tipo de cuenta de cargo: "C" = corriente, "A" = ahorro
+  accountNumber   String   // Número de cuenta de cargo del BCP
+  reference       String?  // Referencia de la planilla
+
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
+
+  @@map("zentra_telecredito_config")
 }
