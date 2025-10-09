@@ -7,7 +7,6 @@ export class CreateZentraPartyDocumentDto {
   document: string;
 
   @IsString()
-  @IsNotEmpty()
   @MaxLength(50)
   observation: string;
 

@@ -23,8 +23,9 @@ export class ZentraPartyDocumentHierarchyService {
     return this.prisma.zentraPartyDocumentHierarchy.findMany({
       where: { deletedAt: null },
       orderBy: { name: 'asc' },
+      select: { id: true, name: true },
     });
-  }
+  } 
 
   // Obtener una jerarquía por ID
   async findOne(id: string) {

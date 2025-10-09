@@ -3,6 +3,9 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraPartyDto } from './dto/create-zentra-party.dto';
 import { UpdateZentraPartyDto } from './dto/update-zentra-party.dto';
 
+import { BANK_ACCOUNT_HIERARCHY, PARTY_DOCUMENT_HIERARCHY } from 'src/shared/constants/app.constants';
+
+
 @Injectable()
 export class ZentraPartyService {
   constructor(private prisma: PrismaService) { }
@@ -43,11 +46,73 @@ export class ZentraPartyService {
       address: item.address,
 
       partyRoleId: item.partyRole.id,
-      completeName: `${item.name} - ${item.document}`,
+      completeName: `${item.name}`,
       idFirebase: item.idFirebase,
+
 
       bankAccountsCount: item._count.partyBankAccounts,
     }));
+  }
+
+  async findAllWithPrincipal() {
+    const results = await this.prisma.zentraParty.findMany({
+      where: { deletedAt: null },
+      include: {
+        partyRole: true,
+        partyBankAccounts: {
+          where: {
+            hierarchyId: BANK_ACCOUNT_HIERARCHY.PRINCIPAL,
+          },
+          include: {
+            type: true,
+          },
+          take: 1, // solo la principal
+        },
+        partyDocuments: {
+          where: {
+            documentHierarchyId: PARTY_DOCUMENT_HIERARCHY.PRINCIPAL,
+          },
+          include: {
+            documentType: true,
+          },
+          take: 1, // solo el principal
+        },
+      },
+      orderBy: { name: 'asc' },
+    });
+
+    return results.map((item) => {
+      const principalDocument = item.partyDocuments[0];
+      const principalBankAccount = item.partyBankAccounts[0];
+
+      return {
+        id: item.id,
+        name: item.name,
+
+        // Documento principal
+        partyDocument: principalDocument?.document || null,
+        partyDocumentType: principalDocument?.documentType?.name || null,
+
+        email: item.email,
+        phone: item.phone,
+        address: item.address,
+        completeName: `${item.name}`,
+        document: item.document,
+        idFirebase: item.idFirebase,
+
+        // Cuenta bancaria principal
+        bankAccountNumber: principalBankAccount?.account || null,
+        bankAccountType: principalBankAccount?.type?.name || null,
+        bankAccountCci: principalBankAccount?.cci || null,
+
+        partyDocumentComplete: principalDocument
+          ? `${principalDocument.documentType?.name || ''}: ${principalDocument.document}`
+          : null,
+        bankAccountComplete: principalBankAccount
+          ? `${principalBankAccount.type?.name || ''}: ${principalBankAccount.account} (CCI: ${principalBankAccount.cci})`
+          : null,
+      };
+    });
   }
 
   async findOne(id: string) {

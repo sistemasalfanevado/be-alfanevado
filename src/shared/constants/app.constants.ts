@@ -29,3 +29,23 @@ export const BUDGET_NATURE = {
   INGRESO: 'eccee710-3022-4af9-83d1-42f47a9bb3fb',
 };
 
+
+export const BANK_ACCOUNT_TYPE = {
+  AHORROS: 'c79b9e7b-abbc-4964-8d46-4839435d0480',
+  CORRIENTE: '425eeb84-5e22-4a4c-85c7-3cd96dec353b',
+};
+
+export const BANK_ACCOUNT_HIERARCHY = {
+  PRINCIPAL: '75edf088-d3fe-41f5-89f2-a1081b141ae2',
+  ADICIONAL: 'f8cf5fc1-a81c-44b8-9368-8e5bb776af1c',
+};
+
+export const PARTY_DOCUMENT_TYPE = {
+  DNI: 'ed319043-ce78-4c2e-bd90-6b63e6f6121a',
+  RUC: '90450094-345b-4535-8536-15dc8e530ba8',
+};
+
+export const PARTY_DOCUMENT_HIERARCHY = {
+  PRINCIPAL: 'aa3de1fb-9fd2-4d93-b154-a7361171b9e3',
+  ADICIONAL: 'd9c9dad5-3993-43e1-ba6c-ac25668b8034',
+};

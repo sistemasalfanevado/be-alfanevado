@@ -23,6 +23,7 @@ export class ZentraPartyDocumentTypeService {
     return this.prisma.zentraPartyDocumentType.findMany({
       where: { deletedAt: null },
       orderBy: { name: 'asc' },
+      select: { id: true, name: true },
     });
   }
 

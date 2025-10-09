@@ -24,16 +24,59 @@ export class ZentraPartyDocumentService {
 
   // Listar todos los documentos (no eliminados)
   async findAll() {
-    return this.prisma.zentraPartyDocument.findMany({
+    
+    const results = await this.prisma.zentraPartyDocument.findMany({
       where: { deletedAt: null },
       include: {
         party: true,
         documentType: true,
         documentHierarchy: true,
       },
-      orderBy: { createdAt: 'desc' },
     });
+    
+    return results.map((item) => ({
+      id: item.id,
+      document: item.document,
+      observation: item.observation,
+
+      partyId: item.party?.id || null,
+      partyName: item.party?.name || null,
+      
+      documentTypeId: item.documentType?.id || null,
+      documentTypeName: item.documentType?.name || null,
+
+      documentHierarchyId: item.documentHierarchy?.id || null,
+      documentHierarchyName: item.documentHierarchy?.name || null,
+    }));
+
   }
+
+  async findByPartyId(partyId: string): Promise<any[]> {
+    const results = await this.prisma.zentraPartyDocument.findMany({
+      where: { partyId, deletedAt: null },
+      include: {
+        party: true,
+        documentType: true,
+        documentHierarchy: true,
+      },
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      document: item.document,
+      observation: item.observation,
+
+      partyId: item.party?.id || null,
+      partyName: item.party?.name || null,
+      
+      documentTypeId: item.documentType?.id || null,
+      documentTypeName: item.documentType?.name || null,
+
+      documentHierarchyId: item.documentHierarchy?.id || null,
+      documentHierarchyName: item.documentHierarchy?.name || null,
+    }));
+  }
+
 
   // Obtener un documento por ID
   async findOne(id: string) {

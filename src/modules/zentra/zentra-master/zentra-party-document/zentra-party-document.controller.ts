@@ -54,4 +54,9 @@ export class ZentraPartyDocumentController {
     await this.zentraPartyDocumentService.restore(id);
     return { message: 'Documento de parte restaurado correctamente' };
   }
+
+  @Get('party/:partyId')
+  findByParty(@Param('partyId') partyId: string) {
+    return this.zentraPartyDocumentService.findByPartyId(partyId);
+  }
 }
