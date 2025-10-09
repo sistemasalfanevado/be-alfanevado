@@ -240,10 +240,10 @@ export class ZentraInstallmentService {
     ) {
       installmentStatusId = INSTALLMENT_STATUS.PARCIAL;
     }
-     
+
     // 🔹 Evaluar estado del documento
     if (paidAmountDocument >= Number(documentData?.amountToPay)) {
-      documentStatusId = DOCUMENT_STATUS.PAGADO; 
+      documentStatusId = DOCUMENT_STATUS.PAGADO;
     } else if (
       paidAmountDocument < Number(documentData?.amountToPay) &&
       paidAmountDocument > 0
@@ -381,6 +381,51 @@ export class ZentraInstallmentService {
         document: i.scheduledIncomeDocument?.document?.party?.document ?? null,
       };
     });
+  }
+
+  async findDebtsAll() {
+    const installments = await this.prisma.zentraInstallment.findMany({
+      where: {
+        deletedAt: null,
+        installmentStatusId: {
+          not: INSTALLMENT_STATUS.PAGADO, // Solo pendientes o parciales
+        },
+      },
+      include: {
+        currency: { select: { id: true, name: true } },
+      },
+      orderBy: [
+        {
+          scheduledIncomeDocument: {
+            lot: {
+              name: 'asc',
+            },
+          },
+        },
+        {
+          letra: 'asc',
+        },
+      ],
+    });
+
+    const exchangeRate = await this.getExchangeRateByDate(new Date());
+
+    let totalDebtUSD = 0;
+
+    for (const i of installments) {
+      let totalAmount = Number(i.totalAmount);
+      let paidAmount = Number(i.paidAmount);
+
+      let amountUSD = Math.abs(totalAmount - paidAmount);
+
+      if (i.currencyId === CURRENCY.SOLES && exchangeRate) {
+        amountUSD = amountUSD / Number(exchangeRate.buyRate);
+      }
+
+      totalDebtUSD += amountUSD;
+    }
+
+    return Number(totalDebtUSD.toFixed(2));
   }
 
   async getExchangeRateByDate(date: Date) {

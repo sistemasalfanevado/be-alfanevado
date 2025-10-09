@@ -66,17 +66,35 @@ export class ZentraExchangeRateService {
     return rate;
   }
 
-  /** Obtiene el tipo de cambio actual desde Sunat */
+  /** Obtiene el tipo de cambio actual desde SUNAT, o usa el último guardado si falla */
   async fetchTodayRateFromSunat() {
     const url = 'https://www.sunat.gob.pe/a/txt/tipoCambio.txt';
-    const { data } = await axios.get(url);
-    // data ejemplo: "21/08/2025|3.527|3.539|"
-    const [dateStr, buyStr, sellStr] = data.trim().split('|');
-    const buyRate = parseFloat(buyStr);
-    const sellRate = parseFloat(sellStr);
-    const date = moment(dateStr, 'DD/MM/YYYY').startOf('day').toDate();
 
-    return { date, buyRate, sellRate };
+    try {
+      const { data } = await axios.get(url, { timeout: 5000 });
+
+      const [dateStr, buyStr, sellStr] = data.trim().split('|');
+      const buyRate = parseFloat(buyStr);
+      const sellRate = parseFloat(sellStr);
+      const date = moment(dateStr, 'DD/MM/YYYY').startOf('day').toDate();
+
+      // Devolvemos el tipo de cambio obtenido de SUNAT
+      return { date, buyRate, sellRate };
+    } catch (error) {
+
+      // Si falla, usamos el último tipo de cambio guardado en BD
+      const lastExchangeRate = await this.getExchangeRateByDate(new Date());
+
+      if (!lastExchangeRate) {
+        throw new Error('No se pudo obtener tipo de cambio ni de SUNAT ni de la base de datos.');
+      }
+
+      return {
+        date: lastExchangeRate.date,
+        buyRate: lastExchangeRate.buyRate,
+        sellRate: lastExchangeRate.sellRate,
+      };
+    }
   }
 
   /** Inserta o actualiza el tipo de cambio para hoy */
@@ -99,6 +117,21 @@ export class ZentraExchangeRateService {
     }
 
     return rate;
+  }
+
+  async getExchangeRateByDate(date: Date) {
+    const normalizedDate = moment(date).startOf('day').toDate();
+
+    let exchangeRate = await this.prisma.zentraExchangeRate.findFirst({
+      where: {
+        date: {
+          lte: normalizedDate,
+        },
+      },
+      orderBy: { date: 'desc' },
+    });
+
+    return exchangeRate;
   }
 
 

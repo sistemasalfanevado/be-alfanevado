@@ -763,6 +763,7 @@ export class ZentraDocumentService {
     return { message: 'Scheduled Income creado correctamente' };
   }
 
+  
   async findByFiltersScheduledIncome(filters: {
     documentCategoryId?: string;
     documentStatusId?: string;
@@ -771,6 +772,8 @@ export class ZentraDocumentService {
     endDate?: string;
   }) {
     const where = this.buildDocumentFilters(filters);
+
+
 
     const results = await this.prisma.zentraDocument.findMany({
       where,
@@ -806,7 +809,7 @@ export class ZentraDocumentService {
       const sched = doc.scheduledIncomeDocuments?.[0];
 
       return {
-        // 🔹 Información del documento
+        
         id: doc.id,
         code: doc.code,
         description: doc.description,
