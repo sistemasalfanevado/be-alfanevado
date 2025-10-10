@@ -92,6 +92,7 @@ export class ZentraPasswordResetTokenService {
     });
 
     return tokens.map(t => ({
+      id: t.id,
       token: t.token,
       userId: t.userId,
       userName: `${t.user.firstName} ${t.user.lastName}`,

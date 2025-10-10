@@ -22,9 +22,8 @@ export class ZentraTelecreditoConfigService {
     });
   }
 
-  // 🟢 Obtener todas las configuraciones activas
-  async findAll() {
-    return this.prisma.zentraTelecreditoConfig.findMany({
+  async findAll(): Promise<any[]> {
+    const results = await this.prisma.zentraTelecreditoConfig.findMany({
       where: { deletedAt: null },
       include: {
         company: true,
@@ -33,7 +32,21 @@ export class ZentraTelecreditoConfigService {
         createdAt: 'desc',
       },
     });
+
+    return results.map((item) => ({
+      id: item.id,
+      companyId: item.company.id,
+      companyName: item.company.name,
+      clientCode: item.clientCode,
+      payrollType: item.payrollType,
+      recordType: item.recordType,
+      accountType: item.accountType,
+      accountNumber: item.accountNumber,
+      reference: item.reference,
+
+    }));
   }
+
 
   // 🟢 Obtener una configuración específica
   async findOne(id: string) {
