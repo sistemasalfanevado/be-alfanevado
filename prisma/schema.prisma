@@ -808,6 +808,7 @@ model ZentraBankAccount {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   deletedAt    DateTime?
+  
   idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_bank_account")
 }

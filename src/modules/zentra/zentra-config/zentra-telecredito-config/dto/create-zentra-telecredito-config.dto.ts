@@ -11,6 +11,8 @@ export class CreateZentraTelecreditoConfigDto {
   @IsNotEmpty()
   companyId: string;
 
+  
+
   @IsString()
   @IsNotEmpty()
   @MaxLength(50)

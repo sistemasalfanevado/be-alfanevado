@@ -13,16 +13,20 @@ export class ZentraPartyService {
   async create(createZentraPartyDto: CreateZentraPartyDto) {
     const { partyRoleId, ...partyData } = createZentraPartyDto;
 
-    await this.prisma.zentraParty.create({
+    const newParty = await this.prisma.zentraParty.create({
       data: {
         ...partyData,
         partyRole: {
           connect: { id: partyRoleId },
         },
       },
+      select: {
+        id: true,
+        name: true,
+      },
     });
 
-    return { message: 'Zentra Party creada correctamente.' };
+    return newParty;
   }
 
   async findAll() {
@@ -125,7 +129,7 @@ export class ZentraPartyService {
           : null,
         bankAccountComplete: principalBankAccount
           ? `${principalBankAccount.type?.name || ''}: ${principalBankAccount.account} (CCI: ${principalBankAccount.cci})`
-          : null,  
+          : null,
       };
     });
   }
@@ -145,12 +149,16 @@ export class ZentraPartyService {
       data.partyRole = { connect: { id: partyRoleId } };
     }
 
-    await this.prisma.zentraParty.update({
+    const updatedParty = await this.prisma.zentraParty.update({
       where: { id },
       data,
+      select: {
+        id: true,
+        name: true,
+      },
     });
 
-    return { message: 'Zentra Party actualizada correctamente.' };
+    return updatedParty;
   }
 
   async remove(id: string) {
