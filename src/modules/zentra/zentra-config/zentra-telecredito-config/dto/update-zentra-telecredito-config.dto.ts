@@ -10,6 +10,10 @@ export class UpdateZentraTelecreditoConfigDto {
   @IsOptional()
   companyId?: string;
 
+  @IsUUID()
+  @IsOptional()
+  bankAccountId?: string;
+
   @IsString()
   @IsOptional()
   @MaxLength(50)

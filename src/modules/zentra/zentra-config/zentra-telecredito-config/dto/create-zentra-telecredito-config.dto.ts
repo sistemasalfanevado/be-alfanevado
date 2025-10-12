@@ -10,7 +10,10 @@ export class CreateZentraTelecreditoConfigDto {
   @IsUUID()
   @IsNotEmpty()
   companyId: string;
-
+  
+  @IsUUID()
+  @IsNotEmpty()
+  bankAccountId: string;
   
 
   @IsString()

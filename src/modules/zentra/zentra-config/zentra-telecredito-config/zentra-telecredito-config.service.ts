@@ -5,13 +5,14 @@ import { UpdateZentraTelecreditoConfigDto } from './dto/update-zentra-telecredit
 
 @Injectable()
 export class ZentraTelecreditoConfigService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   // 🟢 Crear nueva configuración
   async create(createDto: CreateZentraTelecreditoConfigDto) {
     return this.prisma.zentraTelecreditoConfig.create({
       data: {
         companyId: createDto.companyId,
+        bankAccountId: createDto.bankAccountId,
         clientCode: createDto.clientCode,
         payrollType: createDto.payrollType,
         recordType: createDto.recordType ?? 'C',
@@ -27,6 +28,12 @@ export class ZentraTelecreditoConfigService {
       where: { deletedAt: null },
       include: {
         company: true,
+        bankAccount: {
+          include: {
+            bank: true,
+            currency: true,
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -37,13 +44,18 @@ export class ZentraTelecreditoConfigService {
       id: item.id,
       companyId: item.company.id,
       companyName: item.company.name,
+
+      bankAccountId: item.bankAccount?.id,
+      
+      bankName: item.bankAccount?.bank?.name || null,
+      currencyName: item.bankAccount?.currency?.name || null,
+      
       clientCode: item.clientCode,
       payrollType: item.payrollType,
       recordType: item.recordType,
       accountType: item.accountType,
       accountNumber: item.accountNumber,
       reference: item.reference,
-
     }));
   }
 
