@@ -90,7 +90,6 @@ export class ZentraPartyBankAccountService {
     }));
   }
 
-
   async findOne(id: string) {
     return this.prisma.zentraPartyBankAccount.findFirst({
       where: { id, deletedAt: null },

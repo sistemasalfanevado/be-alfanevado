@@ -143,4 +143,12 @@ export class ZentraDocumentController {
   }
 
 
+  @Post('scheduled-income/report')
+  @Public()
+  searchScheduledIncomeReport(@Body() filters: {
+    projectId?: string;
+  }) {
+    return this.zentraDocumentService.findByFiltersScheduledIncomeReport(filters);
+  }
+
 }

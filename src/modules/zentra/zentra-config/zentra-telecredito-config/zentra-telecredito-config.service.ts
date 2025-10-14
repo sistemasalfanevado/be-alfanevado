@@ -7,7 +7,6 @@ import { UpdateZentraTelecreditoConfigDto } from './dto/update-zentra-telecredit
 export class ZentraTelecreditoConfigService {
   constructor(private prisma: PrismaService) { }
 
-  // 🟢 Crear nueva configuración
   async create(createDto: CreateZentraTelecreditoConfigDto) {
     return this.prisma.zentraTelecreditoConfig.create({
       data: {
@@ -46,10 +45,10 @@ export class ZentraTelecreditoConfigService {
       companyName: item.company.name,
 
       bankAccountId: item.bankAccount?.id,
-      
+
       bankName: item.bankAccount?.bank?.name || null,
       currencyName: item.bankAccount?.currency?.name || null,
-      
+
       clientCode: item.clientCode,
       payrollType: item.payrollType,
       recordType: item.recordType,
@@ -60,7 +59,6 @@ export class ZentraTelecreditoConfigService {
   }
 
 
-  // 🟢 Obtener una configuración específica
   async findOne(id: string) {
     return this.prisma.zentraTelecreditoConfig.findFirst({
       where: { id, deletedAt: null },
@@ -70,7 +68,6 @@ export class ZentraTelecreditoConfigService {
     });
   }
 
-  // 🟡 Actualizar una configuración
   async update(id: string, updateDto: UpdateZentraTelecreditoConfigDto) {
     return this.prisma.zentraTelecreditoConfig.update({
       where: { id },
@@ -78,7 +75,6 @@ export class ZentraTelecreditoConfigService {
     });
   }
 
-  // 🔴 Eliminar (borrado lógico)
   async remove(id: string) {
     return this.prisma.zentraTelecreditoConfig.update({
       where: { id },
@@ -86,11 +82,50 @@ export class ZentraTelecreditoConfigService {
     });
   }
 
-  // ♻️ Restaurar (quitar borrado lógico)
   async restore(id: string) {
     return this.prisma.zentraTelecreditoConfig.update({
       where: { id },
       data: { deletedAt: null },
     });
   }
+
+  async findByBankAccountId(bankAccountId: string): Promise<any[]> {
+    const results = await this.prisma.zentraTelecreditoConfig.findMany({
+      where: {
+        deletedAt: null,
+        bankAccountId: bankAccountId,
+      },
+      include: {
+        company: true,
+        bankAccount: {
+          include: {
+            bank: true,
+            currency: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      companyId: item.company.id,
+      companyName: item.company.name,
+
+      bankAccountId: item.bankAccount?.id,
+      bankName: item.bankAccount?.bank?.name || null,
+      currencyId: item.bankAccount?.currency?.id || null,
+      currencyName: item.bankAccount?.currency?.name || null,
+
+      clientCode: item.clientCode,
+      payrollType: item.payrollType,
+      recordType: item.recordType,
+      accountType: item.accountType,
+      accountNumber: item.accountNumber,
+      reference: item.reference, 
+    }));
+  }
+
 }

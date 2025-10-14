@@ -42,6 +42,7 @@ export class ZentraPartyBankAccountController {
     return this.zentraPartyBankAccountService.restore(id);
   }
 
+  
   @Get('party/:partyId')
   findByParty(@Param('partyId') partyId: string) {
     return this.zentraPartyBankAccountService.findByPartyId(partyId);

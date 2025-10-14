@@ -7,7 +7,7 @@ import { UpdateZentraDocumentDto } from './dto/update-zentra-document.dto';
 import { ZentraInstallmentService } from '../../zentra-transaction/zentra-installment/zentra-installment.service';
 import { ZentraMovementService } from '../../zentra-transaction/zentra-movement/zentra-movement.service';
 import { ZentraScheduledIncomeDocumentService } from '../../zentra-master/zentra-scheduled-income-document/zentra-scheduled-income-document.service';
-import { TRANSACTION_TYPE, CURRENCY } from 'src/shared/constants/app.constants';
+import { TRANSACTION_TYPE, CURRENCY, INSTALLMENT_STATUS } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
 
@@ -763,7 +763,7 @@ export class ZentraDocumentService {
     return { message: 'Scheduled Income creado correctamente' };
   }
 
-  
+
   async findByFiltersScheduledIncome(filters: {
     documentCategoryId?: string;
     documentStatusId?: string;
@@ -772,8 +772,6 @@ export class ZentraDocumentService {
     endDate?: string;
   }) {
     const where = this.buildDocumentFilters(filters);
-
-
 
     const results = await this.prisma.zentraDocument.findMany({
       where,
@@ -809,7 +807,7 @@ export class ZentraDocumentService {
       const sched = doc.scheduledIncomeDocuments?.[0];
 
       return {
-        
+
         id: doc.id,
         code: doc.code,
         description: doc.description,
@@ -944,5 +942,115 @@ export class ZentraDocumentService {
       data: { deletedAt: new Date() }
     });
   }
+
+
+  async findByFiltersScheduledIncomeReport(filters: {
+    projectId?: string;
+  }) {
+
+
+    const lots = await this.prisma.landingLot.findMany({
+      where: {
+        deletedAt: null,
+        page: {
+          zentraProjects: {
+            some: {
+              zentraProjectId: filters.projectId,
+            },
+          },
+        },
+      },
+      include: {
+        status: true,
+        scheduledIncomeDocuments: {
+          include: {
+            document: {
+              include: {
+                currency: true,
+                party: true,
+                documentStatus: true,
+              },
+            },
+            installments: {
+              include: {
+                currency: true,
+              },
+            },
+            broker: true
+          },
+        },
+      },
+      orderBy: {
+        block: 'asc',
+      },
+    });
+
+    lots.sort((a, b) => {
+      if (a.block === b.block) {
+        return Number(a.number) - Number(b.number);
+      }
+      return a.block.localeCompare(b.block);
+    });
+
+
+    const result = lots.map((lot) => {
+
+      const documents = lot.scheduledIncomeDocuments.map((sid) => sid.document);
+      const brokers = lot.scheduledIncomeDocuments
+        .map((sid) => sid.broker)
+        .filter((b) => !!b?.name);
+
+      const lastDocument = documents
+        .filter((d) => !!d?.documentDate) // evitar nulls
+        .sort(
+          (a, b) =>
+            new Date(a.documentDate).getTime() - new Date(b.documentDate).getTime()
+        )
+        .at(-1);
+
+      const lastBroker = brokers.at(-1);
+
+      return {
+        id: lot.id,
+        name: lot.name,
+        area: lot.area,
+        status: lot.status.title,
+        statusId: lot.status.id,
+        documentId: lastDocument?.id,
+        documentDate: lastDocument
+          ? moment(lastDocument.documentDate).format('DD/MM/YYYY')
+          : '',
+        documentCurrencyName: lastDocument?.currency?.name || '',
+        documentCurrencyId: lastDocument?.currency?.id || '',
+        documentAmountToPay: Number(lastDocument?.amountToPay || 0),
+        documentPaidAmount: Number(lastDocument?.paidAmount || 0),
+        documentPendingAmount:
+          Number(lastDocument?.amountToPay || 0) -
+          Number(lastDocument?.paidAmount || 0),
+        brokerName: lastBroker?.name || '',
+        partyName: lastDocument?.party?.name || '',
+
+        commission1: Number(lastDocument?.amountToPay || 0) * 0.02,
+        commission2: Number(lastDocument?.amountToPay || 0) * 0.015,
+        progressPercent: (() => {
+          const total = Number(lastDocument?.amountToPay || 0);
+          const paid = Number(lastDocument?.paidAmount || 0);
+          if (total <= 0) return '0%';
+          const percent = (paid / total) * 100;
+          const rounded = Math.min(Math.round(percent), 100);
+          return `${rounded}%`;
+        })(),
+      };
+    });
+
+
+
+
+
+    return result;
+  }
+
+
+
 
 }

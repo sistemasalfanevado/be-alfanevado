@@ -22,7 +22,7 @@ import { Public } from '../../../../auth/shared/decorators/public.decorator';
 export class ZentraTelecreditoConfigController {
   constructor(
     private readonly zentraTelecreditoConfigService: ZentraTelecreditoConfigService,
-  ) {}
+  ) { }
 
   // 🟢 Crear nueva configuración
   @Post()
@@ -78,4 +78,10 @@ export class ZentraTelecreditoConfigController {
     }
     return this.zentraTelecreditoConfigService.restore(id);
   }
+
+  @Post('by-bank-account')
+  async findByBankAccountId(@Body('bankAccountId') bankAccountId: string) {
+    return await this.zentraTelecreditoConfigService.findByBankAccountId(bankAccountId);
+  }
+
 }

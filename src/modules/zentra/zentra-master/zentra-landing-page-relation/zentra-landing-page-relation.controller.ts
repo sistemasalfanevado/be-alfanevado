@@ -8,7 +8,7 @@ import { UpdateZentraLandingPageRelationDto } from './dto/update-zentra-landing-
 import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
 import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
-@Controller('zentra-landing-page-relations')
+@Controller('zentra-landing-page-relations') 
 // @UseGuards(JwtAuthGuard)
 export class ZentraLandingPageRelationController {
   constructor(
