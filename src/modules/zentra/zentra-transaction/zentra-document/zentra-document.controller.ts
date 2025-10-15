@@ -114,7 +114,7 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.createScheduledIncome(createZentraDocumentDto);
   }
 
-  @Post('scheduled-income/search')
+  @Post('scheduled-income/search') 
   @Public()
   searchScheduledIncome(@Body() filters: {
     documentCategoryId?: string;

@@ -795,6 +795,13 @@ export class ZentraDocumentService {
             broker: true,
             saleType: true,
             lot: true,
+            installments: {
+              where: { deletedAt: null },
+              include: {
+                currency: true,
+                installmentStatus: true,
+              },
+            },
           },
         },
       },
@@ -805,6 +812,18 @@ export class ZentraDocumentService {
 
     return results.map((doc) => {
       const sched = doc.scheduledIncomeDocuments?.[0];
+
+      // ✅ Cálculo de cuotas e importe total
+      const installments = sched?.installments ?? [];
+      const totalInstallments = installments.length;
+      const totalAmountInstallments = installments.reduce(
+        (sum, inst) => sum + Number(inst.totalAmount ?? 0),
+        0
+      );
+      const totalPaidAmountInstallments = installments.reduce(
+        (sum, inst) => sum + Number(inst.paidAmount ?? 0),
+        0
+      );
 
       return {
 
@@ -864,7 +883,12 @@ export class ZentraDocumentService {
         lotName: sched?.lot?.name ?? null,
         lotCode: sched?.lot?.code ?? null,
 
-        lotComplete: `${sched?.saleType?.name ?? null} ${sched?.lot?.name ?? null}`
+        lotComplete: `${sched?.saleType?.name ?? null} ${sched?.lot?.name ?? null}`,
+
+        totalInstallments: totalInstallments,
+        totalAmountInstallments: totalAmountInstallments,
+        totalPaidAmountInstallments: totalPaidAmountInstallments,
+
       };
     });
 
