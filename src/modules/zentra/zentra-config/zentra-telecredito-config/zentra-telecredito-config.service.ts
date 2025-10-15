@@ -18,6 +18,8 @@ export class ZentraTelecreditoConfigService {
         accountType: createDto.accountType,
         accountNumber: createDto.accountNumber,
         reference: createDto.reference ?? null,
+        checkItf: createDto.checkItf ?? null,
+        checkParty: createDto.checkParty ?? null,
       },
     });
   }
@@ -55,6 +57,8 @@ export class ZentraTelecreditoConfigService {
       accountType: item.accountType,
       accountNumber: item.accountNumber,
       reference: item.reference,
+      checkItf: item.checkItf,
+      checkParty: item.checkParty,
     }));
   }
 
@@ -124,7 +128,9 @@ export class ZentraTelecreditoConfigService {
       recordType: item.recordType,
       accountType: item.accountType,
       accountNumber: item.accountNumber,
-      reference: item.reference, 
+      reference: item.reference,
+      checkItf: item.checkItf,
+      checkParty: item.checkParty,
     }));
   }
 

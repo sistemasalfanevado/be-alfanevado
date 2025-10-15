@@ -43,4 +43,14 @@ export class UpdateZentraTelecreditoConfigDto {
   @IsOptional()
   @MaxLength(100)
   reference?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(1)
+  checkItf?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(1)
+  checkParty?: string;
 }

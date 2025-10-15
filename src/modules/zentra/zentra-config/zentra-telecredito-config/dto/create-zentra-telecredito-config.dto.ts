@@ -45,4 +45,14 @@ export class CreateZentraTelecreditoConfigDto {
   @IsOptional()
   @MaxLength(100)
   reference?: string; // Referencia opcional de la planilla
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(1)
+  checkItf?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(1)
+  checkParty?: string;
 }

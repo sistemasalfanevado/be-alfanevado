@@ -1252,7 +1252,8 @@ model ZentraTelecreditoConfig {
   accountType     String   // Tipo de cuenta de cargo: "C" = corriente, "A" = ahorro
   accountNumber   String   // Número de cuenta de cargo del BCP
   reference       String?  // Referencia de la planilla
-
+  checkItf        String?  @db.VarChar(1)// Validar Itf
+  checkParty      String?  @db.VarChar(1)// Validar nombre del proveedor
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
