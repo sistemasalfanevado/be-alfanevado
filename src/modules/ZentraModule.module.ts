@@ -55,6 +55,8 @@ import { ZentraLandingPageRelationModule } from './zentra/zentra-master/zentra-l
 import { ZentraBrokerModule } from './zentra/zentra-master/zentra-broker/zentra-broker.module';
 import { ZentraSaleTypeModule } from './zentra/zentra-master/zentra-sale-type/zentra-sale-type.module';
 import { ZentraScheduledIncomeDocumentModule } from './zentra/zentra-master/zentra-scheduled-income-document/zentra-scheduled-income-document.module';
+import { ZentraScheduledIncomeDocumentStatusModule } from './zentra/zentra-master/zentra-scheduled-income-document-status/zentra-scheduled-income-document-status.module';
+
 import { ZentraInstallmentStatusModule } from './zentra/zentra-master/zentra-installment-status/zentra-installment-status.module';
 import { ZentraBankStatementModule } from './zentra/zentra-utils/zentra-bank-statement/zentra-bank-statement.module';
 import { ZentraFinancialNatureModule } from './zentra/zentra-master/zentra-financial-nature/zentra-financial-nature.module';
@@ -129,6 +131,7 @@ import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-o
     ZentraBrokerModule,
     ZentraSaleTypeModule,
     ZentraScheduledIncomeDocumentModule,
+    ZentraScheduledIncomeDocumentStatusModule,
 
     ZentraDocumentStatusModule,
     ZentraDocumentCategoryModule,

@@ -17,4 +17,8 @@ export class CreateZentraScheduledIncomeDocumentDto {
   @IsOptional()
   lotId?: string;
 
+  @IsString()
+  @IsOptional()
+  statusId?: string;
+
 }

@@ -1059,6 +1059,9 @@ model ZentraScheduledIncomeDocument {
   lot          LandingLot?    @relation(fields: [lotId], references: [id])
   lotId        String?
 
+  status       ZentraScheduledIncomeDocumentStatus? @relation(fields: [statusId], references: [id])
+  statusId     String?
+
   installments ZentraInstallment[]
 
   createdAt    DateTime       @default(now())
@@ -1067,6 +1070,20 @@ model ZentraScheduledIncomeDocument {
 
   @@map("zentra_scheduled_income_document")
 }
+
+model ZentraScheduledIncomeDocumentStatus {
+  id          String                   @id @default(uuid())
+  name        String                   @db.VarChar(30)
+
+  scheduledIncomeDocuments ZentraScheduledIncomeDocument[]
+
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+  deletedAt   DateTime?
+  
+  @@map("zentra_scheduled_income_document_status")
+}
+
 
 model ZentraInstallmentStatus {
   id        String   @id @default(uuid())

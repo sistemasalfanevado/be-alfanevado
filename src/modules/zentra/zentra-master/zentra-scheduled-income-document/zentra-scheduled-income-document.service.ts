@@ -6,7 +6,7 @@ import { UpdateZentraScheduledIncomeDocumentDto } from './dto/update-zentra-sche
 @Injectable()
 export class ZentraScheduledIncomeDocumentService {
   constructor(private prisma: PrismaService) { }
-  
+
   async create(createDto: CreateZentraScheduledIncomeDocumentDto) {
     return this.prisma.zentraScheduledIncomeDocument.create({
       data: createDto,
@@ -21,6 +21,7 @@ export class ZentraScheduledIncomeDocumentService {
         broker: { select: { id: true, name: true } },
         saleType: { select: { id: true, name: true } },
         lot: { select: { id: true, name: true, code: true } },
+        status: { select: { id: true, name: true } },
       },
       orderBy: {
         createdAt: 'desc',
@@ -42,11 +43,14 @@ export class ZentraScheduledIncomeDocumentService {
       lotName: doc.lot?.name,
       lotCode: doc.lot?.code,
 
+      statusId: doc.status?.id,
+      statusName: doc.status?.name,
+
       lotComplete: doc.lot?.name + ' ' + doc.saleType?.name
 
     }));
   }
-  
+
   async findOne(id: string) {
     return this.prisma.zentraScheduledIncomeDocument.findUnique({
       where: { id },
@@ -55,6 +59,7 @@ export class ZentraScheduledIncomeDocumentService {
         broker: true,
         saleType: true,
         lot: true,
+        status: true,
       },
     });
   }

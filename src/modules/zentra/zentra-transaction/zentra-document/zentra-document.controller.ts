@@ -52,6 +52,7 @@ export class ZentraDocumentController {
     documentCategoryId?: string;
     financialNatureId?: string;
     projectId?: string;
+    userId?: string;
     startDate?: string;
     endDate?: string;
   }) {
@@ -109,6 +110,7 @@ export class ZentraDocumentController {
 
   // Scheduled Document Income
 
+  
   @Post('scheduled-income')
   createScheduledIncome(@Body() createZentraDocumentDto: any) {
     return this.zentraDocumentService.createScheduledIncome(createZentraDocumentDto);

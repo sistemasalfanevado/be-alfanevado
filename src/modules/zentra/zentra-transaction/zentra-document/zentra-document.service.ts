@@ -282,8 +282,9 @@ export class ZentraDocumentService {
     projectId?: string;
     startDate?: string;
     endDate?: string;
+    userId?: string;
   }) {
-    const { documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, startDate, endDate } = filters;
+    const { documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, userId,  startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -317,6 +318,10 @@ export class ZentraDocumentService {
 
     if (transactionTypeId && transactionTypeId.trim() !== '') {
       where.transactionType = { id: transactionTypeId };
+    }
+
+    if (userId && userId.trim() !== '') {
+      where.user = { id: userId };
     }
 
     if (projectId && projectId.trim() !== '') {
@@ -758,6 +763,7 @@ export class ZentraDocumentService {
       brokerId: dataDocument.brokerId,
       saleTypeId: dataDocument.saleTypeId,
       lotId: dataDocument.lotId,
+      statusId: dataDocument.statusId
     });
 
     return { message: 'Scheduled Income creado correctamente' };
@@ -795,6 +801,7 @@ export class ZentraDocumentService {
             broker: true,
             saleType: true,
             lot: true,
+            status: true,
             installments: {
               where: { deletedAt: null },
               include: {
@@ -885,6 +892,9 @@ export class ZentraDocumentService {
 
         lotComplete: `${sched?.saleType?.name ?? null} ${sched?.lot?.name ?? null}`,
 
+        statusId: sched?.status?.id ?? null,
+        statusName: sched?.status?.name ?? null,
+
         totalInstallments: totalInstallments,
         totalAmountInstallments: totalAmountInstallments,
         totalPaidAmountInstallments: totalPaidAmountInstallments,
@@ -939,6 +949,7 @@ export class ZentraDocumentService {
               brokerId: updateData.brokerId,
               saleTypeId: updateData.saleTypeId,
               lotId: updateData.lotId,
+              statusId: updateData.statusId,
             },
           });
         }
@@ -971,8 +982,7 @@ export class ZentraDocumentService {
   async findByFiltersScheduledIncomeReport(filters: {
     projectId?: string;
   }) {
-
-
+    
     const lots = await this.prisma.landingLot.findMany({
       where: {
         deletedAt: null,

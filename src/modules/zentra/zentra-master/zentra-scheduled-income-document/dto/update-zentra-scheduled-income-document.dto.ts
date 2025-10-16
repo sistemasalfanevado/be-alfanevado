@@ -17,4 +17,8 @@ export class UpdateZentraScheduledIncomeDocumentDto {
   @IsOptional()
   lotId?: string;
 
+  @IsString()
+  @IsOptional()
+  statusId?: string;
+
 }
