@@ -284,7 +284,7 @@ export class ZentraDocumentService {
     endDate?: string;
     userId?: string;
   }) {
-    const { documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, userId,  startDate, endDate } = filters;
+    const { documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, userId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -769,7 +769,7 @@ export class ZentraDocumentService {
     return { message: 'Scheduled Income creado correctamente' };
   }
 
-
+  
   async findByFiltersScheduledIncome(filters: {
     documentCategoryId?: string;
     documentStatusId?: string;
@@ -979,10 +979,7 @@ export class ZentraDocumentService {
   }
 
 
-  async findByFiltersScheduledIncomeReport(filters: {
-    projectId?: string;
-  }) {
-    
+  async findByFiltersScheduledIncomeReport(filters: { projectId?: string }) {
     const lots = await this.prisma.landingLot.findMany({
       where: {
         deletedAt: null,
@@ -997,6 +994,12 @@ export class ZentraDocumentService {
       include: {
         status: true,
         scheduledIncomeDocuments: {
+          where: {
+            deletedAt: null,
+            document: {
+              deletedAt: null, // 👈 filtro de documentos aquí
+            },
+          },
           include: {
             document: {
               include: {
@@ -1006,11 +1009,14 @@ export class ZentraDocumentService {
               },
             },
             installments: {
+              where: {
+                deletedAt: null,
+              },
               include: {
                 currency: true,
               },
             },
-            broker: true
+            broker: true,
           },
         },
       },
