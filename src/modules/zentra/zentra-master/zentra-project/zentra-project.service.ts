@@ -86,9 +86,34 @@ export class ZentraProjectService {
     });
   }
 
+  async findAllWithCompany() {
+    const results = await this.prisma.zentraProject.findMany({
+      where: { deletedAt: null },
+      include: {
+        company: true,
+      },
+      orderBy: { name: 'asc' },
+    });
+
+    return results.map((project) => ({
+      id: project.id,
+      name: project.name,
+      imageUrl: project.imageUrl,
+
+      // 🔹 Datos planos de la compañía
+      companyId: project.company?.id ?? null,
+      companyName: project.company?.name ?? null,
+      businessName: project.company?.businessName ?? null,
+      address: project.company?.address ?? null,
+      documentNumber: project.company?.documentNumber ?? null,
+      legalRepresentative: project.company?.legalRepresentative ?? null,
+      representativeDocumentNumber: project.company?.representativeDocumentNumber ?? null,
+    }));
+  }
+
 
   async findAllWithDetails() {
-    
+
     const results = await this.prisma.zentraProject.findMany({
       where: { deletedAt: null },
       include: {
@@ -117,7 +142,7 @@ export class ZentraProjectService {
         name: 'asc',
       },
     });
-    
+
     return results.map((project) => ({
       id: project.id,
       name: project.name,

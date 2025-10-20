@@ -763,13 +763,33 @@ export class ZentraDocumentService {
       brokerId: dataDocument.brokerId,
       saleTypeId: dataDocument.saleTypeId,
       lotId: dataDocument.lotId,
-      statusId: dataDocument.statusId
+      statusId: dataDocument.statusId,
+
+      // Extra info
+      serialNumber: dataDocument.serialNumber,
+      referenceCode: dataDocument.referenceCode,
+      placeOfIssue: dataDocument.placeOfIssue,
+
+      acceptorName1: dataDocument.acceptorName1,
+      acceptorDni1: dataDocument.acceptorDni1,
+      acceptorPhone1: dataDocument.acceptorPhone1,
+
+      acceptorName2: dataDocument.acceptorName2,
+      acceptorDni2: dataDocument.acceptorDni2,
+      acceptorPhone2: dataDocument.acceptorPhone2,
+
+      permanentGuarantorName: dataDocument.permanentGuarantorName,
+      permanentGuarantorAddress: dataDocument.permanentGuarantorAddress,
+      permanentGuarantorDni: dataDocument.permanentGuarantorDni,
+      permanentGuarantorPhone: dataDocument.permanentGuarantorPhone,
+
+
     });
 
     return { message: 'Scheduled Income creado correctamente' };
   }
 
-  
+
   async findByFiltersScheduledIncome(filters: {
     documentCategoryId?: string;
     documentStatusId?: string;
@@ -858,6 +878,7 @@ export class ZentraDocumentService {
 
         partyId: doc.party?.id,
         partyName: doc.party?.name,
+        partyAddress: doc.party?.address,
 
         documentStatusId: doc.documentStatus?.id,
         documentStatusName: doc.documentStatus?.name,
@@ -898,6 +919,23 @@ export class ZentraDocumentService {
         totalInstallments: totalInstallments,
         totalAmountInstallments: totalAmountInstallments,
         totalPaidAmountInstallments: totalPaidAmountInstallments,
+
+        serialNumber: sched?.serialNumber ?? '',
+        referenceCode: sched?.referenceCode ?? '',
+        placeOfIssue: sched?.placeOfIssue ?? '',
+
+        acceptorName1: sched?.acceptorName1 ?? '',
+        acceptorDni1: sched?.acceptorDni1 ?? '',
+        acceptorPhone1: sched?.acceptorPhone1 ?? '',
+
+        acceptorName2: sched?.acceptorName2 ?? '',
+        acceptorDni2: sched?.acceptorDni2 ?? '',
+        acceptorPhone2: sched?.acceptorPhone2 ?? '',
+
+        permanentGuarantorName: sched?.permanentGuarantorName ?? '',
+        permanentGuarantorAddress: sched?.permanentGuarantorAddress ?? '',
+        permanentGuarantorDni: sched?.permanentGuarantorDni ?? '',
+        permanentGuarantorPhone: sched?.permanentGuarantorPhone ?? '',
 
       };
     });
@@ -950,6 +988,23 @@ export class ZentraDocumentService {
               saleTypeId: updateData.saleTypeId,
               lotId: updateData.lotId,
               statusId: updateData.statusId,
+
+              serialNumber: updateData.serialNumber,
+              referenceCode: updateData.referenceCode,
+              placeOfIssue: updateData.placeOfIssue,
+
+              acceptorName1: updateData.acceptorName1,
+              acceptorDni1: updateData.acceptorDni1,
+              acceptorPhone1: updateData.acceptorPhone1,
+
+              acceptorName2: updateData.acceptorName2,
+              acceptorDni2: updateData.acceptorDni2,
+              acceptorPhone2: updateData.acceptorPhone2,
+
+              permanentGuarantorName: updateData.permanentGuarantorName,
+              permanentGuarantorAddress: updateData.permanentGuarantorAddress,
+              permanentGuarantorDni: updateData.permanentGuarantorDni,
+              permanentGuarantorPhone: updateData.permanentGuarantorPhone,
             },
           });
         }

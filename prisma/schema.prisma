@@ -499,8 +499,15 @@ model ZentraBudgetItemCategory {
 model ZentraCompany {
   id            String            @id @default(uuid())
   name          String            @db.VarChar(50)
+
   projects      ZentraProject[]
   telecreditoConfigs ZentraTelecreditoConfig[]
+  
+  businessName                 String?   @db.VarChar(50)
+  address                      String?   @db.VarChar(100)
+  documentNumber               String?   @db.VarChar(30)
+  legalRepresentative          String?   @db.VarChar(50)
+  representativeDocumentNumber String?   @db.VarChar(30)
 
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
@@ -1061,6 +1068,25 @@ model ZentraScheduledIncomeDocument {
 
   status       ZentraScheduledIncomeDocumentStatus? @relation(fields: [statusId], references: [id])
   statusId     String?
+
+  serialNumber              String?   // Correlativo
+  referenceCode             String?   // Código Correlativo
+  placeOfIssue              String?   // Lugar de Giro
+
+  acceptorName1             String?   // Aceptante nombre 1
+  acceptorDni1              String?   // Aceptante dni 1
+  acceptorPhone1            String?   // Aceptante celular 1
+
+  acceptorName2             String?   // Aceptante nombre 2
+  acceptorDni2              String?   // Aceptante dni 2
+  acceptorPhone2            String?   // Aceptante celular 2
+
+  permanentGuarantorName        String?   // Aval Permanente Nombre
+  permanentGuarantorAddress     String?   // Aval Permanente Domicilio
+  permanentGuarantorDni         String?   // Aval Permanente DNI
+  permanentGuarantorPhone       String?   // Aval Permanente Teléfono
+
+
 
   installments ZentraInstallment[]
 

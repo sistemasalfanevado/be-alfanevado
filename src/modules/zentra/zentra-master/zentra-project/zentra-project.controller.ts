@@ -26,7 +26,12 @@ export class ZentraProjectController {
   findAllWithDetails() {
     return this.zentraProjectService.findAllWithDetails();
   }
-  
+
+  @Get('with-company')
+  findAllWithCompany() {
+    return this.zentraProjectService.findAllWithCompany();
+  }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -48,6 +53,6 @@ export class ZentraProjectController {
     return this.zentraProjectService.restore(id);
   }
 
-  
+
 
 }

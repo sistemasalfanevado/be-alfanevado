@@ -46,7 +46,22 @@ export class ZentraScheduledIncomeDocumentService {
       statusId: doc.status?.id,
       statusName: doc.status?.name,
 
-      lotComplete: doc.lot?.name + ' ' + doc.saleType?.name
+      lotComplete: doc.lot?.name + ' ' + doc.saleType?.name,
+
+      // 🔹 New optional fields
+      serialNumber: doc.serialNumber,
+      referenceCode: doc.referenceCode,
+      placeOfIssue: doc.placeOfIssue,
+      acceptorName1: doc.acceptorName1,
+      acceptorDni1: doc.acceptorDni1,
+      acceptorPhone1: doc.acceptorPhone1,
+      acceptorName2: doc.acceptorName2,
+      acceptorDni2: doc.acceptorDni2,
+      acceptorPhone2: doc.acceptorPhone2,
+      permanentGuarantorName: doc.permanentGuarantorName,
+      permanentGuarantorAddress: doc.permanentGuarantorAddress,
+      permanentGuarantorDni: doc.permanentGuarantorDni,
+      permanentGuarantorPhone: doc.permanentGuarantorPhone,
 
     }));
   }

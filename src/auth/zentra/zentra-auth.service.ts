@@ -80,7 +80,8 @@ export class ZentraAuthService {
       email: user.email,
       menuItems,
       exchangeRate,
-      actions
+      actions,
+      
     };
   }
 }
