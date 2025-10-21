@@ -30,12 +30,9 @@ import { ZentraPartyDocumentModule } from './zentra/zentra-master/zentra-party-d
 import { ZentraPartyDocumentHierarchyModule } from './zentra/zentra-master/zentra-party-document-hierarchy/zentra-party-document-hierarchy.module';
 import { ZentraPartyDocumentTypeModule } from './zentra/zentra-master/zentra-party-document-type/zentra-party-document-type.module';
 
-
-
 import { ZentraBankAccountModule } from './zentra/zentra-master/zentra-bank-account/zentra-bank-account.module';
 import { ZentraBankAccountHierarchyModule } from './zentra/zentra-master/zentra-bank-account-hierarchy/zentra-bank-account-hierarchy.module';
 import { ZentraBankAccountTypeModule } from './zentra/zentra-master/zentra-bank-account-type/zentra-bank-account-type.module';
-
 
 import { ZentraBudgetCategoryModule } from './zentra/zentra-master/zentra-budget-category/zentra-budget-category.module';
 import { ZentraBudgetItemCategoryModule } from './zentra/zentra-master/zentra-budget-item-category/zentra-budget-item-category.module';
@@ -49,6 +46,8 @@ import { ZentraDocumentCategoryModule } from './zentra/zentra-master/zentra-docu
 import { ZentraMovementStatusModule } from './zentra/zentra-master/zentra-movement-status/zentra-movement-status.module';
 import { ZentraExchangeRateModule } from './zentra/zentra-master/zentra-exchange-rate/zentra-exchange-rate.module';
 import { ZentraProjectIncomeModule } from './zentra/zentra-master/zentra-project-income/zentra-project-income.module';
+
+import { ZentraTelecreditoOperationStateModule } from './zentra/zentra-master/zentra-telecredito-operation-state/zentra-telecredito-operation-state.module';
 
 
 import { ZentraLandingPageRelationModule } from './zentra/zentra-master/zentra-landing-page-relation/zentra-landing-page-relation.module';
@@ -66,15 +65,16 @@ import { ZentraBudgetIncreaseStatusModule } from './zentra/zentra-master/zentra-
 
 // Zentra Transaction
 import { ZentraDocumentModule } from './zentra/zentra-transaction/zentra-document/zentra-document.module';
-import { ZentraDocumentFileModule } from './zentra/zentra-transaction/zentra-document-file/zentra-document-file.module';
 import { ZentraInstallmentModule } from './zentra/zentra-transaction/zentra-installment/zentra-installment.module';
 import { ZentraMovementModule } from './zentra/zentra-transaction/zentra-movement/zentra-movement.module';
 import { ZentraMovementFileModule } from './zentra/zentra-transaction/zentra-movement-file/zentra-movement-file.module';
 import { ZentraDebtInvestmentModule } from './zentra/zentra-transaction/zentra-debt-investment/zentra-debt-investment.module';
 import { ZentraDocumentSalesModule } from './zentra/zentra-transaction/zentra-document-sales/zentra-document-sales.module';
 import { ZentraDocumentExpenseModule } from './zentra/zentra-transaction/zentra-document-expense/zentra-document-expense.module';
+import { ZentraDocumentFileModule } from './zentra/zentra-transaction/zentra-document-file/zentra-document-file.module';
 
 import { ZentraTransactionGeneralModule } from './zentra/zentra-transaction/zentra-transaction-general/zentra-transaction-general.module';
+import { ZentraTelecreditoOperationModule } from './zentra/zentra-transaction/zentra-telecredito-operation/zentra-telecredito-operation.module';
 
 
 // Zentra Ollama
@@ -95,6 +95,9 @@ import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-o
     ZentraPasswordResetTokenModule,
     ZentraTelecreditoConfigModule,
     
+    ZentraTelecreditoOperationStateModule,
+    
+
 
     ZentraBankModule,
     ZentraBudgetItemCategoryModule,
@@ -151,6 +154,7 @@ import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-o
     ZentraDocumentSalesModule,
     ZentraDocumentExpenseModule,
     ZentraTransactionGeneralModule,
+    ZentraTelecreditoOperationModule,
 
 
     // Utils

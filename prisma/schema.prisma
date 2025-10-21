@@ -502,6 +502,7 @@ model ZentraCompany {
 
   projects      ZentraProject[]
   telecreditoConfigs ZentraTelecreditoConfig[]
+  telecreditoOperations ZentraTelecreditoOperation[]
   
   businessName                 String?   @db.VarChar(50)
   address                      String?   @db.VarChar(100)
@@ -640,7 +641,6 @@ model ZentraPartyDocument {
 
   @@map("zentra_party_document")
 }
-
 
 model ZentraPartyBankAccount {
   id          String   @id @default(uuid())
@@ -812,6 +812,7 @@ model ZentraBankAccount {
   movements    ZentraMovement[]
   bankStatements    ZentraBankStatement[]
   telecreditoConfig ZentraTelecreditoConfig[]
+  telecreditoOperations ZentraTelecreditoOperation[]
 
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
@@ -1110,7 +1111,6 @@ model ZentraScheduledIncomeDocumentStatus {
   @@map("zentra_scheduled_income_document_status")
 }
 
-
 model ZentraInstallmentStatus {
   id        String   @id @default(uuid())
   name      String   @db.VarChar(100)
@@ -1298,9 +1298,76 @@ model ZentraTelecreditoConfig {
   checkItf        String?  @db.VarChar(1)// Validar Itf
   checkParty      String?  @db.VarChar(1)// Validar nombre del proveedor
 
+  telecreditoOperations ZentraTelecreditoOperation[]  // 👈 inversa
+
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   deletedAt       DateTime?
 
   @@map("zentra_telecredito_config")
 }
+
+model ZentraTelecreditoOperationState {
+  id              String   @id @default(uuid())
+
+  name            String  @db.VarChar(20)
+
+  telecreditoOperations ZentraTelecreditoOperation[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
+
+  @@map("zentra_telecredito_operation_state")
+}
+
+
+model ZentraTelecreditoOperation {
+  id           String   @id @default(uuid())
+
+  bankAccount  ZentraBankAccount            @relation(fields: [bankAccountId], references: [id])
+  bankAccountId String
+
+  company      ZentraCompany                @relation(fields: [companyId], references: [id])
+  companyId    String
+
+  telecreditoConfig ZentraTelecreditoConfig @relation(fields: [telecreditoConfigId], references: [id])
+  telecreditoConfigId String
+
+  state        ZentraTelecreditoOperationState @relation(fields: [stateId], references: [id])
+  stateId      String
+
+  datePayment  DateTime
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  @@map("zentra_telecredito_operation")
+}
+
+model ZentraTelecreditoOperation {
+  id           String   @id @default(uuid())
+
+  bankAccount  ZentraBankAccount            @relation(fields: [bankAccountId], references: [id])
+  bankAccountId String
+
+  company      ZentraCompany                @relation(fields: [companyId], references: [id])
+  companyId    String
+
+  telecreditoConfig ZentraTelecreditoConfig @relation(fields: [telecreditoConfigId], references: [id])
+  telecreditoConfigId String
+
+  state        ZentraTelecreditoOperationState @relation(fields: [stateId], references: [id])
+  stateId      String
+
+  datePayment  DateTime
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  @@map("zentra_telecredito_operation")
+}
+
+
