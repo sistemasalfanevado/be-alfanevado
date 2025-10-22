@@ -78,10 +78,10 @@ export class ZentraInstallmentController {
   }
 
   @Post('debts-all')
-  findDebtsAll(@Body() body: { }) {
-    return this.zentraInstallmentService.findDebtsAll();
+  findDebtsAll(@Body() body: { projectId: string }) {
+    return this.zentraInstallmentService.findDebtsAll(body.projectId);
   }
 
-  
+
 
 }

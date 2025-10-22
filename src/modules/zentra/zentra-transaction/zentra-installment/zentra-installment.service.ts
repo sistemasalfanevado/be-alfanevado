@@ -383,14 +383,25 @@ export class ZentraInstallmentService {
     });
   }
 
-  async findDebtsAll() {
+  async findDebtsAll(projectId: string) {
     const installments = await this.prisma.zentraInstallment.findMany({
+
       where: {
         deletedAt: null,
         installmentStatusId: {
           not: INSTALLMENT_STATUS.PAGADO, // Solo pendientes o parciales
         },
+        scheduledIncomeDocument: {
+          document: {
+            budgetItem: {
+              definition: {
+                projectId: projectId, // 👈 filtro por proyecto
+              },
+            },
+          },
+        },
       },
+
       include: {
         currency: { select: { id: true, name: true } },
       },

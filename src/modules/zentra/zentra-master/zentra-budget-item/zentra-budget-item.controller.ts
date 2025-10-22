@@ -46,10 +46,12 @@ export class ZentraBudgetItemController {
     return this.zentraBudgetItemService.findAllByProject(projectId);
   }
 
-  @Get('category/:categoryId')
-  findAllByCategory(@Param('categoryId') categoryId: string) {
-    return this.zentraBudgetItemService.findAllByCategory(categoryId);
+  @Post('category')
+  findAllByCategory(@Body() body: { categoryId: string; projectId: string }) {
+    return this.zentraBudgetItemService.findAllByCategory(body.categoryId, body.projectId);
   }
+  
+
 
   @Post('search')
   @Public()
@@ -59,7 +61,7 @@ export class ZentraBudgetItemController {
   }) {
     return this.zentraBudgetItemService.findByFilters(filters);
   }
-  
+
 
 
 

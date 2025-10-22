@@ -135,9 +135,9 @@ export class ZentraBudgetItemService {
     return results.map((item) => this.mapToDto(item));
   }
 
-  async findAllByCategory(categoryId: string): Promise<any[]> {
+  async findAllByCategory(categoryId: string, projectId: string): Promise<any[]> {
     const results = await this.prisma.zentraBudgetItem.findMany({
-      where: { deletedAt: null, definition: { categoryId } },
+      where: { deletedAt: null, definition: { categoryId, projectId } },
       include: {
         currency: true,
         definition: { include: { category: true } },
