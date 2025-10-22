@@ -31,6 +31,7 @@ export class ZentraDocumentExpenseService {
       idFirebase: !data.idFirebase ? '' : data.idFirebase,
       documentUrl: !data.documentUrl ? '' : data.documentUrl,
       documentName: !data.documentName ? '' : data.documentName,
+      fromTelecredito: data.fromTelecredito ?? false, 
     });
     return this.recalculateDocument(data.documentId);
   } 
@@ -121,6 +122,7 @@ export class ZentraDocumentExpenseService {
     idFirebase: string,
     documentUrl: string,
     documentName: string,
+    fromTelecredito?: boolean;
   }) {
     return this.zentraMovementService.create({
       code: data.code,
@@ -138,6 +140,7 @@ export class ZentraDocumentExpenseService {
       idFirebase: !data.idFirebase ? '' : data.idFirebase,
       documentUrl: !data.documentUrl ? '' : data.documentUrl,
       documentName: !data.documentName ? '' : data.documentName,
+      fromTelecredito: data.fromTelecredito ?? false,
     });
   }
 

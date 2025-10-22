@@ -392,6 +392,7 @@ export class ZentraDocumentService {
     currencyId: string;
     date: string;
     idFirebase: string;
+    fromTelecredito?: boolean;
   }) {
     return this.zentraMovementService.create({
       code: data.code,
@@ -406,7 +407,8 @@ export class ZentraDocumentService {
       autorizeDate: data.date,
       generateDate: data.date,
       paymentDate: data.date,
-      idFirebase: !data.idFirebase ? '' : data.idFirebase
+      idFirebase: !data.idFirebase ? '' : data.idFirebase,
+      fromTelecredito: data.fromTelecredito ?? false,
     });
   }
 
@@ -546,7 +548,8 @@ export class ZentraDocumentService {
       movementStatusId: dataDocument.movementStatusId,
       currencyId: bankAccountOriginCurrency,
       date: dataDocument.documentDate,
-      idFirebase: !dataDocument.idFirebase ? '' : dataDocument.idFirebase
+      idFirebase: !dataDocument.idFirebase ? '' : dataDocument.idFirebase,
+      fromTelecredito: dataDocument.fromTelecredito ?? false,
     });
 
     await this.createMovement({
@@ -561,7 +564,8 @@ export class ZentraDocumentService {
       movementStatusId: dataDocument.movementStatusId,
       currencyId: bankAccountDestinyCurrency,
       date: dataDocument.documentDate,
-      idFirebase: !dataDocument.idFirebase ? '' : dataDocument.idFirebase
+      idFirebase: !dataDocument.idFirebase ? '' : dataDocument.idFirebase,
+      fromTelecredito: dataDocument.fromTelecredito ?? false,
     });
 
     return { message: 'Exchange rate creado correctamente' };
@@ -643,7 +647,8 @@ export class ZentraDocumentService {
       movementStatusId: dataDocument.movementStatusId,
       currencyId: bankAccountOriginCurrency,
       date: dataDocument.documentDate,
-      idFirebase: dataDocument.idFirebase
+      idFirebase: dataDocument.idFirebase,
+      fromTelecredito: dataDocument.fromTelecredito ?? false,
     });
 
     return { message: 'Gasto financiero creado correctamente' };

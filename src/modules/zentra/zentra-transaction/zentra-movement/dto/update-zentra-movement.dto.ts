@@ -3,7 +3,8 @@ import {
   IsOptional, 
   IsNumber, 
   MaxLength, 
-  IsDateString 
+  IsDateString,
+  IsBoolean
 } from 'class-validator';
 
 export class UpdateZentraMovementDto {
@@ -77,4 +78,9 @@ export class UpdateZentraMovementDto {
   @IsOptional()
   @MaxLength(30)
   idFirebase?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  fromTelecredito?: boolean;
+
 }

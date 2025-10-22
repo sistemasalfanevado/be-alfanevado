@@ -107,28 +107,88 @@ export class ZentraTelecreditoOperationService {
         company: true,
         telecreditoConfig: true,
         state: true,
+        details: {
+          include: {
+            document: {
+              include: {
+                party: true
+              }
+            },
+          },
+        },
       },
     });
 
     // 🔹 Transformar la data para devolver un objeto plano
-    return results.map((item) => ({
-      id: item.id,
-      datePayment: moment(item.datePayment).format("DD/MM/YYYY"),
+    return results.map((item) => {
+      const details = item.details ?? [];
 
-      bankAccountId: item.bankAccountId,
-      bankName: item.bankAccount?.bank?.name || null,
-      currencyName: item.bankAccount?.currency?.name || null,
+      const detailsCount = details.length;
+      const totalAmountSum = Number(
+        details.reduce((sum, d) => sum + Number(d.totalAmount), 0).toFixed(2)
+      );
 
-      companyId: item.companyId,
-      companyName: item.company?.name ?? null,
+      return {
+        id: item.id,
+        datePayment: moment(item.datePayment).format("DD/MM/YYYY"),
 
-      telecreditoConfigId: item.telecreditoConfigId,
+        bankAccountId: item.bankAccountId,
+        bankName: item.bankAccount?.bank?.name || null,
+        currencyName: item.bankAccount?.currency?.name || null,
 
-      stateId: item.stateId,
-      stateName: item.state?.name ?? null,
-    }));
+        companyId: item.companyId,
+        companyName: item.company?.name ?? null,
 
+        telecreditoConfigId: item.telecreditoConfigId,
 
+        stateId: item.stateId,
+        stateName: item.state?.name ?? null,
+
+        // 🟢 Campos calculados
+        detailsCount,
+        totalAmountSum,
+
+        // 🟢 Lista de detalles
+        details: details.map((detail) => ({
+          id: detail.id,
+          documentId: detail.documentId,
+          totalAmount: detail.totalAmount,
+          documentCode: detail.document?.code,
+          documentDescription: detail.document?.description,
+          budgetItemId: detail.document?.budgetItemId,
+          partyName: detail.document?.party?.name,
+        })),
+      };
+    });
+
+  }
+
+  async createWithDetails(createDto: any) {
+    const { details, ...operationData } = createDto;
+
+    const operation = await this.prisma.zentraTelecreditoOperation.create({
+      data: {
+        ...operationData,
+        datePayment: new Date(operationData.datePayment),
+      },
+    });
+
+    if (details && details.length > 0) {
+      for (const detail of details) {
+        await this.prisma.zentraTelecreditoOperationDetail.create({
+          data: {
+            telecreditoOperationId: operation.id,
+            documentId: detail.documentId,
+            totalAmount: detail.totalAmount,
+          },
+        });
+      }
+    }
+
+    return {
+      message: 'Operación de telecrédito creada correctamente',
+      operationId: operation.id,
+    };
   }
 
   private buildTelecreditoFilters(filters: {

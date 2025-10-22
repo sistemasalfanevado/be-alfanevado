@@ -17,7 +17,7 @@ import { Public } from '../../../../auth/shared/decorators/public.decorator';
 export class ZentraTelecreditoOperationController {
   constructor(
     private readonly zentraTelecreditoOperationService: ZentraTelecreditoOperationService,
-  ) {}
+  ) { }
 
   @Post()
   create(@Body() createDto: CreateZentraTelecreditoOperationDto) {
@@ -66,4 +66,12 @@ export class ZentraTelecreditoOperationController {
   ) {
     return this.zentraTelecreditoOperationService.findByFilters(filters);
   }
+
+  @Post('create-with-details')
+  createWithDetails(
+    @Body() createDto: any,
+  ) {
+    return this.zentraTelecreditoOperationService.createWithDetails(createDto);
+  }
+
 }

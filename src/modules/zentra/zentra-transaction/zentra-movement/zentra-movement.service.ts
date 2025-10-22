@@ -182,6 +182,7 @@ export class ZentraMovementService {
       executedDolares: item.executedDolares,
 
       idFirebase: !item.idFirebase ? '' : item.idFirebase,
+      fromTelecredito: item.fromTelecredito ?? false,
 
     };
   }
@@ -227,6 +228,7 @@ export class ZentraMovementService {
         documentUrl = '',
         documentName = '',
         idFirebase = '',
+        fromTelecredito = false,
       } = createDto;
 
       // Calcular montos ejecutados
@@ -252,6 +254,7 @@ export class ZentraMovementService {
           idFirebase,
           documentUrl,
           documentName,
+          fromTelecredito,
           movementStatus: { connect: { id: movementStatusId } },
           document: { connect: { id: documentId } },
           transactionType: { connect: { id: transactionTypeId } },
@@ -367,6 +370,7 @@ export class ZentraMovementService {
           executedAmount,
           executedSoles,
           executedDolares,
+          fromTelecredito: updateDto.fromTelecredito ?? existing.fromTelecredito,
         },
         include: this.includeRelations,
       });

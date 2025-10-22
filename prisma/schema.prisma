@@ -874,6 +874,8 @@ model ZentraDocument {
   movements          ZentraMovement[]
   files              ZentraDocumentFile[]
   scheduledIncomeDocuments ZentraScheduledIncomeDocument[]
+
+  telecreditoOperationDetails ZentraTelecreditoOperationDetail[]
   
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
@@ -931,6 +933,8 @@ model ZentraMovement {
   executedAmount  Decimal @db.Decimal(12,2)
   executedSoles   Decimal @db.Decimal(12,2)
   executedDolares Decimal @db.Decimal(12,2)
+
+  fromTelecredito    Boolean?     @default(false)
   
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
@@ -1321,7 +1325,6 @@ model ZentraTelecreditoOperationState {
   @@map("zentra_telecredito_operation_state")
 }
 
-
 model ZentraTelecreditoOperation {
   id           String   @id @default(uuid())
 
@@ -1339,6 +1342,8 @@ model ZentraTelecreditoOperation {
 
   datePayment  DateTime
 
+  details ZentraTelecreditoOperationDetail[]
+
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   deletedAt    DateTime?
@@ -1346,28 +1351,20 @@ model ZentraTelecreditoOperation {
   @@map("zentra_telecredito_operation")
 }
 
-model ZentraTelecreditoOperation {
+model ZentraTelecreditoOperationDetail {
   id           String   @id @default(uuid())
 
-  bankAccount  ZentraBankAccount            @relation(fields: [bankAccountId], references: [id])
-  bankAccountId String
+  document                 ZentraDocument            @relation(fields: [documentId], references: [id])
+  documentId               String
 
-  company      ZentraCompany                @relation(fields: [companyId], references: [id])
-  companyId    String
-
-  telecreditoConfig ZentraTelecreditoConfig @relation(fields: [telecreditoConfigId], references: [id])
-  telecreditoConfigId String
-
-  state        ZentraTelecreditoOperationState @relation(fields: [stateId], references: [id])
-  stateId      String
-
-  datePayment  DateTime
-
+  telecreditoOperation     ZentraTelecreditoOperation @relation(fields: [telecreditoOperationId], references: [id])
+  telecreditoOperationId   String
+  
+  totalAmount              Decimal  @default(0.00) @db.Decimal(12, 2)
+  
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   deletedAt    DateTime?
 
-  @@map("zentra_telecredito_operation")
+  @@map("zentra_telecredito_operation_detail")
 }
-
-

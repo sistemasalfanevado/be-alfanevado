@@ -75,6 +75,7 @@ import { ZentraDocumentFileModule } from './zentra/zentra-transaction/zentra-doc
 
 import { ZentraTransactionGeneralModule } from './zentra/zentra-transaction/zentra-transaction-general/zentra-transaction-general.module';
 import { ZentraTelecreditoOperationModule } from './zentra/zentra-transaction/zentra-telecredito-operation/zentra-telecredito-operation.module';
+import { ZentraTelecreditoOperationDetailModule } from './zentra/zentra-transaction/zentra-telecredito-operation-detail/zentra-telecredito-operation-detail.module';
 
 
 // Zentra Ollama
@@ -155,6 +156,7 @@ import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-o
     ZentraDocumentExpenseModule,
     ZentraTransactionGeneralModule,
     ZentraTelecreditoOperationModule,
+    ZentraTelecreditoOperationDetailModule,
 
 
     // Utils

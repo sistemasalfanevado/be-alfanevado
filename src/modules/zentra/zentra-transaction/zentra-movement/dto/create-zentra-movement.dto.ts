@@ -4,7 +4,8 @@ import {
   IsNumber, 
   MaxLength, 
   IsDateString, 
-  IsOptional 
+  IsOptional,
+  IsBoolean
 } from 'class-validator';
 
 export class CreateZentraMovementDto {
@@ -78,4 +79,9 @@ export class CreateZentraMovementDto {
   @IsOptional()
   @MaxLength(30)
   idFirebase?: string;
+
+  // 🔹 Nuevo campo opcional (por defecto false)
+  @IsBoolean()
+  @IsOptional()
+  fromTelecredito?: boolean;
 }
