@@ -94,4 +94,35 @@ export class ZentraBudgetItemDefinitionService {
       data: { deletedAt: null },
     });
   }
+
+   async findAllByProject(projectId: string) {
+    const results = await this.prisma.zentraBudgetItemDefinition.findMany({
+      where: { deletedAt: null, projectId },
+      include: {
+        category: true,
+        project: true,
+        nature: true,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+
+      categoryId: item.category.id,
+      categoryName: item.category.name,
+
+      projectId: item.project.id,
+      projectName: item.project.name,
+
+      natureId: item.nature?.id ?? null,
+      natureName: item.nature?.name ?? null,
+
+      idFirebase: item.idFirebase,
+    }));
+  }
+
 }

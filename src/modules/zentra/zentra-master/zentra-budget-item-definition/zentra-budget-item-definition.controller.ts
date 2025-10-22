@@ -44,4 +44,11 @@ export class ZentraBudgetItemDefinitionController {
   restore(@Param('id') id: string) {
     return this.zentraBudgetItemDefinitionService.restore(id);
   }
+
+  @Get('project/:projectId')
+  findAllByProject(@Param('projectId') projectId: string) {
+    return this.zentraBudgetItemDefinitionService.findAllByProject(projectId);
+  }
+
+
 }
