@@ -430,7 +430,7 @@ export class ZentraMovementService {
 
   async findByBudgetItem(budgetItemId: string) {
     const results = await this.prisma.zentraMovement.findMany({
-      where: { budgetItemId },
+      where: { budgetItemId, deletedAt: null },
       include: this.includeRelations,
       orderBy: { paymentDate: 'desc' },
     });
@@ -439,7 +439,7 @@ export class ZentraMovementService {
 
   async findByCurrency(currencyId: string) {
     const results = await this.prisma.zentraMovement.findMany({
-      where: { bankAccount: { currencyId } },
+      where: { bankAccount: { currencyId }, deletedAt: null },
       include: this.includeRelations,
       orderBy: { createdAt: 'desc' },
     });
@@ -448,7 +448,7 @@ export class ZentraMovementService {
 
   async findByBudgetItemAndCurrency(budgetItemId: string, currencyId: string) {
     const results = await this.prisma.zentraMovement.findMany({
-      where: { budgetItemId, bankAccount: { currencyId } },
+      where: { budgetItemId, bankAccount: { currencyId }, deletedAt: null },
       include: this.includeRelations,
       orderBy: { createdAt: 'desc' },
     });
