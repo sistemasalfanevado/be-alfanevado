@@ -126,6 +126,41 @@ export class ZentraBankAccountService {
     }));
   }
 
+  async findAllByCompany(companyId: string): Promise<any[]> {
+    const results = await this.prisma.zentraBankAccount.findMany({
+      where: {
+        deletedAt: null,
+        project: {
+          companyId, // 🔹 filtro por la relación anidada
+        },
+      },
+      include: {
+        bank: true,
+        project: true,
+        currency: true,
+      },
+      orderBy: [
+        { project: { name: 'asc' } },
+        { bank: { name: 'asc' } },
+        { currency: { name: 'asc' } },
+      ],
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      amount: item.amount,
+      bankId: item.bank.id,
+      bankName: item.bank.name,
+      projectId: item.project.id,
+      projectName: item.project.name,
+      currencyId: item.currency.id,
+      currencyName: item.currency.name,
+      bankComplete: `${item.bank.name} - ${item.currency.name}`,
+      completeName: `${item.project.name} - ${item.bank.name} - ${item.currency.name}`,
+      idFirebase: item.idFirebase
+    }));
+  }
+
 
 
 }

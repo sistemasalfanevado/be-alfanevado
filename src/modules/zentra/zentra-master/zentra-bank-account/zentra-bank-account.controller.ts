@@ -46,4 +46,9 @@ export class ZentraBankAccountController {
     return this.zentraBankAccountService.findAllByProject(projectId);
   }
 
+  @Get('company/:companyId')
+  findAllByCompany(@Param('companyId') companyId: string) {
+    return this.zentraBankAccountService.findAllByCompany(companyId);
+  }
+
 }
