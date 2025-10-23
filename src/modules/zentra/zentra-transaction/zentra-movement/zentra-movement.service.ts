@@ -497,13 +497,14 @@ export class ZentraMovementService {
   }
 
   async findByFilters(filters: {
+    projectId?: string;
     bankAccountId?: string,
     partyId?: string;
     budgetItemId?: string;
     startDate?: string;
-    endDate?: string;
+    endDate?: string; 
   }) {
-    const { partyId, bankAccountId, budgetItemId, startDate, endDate } = filters;
+    const { projectId, partyId, bankAccountId, budgetItemId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -529,6 +530,14 @@ export class ZentraMovementService {
 
     if (partyId && partyId.trim() !== '') {
       where.party = { id: partyId };
+    }
+
+    if (projectId && projectId.trim() !== '') {
+      where.budgetItem = {
+        definition: {
+          projectId: projectId,
+        },
+      };
     }
 
     const results = await this.prisma.zentraMovement.findMany({

@@ -81,6 +81,7 @@ export class ZentraMovementController {
   @Post('search')
   @Public()
   search(@Body() filters: {
+    projectId?: string;
     partyId?: string;
     bankAccountId?: string;
     startDate?: string;
@@ -89,6 +90,7 @@ export class ZentraMovementController {
   }) {
     return this.zentraMovementService.findByFilters(filters);
   }
+
 
   @Get('profitability/yearly/:projectId')
   @Public()
