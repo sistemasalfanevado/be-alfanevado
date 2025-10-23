@@ -3,6 +3,9 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraProjectDto } from './dto/create-zentra-project.dto';
 import { UpdateZentraProjectDto } from './dto/update-zentra-project.dto';
 
+import { BUDGET_NATURE } from 'src/shared/constants/app.constants';
+
+
 @Injectable()
 export class ZentraProjectService {
   constructor(private prisma: PrismaService) { }
@@ -91,25 +94,47 @@ export class ZentraProjectService {
       where: { deletedAt: null },
       include: {
         company: true,
+        budgetItemDefinitions: {
+          where: {
+            natureId: BUDGET_NATURE.SISTEMAS,
+          },
+          include: {
+            budgetItems: {
+              take: 1,
+            },
+          },
+        },
       },
       orderBy: { name: 'asc' },
     });
 
-    return results.map((project) => ({
-      id: project.id,
-      name: project.name,
-      imageUrl: project.imageUrl,
+    return results.map((project) => {
+      // 🔹 Obtenemos la primera definición válida
+      const definition = project.budgetItemDefinitions?.[0];
+      const budgetItem = definition?.budgetItems?.[0];
 
-      // 🔹 Datos planos de la compañía
-      companyId: project.company?.id ?? null,
-      companyName: project.company?.name ?? null,
-      businessName: project.company?.businessName ?? null,
-      address: project.company?.address ?? null,
-      documentNumber: project.company?.documentNumber ?? null,
-      legalRepresentative: project.company?.legalRepresentative ?? null,
-      representativeDocumentNumber: project.company?.representativeDocumentNumber ?? null,
-    }));
+      return {
+        id: project.id,
+        name: project.name,
+        imageUrl: project.imageUrl,
+
+        // 🔹 Datos planos de la compañía
+        companyId: project.company?.id ?? null,
+        companyName: project.company?.name ?? null,
+        businessName: project.company?.businessName ?? null,
+        address: project.company?.address ?? null,
+        documentNumber: project.company?.documentNumber ?? null,
+        legalRepresentative: project.company?.legalRepresentative ?? null,
+        representativeDocumentNumber: project.company?.representativeDocumentNumber ?? null,
+
+        // 🔹 Datos del primer budget item (si existe)
+        budgetItemId: budgetItem?.id ?? null,
+        budgetItemName: definition?.name ?? null,
+      };
+    });
   }
+
+
 
 
   async findAllWithDetails() {
