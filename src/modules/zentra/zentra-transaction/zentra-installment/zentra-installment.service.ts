@@ -301,7 +301,7 @@ export class ZentraInstallmentService {
 
 
 
-  async findDebtsYear(year?: number) {
+  async findDebtsYear(projectId: string, year: number) {
     const targetYear = year ?? moment().year();
 
     const startOfYear = moment().year(targetYear).startOf('year').toDate();
@@ -311,11 +311,20 @@ export class ZentraInstallmentService {
       where: {
         deletedAt: null,
         dueDate: {
-          gte: startOfYear,
+          gte: startOfYear, 
           lte: endOfYear,
         },
         installmentStatusId: {
           not: INSTALLMENT_STATUS.PAGADO, // Solo pendientes o parciales
+        },
+        scheduledIncomeDocument: {
+          document: {
+            budgetItem: {
+              definition: {
+                projectId: projectId, // 👈 filtro por proyecto
+              },
+            },
+          },
         },
       },
       include: {

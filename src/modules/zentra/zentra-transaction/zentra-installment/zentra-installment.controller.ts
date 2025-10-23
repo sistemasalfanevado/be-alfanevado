@@ -73,15 +73,14 @@ export class ZentraInstallmentController {
   }
 
   @Post('debts-year')
-  findDebtsThisYear(@Body() body: { year: number }) {
-    return this.zentraInstallmentService.findDebtsYear(body.year);
+  findDebtsThisYear(@Body() body: { projectId: string; year: number }) {
+    return this.zentraInstallmentService.findDebtsYear(body.projectId,
+      body.year);
   }
 
   @Post('debts-all')
   findDebtsAll(@Body() body: { projectId: string }) {
     return this.zentraInstallmentService.findDebtsAll(body.projectId);
   }
-
-
 
 }

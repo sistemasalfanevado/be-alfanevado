@@ -11,15 +11,15 @@ export class ZentraTransactionGeneralService {
     private prisma: PrismaService,
   ) { }
 
-  
+
   async getWeeklySummary(projectId: string, month: number, year: number) {
-    
+
     const startOfMonth = moment({ year, month }).startOf('month').startOf('day');
     const endOfMonth = moment({ year, month }).endOf('month').endOf('day');
 
     const projectIncome = await this.prisma.zentraProjectIncome.findFirst({
       where: { deletedAt: null, projectId },
-      include: { budgetItem: true },
+      include: { project: true, budgetItem: true },
     });
 
     if (!projectIncome) {
@@ -31,6 +31,11 @@ export class ZentraTransactionGeneralService {
     const incomes = await this.prisma.zentraMovement.findMany({
       where: {
         deletedAt: null,
+        budgetItem: {
+          definition: {
+            projectId,
+          },
+        },
         budgetItemId: ingresoVentasBudgetItemId,
         paymentDate: { gte: startOfMonth.toDate(), lte: endOfMonth.toDate() },
       },
@@ -61,7 +66,17 @@ export class ZentraTransactionGeneralService {
         deletedAt: null,
         dueDate: { gte: startOfMonth.toDate(), lte: endOfMonth.toDate() },
         installmentStatusId: { not: INSTALLMENT_STATUS.PAGADO },
-        scheduledIncomeDocument: { document: { budgetItemId: ingresoVentasBudgetItemId } },
+        scheduledIncomeDocument: {
+          document: {
+            budgetItem: {
+              definition: {
+                projectId, // 👈 filtro por proyecto
+              },
+            },
+            budgetItemId: ingresoVentasBudgetItemId,
+          },
+        },
+
       },
       select: {
         id: true,

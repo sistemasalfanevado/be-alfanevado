@@ -482,6 +482,7 @@ export class ZentraDocumentService {
   }
 
   private buildDocumentFilters(filters: {
+    projectId?: string;
     partyId?: string;
     documentCategoryId?: string;
     documentStatusId?: string;
@@ -512,6 +513,14 @@ export class ZentraDocumentService {
       where.documentCategoryId = filters.documentCategoryId;
     }
 
+    if (filters.projectId?.trim()) {
+      where.budgetItem = {
+        definition: {
+          projectId: filters.projectId,
+        },
+      };
+    }
+    
     return where;
   }
 
@@ -580,6 +589,7 @@ export class ZentraDocumentService {
     documentCategoryId?: string;
     startDate?: string;
     endDate?: string;
+    projectId?: string;
   }) {
     const where = this.buildDocumentFilters(filters);
 
@@ -659,6 +669,7 @@ export class ZentraDocumentService {
   }
 
   async findByFiltersFinancialExpense(filters: {
+    projectId?: string;
     documentCategoryId?: string;
     startDate?: string;
     endDate?: string;

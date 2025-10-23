@@ -51,8 +51,6 @@ export class ZentraBudgetItemController {
     return this.zentraBudgetItemService.findAllByCategory(body.categoryId, body.projectId);
   }
   
-
-
   @Post('search')
   @Public()
   search(@Body() filters: {
@@ -60,6 +58,14 @@ export class ZentraBudgetItemController {
     projectId?: string;
   }) {
     return this.zentraBudgetItemService.findByFilters(filters);
+  }
+
+  @Post('search-extra')
+  @Public()
+  searchExtra(@Body() filters: {
+    projectId?: string;
+  }) {
+    return this.zentraBudgetItemService.findByFiltersExtra(filters);
   }
 
 

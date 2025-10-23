@@ -65,9 +65,9 @@ export class ZentraBudgetItemService {
     });
   }
 
-  
+
   private mapToDto(item: any, includeCategory = false) {
-    const available = 
+    const available =
       item.amount !== null && item.executedDolares !== null
         ? Number((Number(item.amount) - Number(Math.abs(item.executedDolares))).toFixed(2))
         : null;
@@ -183,6 +183,24 @@ export class ZentraBudgetItemService {
     });
 
     return results.map((item) => this.mapToDto(item, true));
+  }
+
+  async findByFiltersExtra(filters: { projectId?: string }): Promise<any[]> {
+    const results = await this.prisma.zentraBudgetItem.findMany({
+      where: {
+        deletedAt: { not: null },
+        definition: {
+          projectId: filters.projectId
+        }
+      },
+      include: { currency: true, definition: true },
+      orderBy: [
+        { definition: { name: 'asc' } },
+        { currency: { name: 'asc' } },
+      ],
+    });
+
+    return results.map((item) => this.mapToDto(item));
   }
 
 }

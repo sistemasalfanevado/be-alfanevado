@@ -79,6 +79,7 @@ export class ZentraDocumentController {
     documentCategoryId?: string;
     startDate?: string;
     endDate?: string;
+    projectId?: string;
   }) {
     return this.zentraDocumentService.findByFiltersExchangeRate(filters);
   }
@@ -96,6 +97,7 @@ export class ZentraDocumentController {
   @Post('financial-expense/search')
   @Public()
   searchFinancialExpense(@Body() filters: {
+    projectId?: string;
     documentCategoryId?: string;
     startDate?: string;
     endDate?: string;
