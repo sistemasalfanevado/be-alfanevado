@@ -311,7 +311,7 @@ export class ZentraInstallmentService {
       where: {
         deletedAt: null,
         dueDate: {
-          gte: startOfYear, 
+          gte: startOfYear,
           lte: endOfYear,
         },
         installmentStatusId: {
@@ -464,6 +464,60 @@ export class ZentraInstallmentService {
   }
 
 
+
+  async findAllByProject(projectId: string) {
+    const installments = await this.prisma.zentraInstallment.findMany({
+      where: {
+        deletedAt: null,
+        scheduledIncomeDocument: {
+          document: {
+            budgetItem: {
+              definition: {
+                projectId: projectId, // 👈 filtro por proyecto
+              },
+            },
+          },
+        },
+      },
+      orderBy: { letra: 'asc' },
+      include: {
+        installmentStatus: {
+          select: { id: true, name: true },
+        },
+        currency: {
+          select: { id: true, name: true },
+        },
+        scheduledIncomeDocument: {
+          select: {
+            id: true,
+            documentId: true, // 👈 aquí obtienes el documentId
+          },
+        },
+      },
+    });
+
+    return installments.map(i => ({
+      id: i.id,
+      letra: i.letra,
+      capital: i.capital,
+      interest: i.interest,
+      totalAmount: i.totalAmount,
+      extra: i.extra,
+      dueDate: moment(i.dueDate).format('DD/MM/YYYY'),
+
+      installmentStatusId: i.installmentStatus.id,
+      installmentStatusName: i.installmentStatus.name,
+      scheduledIncomeDocumentId: i.scheduledIncomeDocumentId,
+      documentId: i.scheduledIncomeDocument?.documentId ?? null,
+
+      paidAmount: i.paidAmount,
+      description: i.description,
+
+      currencyId: i.currency.id,
+      currencyName: i.currency.name,
+      idFirebase: !i.idFirebase ? '' : i.idFirebase
+    }));
+  }
 
 
 

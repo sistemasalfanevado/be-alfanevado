@@ -83,4 +83,10 @@ export class ZentraInstallmentController {
     return this.zentraInstallmentService.findDebtsAll(body.projectId);
   }
 
+  @Get('project/:projectId')
+  findAllByProject(@Param('projectId') projectId: string) {
+    return this.zentraInstallmentService.findAllByProject(projectId);
+  }
+
+
 }
