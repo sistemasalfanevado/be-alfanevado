@@ -81,6 +81,9 @@ import { ZentraTelecreditoOperationDetailModule } from './zentra/zentra-transact
 // Zentra Ollama
 import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-ollama.module';
 
+// Zentra Marketing
+import { ZentraLandingLeadModule } from './zentra/zentra-mkt/zentra-landing-lead/zentra-landing-lead.module';
+
 
 @Module({
   imports: [
@@ -161,7 +164,11 @@ import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-o
 
     // Utils
     ZentraBankStatementModule,
-    ZentraOllamaModule
+    ZentraOllamaModule,
+
+
+    // Marketing
+    ZentraLandingLeadModule
 
   ],  
 })
