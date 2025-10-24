@@ -520,7 +520,7 @@ export class ZentraDocumentService {
         },
       };
     }
-    
+
     return where;
   }
 
@@ -799,6 +799,9 @@ export class ZentraDocumentService {
       permanentGuarantorDni: dataDocument.permanentGuarantorDni,
       permanentGuarantorPhone: dataDocument.permanentGuarantorPhone,
 
+      parkingSpot1: dataDocument.parkingSpot1,
+      parkingSpot2: dataDocument.parkingSpot2,
+
 
     });
 
@@ -953,6 +956,9 @@ export class ZentraDocumentService {
         permanentGuarantorDni: sched?.permanentGuarantorDni ?? '',
         permanentGuarantorPhone: sched?.permanentGuarantorPhone ?? '',
 
+        parkingSpot1: sched?.parkingSpot1 ?? '',
+        parkingSpot2: sched?.parkingSpot2 ?? ''
+
       };
     });
 
@@ -1021,6 +1027,10 @@ export class ZentraDocumentService {
               permanentGuarantorAddress: updateData.permanentGuarantorAddress,
               permanentGuarantorDni: updateData.permanentGuarantorDni,
               permanentGuarantorPhone: updateData.permanentGuarantorPhone,
+
+              parkingSpot1: updateData.parkingSpot1,
+              parkingSpot2: updateData.parkingSpot2,
+
             },
           });
         }

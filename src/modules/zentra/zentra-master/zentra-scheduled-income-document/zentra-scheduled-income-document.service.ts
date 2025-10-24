@@ -63,6 +63,9 @@ export class ZentraScheduledIncomeDocumentService {
       permanentGuarantorDni: doc.permanentGuarantorDni,
       permanentGuarantorPhone: doc.permanentGuarantorPhone,
 
+      parkingSpot1: doc.parkingSpot1,
+      parkingSpot2: doc.parkingSpot2,
+
     }));
   }
 

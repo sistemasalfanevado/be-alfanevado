@@ -1091,7 +1091,8 @@ model ZentraScheduledIncomeDocument {
   permanentGuarantorDni         String?   // Aval Permanente DNI
   permanentGuarantorPhone       String?   // Aval Permanente Teléfono
 
-
+  parkingSpot1              String?   @db.VarChar(10)
+  parkingSpot2              String?   @db.VarChar(10)
 
   installments ZentraInstallment[]
 

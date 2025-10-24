@@ -73,4 +73,12 @@ export class CreateZentraScheduledIncomeDocumentDto {
   @IsString()
   @IsOptional()
   permanentGuarantorPhone?: string;
+
+  @IsString()
+  @IsOptional()
+  parkingSpot1?: string; // Cochera 1
+
+  @IsString()
+  @IsOptional()
+  parkingSpot2?: string; // Cochera 2
 }
