@@ -18,6 +18,7 @@ async function bootstrap() {
   // Habilitar CORS
   app.enableCors({
     origin: [
+      'http://localhost:4500',
       'http://localhost:4200',
       'https://alfa-nevado-a8c64.web.app',
       'https://admin-alfa-nevado-78d3d.web.app',

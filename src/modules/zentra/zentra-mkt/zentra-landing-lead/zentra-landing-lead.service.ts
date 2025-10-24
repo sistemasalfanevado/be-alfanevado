@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraLandingLeadDto } from './dto/create-zentra-landing-lead.dto';
 import { UpdateZentraLandingLeadDto } from './dto/update-zentra-landing-lead.dto';
+import * as moment from 'moment';
 
 @Injectable()
 export class ZentraLandingLeadService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   // 🟢 Crear registro (usado por el formulario público de la landing)
   async create(createDto: CreateZentraLandingLeadDto) {
@@ -23,11 +24,18 @@ export class ZentraLandingLeadService {
 
   // 📋 Obtener todos los leads (solo los que no estén eliminados)
   async findAll() {
-    return this.prisma.zentraLandingLead.findMany({
+    const results = await this.prisma.zentraLandingLead.findMany({
       where: { deletedAt: null },
       orderBy: { createdAt: 'desc' },
     });
+
+    // Formatear la fecha antes de devolver los datos
+    return results.map((lead) => ({
+      ...lead,
+      createdAt: moment(lead.createdAt).format('DD/MM/YYYY'),
+    }));
   }
+
 
   // 🔍 Obtener un lead por ID
   async findOne(id: string) {
