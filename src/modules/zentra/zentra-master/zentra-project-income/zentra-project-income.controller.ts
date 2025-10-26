@@ -41,4 +41,10 @@ export class ZentraProjectIncomeController {
   restore(@Param('id') id: string) {
     return this.zentraProjectIncomeService.restore(id);
   }
+
+  @Get('project/:projectId')
+  findAllByProject(@Param('projectId') projectId: string) {
+    return this.zentraProjectIncomeService.findAllByProject(projectId);
+  }
+
 }

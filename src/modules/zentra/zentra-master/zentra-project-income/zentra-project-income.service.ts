@@ -67,4 +67,43 @@ export class ZentraProjectIncomeService {
       data: { deletedAt: null },
     });
   }
+
+
+  async findAllByProject(projectId: string): Promise<any> {
+    const results = await this.prisma.zentraProjectIncome.findMany({
+      where: {
+        deletedAt: null,
+        projectId,
+      },
+      include: {
+        budgetItem: {
+          include: {
+            definition: true
+          }
+        },
+        project: true,
+      },
+    });
+
+    // Si no hay resultados, devolver objeto vacío con valores vacíos
+    if (!results || results.length === 0) {
+      return {
+        projectName: '',
+        projectId,
+        budgetItemName: '',
+        budgetItemId: '',
+      };
+    }
+
+    // Si hay resultados, devolvemos el primero
+    const item = results[0];
+
+    return {
+      projectName: item.project?.name ?? '',
+      projectId: item.project?.id ?? projectId,
+      budgetItemName: item.budgetItem?.definition?.name ?? '',
+      budgetItemId: item.budgetItem?.id ?? '',
+    };
+  }
+  
 }

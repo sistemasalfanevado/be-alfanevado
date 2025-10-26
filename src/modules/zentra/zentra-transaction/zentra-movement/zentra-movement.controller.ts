@@ -111,6 +111,15 @@ export class ZentraMovementController {
   }
 
 
+  @Get('project/:projectId')
+  findAllByProject(@Param('projectId') projectId: string) {
+    return this.zentraMovementService.findAllByProject(projectId);
+  }
 
+  @Get('company/:companyId')
+  findAllByCompany(@Param('companyId') companyId: string) {
+    return this.zentraMovementService.findAllByCompany(companyId);
+  }
+  
 
 }

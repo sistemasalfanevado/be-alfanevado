@@ -89,7 +89,7 @@ export class ZentraProjectService {
     });
   }
 
-  async findAllWithCompany() {
+  async findAllWithCompany() { 
     const results = await this.prisma.zentraProject.findMany({
       where: { deletedAt: null },
       include: {
@@ -103,22 +103,35 @@ export class ZentraProjectService {
               take: 1,
             },
           },
+        }, 
+        incomes: { // 👈 se agregan los ingresos del proyecto
+          where: { deletedAt: null },
+          include: {
+            budgetItem: {
+              include: {
+                definition: true,
+              },
+            },
+          },
+          take: 1, // si solo quieres el primero; si quieres todos, elimina esta línea
         },
       },
       orderBy: { name: 'asc' },
     });
 
     return results.map((project) => {
-      // 🔹 Obtenemos la primera definición válida
       const definition = project.budgetItemDefinitions?.[0];
       const budgetItem = definition?.budgetItems?.[0];
+
+      // 🔹 Tomamos el primer ingreso (si existe)
+      const income = project.incomes?.[0];
 
       return {
         id: project.id,
         name: project.name,
         imageUrl: project.imageUrl,
 
-        // 🔹 Datos planos de la compañía
+        // 🔹 Datos de compañía
         companyId: project.company?.id ?? null,
         companyName: project.company?.name ?? null,
         businessName: project.company?.businessName ?? null,
@@ -127,9 +140,13 @@ export class ZentraProjectService {
         legalRepresentative: project.company?.legalRepresentative ?? null,
         representativeDocumentNumber: project.company?.representativeDocumentNumber ?? null,
 
-        // 🔹 Datos del primer budget item (si existe)
+        // 🔹 Presupuesto (definición)
         budgetItemId: budgetItem?.id ?? null,
         budgetItemName: definition?.name ?? null,
+
+        // 🔹 Ingreso (si existe)
+        incomeBudgetItemId: income?.budgetItem?.id ?? '',
+        incomeBudgetItemName: income?.budgetItem?.definition?.name ?? '',
       };
     });
   }

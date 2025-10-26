@@ -502,7 +502,7 @@ export class ZentraMovementService {
     partyId?: string;
     budgetItemId?: string;
     startDate?: string;
-    endDate?: string; 
+    endDate?: string;
   }) {
     const { projectId, partyId, bankAccountId, budgetItemId, startDate, endDate } = filters;
 
@@ -524,20 +524,22 @@ export class ZentraMovementService {
       where.budgetItem = { id: budgetItemId };
     }
 
+    if (projectId && projectId.trim() !== '') {
+      where.budgetItem = {
+        ...(where.budgetItem || {}),
+        definition: {
+          ...(where.budgetItem?.definition || {}),
+          projectId: projectId,
+        },
+      };
+    }
+
     if (bankAccountId && bankAccountId.trim() !== '') {
       where.bankAccount = { id: bankAccountId };
     }
 
     if (partyId && partyId.trim() !== '') {
       where.party = { id: partyId };
-    }
-
-    if (projectId && projectId.trim() !== '') {
-      where.budgetItem = {
-        definition: {
-          projectId: projectId,
-        },
-      };
     }
 
     const results = await this.prisma.zentraMovement.findMany({
@@ -547,7 +549,7 @@ export class ZentraMovementService {
         paymentDate: 'desc',
       },
     });
-
+    
     const bankSummary: Record<string, { bankAccountName: string, entry: number, exit: number, balance: number }> = {};
 
     for (const item of results) {
@@ -577,7 +579,6 @@ export class ZentraMovementService {
     };
 
   }
-
 
   private async getMovementsInRange(projectId: string, start: Date, end: Date) {
     return this.prisma.zentraMovement.findMany({
@@ -666,7 +667,7 @@ export class ZentraMovementService {
   }
 
   async getMonthlyProfitability(projectId: string, month: number, year: number) {
-    
+
     const startOfMonth = moment({ year, month }).startOf('month').toDate();
     const endOfMonth = moment({ year, month }).endOf('month').toDate();
 
@@ -681,6 +682,38 @@ export class ZentraMovementService {
     return result;
   }
 
+
+  async findAllByProject(projectId: string): Promise<any[]> {
+    const results = await this.prisma.zentraMovement.findMany({
+      where: {
+        deletedAt: null,
+        budgetItem: {
+          definition: {
+            projectId: projectId,
+          },
+        }
+      },
+      include: this.includeRelations,
+    });
+    return results.map(this.formatMovement);
+  }
+
+  async findAllByCompany(companyId: string): Promise<any[]> {
+    const results = await this.prisma.zentraMovement.findMany({
+      where: {
+        deletedAt: null,
+        budgetItem: {
+          definition: {
+            project: {
+              companyId: companyId,
+            }
+          },
+        }
+      },
+      include: this.includeRelations,
+    });
+    return results.map(this.formatMovement);
+  }
 
 
 
