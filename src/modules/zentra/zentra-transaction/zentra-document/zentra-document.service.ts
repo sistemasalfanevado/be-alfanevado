@@ -84,6 +84,7 @@ export class ZentraDocumentService {
       currencyName: item.currency.name,
 
       userId: item.user.id,
+      userName: item.user.firstName,
 
       documentCategoryId: item.documentCategory?.id,
       documentCategoryName: item.documentCategory?.name,
@@ -340,6 +341,8 @@ export class ZentraDocumentService {
         documentDate: 'desc',
       },
     });
+
+    //console.log('Info que llega: ', results)
 
     return results.map(item => this.mapEntityToDto(item));
   }
