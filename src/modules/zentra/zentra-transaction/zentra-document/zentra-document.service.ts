@@ -7,7 +7,7 @@ import { UpdateZentraDocumentDto } from './dto/update-zentra-document.dto';
 import { ZentraInstallmentService } from '../../zentra-transaction/zentra-installment/zentra-installment.service';
 import { ZentraMovementService } from '../../zentra-transaction/zentra-movement/zentra-movement.service';
 import { ZentraScheduledIncomeDocumentService } from '../../zentra-master/zentra-scheduled-income-document/zentra-scheduled-income-document.service';
-import { TRANSACTION_TYPE, CURRENCY, INSTALLMENT_STATUS } from 'src/shared/constants/app.constants';
+import { TRANSACTION_TYPE, CURRENCY, INSTALLMENT_STATUS, BANK_ACCOUNT_HIERARCHY } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
 
@@ -44,8 +44,47 @@ export class ZentraDocumentService {
     },
   };
 
+  private includeRelationsWithBankAccount = {
+    documentStatus: true,
+    transactionType: true,
+    documentType: true,
+    party: {
+      include: {
+        partyBankAccounts: {
+          where: {
+            deletedAt: null,
+            hierarchyId: BANK_ACCOUNT_HIERARCHY.PRINCIPAL,
+          },
+          include: {
+            bank: true,
+            currency: true,
+            type: true,
+          },
+        },
+      }
+    },
+    budgetItem: {
+      include: {
+        definition: true,
+        currency: true
+      }
+    },
+    currency: true,
+    user: true,
+    movements: true,
+    documentCategory: true,
+    financialNature: {
+      include: {
+        movementCategory: true,
+      }
+    },
+  };
+
   /** Mapea un registro de Prisma a DTO */
   private mapEntityToDto(item: any) {
+
+    const principalAccount = item.party?.partyBankAccounts?.[0] ?? null;
+
     return {
       id: item.id,
       code: item.code,
@@ -99,6 +138,11 @@ export class ZentraDocumentService {
       financialNatureName: item.financialNature?.name ?? null,
       movementCategoryId: item.financialNature?.movementCategory?.id ?? null,
       movementCategoryName: item.financialNature?.movementCategory?.name ?? null,
+
+      partyBankAccountInfo: principalAccount
+        ? `${principalAccount.bank?.name ?? '-'} | ${principalAccount.currency?.name ?? '-'} | ${principalAccount.type?.name ?? '-'} | ${principalAccount.account ?? '-'} | CCI: ${principalAccount.cci ?? '-'}`
+        : '',
+
 
     };
   }
@@ -274,6 +318,7 @@ export class ZentraDocumentService {
     });
   }
 
+
   async findByFilters(filters: {
     transactionTypeId?: string,
     documentStatusId?: string;
@@ -284,8 +329,9 @@ export class ZentraDocumentService {
     startDate?: string;
     endDate?: string;
     userId?: string;
+    withPartyBankAccount?: boolean;
   }) {
-    const { documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, userId, startDate, endDate } = filters;
+    const { withPartyBankAccount, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, userId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -308,6 +354,7 @@ export class ZentraDocumentService {
     if (partyId && partyId.trim() !== '') {
       where.party = { id: partyId };
     }
+
 
     if (documentCategoryId && documentCategoryId.trim() !== '') {
       where.documentCategory = { id: documentCategoryId };
@@ -333,18 +380,55 @@ export class ZentraDocumentService {
       };
     }
 
-
     const results = await this.prisma.zentraDocument.findMany({
       where,
-      include: this.includeRelations,
+      include: withPartyBankAccount ? this.includeRelationsWithBankAccount : this.includeRelations,
       orderBy: {
         documentDate: 'desc',
       },
     });
 
-    //console.log('Info que llega: ', results)
+    const docIds = results.map(r => r.id);
 
-    return results.map(item => this.mapEntityToDto(item));
+    const groups = await this.prisma.zentraMovement.groupBy({
+      by: ['documentId', 'budgetItemId'],
+      where: {
+        documentId: { in: docIds },
+        deletedAt: null,
+      },
+      _count: {
+        _all: true,
+      },
+    });
+
+    const mapByDoc = new Map<string, Array<{ budgetItemId: string | null, count: number }>>();
+
+    for (const g of groups) {
+      const arr = mapByDoc.get(g.documentId) ?? [];
+      arr.push({ budgetItemId: g.budgetItemId ?? null, count: g._count._all });
+      mapByDoc.set(g.documentId, arr);
+    }
+
+    const resultsWithConsistency = results.map(item => {
+      const dto = this.mapEntityToDto(item);
+      const docBudgetItemId = item.budgetItem?.id ?? null;
+
+      const groupsForDoc = mapByDoc.get(item.id) ?? [];
+
+      const inconsistentMovements = groupsForDoc
+        .filter(g => g.budgetItemId !== docBudgetItemId)
+        .reduce((sum, g) => sum + g.count, 0);
+
+      return {
+        ...dto,
+        inconsistentMovements,
+        hasBudgetItemMismatch: inconsistentMovements > 0,
+      };
+    });
+
+    return resultsWithConsistency;
+
+
   }
 
   private async createDocument(dataDocument: any) {
