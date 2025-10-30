@@ -100,6 +100,7 @@ export class ZentraLandingPageRelationService {
       block: lot.block,
       code: lot.code,
       status: lot.status.title,
+      statusId: lot.status.id,
       area: lot.area,
       perimeter: lot.perimeter,
     }));

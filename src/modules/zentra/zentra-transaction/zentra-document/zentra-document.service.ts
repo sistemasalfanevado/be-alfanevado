@@ -957,6 +957,7 @@ export class ZentraDocumentService {
     partyId?: string;
     startDate?: string;
     endDate?: string;
+    projectId?: string;
   }) {
     const where = this.buildDocumentFilters(filters);
 
@@ -1202,7 +1203,10 @@ export class ZentraDocumentService {
   }
 
 
+
+
   async findByFiltersScheduledIncomeReport(filters: { projectId?: string }) {
+
     const lots = await this.prisma.landingLot.findMany({
       where: {
         deletedAt: null,
@@ -1311,6 +1315,159 @@ export class ZentraDocumentService {
 
 
     return result;
+  }
+
+  async findByFiltersScheduledIncomeReportV2(filters: { projectId: string, documentCategoryId: string }) {
+
+    const documentList = await this.prisma.zentraDocument.findMany({
+      where: {
+        deletedAt: null,
+        budgetItem: {
+          definition: {
+            projectId: filters.projectId,
+          },
+        },
+        documentCategoryId: filters.documentCategoryId
+      },
+      include: {
+        party: true,
+        currency: true,
+        budgetItem: {
+          include: {
+            definition: true,
+            currency: true,
+          },
+        },
+        scheduledIncomeDocuments: {
+          where: { deletedAt: null },
+          include: {
+            broker: true,
+            saleType: true,
+            lot: {
+              include: { status: true }, // importante para lot.status.title
+            },
+            status: true,
+          },
+        },
+      },
+      orderBy: {
+        documentDate: 'desc',
+      },
+    });
+
+    const lots = await this.prisma.landingLot.findMany({
+      where: {
+        deletedAt: null,
+        page: {
+          zentraProjects: {
+            some: {
+              zentraProjectId: filters.projectId,
+            },
+          },
+        },
+      },
+      include: { status: true },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+
+    const reportData = documentList.map((doc) => {
+      const lastScheduled = doc.scheduledIncomeDocuments[0];
+      const lot = lastScheduled?.lot;
+      const lastBroker = lastScheduled?.broker;
+      const lastSaleType = lastScheduled?.saleType;
+
+      const amountToPay = Number(doc.amountToPay || 0);
+      const paidAmount = Number(doc.paidAmount || 0);
+
+      return {
+        id: doc.id,
+
+        lotId: lot?.id || '',
+        name: lot?.name || '',
+        area: Number(lot?.area || 0),
+        block: lot?.block || '',
+        number: lot?.number || 0,
+        status: lot?.status?.title || '',
+        statusId: lot?.status?.id || '',
+
+        documentDate: doc.documentDate
+          ? moment(doc.documentDate).format('DD/MM/YYYY')
+          : '',
+        documentCurrencyName: doc.currency?.name || '',
+        documentCurrencyId: doc.currency?.id || '',
+        documentAmountToPay: amountToPay,
+        documentPaidAmount: paidAmount,
+        documentPendingAmount: amountToPay - paidAmount,
+
+        brokerName: lastBroker?.name || '',
+        saleTypeName: lastSaleType?.name || '',
+        saleTypeId: lastSaleType?.id || '',
+
+        partyName: doc.party?.name || '',
+        commission1: amountToPay * 0.02,
+        commission2: amountToPay * 0.015,
+        progressPercent: (() => {
+          if (amountToPay <= 0) return '0%';
+          const percent = (paidAmount / amountToPay) * 100;
+          const rounded = Math.min(Math.round(percent), 100);
+          return `${rounded}%`;
+        })(),
+      };
+    });
+
+    const lotIdsWithDocs = new Set(reportData.map((r) => r.lotId));
+
+
+
+    const missingLots = lots
+      .filter((lot) => !lotIdsWithDocs.has(lot.id))
+      .map((lot) => ({
+        id: lot.id,
+        lotId: lot.id,
+        name: lot.name,
+        area: Number(lot.area || 0),
+        block: lot?.block || '',
+        number: lot?.number || 0,
+        status: '',
+        statusId: lot?.status?.id || '',
+        saleTypeId: '',
+        saleTypeName: '',
+        documentDate: '',
+        documentCurrencyName: '',
+        documentCurrencyId: '',
+        documentAmountToPay: 0,
+        documentPaidAmount: 0,
+        documentPendingAmount: 0,
+        brokerName: '',
+        partyName: '',
+        commission1: 0,
+        commission2: 0,
+        progressPercent: '0%',
+      }));
+
+    // --- 3️⃣ Unir ambos resultados ---
+    const finalReport = [...reportData, ...missingLots];
+
+    finalReport.sort((a, b) => {
+      // Si no hay nombre de bloque, los dejamos al final
+      const blockA = a.block?.toString() || '';
+      const blockB = b.block?.toString() || '';
+
+      // Si ambos tienen el mismo bloque, ordenar por número
+      if (blockA === blockB) {
+        const numA = Number(a.number || 0);
+        const numB = Number(b.number || 0);
+        return numA - numB;
+      }
+
+      // Si los bloques son distintos, ordenar alfabéticamente
+      return blockA.localeCompare(blockB);
+    });
+
+    return finalReport;
   }
 
 

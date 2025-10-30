@@ -125,7 +125,8 @@ export class ZentraDocumentController {
     partyId?: string;
     startDate?: string;
     endDate?: string;
-  }) {
+    projectId?: string;
+  }) { 
     return this.zentraDocumentService.findByFiltersScheduledIncome(filters);
   }
 
@@ -149,9 +150,10 @@ export class ZentraDocumentController {
   @Post('scheduled-income/report')
   @Public()
   searchScheduledIncomeReport(@Body() filters: {
-    projectId?: string;
+    projectId: string;
+    documentCategoryId: string;
   }) {
-    return this.zentraDocumentService.findByFiltersScheduledIncomeReport(filters);
+    return this.zentraDocumentService.findByFiltersScheduledIncomeReportV2(filters);
   }
 
 }
