@@ -84,6 +84,9 @@ export class ZentraDocumentService {
   private mapEntityToDto(item: any) {
 
     const principalAccount = item.party?.partyBankAccounts?.[0] ?? null;
+    const currencyId = principalAccount?.currency?.id;
+
+
 
     return {
       id: item.id,
@@ -141,6 +144,35 @@ export class ZentraDocumentService {
 
       partyBankAccountInfo: principalAccount
         ? `${principalAccount.bank?.name ?? '-'} | ${principalAccount.currency?.name ?? '-'} | ${principalAccount.type?.name ?? '-'} | ${principalAccount.account ?? '-'} | CCI: ${principalAccount.cci ?? '-'}`
+        : '',
+
+      partyBankAccountInfoHtml: principalAccount
+        ? `
+    <div style="display: flex; flex-direction: column; gap: 2px; line-height: 1.3; padding: 2px 0; color: ${currencyId === CURRENCY.SOLES ? '#1E3A8A' /* azul profundo */ : '#C2410C' /* naranja oscuro */
+        };">
+      <span style="font-weight: 600; font-size: 15px;">
+        ${principalAccount.bank?.name ?? '-'}
+      </span>
+
+      <div style="margin-left: 2px;">
+        <span style="display: block; font-size: 13.5px; font-weight: 500;">
+          ${principalAccount.type?.name ?? '-'}
+        </span>
+        <span style="display: block; font-size: 13px;">
+          ${principalAccount.account ?? '-'}
+        </span>
+      </div>
+
+      <div style="margin-top: 2px; font-size: 12px; opacity: 0.85;">
+        <span style="font-weight: 500;">CCI:</span>
+        <span style="font-family: monospace;">${principalAccount.cci ?? '-'}</span>
+      </div>
+
+      <span style="margin-top: 3px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+        ${currencyId === CURRENCY.SOLES ? 'SOLES' : 'DÓLARES'}
+      </span>
+    </div>
+  `
         : '',
 
 
