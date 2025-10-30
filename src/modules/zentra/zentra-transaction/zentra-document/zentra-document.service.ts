@@ -84,9 +84,7 @@ export class ZentraDocumentService {
   private mapEntityToDto(item: any) {
 
     const principalAccount = item.party?.partyBankAccounts?.[0] ?? null;
-    const currencyId = principalAccount?.currency?.id;
-
-
+    const partyCurrencyId = principalAccount?.currency?.id;
 
     return {
       id: item.id,
@@ -148,7 +146,7 @@ export class ZentraDocumentService {
 
       partyBankAccountInfoHtml: principalAccount
         ? `
-    <div style="display: flex; flex-direction: column; gap: 2px; line-height: 1.3; padding: 2px 0; color: ${currencyId === CURRENCY.SOLES ? '#1E3A8A' /* azul profundo */ : '#C2410C' /* naranja oscuro */
+    <div style="display: flex; flex-direction: column; gap: 2px; line-height: 1.3; padding: 2px 0; color: ${partyCurrencyId === CURRENCY.SOLES ? '#1E3A8A' /* azul profundo */ : '#C2410C' /* naranja oscuro */
         };">
       <span style="font-weight: 600; font-size: 15px;">
         ${principalAccount.bank?.name ?? '-'}
@@ -169,11 +167,36 @@ export class ZentraDocumentService {
       </div>
 
       <span style="margin-top: 3px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
-        ${currencyId === CURRENCY.SOLES ? 'SOLES' : 'DÓLARES'}
+        ${partyCurrencyId === CURRENCY.SOLES ? 'SOLES' : 'DÓLARES'}
       </span>
     </div>
   `
         : '',
+      partyBankAccountInfoSimpleHtml: principalAccount
+        ? `
+  <div style="
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+    color: ${partyCurrencyId === CURRENCY.SOLES ? '#1E3A8A' : '#C2410C'};
+  ">
+    <span style="font-weight: 600; font-size: 12px;">
+      ${principalAccount.bank?.name ?? '-'}
+    </span>
+
+    <span style="
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    ">
+      ${partyCurrencyId === CURRENCY.SOLES ? 'SOLES' : 'DÓLARES'}
+    </span>
+  </div>
+  `
+        : '',
+
+      partyBankAccountCurrency: partyCurrencyId,
+
 
 
     };
