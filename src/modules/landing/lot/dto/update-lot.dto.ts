@@ -41,4 +41,13 @@ export class UpdateLotDto {
   @IsUUID() // Valida que sea un UUID válido
   @IsOptional()
   pageId?: string; // ID de la página a la que pertenece el lote
+
+  @IsNumber()
+  @IsOptional()
+  pricePerSquareMeter?: number;
+
+  @IsNumber()
+  @IsOptional()
+  totalPrice?: number;
+  
 }

@@ -3,7 +3,7 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 
 import { CreateZentraDocumentDto } from './dto/create-zentra-document.dto';
 import { UpdateZentraDocumentDto } from './dto/update-zentra-document.dto';
-
+import { ZentraExchangeRateService } from '../../zentra-master/zentra-exchange-rate/zentra-exchange-rate.service';
 import { ZentraInstallmentService } from '../../zentra-transaction/zentra-installment/zentra-installment.service';
 import { ZentraMovementService } from '../../zentra-transaction/zentra-movement/zentra-movement.service';
 import { ZentraScheduledIncomeDocumentService } from '../../zentra-master/zentra-scheduled-income-document/zentra-scheduled-income-document.service';
@@ -17,6 +17,7 @@ export class ZentraDocumentService {
   constructor(private prisma: PrismaService,
     private zentraScheduledIncomeDocumentService: ZentraScheduledIncomeDocumentService,
     private zentraMovementService: ZentraMovementService,
+    private zentraExchangeRateService: ZentraExchangeRateService,
 
     @Inject(forwardRef(() => ZentraInstallmentService))
     private readonly zentraInstallmentService: ZentraInstallmentService,
@@ -1203,121 +1204,7 @@ export class ZentraDocumentService {
   }
 
 
-
-
-  async findByFiltersScheduledIncomeReport(filters: { projectId?: string }) {
-
-    const lots = await this.prisma.landingLot.findMany({
-      where: {
-        deletedAt: null,
-        page: {
-          zentraProjects: {
-            some: {
-              zentraProjectId: filters.projectId,
-            },
-          },
-        },
-      },
-      include: {
-        status: true,
-        scheduledIncomeDocuments: {
-          where: {
-            deletedAt: null,
-            document: {
-              deletedAt: null, // 👈 filtro de documentos aquí
-            },
-          },
-          include: {
-            document: {
-              include: {
-                currency: true,
-                party: true,
-                documentStatus: true,
-              },
-            },
-            installments: {
-              where: {
-                deletedAt: null,
-              },
-              include: {
-                currency: true,
-              },
-            },
-            broker: true,
-          },
-        },
-      },
-      orderBy: {
-        block: 'asc',
-      },
-    });
-
-    lots.sort((a, b) => {
-      if (a.block === b.block) {
-        return Number(a.number) - Number(b.number);
-      }
-      return a.block.localeCompare(b.block);
-    });
-
-
-    const result = lots.map((lot) => {
-
-      const documents = lot.scheduledIncomeDocuments.map((sid) => sid.document);
-      const brokers = lot.scheduledIncomeDocuments
-        .map((sid) => sid.broker)
-        .filter((b) => !!b?.name);
-
-      const lastDocument = documents
-        .filter((d) => !!d?.documentDate) // evitar nulls
-        .sort(
-          (a, b) =>
-            new Date(a.documentDate).getTime() - new Date(b.documentDate).getTime()
-        )
-        .at(-1);
-
-      const lastBroker = brokers.at(-1);
-
-      return {
-        id: lot.id,
-        name: lot.name,
-        area: lot.area,
-        status: lot.status.title,
-        statusId: lot.status.id,
-        documentId: lastDocument?.id,
-        documentDate: lastDocument
-          ? moment(lastDocument.documentDate).format('DD/MM/YYYY')
-          : '',
-        documentCurrencyName: lastDocument?.currency?.name || '',
-        documentCurrencyId: lastDocument?.currency?.id || '',
-        documentAmountToPay: Number(lastDocument?.amountToPay || 0),
-        documentPaidAmount: Number(lastDocument?.paidAmount || 0),
-        documentPendingAmount:
-          Number(lastDocument?.amountToPay || 0) -
-          Number(lastDocument?.paidAmount || 0),
-        brokerName: lastBroker?.name || '',
-        partyName: lastDocument?.party?.name || '',
-
-        commission1: Number(lastDocument?.amountToPay || 0) * 0.02,
-        commission2: Number(lastDocument?.amountToPay || 0) * 0.015,
-        progressPercent: (() => {
-          const total = Number(lastDocument?.amountToPay || 0);
-          const paid = Number(lastDocument?.paidAmount || 0);
-          if (total <= 0) return '0%';
-          const percent = (paid / total) * 100;
-          const rounded = Math.min(Math.round(percent), 100);
-          return `${rounded}%`;
-        })(),
-      };
-    });
-
-
-
-
-
-    return result;
-  }
-
-  async findByFiltersScheduledIncomeReportV2(filters: { projectId: string, documentCategoryId: string }) {
+  async findByFiltersScheduledIncomeReport(filters: { projectId: string, documentCategoryId: string }) {
 
     const documentList = await this.prisma.zentraDocument.findMany({
       where: {
@@ -1470,7 +1357,221 @@ export class ZentraDocumentService {
     return finalReport;
   }
 
+  async findByFiltersScheduledIncomeReportIa(filters: { projectId: string, documentCategoryId: string }) {
+
+    const documentList = await this.prisma.zentraDocument.findMany({
+      where: {
+        deletedAt: null,
+        budgetItem: {
+          definition: {
+            projectId: filters.projectId,
+          },
+        },
+        documentCategoryId: filters.documentCategoryId
+      },
+      include: {
+        currency: true,
+        budgetItem: {
+          include: {
+            definition: true,
+            currency: true,
+          },
+        },
+        scheduledIncomeDocuments: {
+          where: { deletedAt: null },
+          include: {
+            saleType: true,
+            lot: {
+              include: { status: true },
+            },
+            installments: {
+              where: { deletedAt: null }
+            },
+            status: true,
+          },
+        },
+      },
+      orderBy: {
+        documentDate: 'desc',
+      },
+    });
+
+    const lots = await this.prisma.landingLot.findMany({
+      where: {
+        deletedAt: null,
+        page: {
+          zentraProjects: {
+            some: {
+              zentraProjectId: filters.projectId,
+            },
+          },
+        },
+      },
+      include: { status: true },
+      orderBy: {
+        name: 'asc',
+      },
+    });
 
 
+    const reportData = documentList.map((doc) => {
+      const lastScheduled = doc.scheduledIncomeDocuments[0];
+      const lot = lastScheduled?.lot;
+      const lastSaleType = lastScheduled?.saleType;
 
+      const amountToPay = Number(doc.amountToPay || 0);
+      const paidAmount = Number(doc.paidAmount || 0);
+
+      return {
+        id: doc.id,
+        lotId: lot?.id || '',
+        name: lot?.name || '',
+        area: Number(lot?.area || 0),
+        status: lot?.status?.title || '',
+
+        documentDate: doc.documentDate
+          ? moment(doc.documentDate).format('DD/MM/YYYY')
+          : '',
+
+        documentCurrencyName: doc.currency?.name || '',
+        documentCurrencyId: doc.currency?.id || '',
+
+        documentAmountToPay: amountToPay,
+        documentPaidAmount: paidAmount,
+        documentPendingAmount: amountToPay - paidAmount,
+
+        saleTypeName: lastSaleType?.name || '',
+
+        progressPercent: (() => {
+          if (amountToPay <= 0) return '0%';
+          const percent = (paidAmount / amountToPay) * 100;
+          const rounded = Math.min(Math.round(percent), 100);
+          return `${rounded}%`;
+        })(),
+
+        installments: lastScheduled.installments || [],
+        installmentsTotal: lastScheduled?.installments?.length || 0
+      };
+    });
+
+
+    const movementDate = moment()
+      .startOf('day')
+      .toDate();
+
+    const normalizedDate = moment(movementDate).startOf('day').toDate();
+
+    let exchangeRate = await this.prisma.zentraExchangeRate.findUnique({
+      where: { date: normalizedDate },
+    });
+
+    if (!exchangeRate) {
+      exchangeRate =
+        await this.zentraExchangeRateService.upsertTodayRateFromSunat();
+    }
+
+    // Aqui neceesito dolarizar los datos de documentAmountToPay documentPaidAmount documentPendingAmount
+
+    const rate = Number(exchangeRate.buyRate);
+
+    // Transformamos el arreglo existente sin mutar el original
+    const reportDataUsd = reportData.map((item) => {
+      const isSoles = item.documentCurrencyId === CURRENCY.SOLES;
+
+      const factor = isSoles ? 1 / rate : 1; // si está en soles, dividimos
+
+      const round2 = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
+
+      const amountToPayUsd = round2(Number(item.documentAmountToPay) * factor);
+      const paidAmountUsd = round2(Number(item.documentPaidAmount) * factor);
+      const pendingAmountUsd = round2(Number(item.documentPendingAmount) * factor);
+
+      const installments = item.installments?.map((inst) => {
+        const isSolesInstallment = inst.currencyId === CURRENCY.SOLES;
+        const instFactor = isSolesInstallment ? 1 / rate : 1;
+
+        return {
+          ...inst,
+          amountUsd: round2(Number(inst.totalAmount) * instFactor),
+          currencyId: CURRENCY.DOLARES,
+          currencyName: 'Dólares',
+        };
+      }) || [];
+
+      // Paso 4: Calcular promedio de cuotas dolarizadas
+      const totalInstallments = installments.length;
+      const totalInstallmentsUsd = round2(installments.reduce(
+        (sum, inst) => sum + (inst.amountUsd || 0),
+        0
+      ));
+      const avgInstallmentUsd =
+        totalInstallments > 0 ? round2(totalInstallmentsUsd / totalInstallments) : 0;
+
+
+      return {
+        ...item,
+        documentAmountToPay: amountToPayUsd,
+        documentPaidAmount: paidAmountUsd,
+        documentPendingAmount: pendingAmountUsd,
+        documentCurrencyId: CURRENCY.DOLARES,
+        documentCurrencyName: 'Dólares',
+
+        avgInstallmentUsd,
+        totalInstallmentsUsd,
+      };
+    });
+
+    const lotIdsWithDocs = new Set(reportDataUsd.map((r) => r.lotId));
+
+    const missingLots = lots
+      .filter((lot) => !lotIdsWithDocs.has(lot.id))
+      .map((lot) => ({
+        id: lot.id,
+        lotId: lot.id,
+        name: lot.name,
+        area: Number(lot.area || 0),
+        status: 'Disponible',
+        saleTypeName: '',
+        documentDate: '',
+        documentCurrencyName: '',
+        documentCurrencyId: '',
+        documentAmountToPay: 0,
+        documentPaidAmount: 0,
+        documentPendingAmount: 0,
+        progressPercent: '0%',
+        installmentsTotal: 0,
+
+        avgInstallmentUsd: 0,
+        totalInstallmentsUsd: 0,
+
+      }));
+
+    const setReport = [...reportDataUsd, ...missingLots];
+
+
+    let finalReport: any = [];
+
+    for (let item of setReport) {
+      let itemlot = {
+        name: item.name,
+        area: item.area,
+        status: item.status,
+        documentDate: item.documentDate,
+        documentCurrencyName: item.documentCurrencyName,
+        documentAmountToPay: item.documentAmountToPay,
+        documentPaidAmount: item.documentPaidAmount,
+        documentPendingAmount: item.documentPendingAmount,
+        saleTypeName: item.saleTypeName,
+        progressPercent: item.progressPercent,
+        installmentsTotal: item.installmentsTotal,
+
+        avgInstallmentUsd: item.avgInstallmentUsd,
+        totalInstallmentsUsd: item.totalInstallmentsUsd,
+
+      }
+      finalReport.push(itemlot)
+    }
+
+    return finalReport;
+  }
 }

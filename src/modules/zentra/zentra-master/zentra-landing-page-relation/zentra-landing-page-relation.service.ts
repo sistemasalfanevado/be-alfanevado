@@ -103,6 +103,8 @@ export class ZentraLandingPageRelationService {
       statusId: lot.status.id,
       area: lot.area,
       perimeter: lot.perimeter,
+      pricePerSquareMeter: lot.pricePerSquareMeter ?? 0,
+      totalPrice: lot.totalPrice ?? 0,
     }));
   }
 

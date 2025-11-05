@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MaxLength, IsUUID, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, IsUUID, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateLotDto {
   @IsString()
@@ -41,4 +41,13 @@ export class CreateLotDto {
   @IsUUID()
   @IsNotEmpty()
   pageId: string;
+
+  @IsNumber()
+  @IsOptional()
+  pricePerSquareMeter?: number;
+
+  @IsNumber()
+  @IsOptional()
+  totalPrice?: number;
+
 }

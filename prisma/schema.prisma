@@ -189,23 +189,29 @@ model LandingLotStatus {
 
 model LandingLot {
   id        String           @id @default(uuid())
+  
   name      String           @db.VarChar(50)
   number    String           @db.VarChar(50) 
   block     String           @db.VarChar(50)
   code      String           @db.VarChar(50)
-  statusId  String
-  pageId    String
-  deletedAt DateTime?
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+
   area      Decimal?         @db.Decimal(6, 2)
   detail    String?          @db.VarChar(500)
   perimeter Decimal?         @db.Decimal(6, 2)
+
+  statusId  String
+  pageId    String
+
+  pricePerSquareMeter Decimal? @db.Decimal(10, 2) @default(0)
+  totalPrice          Decimal? @db.Decimal(12, 2) @default(0)
+
   page      LandingPage      @relation(fields: [pageId], references: [id])
   status    LandingLotStatus @relation(fields: [statusId], references: [id])
-
-
   scheduledIncomeDocuments ZentraScheduledIncomeDocument[]
+
+  deletedAt DateTime?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
 
   @@map("landing_lot")
 }

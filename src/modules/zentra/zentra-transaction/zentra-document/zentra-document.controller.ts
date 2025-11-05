@@ -153,7 +153,17 @@ export class ZentraDocumentController {
     projectId: string;
     documentCategoryId: string;
   }) {
-    return this.zentraDocumentService.findByFiltersScheduledIncomeReportV2(filters);
+    return this.zentraDocumentService.findByFiltersScheduledIncomeReport(filters);
   }
+
+  @Post('scheduled-income/ia')
+  @Public()
+  searchScheduledIncomeReportIa(@Body() filters: {
+    projectId: string;
+    documentCategoryId: string;
+  }) {
+    return this.zentraDocumentService.findByFiltersScheduledIncomeReportIa(filters);
+  }
+
 
 }
