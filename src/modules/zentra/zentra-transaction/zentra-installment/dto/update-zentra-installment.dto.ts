@@ -13,6 +13,10 @@ export class UpdateZentraInstallmentDto {
 
   @IsString()
   @IsOptional()
+  scheduledDebtDocumentId?: string;
+  
+  @IsString()
+  @IsOptional()
   installmentStatusId?: string;
 
   @IsString()

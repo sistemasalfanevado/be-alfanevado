@@ -88,5 +88,11 @@ export class ZentraInstallmentController {
     return this.zentraInstallmentService.findAllByProject(projectId);
   }
 
+  @Get('company/:companyId')
+  findAllByCompany(@Param('companyId') companyId: string) {
+    return this.zentraInstallmentService.findAllByCompany(companyId);
+  }
+
+
 
 }

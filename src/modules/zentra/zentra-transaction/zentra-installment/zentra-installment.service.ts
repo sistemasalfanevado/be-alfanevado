@@ -203,7 +203,7 @@ export class ZentraInstallmentService {
       await this.zentraMovementService.findByInstallmentSimple(installmentId);
 
     const documentData = await this.zentraDocumentService.findOne(
-      installmentData?.scheduledIncomeDocument.documentId + '',
+      installmentData?.scheduledIncomeDocument?.documentId + '',
     );
     const listMovementDocument =
       await this.zentraMovementService.findByDocumentSimple(documentData?.id);
@@ -515,6 +515,74 @@ export class ZentraInstallmentService {
 
       currencyId: i.currency.id,
       currencyName: i.currency.name,
+      idFirebase: !i.idFirebase ? '' : i.idFirebase
+    }));
+  }
+
+  async findAllByCompany(companyId: string) {
+    const installments = await this.prisma.zentraInstallment.findMany({
+      where: {
+        deletedAt: null,
+        scheduledIncomeDocument: {
+          document: {
+            budgetItem: {
+              definition: {
+                project: {
+                  companyId
+                }
+              },
+            },
+          },
+        },
+      },
+      orderBy: { letra: 'asc' },
+      include: {
+        installmentStatus: {
+          select: { id: true, name: true },
+        },
+        currency: {
+          select: { id: true, name: true },
+        },
+        scheduledIncomeDocument: {
+          select: {
+            id: true,
+            documentId: true,
+            document: {
+              include: {
+                budgetItem: {
+                  select: {
+                    id: true
+                  }
+                }
+              }
+            }
+          },
+        },
+      },
+    });
+
+    return installments.map(i => ({
+      id: i.id,
+      letra: i.letra,
+      capital: i.capital,
+      interest: i.interest,
+      totalAmount: i.totalAmount,
+      extra: i.extra,
+      dueDate: moment(i.dueDate).format('DD/MM/YYYY'),
+
+      installmentStatusId: i.installmentStatus.id,
+      installmentStatusName: i.installmentStatus.name,
+      scheduledIncomeDocumentId: i.scheduledIncomeDocumentId,
+      documentId: i.scheduledIncomeDocument?.documentId ?? null,
+
+      paidAmount: i.paidAmount,
+      description: i.description,
+
+      currencyId: i.currency.id,
+      currencyName: i.currency.name,
+
+      budgetItemId: i.scheduledIncomeDocument?.document.budgetItem.id,
+      
       idFirebase: !i.idFirebase ? '' : i.idFirebase
     }));
   }

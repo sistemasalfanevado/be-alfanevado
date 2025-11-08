@@ -53,8 +53,12 @@ import { ZentraTelecreditoOperationStateModule } from './zentra/zentra-master/ze
 import { ZentraLandingPageRelationModule } from './zentra/zentra-master/zentra-landing-page-relation/zentra-landing-page-relation.module';
 import { ZentraBrokerModule } from './zentra/zentra-master/zentra-broker/zentra-broker.module';
 import { ZentraSaleTypeModule } from './zentra/zentra-master/zentra-sale-type/zentra-sale-type.module';
+
 import { ZentraScheduledIncomeDocumentModule } from './zentra/zentra-master/zentra-scheduled-income-document/zentra-scheduled-income-document.module';
 import { ZentraScheduledIncomeDocumentStatusModule } from './zentra/zentra-master/zentra-scheduled-income-document-status/zentra-scheduled-income-document-status.module';
+
+import { ZentraScheduledDebtDocumentModule } from './zentra/zentra-master/zentra-scheduled-debt-document/zentra-scheduled-debt-document.module';
+
 
 import { ZentraInstallmentStatusModule } from './zentra/zentra-master/zentra-installment-status/zentra-installment-status.module';
 import { ZentraBankStatementModule } from './zentra/zentra-utils/zentra-bank-statement/zentra-bank-statement.module';
@@ -140,6 +144,8 @@ import { ZentraLandingLeadModule } from './zentra/zentra-mkt/zentra-landing-lead
     ZentraScheduledIncomeDocumentModule,
     ZentraScheduledIncomeDocumentStatusModule,
 
+    ZentraScheduledDebtDocumentModule,
+    
     ZentraDocumentStatusModule,
     ZentraDocumentCategoryModule,
     ZentraMovementStatusModule,

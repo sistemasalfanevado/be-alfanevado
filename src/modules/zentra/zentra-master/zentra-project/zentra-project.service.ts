@@ -89,7 +89,7 @@ export class ZentraProjectService {
     });
   }
 
-  async findAllWithCompany() { 
+  async findAllWithCompany() {
     const results = await this.prisma.zentraProject.findMany({
       where: { deletedAt: null },
       include: {
@@ -103,7 +103,7 @@ export class ZentraProjectService {
               take: 1,
             },
           },
-        }, 
+        },
         incomes: { // 👈 se agregan los ingresos del proyecto
           where: { deletedAt: null },
           include: {
@@ -214,5 +214,30 @@ export class ZentraProjectService {
       })),
     }));
   }
+
+
+
+  async findAllByCompany(companyId: string) {
+    const results = await this.prisma.zentraProject.findMany({
+      where: { deletedAt: null, companyId },
+      include: { company: true },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+
+      companyId: item.company.id,
+      companyName: item.company.name,
+
+      imageUrl: item.imageUrl,
+
+    }));
+
+  }
+
 
 }

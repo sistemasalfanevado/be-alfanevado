@@ -10,7 +10,11 @@ import {
 export class CreateZentraInstallmentDto {
   @IsString()
   @IsNotEmpty()
-  scheduledIncomeDocumentId: string;
+  scheduledIncomeDocumentId?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  scheduledDebtDocumentId?: string;
 
   @IsString()
   @IsNotEmpty()

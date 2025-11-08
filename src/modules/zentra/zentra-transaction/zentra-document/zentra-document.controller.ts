@@ -52,6 +52,7 @@ export class ZentraDocumentController {
     documentCategoryId?: string;
     financialNatureId?: string;
     projectId?: string;
+    companyId?: string;
     userId?: string;
     startDate?: string;
     endDate?: string;
@@ -126,6 +127,7 @@ export class ZentraDocumentController {
     startDate?: string;
     endDate?: string;
     projectId?: string;
+    companyId?: string;
   }) { 
     return this.zentraDocumentService.findByFiltersScheduledIncome(filters);
   }
@@ -139,14 +141,12 @@ export class ZentraDocumentController {
   removeScheduledIncome(@Param('id') id: string) {
     return this.zentraDocumentService.removeScheduledIncome(id);
   }
-
-
+  
   @Delete('scheduled-document/:id')
   removeScheduledDocument(@Param('id') id: string) {
     return this.zentraDocumentService.removeScheduledDocument(id);
   }
-
-
+  
   @Post('scheduled-income/report')
   @Public()
   searchScheduledIncomeReport(@Body() filters: {
@@ -165,5 +165,36 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.findByFiltersScheduledIncomeReportIa(filters);
   }
 
+
+  // Scheduled Document Debt
+  @Post('scheduled-debt')
+  createDebtIncome(@Body() createZentraDocumentDto: any) {
+    return this.zentraDocumentService.createScheduledDebt(createZentraDocumentDto);
+  }
+
+  @Post('scheduled-debt/search') 
+  @Public()
+  searchScheduledDebt(@Body() filters: {
+    documentCategoryId?: string;
+    documentStatusId?: string;
+    partyId?: string;
+    startDate?: string;
+    endDate?: string;
+    projectId?: string;
+    companyId?: string;
+  }) { 
+    return this.zentraDocumentService.findByFiltersScheduledIncome(filters);
+  }
+
+  @Put('scheduled-debt/:id')
+  updateScheduledDebt(@Param('id') id: string, @Body() updateZentraDocumentDto: any) {
+    return this.zentraDocumentService.updateScheduledDebt(id, updateZentraDocumentDto);
+  }
+
+  @Delete('scheduled-debt/:id')
+  removeScheduledDebt(@Param('id') id: string) {
+    return this.zentraDocumentService.removeScheduledIncome(id);
+  }
+  
 
 }

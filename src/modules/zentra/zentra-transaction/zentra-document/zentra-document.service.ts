@@ -7,6 +7,8 @@ import { ZentraExchangeRateService } from '../../zentra-master/zentra-exchange-r
 import { ZentraInstallmentService } from '../../zentra-transaction/zentra-installment/zentra-installment.service';
 import { ZentraMovementService } from '../../zentra-transaction/zentra-movement/zentra-movement.service';
 import { ZentraScheduledIncomeDocumentService } from '../../zentra-master/zentra-scheduled-income-document/zentra-scheduled-income-document.service';
+import { ZentraScheduledDebtDocumentService } from '../../zentra-master/zentra-scheduled-debt-document/zentra-scheduled-debt-document.service';
+
 import { TRANSACTION_TYPE, CURRENCY, INSTALLMENT_STATUS, BANK_ACCOUNT_HIERARCHY } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
@@ -15,6 +17,7 @@ import * as moment from 'moment';
 export class ZentraDocumentService {
 
   constructor(private prisma: PrismaService,
+    private zentraScheduledDebtDocumentService: ZentraScheduledDebtDocumentService,
     private zentraScheduledIncomeDocumentService: ZentraScheduledIncomeDocumentService,
     private zentraMovementService: ZentraMovementService,
     private zentraExchangeRateService: ZentraExchangeRateService,
@@ -382,12 +385,13 @@ export class ZentraDocumentService {
     documentCategoryId?: string;
     financialNatureId?: string;
     projectId?: string;
+    companyId?: string;
     startDate?: string;
     endDate?: string;
     userId?: string;
     withPartyBankAccount?: boolean;
   }) {
-    const { withPartyBankAccount, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, userId, startDate, endDate } = filters;
+    const { withPartyBankAccount, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, companyId, userId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -436,6 +440,16 @@ export class ZentraDocumentService {
       };
     }
 
+    if (companyId && companyId.trim() !== '') {
+      where.budgetItem = {
+        definition: {
+          project: {
+            companyId
+          }
+        },
+      };
+    }
+
     const results = await this.prisma.zentraDocument.findMany({
       where,
       include: withPartyBankAccount ? this.includeRelationsWithBankAccount : this.includeRelations,
@@ -470,13 +484,14 @@ export class ZentraDocumentService {
       const docBudgetItemId = item.budgetItem?.id ?? null;
 
       const groupsForDoc = mapByDoc.get(item.id) ?? [];
-
+      const totalMovements = groupsForDoc.reduce((sum, g) => sum + g.count, 0);
       const inconsistentMovements = groupsForDoc
         .filter(g => g.budgetItemId !== docBudgetItemId)
         .reduce((sum, g) => sum + g.count, 0);
 
       return {
         ...dto,
+        totalMovements,
         inconsistentMovements,
         hasBudgetItemMismatch: inconsistentMovements > 0,
       };
@@ -624,7 +639,48 @@ export class ZentraDocumentService {
 
   }
 
+  private async removeDocumentWithScheduledDebt(id: string) {
+
+    const document = await this.prisma.zentraDocument.findMany({
+      where: { id },
+      include: {
+        scheduledDebtDocuments: {
+          include: {
+            installments: true
+          }
+        }
+      },
+    });
+
+    if (document.length === 0) throw new Error("Documento no encontrado");
+
+    // Remueveb los installments con sus movimientos
+    for (let itemDocument of document) {
+      for (let itemScheduledDebtDocuments of itemDocument.scheduledDebtDocuments) {
+        for (let itemInstallment of itemScheduledDebtDocuments.installments) {
+          await this.zentraInstallmentService.remove(itemInstallment.id)
+        }
+      }
+    }
+
+    // Remuven los schedule income document
+    for (let itemDocument of document) {
+      for (let itemScheduledDebtDocuments of itemDocument.scheduledDebtDocuments) {
+        await this.zentraScheduledIncomeDocumentService.remove(itemScheduledDebtDocuments.id);
+      }
+    }
+
+    await this.prisma.zentraDocument.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+
+    return { message: "Documento y schedule debt delete" };
+
+  }
+
   private buildDocumentFilters(filters: {
+    companyId?: string;
     projectId?: string;
     partyId?: string;
     documentCategoryId?: string;
@@ -660,6 +716,16 @@ export class ZentraDocumentService {
       where.budgetItem = {
         definition: {
           projectId: filters.projectId,
+        },
+      };
+    }
+
+    if (filters.companyId?.trim()) {
+      where.budgetItem = {
+        definition: {
+          project: {
+            companyId: filters.companyId,
+          }
         },
       };
     }
@@ -950,8 +1016,7 @@ export class ZentraDocumentService {
 
     return { message: 'Scheduled Income creado correctamente' };
   }
-
-
+  
   async findByFiltersScheduledIncome(filters: {
     documentCategoryId?: string;
     documentStatusId?: string;
@@ -959,6 +1024,7 @@ export class ZentraDocumentService {
     startDate?: string;
     endDate?: string;
     projectId?: string;
+    companyId?: string;
   }) {
     const where = this.buildDocumentFilters(filters);
 
@@ -972,7 +1038,11 @@ export class ZentraDocumentService {
         currency: true,
         budgetItem: {
           include: {
-            definition: true,
+            definition: {
+              include: {
+                project: true,
+              }
+            },
             currency: true,
           },
         },
@@ -1048,7 +1118,7 @@ export class ZentraDocumentService {
 
         budgetItemId: doc.budgetItem?.id,
         budgetItemName: doc.budgetItem
-          ? `${doc.budgetItem.definition.name} - ${doc.budgetItem.currency.name}`
+          ? `${doc.budgetItem.definition.project.name} - ${doc.budgetItem.definition.name} - ${doc.budgetItem.currency.name}`
           : null,
 
         currencyId: doc.currency?.id,
@@ -1574,4 +1644,204 @@ export class ZentraDocumentService {
 
     return finalReport;
   }
+
+
+  // Scheduled Debt Document
+
+  async createScheduledDebt(dataDocument: any) {
+    const document = await this.createDocument(dataDocument);
+    
+    await this.zentraScheduledDebtDocumentService.create({
+      documentId: document.id,
+    });
+
+    return { message: 'Scheduled Debt creado correctamente' };
+  }
+
+  async findByFiltersScheduledDebt(filters: {
+    documentCategoryId?: string;
+    documentStatusId?: string;
+    partyId?: string;
+    startDate?: string;
+    endDate?: string;
+    projectId?: string;
+    companyId?: string;
+  }) {
+    const where = this.buildDocumentFilters(filters);
+
+    const results = await this.prisma.zentraDocument.findMany({
+      where,
+      include: {
+        transactionType: true,
+        documentStatus: true,
+        documentType: true,
+        party: true,
+        currency: true,
+        budgetItem: {
+          include: {
+            definition: {
+              include: {
+                project: true,
+              }
+            },
+            currency: true,
+          },
+        },
+        user: true,
+        documentCategory: true,
+        scheduledDebtDocuments: {
+          where: { deletedAt: null },
+          include: {
+            installments: {
+              where: { deletedAt: null },
+              include: {
+                currency: true,
+                installmentStatus: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        documentDate: 'desc',
+      },
+    });
+
+    return results.map((doc) => {
+      const sched = doc.scheduledDebtDocuments?.[0];
+
+      // ✅ Cálculo de cuotas e importe total
+      const installments = sched?.installments ?? [];
+      const totalInstallments = installments.length;
+      const totalAmountInstallments = installments.reduce(
+        (sum, inst) => sum + Number(inst.totalAmount ?? 0),
+        0
+      );
+      const totalPaidAmountInstallments = installments.reduce(
+        (sum, inst) => sum + Number(inst.paidAmount ?? 0),
+        0
+      );
+
+      return {
+
+        id: doc.id,
+        code: doc.code,
+        description: doc.description,
+
+        totalAmount: doc.totalAmount,
+        taxAmount: doc.taxAmount,
+        netAmount: doc.netAmount,
+        detractionRate: doc.detractionRate,
+        detractionAmount: doc.detractionAmount,
+        amountToPay: doc.amountToPay,
+        paidAmount: doc.paidAmount,
+
+        registeredAt: moment(doc.registeredAt).format('DD/MM/YYYY'),
+        documentDate: moment(doc.documentDate).format('DD/MM/YYYY'),
+        expireDate: moment(doc.expireDate).format('DD/MM/YYYY'),
+
+        transactionTypeId: doc.transactionType?.id,
+        transactionTypeName: doc.transactionType?.name,
+
+        documentTypeId: doc.documentType?.id,
+        documentTypeName: doc.documentType?.name,
+
+        partyId: doc.party?.id,
+        partyName: doc.party?.name,
+        partyAddress: doc.party?.address,
+
+        documentStatusId: doc.documentStatus?.id,
+        documentStatusName: doc.documentStatus?.name,
+
+        budgetItemId: doc.budgetItem?.id,
+        budgetItemName: doc.budgetItem
+          ? `${doc.budgetItem.definition.project.name} - ${doc.budgetItem.definition.name} - ${doc.budgetItem.currency.name}`
+          : null,
+
+        currencyId: doc.currency?.id,
+        currencyName: doc.currency?.name,
+
+        userId: doc.user?.id,
+
+        documentCategoryId: doc.documentCategory?.id,
+        documentCategoryName: doc.documentCategory?.name,
+
+        observation: doc.observation,
+        idFirebase: doc.idFirebase,
+
+        scheduledDebtDocumentId: sched?.id,
+
+        totalInstallments: totalInstallments,
+        totalAmountInstallments: totalAmountInstallments,
+        totalPaidAmountInstallments: totalPaidAmountInstallments,
+
+      };
+    });
+
+  }
+
+  async updateScheduledDebt(id: string, updateData: any) {
+    return this.prisma.$transaction(
+      async (tx) => {
+        // 1. Actualizar el documento principal (sin include)
+        await tx.zentraDocument.update({
+          where: { id },
+          data: {
+            code: updateData.code,
+            description: updateData.description,
+            totalAmount: updateData.totalAmount,
+            taxAmount: updateData.taxAmount,
+            netAmount: updateData.netAmount,
+            detractionRate: updateData.detractionRate,
+            detractionAmount: updateData.detractionAmount,
+            amountToPay: updateData.amountToPay,
+            paidAmount: updateData.paidAmount,
+            registeredAt: new Date(updateData.registeredAt),
+            documentDate: new Date(updateData.documentDate),
+            expireDate: new Date(updateData.expireDate),
+            transactionTypeId: updateData.transactionTypeId,
+            documentTypeId: updateData.documentTypeId,
+            partyId: updateData.partyId,
+            documentStatusId: updateData.documentStatusId,
+            budgetItemId: updateData.budgetItemId,
+            currencyId: updateData.currencyId,
+            userId: updateData.userId,
+            documentCategoryId: updateData.documentCategoryId,
+            observation: updateData.observation,
+            idFirebase: updateData.idFirebase,
+          },
+        });
+
+        // 2. Actualizar ScheduledIncomeDocument (si existe)
+        const scheduled = await tx.zentraScheduledDebtDocument.findFirst({
+          where: { documentId: id, deletedAt: null },
+          select: { id: true }, // solo traer el id
+        });
+
+        if (scheduled) {
+          await tx.zentraScheduledDebtDocument.update({
+            where: { id: scheduled.id },
+            data: {
+            },
+          });
+        }
+
+        // 3. Retornar algo simple (ej: solo el id actualizado)
+        return {
+          id,
+          updated: true,
+        };
+      },
+      {
+        timeout: 20000,
+        maxWait: 15000,
+      },
+    );
+  }
+
+  async removeScheduledDebt(id: string) {
+    return this.removeDocumentWithScheduledDebt(id);
+  }
+
+
 }

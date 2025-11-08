@@ -95,7 +95,7 @@ export class ZentraBudgetItemDefinitionService {
     });
   }
 
-   async findAllByProject(projectId: string) {
+  async findAllByProject(projectId: string) {
     const results = await this.prisma.zentraBudgetItemDefinition.findMany({
       where: { deletedAt: null, projectId },
       include: {
@@ -120,6 +120,43 @@ export class ZentraBudgetItemDefinitionService {
 
       natureId: item.nature?.id ?? null,
       natureName: item.nature?.name ?? null,
+
+      idFirebase: item.idFirebase,
+    }));
+  }
+
+  async findAllByCompany(companyId: string) {
+    const results = await this.prisma.zentraBudgetItemDefinition.findMany({
+      where: {
+        deletedAt: null,
+        project: {
+          companyId
+        }
+      },
+      include: {
+        category: true,
+        project: true,
+        nature: true,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+
+      categoryId: item.category.id,
+      categoryName: item.category.name,
+
+      projectId: item.project.id,
+      projectName: item.project.name,
+
+      natureId: item.nature?.id ?? null,
+      natureName: item.nature?.name ?? null,
+
+      completeName: item.project.name + ' - ' + item.name,
 
       idFirebase: item.idFirebase,
     }));

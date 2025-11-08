@@ -7,12 +7,14 @@ import { AuthModule } from '../../../../auth/landing/auth.module';
 import { ZentraExchangeRateModule } from '../../zentra-master/zentra-exchange-rate/zentra-exchange-rate.module';
 import { ZentraMovementModule } from '../../zentra-transaction/zentra-movement/zentra-movement.module';
 import { ZentraScheduledIncomeDocumentModule } from '../../zentra-master/zentra-scheduled-income-document/zentra-scheduled-income-document.module';
+import { ZentraScheduledDebtDocumentModule } from '../../zentra-master/zentra-scheduled-debt-document/zentra-scheduled-debt-document.module';
+
 import { ZentraInstallmentModule } from '../../zentra-transaction/zentra-installment/zentra-installment.module';
 
 
 @Module({
   imports: [PrismaModule, AuthModule, 
-    ZentraExchangeRateModule, ZentraMovementModule, ZentraScheduledIncomeDocumentModule,
+    ZentraExchangeRateModule, ZentraMovementModule, ZentraScheduledIncomeDocumentModule, ZentraScheduledDebtDocumentModule,
   forwardRef(() => ZentraInstallmentModule)],
   providers: [ZentraDocumentService],
   controllers: [ZentraDocumentController],

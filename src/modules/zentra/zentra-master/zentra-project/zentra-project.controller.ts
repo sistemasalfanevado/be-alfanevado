@@ -53,6 +53,10 @@ export class ZentraProjectController {
     return this.zentraProjectService.restore(id);
   }
 
+  @Get('company/:companyId')
+  findAllByCompany(@Param('companyId') companyId: string) {
+    return this.zentraProjectService.findAllByCompany(companyId);
+  } 
 
 
 }
