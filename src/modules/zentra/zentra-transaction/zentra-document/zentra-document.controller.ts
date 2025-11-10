@@ -68,7 +68,7 @@ export class ZentraDocumentController {
   createExchangeRate(@Body() createZentraDocumentDto: any) {
     return this.zentraDocumentService.createExchangeRate(createZentraDocumentDto);
   }
-
+  
   @Delete('exchange-rate/:id')
   removeExchangeRate(@Param('id') id: string) {
     return this.zentraDocumentService.removeExchangeRate(id);
@@ -85,6 +85,8 @@ export class ZentraDocumentController {
   }) {
     return this.zentraDocumentService.findByFiltersExchangeRate(filters);
   }
+
+  // Financial Expense
 
   @Post('financial-expense')
   createFinancialExpense(@Body() createZentraDocumentDto: any) {
@@ -183,7 +185,7 @@ export class ZentraDocumentController {
     projectId?: string;
     companyId?: string;
   }) { 
-    return this.zentraDocumentService.findByFiltersScheduledIncome(filters);
+    return this.zentraDocumentService.findByFiltersScheduledDebt(filters);
   }
 
   @Put('scheduled-debt/:id')
@@ -193,7 +195,7 @@ export class ZentraDocumentController {
 
   @Delete('scheduled-debt/:id')
   removeScheduledDebt(@Param('id') id: string) {
-    return this.zentraDocumentService.removeScheduledIncome(id);
+    return this.zentraDocumentService.removeScheduledDebt(id);
   }
   
 

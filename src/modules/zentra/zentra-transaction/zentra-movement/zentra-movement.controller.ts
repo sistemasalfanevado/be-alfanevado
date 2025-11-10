@@ -81,6 +81,7 @@ export class ZentraMovementController {
   @Post('search')
   @Public()
   search(@Body() filters: {
+    companyId?: string;
     projectId?: string;
     partyId?: string;
     bankAccountId?: string;

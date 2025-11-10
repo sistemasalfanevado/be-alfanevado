@@ -497,6 +497,7 @@ export class ZentraMovementService {
   }
 
   async findByFilters(filters: {
+    companyId?: string;
     projectId?: string;
     bankAccountId?: string,
     partyId?: string;
@@ -504,7 +505,7 @@ export class ZentraMovementService {
     startDate?: string;
     endDate?: string;
   }) {
-    const { projectId, partyId, bankAccountId, budgetItemId, startDate, endDate } = filters;
+    const { companyId, projectId, partyId, bankAccountId, budgetItemId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -530,6 +531,18 @@ export class ZentraMovementService {
         definition: {
           ...(where.budgetItem?.definition || {}),
           projectId: projectId,
+        },
+      };
+    }
+
+    if (companyId && companyId.trim() !== '') {
+      where.budgetItem = {
+        ...(where.budgetItem || {}),
+        definition: {
+          ...(where.budgetItem?.definition || {}),
+          project: {
+            companyId
+          }
         },
       };
     }

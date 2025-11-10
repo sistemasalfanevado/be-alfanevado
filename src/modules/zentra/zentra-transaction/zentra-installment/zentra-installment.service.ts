@@ -76,6 +76,7 @@ export class ZentraInstallmentService {
       include: {
         installmentStatus: true,
         scheduledIncomeDocument: true,
+        scheduledDebtDocument: true,
         currency: true
       },
     });
@@ -158,6 +159,51 @@ export class ZentraInstallmentService {
 
   }
 
+  async findAllByScheduledDebt(scheduledDebtDocumentId: string) {
+    const installments = await this.prisma.zentraInstallment.findMany({
+      where: {
+        scheduledDebtDocumentId,
+        deletedAt: null,
+      },
+      orderBy: { letra: 'asc' },
+      include: {
+        installmentStatus: {
+          select: { id: true, name: true },
+        },
+        currency: {
+          select: { id: true, name: true },
+        },
+        scheduledDebtDocument: {
+          select: {
+            id: true,
+            documentId: true, // 👈 aquí obtienes el documentId
+          },
+        },
+      },
+    });
+
+    return installments.map(i => ({
+      id: i.id,
+      letra: i.letra,
+      capital: i.capital,
+      interest: i.interest,
+      totalAmount: i.totalAmount,
+      extra: i.extra,
+      dueDate: moment(i.dueDate).format('DD/MM/YYYY'),
+      installmentStatusId: i.installmentStatus.id,
+      installmentStatusName: i.installmentStatus.name,
+      scheduledDebtDocumentId: i.scheduledDebtDocumentId,
+      paidAmount: i.paidAmount,
+      description: i.description,
+
+      currencyId: i.currency.id,
+      currencyName: i.currency.name,
+      documentId: i.scheduledDebtDocument?.documentId ?? null,
+    }));
+
+
+  }
+
   async addMovement(data: any) {
     await this.createMovement({
       code: data.code,
@@ -198,16 +244,29 @@ export class ZentraInstallmentService {
   private async recalculateInstallmentAndDocument(installmentId: string) {
     const installmentData = await this.findOne(installmentId);
 
+    // 🔹 Determinar si la cuota pertenece a un documento de ingreso o de deuda
+    const isIncome = !!installmentData?.scheduledIncomeDocument;
+    const isDebt = !!installmentData?.scheduledDebtDocument;
 
+    if (!isIncome && !isDebt) {
+      throw new Error('El installment no tiene documento asociado (ni ingreso ni deuda).');
+    }
+
+    // 🔹 Obtener el documento correspondiente
+    const documentId = isIncome
+      ? installmentData?.scheduledIncomeDocument?.documentId
+      : installmentData?.scheduledDebtDocument?.documentId;
+
+    const documentData = await this.zentraDocumentService.findOne(documentId + '');
+
+    // 🔹 Movimientos asociados
     const listMovementInstallment =
       await this.zentraMovementService.findByInstallmentSimple(installmentId);
 
-    const documentData = await this.zentraDocumentService.findOne(
-      installmentData?.scheduledIncomeDocument?.documentId + '',
-    );
     const listMovementDocument =
       await this.zentraMovementService.findByDocumentSimple(documentData?.id);
 
+    // 🔹 Variables iniciales
     let paidAmountInstallment = 0;
     let paidAmountDocument = 0;
     let installmentStatusId = INSTALLMENT_STATUS.PENDIENTE;
@@ -217,17 +276,17 @@ export class ZentraInstallmentService {
     for (const item of listMovementInstallment) {
       paidAmountInstallment += Number(
         installmentData?.currency.id === CURRENCY.SOLES
-          ? item.executedSoles
-          : item.executedDolares,
+          ? Math.abs(Number(item.executedSoles))
+          : Math.abs(Number(item.executedDolares)),
       );
-    }
+    } 
 
     // 🔹 Calcular monto pagado del documento
     for (const item of listMovementDocument) {
       paidAmountDocument += Number(
         documentData?.currencyId === CURRENCY.SOLES
-          ? item.executedSoles
-          : item.executedDolares,
+          ? Math.abs(Number(item.executedSoles))
+          : Math.abs(Number(item.executedDolares)),
       );
     }
 
@@ -582,7 +641,75 @@ export class ZentraInstallmentService {
       currencyName: i.currency.name,
 
       budgetItemId: i.scheduledIncomeDocument?.document.budgetItem.id,
-      
+
+      idFirebase: !i.idFirebase ? '' : i.idFirebase
+    }));
+  }
+
+  async findAllByCompanyDebt(companyId: string) {
+    const installments = await this.prisma.zentraInstallment.findMany({
+      where: {
+        deletedAt: null,
+        scheduledDebtDocument: {
+          document: {
+            budgetItem: {
+              definition: {
+                project: {
+                  companyId
+                }
+              },
+            },
+          },
+        },
+      },
+      orderBy: { letra: 'asc' },
+      include: {
+        installmentStatus: {
+          select: { id: true, name: true },
+        },
+        currency: {
+          select: { id: true, name: true },
+        },
+        scheduledDebtDocument: {
+          select: {
+            id: true,
+            documentId: true,
+            document: {
+              include: {
+                budgetItem: {
+                  select: {
+                    id: true
+                  }
+                }
+              }
+            }
+          },
+        },
+      },
+    });
+
+    return installments.map(i => ({
+      id: i.id,
+      letra: i.letra,
+      capital: i.capital,
+      interest: i.interest,
+      totalAmount: i.totalAmount,
+      extra: i.extra,
+      dueDate: moment(i.dueDate).format('DD/MM/YYYY'),
+
+      installmentStatusId: i.installmentStatus.id,
+      installmentStatusName: i.installmentStatus.name,
+      scheduledDebtDocumentId: i.scheduledDebtDocumentId,
+      documentId: i.scheduledDebtDocument?.documentId ?? null,
+
+      paidAmount: i.paidAmount,
+      description: i.description,
+
+      currencyId: i.currency.id,
+      currencyName: i.currency.name,
+
+      budgetItemId: i.scheduledDebtDocument?.document.budgetItem.id,
+
       idFirebase: !i.idFirebase ? '' : i.idFirebase
     }));
   }

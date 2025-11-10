@@ -37,6 +37,12 @@ export class ZentraInstallmentController {
     return this.zentraInstallmentService.findAllByScheduled(scheduledIncomeDocumentId);
   }
 
+  @Get('scheduled-debt/:id')
+  @Public()
+  findAllByScheduledDebt(@Param('id') scheduledDebtDocumentId: string) {
+    return this.zentraInstallmentService.findAllByScheduledDebt(scheduledDebtDocumentId);
+  }
+
 
 
   @Put(':id')
@@ -91,6 +97,11 @@ export class ZentraInstallmentController {
   @Get('company/:companyId')
   findAllByCompany(@Param('companyId') companyId: string) {
     return this.zentraInstallmentService.findAllByCompany(companyId);
+  }
+
+  @Get('company-debt/:companyId')
+  findAllByCompanyDebt(@Param('companyId') companyId: string) {
+    return this.zentraInstallmentService.findAllByCompanyDebt(companyId);
   }
 
 

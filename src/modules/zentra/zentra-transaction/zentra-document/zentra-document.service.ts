@@ -9,7 +9,7 @@ import { ZentraMovementService } from '../../zentra-transaction/zentra-movement/
 import { ZentraScheduledIncomeDocumentService } from '../../zentra-master/zentra-scheduled-income-document/zentra-scheduled-income-document.service';
 import { ZentraScheduledDebtDocumentService } from '../../zentra-master/zentra-scheduled-debt-document/zentra-scheduled-debt-document.service';
 
-import { TRANSACTION_TYPE, CURRENCY, INSTALLMENT_STATUS, BANK_ACCOUNT_HIERARCHY } from 'src/shared/constants/app.constants';
+import { TRANSACTION_TYPE, CURRENCY, INSTALLMENT_STATUS, BANK_ACCOUNT_HIERARCHY, EXCHANGE_RATE } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
 
@@ -666,7 +666,7 @@ export class ZentraDocumentService {
     // Remuven los schedule income document
     for (let itemDocument of document) {
       for (let itemScheduledDebtDocuments of itemDocument.scheduledDebtDocuments) {
-        await this.zentraScheduledIncomeDocumentService.remove(itemScheduledDebtDocuments.id);
+        await this.zentraScheduledDebtDocumentService.remove(itemScheduledDebtDocuments.id);
       }
     }
 
@@ -756,7 +756,7 @@ export class ZentraDocumentService {
 
     await this.createMovement({
       code: document.code,
-      description: "Mov. Salida",
+      description: EXCHANGE_RATE.SALIDA,
       documentId: document.id,
       amount: dataDocument.amountOrigin,
       transactionTypeId: dataDocument.transactionTypeOrigin,
@@ -772,7 +772,7 @@ export class ZentraDocumentService {
 
     await this.createMovement({
       code: document.code,
-      description: "Mov. Entrada",
+      description: EXCHANGE_RATE.ENTRADA,
       documentId: document.id,
       amount: dataDocument.amountDestiny,
       transactionTypeId: dataDocument.transactionTypeDestiny,
@@ -786,8 +786,28 @@ export class ZentraDocumentService {
       fromTelecredito: dataDocument.fromTelecredito ?? false,
     });
 
+    if (Number(dataDocument.transferFee) > 0) {
+      await this.createMovement({
+        code: document.code,
+        description: EXCHANGE_RATE.COMISION,
+        documentId: document.id,
+        amount: dataDocument.transferFee,
+        transactionTypeId: dataDocument.transactionTypeOrigin,
+        movementCategoryId: dataDocument.movementCategoryId,
+        budgetItemId: dataDocument.budgetItemId,
+        bankAccountId: dataDocument.backAccountOriginId,
+        movementStatusId: dataDocument.movementStatusId,
+        currencyId: bankAccountOriginCurrency,
+        date: dataDocument.documentDate,
+        idFirebase: !dataDocument.idFirebase ? '' : dataDocument.idFirebase,
+        fromTelecredito: dataDocument.fromTelecredito ?? false,
+      });
+    }
+
     return { message: 'Exchange rate creado correctamente' };
   }
+
+
 
   async removeExchangeRate(id: string) {
     return this.removeDocumentWithMovements(id);
@@ -815,6 +835,7 @@ export class ZentraDocumentService {
           select: {
             amount: true,
             transactionTypeId: true,
+            description: true,
             bankAccount: {
               select: {
                 bank: { select: { name: true } },
@@ -827,8 +848,13 @@ export class ZentraDocumentService {
     });
 
     return results.map((doc) => {
-      const originMovement = doc.movements.find((m) => m.transactionTypeId === TRANSACTION_TYPE.EXIT);
+      const originMovement = doc.movements.find(
+        (m) =>
+          m.transactionTypeId === TRANSACTION_TYPE.EXIT &&
+          m.description === EXCHANGE_RATE.SALIDA
+      );
       const destinyMovement = doc.movements.find((m) => m.transactionTypeId === TRANSACTION_TYPE.ENTRY);
+      const transferFeeMovement = doc.movements.find((m) => m.description === EXCHANGE_RATE.COMISION);
 
       return {
         id: doc.id,
@@ -842,6 +868,7 @@ export class ZentraDocumentService {
           : null,
         amountOrigin: originMovement?.amount ?? null,
         amountDestiny: destinyMovement?.amount ?? null,
+        transferFee: transferFeeMovement?.amount ?? 0,
         idFirebase: doc.idFirebase
       };
     });
@@ -1016,7 +1043,7 @@ export class ZentraDocumentService {
 
     return { message: 'Scheduled Income creado correctamente' };
   }
-  
+
   async findByFiltersScheduledIncome(filters: {
     documentCategoryId?: string;
     documentStatusId?: string;
@@ -1650,7 +1677,7 @@ export class ZentraDocumentService {
 
   async createScheduledDebt(dataDocument: any) {
     const document = await this.createDocument(dataDocument);
-    
+
     await this.zentraScheduledDebtDocumentService.create({
       documentId: document.id,
     });

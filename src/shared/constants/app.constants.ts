@@ -50,3 +50,9 @@ export const PARTY_DOCUMENT_HIERARCHY = {
   PRINCIPAL: 'aa3de1fb-9fd2-4d93-b154-a7361171b9e3',
   ADICIONAL: 'd9c9dad5-3993-43e1-ba6c-ac25668b8034',
 };
+
+export const EXCHANGE_RATE = {
+  COMISION: 'Comisión de transacción',
+  SALIDA: 'Mov. Salida',
+  ENTRADA: 'Mov. Entrada'
+};
