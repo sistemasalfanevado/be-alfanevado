@@ -92,7 +92,7 @@ export class ZentraBudgetItemService {
       currencyName: item.currency.name,
 
       available: available,
-      completeName: `${item.definition.project.name} - ${item.definition.name} - ${item.currency.name}${available !== null ? ' - ' + formatter.format(available) : ''
+      completeName: `${item.definition.name} - ${item.currency.name}${available !== null ? ' - ' + formatter.format(available) : ''
         }`,
 
       projectName: `${item.definition.project.name}`,

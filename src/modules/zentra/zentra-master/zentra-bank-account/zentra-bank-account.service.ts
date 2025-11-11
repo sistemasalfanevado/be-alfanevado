@@ -156,7 +156,7 @@ export class ZentraBankAccountService {
       currencyId: item.currency.id,
       currencyName: item.currency.name,
       bankComplete: `${item.bank.name} - ${item.currency.name}`,
-      completeName: `${item.project.name} - ${item.bank.name} - ${item.currency.name}`,
+      completeName: `${item.bank.name} - ${item.currency.name}`,
       idFirebase: item.idFirebase
     }));
   }
