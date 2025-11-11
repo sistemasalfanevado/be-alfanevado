@@ -1384,7 +1384,7 @@ export class ZentraDocumentService {
         documentCurrencyId: doc.currency?.id || '',
         documentAmountToPay: amountToPay,
         documentPaidAmount: paidAmount,
-        documentPendingAmount: amountToPay - paidAmount,
+        documentPendingAmount: Math.round((amountToPay - paidAmount) * 100) / 100,
 
         brokerName: lastBroker?.name || '',
         saleTypeName: lastSaleType?.name || '',
