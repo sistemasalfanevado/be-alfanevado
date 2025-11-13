@@ -163,7 +163,7 @@ export class ZentraBudgetItemService {
         { definition: { name: 'asc' } },
         { currency: { name: 'asc' } },
       ],
-    });
+    }); 
 
     return results.map((item) => this.mapToDto(item));
   }

@@ -49,7 +49,7 @@ export class ZentraBudgetItemController {
   @Get('company/:companyId')
   findAllByCompany(@Param('companyId') companyId: string) {
     return this.zentraBudgetItemService.findAllByCompany(companyId);
-  }
+  }  
 
   @Post('category')
   findAllByCategory(@Body() body: { categoryId: string; projectId: string }) {
