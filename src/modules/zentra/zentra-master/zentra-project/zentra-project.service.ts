@@ -89,6 +89,7 @@ export class ZentraProjectService {
     });
   }
 
+
   async findAllWithCompany() {
     const results = await this.prisma.zentraProject.findMany({
       where: { deletedAt: null },
@@ -150,6 +151,80 @@ export class ZentraProjectService {
       };
     });
   }
+
+
+  async findAllWithCompanyUser(userId: string) {
+
+    const results = await this.prisma.zentraProject.findMany({
+      where: {
+        deletedAt: null,
+        projectUsers: {
+          some: {
+            userId: userId,
+            deletedAt: null,
+          }
+        }
+      },
+      include: {
+        company: true,
+        budgetItemDefinitions: {
+          where: {
+            natureId: BUDGET_NATURE.SISTEMAS,
+          },
+          include: {
+            budgetItems: {
+              take: 1,
+            },
+          },
+        },
+        incomes: { // 👈 se agregan los ingresos del proyecto
+          where: { deletedAt: null },
+          include: {
+            budgetItem: {
+              include: {
+                definition: true,
+              },
+            },
+          },
+          take: 1, // si solo quieres el primero; si quieres todos, elimina esta línea
+        },
+      },
+      orderBy: { name: 'asc' },
+    });
+
+    return results.map((project) => {
+      const definition = project.budgetItemDefinitions?.[0];
+      const budgetItem = definition?.budgetItems?.[0];
+
+      // 🔹 Tomamos el primer ingreso (si existe)
+      const income = project.incomes?.[0];
+
+      return {
+        id: project.id,
+        name: project.name,
+        imageUrl: project.imageUrl,
+
+        // 🔹 Datos de compañía
+        companyId: project.company?.id ?? null,
+        companyName: project.company?.name ?? null,
+        businessName: project.company?.businessName ?? null,
+        address: project.company?.address ?? null,
+        documentNumber: project.company?.documentNumber ?? null,
+        legalRepresentative: project.company?.legalRepresentative ?? null,
+        representativeDocumentNumber: project.company?.representativeDocumentNumber ?? null,
+
+        // 🔹 Presupuesto (definición)
+        budgetItemId: budgetItem?.id ?? null,
+        budgetItemName: definition?.name ?? null,
+
+        // 🔹 Ingreso (si existe)
+        incomeBudgetItemId: income?.budgetItem?.id ?? '',
+        incomeBudgetItemName: income?.budgetItem?.definition?.name ?? '',
+      };
+    });
+  }
+
+
 
 
 
@@ -229,12 +304,9 @@ export class ZentraProjectService {
     return results.map((item) => ({
       id: item.id,
       name: item.name,
-
       companyId: item.company.id,
       companyName: item.company.name,
-
       imageUrl: item.imageUrl,
-
     }));
 
   }

@@ -270,6 +270,7 @@ model ZentraUser {
   increaseRequests      ZentraBudgetIncreaseRequest[]
   budgetItemHistories   ZentraBudgetItemHistory[]
   passwordResetTokens   ZentraPasswordResetToken[]
+  userProjects          ZentraUserProject[]
 
   deletedAt    DateTime?
   createdAt    DateTime     @default(now())
@@ -538,7 +539,7 @@ model ZentraProject {
   bankStatements    ZentraBankStatement[]
   incomes           ZentraProjectIncome[]
   subProjects       ZentraSubProject[]
-
+  projectUsers      ZentraUserProject[]
   imageUrl      String?      @db.VarChar(300)
   
   createdAt     DateTime         @default(now())
@@ -547,6 +548,22 @@ model ZentraProject {
   idFirebase String? @default("") @db.VarChar(30)
 
   @@map("zentra_project")
+}
+
+model ZentraUserProject {
+  id          String        @id @default(uuid())
+  
+  userId      String
+  projectId   String
+
+  user        ZentraUser    @relation(fields: [userId], references: [id])
+  project     ZentraProject @relation(fields: [projectId], references: [id])
+
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  deletedAt     DateTime?
+  
+  @@map("zentra_user_project")
 }
 
 model ZentraSubProject {

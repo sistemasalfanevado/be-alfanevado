@@ -11,6 +11,7 @@ import { ZentraActionModule } from './zentra/zentra-config/zentra-action/zentra-
 import { ZentraRoleActionModule } from './zentra/zentra-config/zentra-role-action/zentra-role-action.module';
 import { ZentraPasswordResetTokenModule } from './zentra/zentra-config/zentra-password-reset-token/zentra-password-reset-token.module';
 import { ZentraTelecreditoConfigModule } from './zentra/zentra-config/zentra-telecredito-config/zentra-telecredito-config.module';
+import { ZentraUserProjectModule } from './zentra/zentra-config/zentra-user-project/zentra-user-project.module';
 
 
 // Zentra Masters
@@ -102,11 +103,10 @@ import { ZentraLandingLeadModule } from './zentra/zentra-mkt/zentra-landing-lead
     ZentraRoleActionModule,
     ZentraPasswordResetTokenModule,
     ZentraTelecreditoConfigModule,
+    ZentraUserProjectModule,
     
     ZentraTelecreditoOperationStateModule,
     
-
-
     ZentraBankModule,
     ZentraBudgetItemCategoryModule,
     ZentraCurrencyModule,
