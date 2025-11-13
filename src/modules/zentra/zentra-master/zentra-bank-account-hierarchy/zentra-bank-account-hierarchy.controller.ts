@@ -43,4 +43,5 @@ export class ZentraBankAccountHierarchyController {
   restore(@Param('id') id: string) {
     return this.zentraBankAccountHierarchyService.restore(id);
   }
+  
 }
