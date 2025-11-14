@@ -30,7 +30,7 @@ export class CreateLotDto {
   perimeter: number; 
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(500)
   detail: string;
 

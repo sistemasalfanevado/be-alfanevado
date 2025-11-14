@@ -583,7 +583,9 @@ export class ZentraMovementService {
     }
 
     if (partyId && partyId.trim() !== '') {
-      where.party = { id: partyId };
+      where.document = {
+        partyId
+      }
     }
 
     const results = await this.prisma.zentraMovement.findMany({
