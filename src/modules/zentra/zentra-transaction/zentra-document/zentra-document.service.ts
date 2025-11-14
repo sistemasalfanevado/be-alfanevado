@@ -121,7 +121,7 @@ export class ZentraDocumentService {
 
       budgetItemId: item.budgetItem.id,
       budgetItemName: item.budgetItem
-        ? `${item.budgetItem.definition.name} - ${item.budgetItem.currency.name}`
+        ? `${item.budgetItem.definition.name}`
         : null,
 
       currencyId: item.currency.id,

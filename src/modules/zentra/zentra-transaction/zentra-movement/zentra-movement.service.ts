@@ -5,7 +5,7 @@ import { UpdateZentraMovementDto } from './dto/update-zentra-movement.dto';
 import { ZentraExchangeRateService } from '../../zentra-master/zentra-exchange-rate/zentra-exchange-rate.service';
 import * as moment from 'moment';
 
-import { TRANSACTION_TYPE, CURRENCY, BUDGET_NATURE } from 'src/shared/constants/app.constants';
+import { TRANSACTION_TYPE, CURRENCY, BUDGET_NATURE, PARTY_DOCUMENT_HIERARCHY } from 'src/shared/constants/app.constants';
 
 
 @Injectable()
@@ -19,14 +19,34 @@ export class ZentraMovementService {
     movementStatus: true,
     document: {
       include: {
-        party: true,
+        party: {
+          include: {
+            partyDocuments: {
+              where: {
+                deletedAt: null,
+                documentHierarchyId: PARTY_DOCUMENT_HIERARCHY.PRINCIPAL, // 🔥 filtro principal
+              },
+              take: 1, // solo uno
+              include: {
+                documentType: true,
+                documentHierarchy: true,
+              },
+            },
+            partyRole: true,
+          },
+        },
+        documentType: true,
       },
     },
     transactionType: true,
     movementCategory: true,
     budgetItem: {
       include: {
-        definition: true,
+        definition: {
+          include: {
+            project: true,
+          }
+        },
         currency: true,
       },
     },
@@ -136,6 +156,8 @@ export class ZentraMovementService {
   }
 
   private formatMovement(item: any) {
+    const principalDoc = item.document?.party?.partyDocuments?.[0];
+
     return {
       id: item.id,
       code: item.code,
@@ -150,6 +172,11 @@ export class ZentraMovementService {
       documentCode: item.document.code,
       documentDescription: item.document.description,
       documentDate: moment(item.document.documentDate).format('DD/MM/YYYY'),
+      documentType: item.document.documentType.name,
+      documentAmountToPay: item.document.amountToPay,
+      documentDetractionAmount: item.document.detractionAmount,
+      documentTaxAmount: item.document.taxAmount,
+      
 
       transactionTypeId: item.transactionType.id,
       transactionTypeName: item.transactionType.name,
@@ -159,17 +186,21 @@ export class ZentraMovementService {
 
       partyId: item.document.party.id,
       partyName: item.document.party.name,
+      partyDocument: principalDoc?.document ?? '',
 
       movementStatusId: item.movementStatus.id,
       movementStatusName: item.movementStatus.name,
 
       budgetItemId: item.budgetItem?.id,
       budgetItemName: item.budgetItem
-        ? `${item.budgetItem.definition.name} - ${item.budgetItem.currency.name}`
+        ? `${item.budgetItem.definition.name}`
         : null,
 
+      projectName: item.budgetItem.definition.project.name,
+
       bankAccountId: item.bankAccount.id,
-      bankAccountName: `${item.bankAccount.bank.name} - ${item.bankAccount.currency.name}`,
+      bankAccountName: item.bankAccount.bank.name,
+      bankAccountCurrency: item.bankAccount.currency.name,
 
       installmentId: !item.installment?.id ? '' : item.installment?.id,
       installmentCuota: !item.installment?.letra ? '' : 'Cuota: ' + item.installment?.letra,
@@ -183,7 +214,7 @@ export class ZentraMovementService {
 
       idFirebase: !item.idFirebase ? '' : item.idFirebase,
       fromTelecredito: item.fromTelecredito ?? false,
-
+      
     };
   }
 
@@ -562,7 +593,7 @@ export class ZentraMovementService {
         paymentDate: 'desc',
       },
     });
-    
+
     const bankSummary: Record<string, { bankAccountName: string, entry: number, exit: number, balance: number }> = {};
 
     for (const item of results) {
