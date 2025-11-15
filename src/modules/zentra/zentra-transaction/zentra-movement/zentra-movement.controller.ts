@@ -121,6 +121,11 @@ export class ZentraMovementController {
   findAllByCompany(@Param('companyId') companyId: string) {
     return this.zentraMovementService.findAllByCompany(companyId);
   }
+
+  @Get('bankStatement/:companyId')
+  findAllByBankStatement(@Param('companyId') companyId: string) {
+    return this.zentraMovementService.findAllByBankStatement(companyId);
+  }
   
 
 }

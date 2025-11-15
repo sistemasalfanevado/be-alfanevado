@@ -176,7 +176,7 @@ export class ZentraMovementService {
       documentAmountToPay: item.document.amountToPay,
       documentDetractionAmount: item.document.detractionAmount,
       documentTaxAmount: item.document.taxAmount,
-      
+
 
       transactionTypeId: item.transactionType.id,
       transactionTypeName: item.transactionType.name,
@@ -214,7 +214,7 @@ export class ZentraMovementService {
 
       idFirebase: !item.idFirebase ? '' : item.idFirebase,
       fromTelecredito: item.fromTelecredito ?? false,
-      
+
     };
   }
 
@@ -761,6 +761,114 @@ export class ZentraMovementService {
     return results.map(this.formatMovement);
   }
 
+
+  async findAllByBankStatement(companyId: string): Promise<any[]> {
+
+    const movements = await this.prisma.zentraMovement.findMany({
+      where: {
+        deletedAt: null,
+        budgetItem: {
+          definition: {
+            project: {
+              companyId: companyId,
+            }
+          }
+        }
+      },
+      include: {
+        transactionType: true,
+        bankAccount: {
+          include: {
+            bank: true,
+            currency: true,
+          },
+        }
+      }
+    });
+
+    if (!movements.length) return [];
+
+    const accountsMap: Record<string, any> = {};
+
+    let minDate = moment(movements[0].paymentDate);
+    let maxDate = moment(movements[0].paymentDate);
+
+    // Procesar movimientos
+    for (const m of movements) {
+      const accountKey = `${m.bankAccount.bank.name}-${m.bankAccount.currency.name}`;
+
+      if (!accountsMap[accountKey]) {
+        accountsMap[accountKey] = {
+          bankAccountId: m.bankAccountId,
+          months: {}
+        };
+      }
+
+      const months = accountsMap[accountKey].months;
+
+      const date = moment(m.paymentDate);
+
+      if (date.isBefore(minDate)) minDate = date.clone();
+      if (date.isAfter(maxDate)) maxDate = date.clone();
+
+      const monthKey = date.format("YYYY-MM");
+
+      if (!months[monthKey]) months[monthKey] = 0;
+
+      const amount = Number(m.amount);
+
+      if (m.transactionTypeId === TRANSACTION_TYPE.ENTRY) {
+        months[monthKey] += amount;
+      } else if (m.transactionTypeId === TRANSACTION_TYPE.EXIT) {
+        months[monthKey] -= amount;
+      }
+    }
+
+    // Construir meses completos
+    const allMonths: string[] = [];
+    const cursor = minDate.clone().startOf("month");
+    const end = maxDate.clone().endOf("month");
+
+    while (cursor.isSameOrBefore(end)) {
+      allMonths.push(cursor.format("YYYY-MM"));
+      cursor.add(1, "month");
+    }
+
+    // Construir respuesta final
+    const result: any[] = [];
+
+    for (const accountKey of Object.keys(accountsMap)) {
+      const { bankAccountId, months } = accountsMap[accountKey];
+
+      let cumulative = 0;
+
+      for (const month of allMonths) {
+        const movementAmount = months[month] || 0;
+        cumulative += movementAmount;
+
+        const lastDay = moment(month + "-01").endOf("month").format("DD/MM/YYYY");
+
+        result.push({
+          date: lastDay,
+          account: accountKey,
+          bankAccountId, // 👈 AGREGADO AQUÍ
+          amount: Number(cumulative.toFixed(2)),
+        });
+      }
+    }
+
+    // Orden final
+    result.sort((a, b) => {
+      const da = moment(a.date, "DD/MM/YYYY").toDate().getTime();
+      const db = moment(b.date, "DD/MM/YYYY").toDate().getTime();
+      if (da !== db) return db - da; // Descendente
+      return a.account.localeCompare(b.account);
+    });
+
+    return result;
+  }
+
+  
 
 
 }
