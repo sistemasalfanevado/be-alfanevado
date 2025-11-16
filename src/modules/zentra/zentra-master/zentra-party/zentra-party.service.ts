@@ -61,13 +61,31 @@ export class ZentraPartyService {
   async findAllSimple() {
     const results = await this.prisma.zentraParty.findMany({
       where: { deletedAt: null },
+      include: {
+        partyDocuments: {
+          where: {
+            documentHierarchyId: PARTY_DOCUMENT_HIERARCHY.PRINCIPAL,
+          },
+          include: {
+            documentType: true,
+          },
+          take: 1, // solo el principal
+        },
+      },
       orderBy: { name: 'asc' },
     });
 
-    return results.map((item) => ({
-      id: item.id,
-      name: item.name,
-    }));
+    return results.map((item) => {
+
+      const principalDocument = item.partyDocuments[0];
+
+      return {
+        id: item.id,
+        name: item.name,
+        partyDocument: principalDocument ? principalDocument.document: '',
+      }
+    })
+
   }
 
   async findAllWithPrincipal() {
@@ -180,7 +198,7 @@ export class ZentraPartyService {
       completeName: `${item.name}`,
       document: item.document,
       idFirebase: item.idFirebase,
-      
+
       partyDocument: principalDocument?.document || null,
 
       partyDocumentTypeName: principalDocument?.documentType?.name || null,
@@ -189,13 +207,13 @@ export class ZentraPartyService {
         ? `${principalDocument.documentType?.name || ''}: ${principalDocument.document}`
         : null,
 
-      
+
       bankAccountTypeName: principalBankAccount?.type?.name || null,
       bankAccountTypeId: principalBankAccount?.type?.id || null,
 
       bankAccountNumber: principalBankAccount?.account || null,
       bankAccountCci: principalBankAccount?.cci || null,
-      
+
       bankName: principalBankAccount ? principalBankAccount.bank.name : null,
       bankId: principalBankAccount ? principalBankAccount.bank.id : null,
       bankAccountComplete: principalBankAccount
