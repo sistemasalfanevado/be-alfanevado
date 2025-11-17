@@ -201,6 +201,7 @@ export class ZentraMovementService {
       bankAccountId: item.bankAccount.id,
       bankAccountName: item.bankAccount.bank.name,
       bankAccountCurrency: item.bankAccount.currency.name,
+      bankAccountComplete: item.bankAccount.bank.name + ' - ' + item.bankAccount.currency.name,
 
       installmentId: !item.installment?.id ? '' : item.installment?.id,
       installmentCuota: !item.installment?.letra ? '' : 'Cuota: ' + item.installment?.letra,
@@ -332,6 +333,19 @@ export class ZentraMovementService {
     });
   }
 
+  async updateSimple(id: string, updateDto: any) {
+    await this.prisma.zentraMovement.update({
+      where: { id },
+      data: {
+        ...updateDto
+      },
+    });
+
+    return {
+      id: id
+    }
+  }
+
   async update(id: string, updateDto: UpdateZentraMovementDto) {
     return this.prisma.$transaction(async (tx) => {
       const existing = await tx.zentraMovement.findUnique({ where: { id } });
@@ -403,9 +417,8 @@ export class ZentraMovementService {
           executedDolares,
           fromTelecredito: updateDto.fromTelecredito ?? existing.fromTelecredito,
         },
-        include: this.includeRelations,
       });
-
+      
       // Ajustar balances con los nuevos valores
       await this.adjustBalances(
         tx,
@@ -868,7 +881,7 @@ export class ZentraMovementService {
     return result;
   }
 
-  
+
 
 
 }

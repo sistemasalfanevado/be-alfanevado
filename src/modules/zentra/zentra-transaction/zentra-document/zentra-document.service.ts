@@ -232,6 +232,7 @@ export class ZentraDocumentService {
       documentDate,
       expireDate,
       financialNatureId,
+      documentTransactionMethodId,
       ...data
     } = createDto;
 
@@ -252,6 +253,11 @@ export class ZentraDocumentService {
         ...(financialNatureId && {
           financialNature: { connect: { id: financialNatureId } },
         }),
+        ...(documentTransactionMethodId && {
+          documentTransactionMethod: { connect: { id: documentTransactionMethodId } },
+        })
+
+        ,
       },
     });
 
@@ -547,7 +553,6 @@ export class ZentraDocumentService {
     budgetItemId: string;
     bankAccountId: string;
     movementStatusId: string;
-    currencyId: string;
     date: string;
     idFirebase: string;
     fromTelecredito?: boolean;
@@ -746,11 +751,54 @@ export class ZentraDocumentService {
     return account.currencyId;
   }
 
-  // Scheduled Exchange Rate
+  // Exchange Rate
+
+  async updateExchangeRate(id: string, updateData: any) {
+
+    await this.prisma.zentraDocument.update({
+      where: { id },
+      data: {
+        code: updateData.code,
+        description: updateData.description,
+        registeredAt: updateData.registeredAt,
+        documentDate: updateData.documentDate,
+        expireDate: updateData.expireDate,
+        observation: updateData.observation,
+
+        party: updateData.partyId
+          ? { connect: { id: updateData.partyId } }
+          : undefined,
+
+
+        documentTransactionMethod: updateData.documentTransactionMethodId
+          ? { connect: { id: updateData.documentTransactionMethodId } }
+          : undefined,
+
+        documentType: updateData.documentTypeId
+          ? { connect: { id: updateData.documentTypeId } }
+          : undefined,
+      },
+    });
+
+    const movements = await this.prisma.zentraMovement.findMany({
+      where: { documentId: id, deletedAt: null },
+    });
+
+    await Promise.all(
+      movements.map(movement =>
+        this.zentraMovementService.updateSimple(movement.id, {
+          code: updateData.code,
+        })
+      )
+    );
+
+    return {
+      id,
+      updated: true,
+    };
+  }
 
   async createExchangeRate(dataDocument: any) {
-    const bankAccountOriginCurrency = await this.getBankAccountCurrency(dataDocument.backAccountOriginId);
-    const bankAccountDestinyCurrency = await this.getBankAccountCurrency(dataDocument.backAccountDestinyId);
 
     const document = await this.createDocument(dataDocument);
 
@@ -764,7 +812,6 @@ export class ZentraDocumentService {
       budgetItemId: dataDocument.budgetItemId,
       bankAccountId: dataDocument.backAccountOriginId,
       movementStatusId: dataDocument.movementStatusId,
-      currencyId: bankAccountOriginCurrency,
       date: dataDocument.documentDate,
       idFirebase: !dataDocument.idFirebase ? '' : dataDocument.idFirebase,
       fromTelecredito: dataDocument.fromTelecredito ?? false,
@@ -780,7 +827,6 @@ export class ZentraDocumentService {
       budgetItemId: dataDocument.budgetItemId,
       bankAccountId: dataDocument.backAccountDestinyId,
       movementStatusId: dataDocument.movementStatusId,
-      currencyId: bankAccountDestinyCurrency,
       date: dataDocument.documentDate,
       idFirebase: !dataDocument.idFirebase ? '' : dataDocument.idFirebase,
       fromTelecredito: dataDocument.fromTelecredito ?? false,
@@ -797,7 +843,6 @@ export class ZentraDocumentService {
         budgetItemId: dataDocument.budgetItemId,
         bankAccountId: dataDocument.backAccountOriginId,
         movementStatusId: dataDocument.movementStatusId,
-        currencyId: bankAccountOriginCurrency,
         date: dataDocument.documentDate,
         idFirebase: !dataDocument.idFirebase ? '' : dataDocument.idFirebase,
         fromTelecredito: dataDocument.fromTelecredito ?? false,
@@ -806,8 +851,6 @@ export class ZentraDocumentService {
 
     return { message: 'Exchange rate creado correctamente' };
   }
-
-
 
   async removeExchangeRate(id: string) {
     return this.removeDocumentWithMovements(id);
@@ -829,7 +872,9 @@ export class ZentraDocumentService {
         id: true,
         documentDate: true,
         idFirebase: true,
-        party: { select: { name: true } },
+        party: { select: { name: true, id: true } },
+        documentTransactionMethod: true,
+        observation: true,
         movements: {
           where: { deletedAt: null },
           select: {
@@ -840,6 +885,7 @@ export class ZentraDocumentService {
               select: {
                 bank: { select: { name: true } },
                 currency: { select: { name: true } },
+                id: true
               },
             },
           },
@@ -859,16 +905,27 @@ export class ZentraDocumentService {
       return {
         id: doc.id,
         documentDate: moment(doc.documentDate).format("DD/MM/YYYY"),
+        partyId: doc.party?.id ?? null,
         partyName: doc.party?.name ?? null,
+
+        backAccountOriginId: originMovement ? originMovement.bankAccount.id : '',
         originBankAccount: originMovement
           ? `${originMovement.bankAccount.bank.name} ${originMovement.bankAccount.currency.name}`
           : null,
+
+        backAccountDestinyId: destinyMovement ? destinyMovement.bankAccount.id : '',
         destinyBankAccount: destinyMovement
           ? `${destinyMovement.bankAccount.bank.name} ${destinyMovement.bankAccount.currency.name}`
           : null,
+
+
         amountOrigin: originMovement?.amount ?? null,
         amountDestiny: destinyMovement?.amount ?? null,
         transferFee: transferFeeMovement?.amount ?? 0,
+
+        documentTransactionMethodId: doc.documentTransactionMethod?.id ?? '',
+        documentTransactionMethodName: doc.documentTransactionMethod?.name ?? '',
+        observation: doc.observation,
         idFirebase: doc.idFirebase
       };
     });
@@ -877,7 +934,6 @@ export class ZentraDocumentService {
   // Scheduled Financial Expense
 
   async createFinancialExpense(dataDocument: any) {
-    const bankAccountOriginCurrency = await this.getBankAccountCurrency(dataDocument.backAccountOriginId);
 
     const document = await this.createDocument(dataDocument);
 
@@ -891,7 +947,6 @@ export class ZentraDocumentService {
       budgetItemId: dataDocument.budgetItemId,
       bankAccountId: dataDocument.backAccountOriginId,
       movementStatusId: dataDocument.movementStatusId,
-      currencyId: bankAccountOriginCurrency,
       date: dataDocument.documentDate,
       idFirebase: dataDocument.idFirebase,
       fromTelecredito: dataDocument.fromTelecredito ?? false,
@@ -970,40 +1025,46 @@ export class ZentraDocumentService {
 
   async updateFinancialExpense(id: string, updateData: any) {
 
-    const bankAccountOriginCurrency = await this.getBankAccountCurrency(updateData.backAccountOriginId);
-
-    return this.prisma.$transaction(async (tx) => {
-
-      const movement = await tx.zentraMovement.findFirst({
-        where: { documentId: id, deletedAt: null },
-      });
-
-      if (movement) {
-        await this.zentraMovementService.update(movement.id, {
-          amount: updateData.amountOrigin,
-          autorizeDate: updateData.documentDate,
-          generateDate: updateData.documentDate,
-          paymentDate: updateData.documentDate,
-          code: updateData.codeMovement,
-          description: updateData.description,
-          idFirebase: !movement.idFirebase ? '' : movement.idFirebase,
-          documentId: !movement.documentId ? '' : movement.documentId,
-          transactionTypeId: updateData.transactionTypeId,
-          bankAccountId: updateData.backAccountOriginId,
-          budgetItemId: updateData.budgetItemId,
-          movementCategoryId: movement.movementCategoryId,
-          movementStatusId: movement.movementStatusId,
-        });
-      }
-
-      // 5. Retornar DTO unificado
-      return {
-
-      };
-    }, {
-      timeout: 20000, // Aumentar timeout para operaciones largas
-      maxWait: 15000, // Tiempo máximo de espera para adquirir la transacción
+    // 1. Actualizar documento principal
+    await this.prisma.zentraDocument.update({
+      where: { id },
+      data: {
+        code: updateData.code,
+        description: updateData.description,
+        budgetItemId: updateData.budgetItemId,
+        documentTypeId: updateData.documentTypeId,
+      },
     });
+
+    // 2. Buscar el movimiento asociado
+    const movement = await this.prisma.zentraMovement.findFirst({
+      where: { documentId: id, deletedAt: null },
+    });
+
+    // 3. Si existe movimiento, actualizarlo
+    if (movement) {
+      await this.zentraMovementService.update(movement.id, {
+        amount: updateData.amountOrigin,
+        autorizeDate: updateData.documentDate,
+        generateDate: updateData.documentDate,
+        paymentDate: updateData.documentDate,
+        code: updateData.codeMovement,
+        description: updateData.description,
+        idFirebase: !movement.idFirebase ? '' : movement.idFirebase,
+        documentId: !movement.documentId ? '' : movement.documentId,
+        transactionTypeId: updateData.transactionTypeId,
+        bankAccountId: updateData.backAccountOriginId,
+        budgetItemId: updateData.budgetItemId,
+        movementCategoryId: movement.movementCategoryId,
+        movementStatusId: movement.movementStatusId,
+      });
+    }
+
+    // 4. Retornar algo (si quieres)
+    return {
+      id,
+      updated: true,
+    };
   }
 
   // Scheduled Income Document
@@ -1299,7 +1360,6 @@ export class ZentraDocumentService {
       data: { deletedAt: new Date() }
     });
   }
-
 
   async findByFiltersScheduledIncomeReport(filters: { projectId: string, documentCategoryId: string }) {
 

@@ -74,6 +74,7 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.removeExchangeRate(id);
   }
 
+
   @Post('exchange-rate/search')
   @Public()
   searchExchangeRate(@Body() filters: {
@@ -85,6 +86,12 @@ export class ZentraDocumentController {
   }) {
     return this.zentraDocumentService.findByFiltersExchangeRate(filters);
   }
+
+  @Put('exchange-rate/:id')
+  updateExchangeRate(@Param('id') id: string, @Body() updateZentraDocumentDto: any) {
+    return this.zentraDocumentService.updateExchangeRate(id, updateZentraDocumentDto);
+  }
+
 
   // Financial Expense
 

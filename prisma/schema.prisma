@@ -458,6 +458,19 @@ model ZentraDocumentType {
   @@map("zentra_document_type")
 }
 
+model ZentraDocumentTransactionMethod {
+  id          String   @id @default(uuid())
+  name        String   @db.VarChar(50)
+  
+  documents   ZentraDocument[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  @@map("zentra_document_transaction_method")
+}
+
 model ZentraTransactionType {
   id          String    @id @default(uuid())
   name        String    @db.VarChar(50)
@@ -893,6 +906,9 @@ model ZentraDocument {
 
   financialNature    ZentraFinancialNature? @relation(fields: [financialNatureId], references: [id])
   financialNatureId  String?
+
+  documentTransactionMethod     ZentraDocumentTransactionMethod? @relation(fields: [documentTransactionMethodId], references: [id])
+  documentTransactionMethodId   String?
 
   movements          ZentraMovement[]
   files              ZentraDocumentFile[]

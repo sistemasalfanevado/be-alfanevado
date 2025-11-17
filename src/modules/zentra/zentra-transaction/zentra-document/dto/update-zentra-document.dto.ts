@@ -115,4 +115,8 @@ export class UpdateZentraDocumentDto {
   @IsString()
   @IsOptional()
   financialNatureId?: string;
+
+  @IsString()
+  @IsOptional()
+  documentTransactionMethodId?: string;
 }

@@ -18,6 +18,7 @@ import { ZentraUserProjectModule } from './zentra/zentra-config/zentra-user-proj
 import { ZentraBankModule } from './zentra/zentra-master/zentra-bank/zentra-bank.module';
 import { ZentraCurrencyModule } from './zentra/zentra-master/zentra-currency/zentra-currency.module';
 import { ZentraDocumentTypeModule } from './zentra/zentra-master/zentra-document-type/zentra-document-type.module';
+import { ZentraDocumentTransactionMethodModule } from './zentra/zentra-master/zentra-document-transaction-method/zentra-document-transaction-method.module';
 import { ZentraMovementCategoryModule } from './zentra/zentra-master/zentra-movement-category/zentra-movement-category.module';
 import { ZentraProjectModule } from './zentra/zentra-master/zentra-project/zentra-project.module';
 import { ZentraSubProjectModule } from './zentra/zentra-master/zentra-sub-project/zentra-sub-project.module';
@@ -111,6 +112,7 @@ import { ZentraLandingLeadModule } from './zentra/zentra-mkt/zentra-landing-lead
     ZentraBudgetItemCategoryModule,
     ZentraCurrencyModule,
     ZentraDocumentTypeModule,
+    ZentraDocumentTransactionMethodModule,
     ZentraMovementCategoryModule,
     ZentraProjectModule,
     ZentraSubProjectModule,

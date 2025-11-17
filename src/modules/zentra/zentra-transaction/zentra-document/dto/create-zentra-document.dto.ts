@@ -117,4 +117,8 @@ export class CreateZentraDocumentDto {
   @IsOptional()
   financialNatureId?: string;
 
+  @IsString()
+  @IsOptional()
+  documentTransactionMethodId?: string;
+
 }
