@@ -54,5 +54,10 @@ export class ZentraBankStatementController {
     return this.zentraBankStatementService.findAllByCompany(companyId);
   }
 
+  @Get('bank-account/:bankAccountId')
+  findAllByBankAccountId(@Param('bankAccountId') bankAccountId: string) {
+    return this.zentraBankStatementService.findAllByBankAccount(bankAccountId);
+  }
+
   
 }

@@ -173,4 +173,40 @@ export class ZentraBankStatementService {
     }));
   }
 
+  async findAllByBankAccount(bankAccountId: string): Promise<any[]> {
+    const results = await this.prisma.zentraBankStatement.findMany({
+      where: {
+        deletedAt: null,
+        bankAccountId
+      },
+      include: {
+        project: true,
+        bankAccount: {
+          include: {
+            bank: true,
+            currency: true,
+          }
+        }
+      },
+      orderBy: [
+        { statementDate: 'desc' },
+      ],
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      projectId: item.project.id,
+      projectName: item.project.name,
+      bankAccountId: item.bankAccount.id,
+
+      bankAccountName: `${item.bankAccount.bank.name} - ${item.bankAccount.currency.name}`,
+
+      balance: item.balance,
+      description: item.description,
+      statementDate: moment(item.statementDate).format('DD/MM/YYYY'),
+      documentUrl: item.documentUrl,
+      documentName: item.documentName,
+    }));
+  }
+
 }

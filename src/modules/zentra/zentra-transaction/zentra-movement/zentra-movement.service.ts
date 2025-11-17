@@ -775,18 +775,12 @@ export class ZentraMovementService {
   }
 
 
-  async findAllByBankStatement(companyId: string): Promise<any[]> {
+  async findAllByBankStatement(bankAccountId: string): Promise<any[]> {
 
     const movements = await this.prisma.zentraMovement.findMany({
       where: {
         deletedAt: null,
-        budgetItem: {
-          definition: {
-            project: {
-              companyId: companyId,
-            }
-          }
-        }
+        bankAccountId
       },
       include: {
         transactionType: true,
