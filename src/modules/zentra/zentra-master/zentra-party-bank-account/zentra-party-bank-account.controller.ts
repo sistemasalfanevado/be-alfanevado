@@ -42,10 +42,21 @@ export class ZentraPartyBankAccountController {
     return this.zentraPartyBankAccountService.restore(id);
   }
 
-  
+
   @Get('party/:partyId')
   findByParty(@Param('partyId') partyId: string) {
     return this.zentraPartyBankAccountService.findByPartyId(partyId);
   }
+
+  @Post('partyManyPrincipal')
+  findPartiesWithMultiplePrincipals() {
+    return this.zentraPartyBankAccountService.findPartiesWithMultiplePrincipals();
+  }
+
+  @Post('fixMultiplePrincipals')
+  fixMultiplePrincipals() {
+    return this.zentraPartyBankAccountService.fixMultiplePrincipals();
+  }
+  
 
 }

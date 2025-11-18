@@ -16,7 +16,7 @@ import { UpdateZentraPartyDocumentDto } from './dto/update-zentra-party-document
 export class ZentraPartyDocumentController {
   constructor(
     private readonly zentraPartyDocumentService: ZentraPartyDocumentService,
-  ) {}
+  ) { }
 
   @Post()
   async create(@Body() createDto: CreateZentraPartyDocumentDto) {
@@ -59,4 +59,17 @@ export class ZentraPartyDocumentController {
   findByParty(@Param('partyId') partyId: string) {
     return this.zentraPartyDocumentService.findByPartyId(partyId);
   }
+
+
+  @Post('partyManyPrincipal')
+  findPartiesWithMultiplePrincipals() {
+    return this.zentraPartyDocumentService.findPartiesWithMultiplePrincipals();
+  }
+
+  @Post('fixMultiplePrincipals')
+  fixMultiplePrincipals() {
+    return this.zentraPartyDocumentService.fixMultiplePrincipals();
+  }
+
+
 }
