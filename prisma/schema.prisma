@@ -271,11 +271,14 @@ model ZentraUser {
   budgetItemHistories   ZentraBudgetItemHistory[]
   passwordResetTokens   ZentraPasswordResetToken[]
   userProjects          ZentraUserProject[]
+  accountability         ZentraAccountability[]
 
   deletedAt    DateTime?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+  
   idFirebase String? @default("") @db.VarChar(30)
+  
   @@map("zentra_user")
 }
 
@@ -403,6 +406,7 @@ model ZentraCurrency {
   bankAccounts  ZentraBankAccount[]
   partyBankAccounts ZentraPartyBankAccount[]
   increaseRequests ZentraBudgetIncreaseRequest[]
+  accountability         ZentraAccountability[]
   
   documents      ZentraDocument[]
   budgetItems    ZentraBudgetItem[]
@@ -448,6 +452,7 @@ model ZentraDocumentType {
   name        String    @db.VarChar(50)
   
   documents   ZentraDocument[]
+  accountability         ZentraAccountability[]
   
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -474,11 +479,15 @@ model ZentraDocumentTransactionMethod {
 model ZentraTransactionType {
   id          String    @id @default(uuid())
   name        String    @db.VarChar(50)
+  
   documents   ZentraDocument[]
   movements   ZentraMovement[]
+  accountability         ZentraAccountability[]
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
+  
   idFirebase String? @default("") @db.VarChar(30)
   @@map("zentra_transaction_type")
 }
@@ -621,6 +630,7 @@ model ZentraParty {
   partyDocuments    ZentraPartyDocument[]
   partyBankAccounts ZentraPartyBankAccount[]
   increaseRequests  ZentraBudgetIncreaseRequest[]
+  accountability         ZentraAccountability[]
 
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
@@ -794,6 +804,7 @@ model ZentraBudgetItem {
   // 👇 Relación inversa
   budgetItemHistories ZentraBudgetItemHistory[]
   increaseRequests ZentraBudgetIncreaseRequest[]
+  accountability         ZentraAccountability[]
 
   // Metadata
   createdAt       DateTime @default(now())
@@ -910,6 +921,9 @@ model ZentraDocument {
   documentTransactionMethod     ZentraDocumentTransactionMethod? @relation(fields: [documentTransactionMethodId], references: [id])
   documentTransactionMethodId   String?
 
+  accountability     ZentraAccountability? @relation(fields: [accountabilityId], references: [id])
+  accountabilityId   String?
+  
   movements          ZentraMovement[]
   files              ZentraDocumentFile[]
   scheduledIncomeDocuments ZentraScheduledIncomeDocument[]
@@ -1428,8 +1442,6 @@ model ZentraTelecreditoOperationDetail {
   @@map("zentra_telecredito_operation_detail")
 }
 
-
-
 // Marketing
 model ZentraLandingLead {
   id             String   @id @default(uuid())
@@ -1446,4 +1458,59 @@ model ZentraLandingLead {
   deletedAt      DateTime?
 
   @@map("zentra_landing_lead")
+}
+
+// Rendicion de Cuentas
+
+model ZentraAccountabilityStatus {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(50)
+
+  accountability         ZentraAccountability[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("zentra_accountability_status")
+}
+
+model ZentraAccountability {
+  id        String   @id @default(uuid())
+  
+  code               String                @db.VarChar(20) 
+  description        String                @db.VarChar(500)
+  registeredAt       DateTime              // Fecha registrada por el usuario
+  
+  amountToPay        Decimal  @default(0.00) @db.Decimal(12, 2)
+  paidAmount         Decimal  @default(0.00) @db.Decimal(12, 2)
+
+  party              ZentraParty           @relation(fields: [partyId], references: [id])
+  partyId            String
+
+  currency           ZentraCurrency        @relation(fields: [currencyId], references: [id])
+  currencyId         String
+
+  documentType       ZentraDocumentType @relation(fields: [documentTypeId], references: [id])
+  documentTypeId     String
+
+  accountabilityStatus     ZentraAccountabilityStatus @relation(fields: [accountabilityStatusId], references: [id])
+  accountabilityStatusId   String
+  
+  transactionType    ZentraTransactionType @relation(fields: [transactionTypeId], references: [id])
+  transactionTypeId  String
+
+  budgetItem         ZentraBudgetItem      @relation(fields: [budgetItemId], references: [id])
+  budgetItemId       String
+
+  user               ZentraUser            @relation(fields: [userId], references: [id])
+  userId             String
+  
+  documents          ZentraDocument[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("zentra_accountability")
 }

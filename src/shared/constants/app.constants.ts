@@ -23,6 +23,10 @@ export const DOCUMENT_STATUS = {
   PENDIENTE: 'b194c9a5-4874-4108-a35b-951c898c9c49',
 };
 
+export const DOCUMENT_CATEGORY = {
+  CLASICO: '0c4d8c87-aaed-4e08-8520-14e79fad324c',
+};
+
 export const BUDGET_NATURE = {
   GASTO: '230d0901-b36b-4356-b709-1518eccf7b81',
   COSTO_DIRECTO: 'c2f6ef95-04dd-4a3f-8ecf-1739dd5b4849',

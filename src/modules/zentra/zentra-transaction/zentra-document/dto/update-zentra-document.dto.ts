@@ -119,4 +119,8 @@ export class UpdateZentraDocumentDto {
   @IsString()
   @IsOptional()
   documentTransactionMethodId?: string;
+
+  @IsString()
+  @IsOptional()
+  accountabilityId?: string;
 }

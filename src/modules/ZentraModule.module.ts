@@ -91,6 +91,12 @@ import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-o
 import { ZentraLandingLeadModule } from './zentra/zentra-mkt/zentra-landing-lead/zentra-landing-lead.module';
 
 
+// Zentra Rendición de Cuentas
+import { ZentraAccountabilityStatusModule } from './zentra/zentra-master/zentra-accountability-status/zentra-accountability-status.module';
+import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-accountability/zentra-accountability.module';
+
+
+
 @Module({
   imports: [
     ZentraAuthModule,
@@ -176,7 +182,12 @@ import { ZentraLandingLeadModule } from './zentra/zentra-mkt/zentra-landing-lead
 
 
     // Marketing
-    ZentraLandingLeadModule
+    ZentraLandingLeadModule,
+
+
+    // Rendición de Cuentas
+    ZentraAccountabilityStatusModule,
+    ZentraAccountabilityModule
 
   ],  
 })

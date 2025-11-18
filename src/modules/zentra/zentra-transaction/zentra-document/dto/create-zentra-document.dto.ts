@@ -121,4 +121,8 @@ export class CreateZentraDocumentDto {
   @IsOptional()
   documentTransactionMethodId?: string;
 
+  @IsString()
+  @IsOptional()
+  accountabilityId?: string;
+
 }

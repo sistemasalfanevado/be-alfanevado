@@ -233,6 +233,7 @@ export class ZentraDocumentService {
       expireDate,
       financialNatureId,
       documentTransactionMethodId,
+      accountabilityId,
       ...data
     } = createDto;
 
@@ -250,11 +251,15 @@ export class ZentraDocumentService {
         currency: { connect: { id: currencyId } },
         user: { connect: { id: userId } },
         documentCategory: { connect: { id: documentCategoryId } },
+
         ...(financialNatureId && {
           financialNature: { connect: { id: financialNatureId } },
         }),
         ...(documentTransactionMethodId && {
           documentTransactionMethod: { connect: { id: documentTransactionMethodId } },
+        }),
+        ...(accountabilityId && {
+          accountability: { connect: { id: accountabilityId } },
         })
 
         ,
@@ -396,8 +401,9 @@ export class ZentraDocumentService {
     endDate?: string;
     userId?: string;
     withPartyBankAccount?: boolean;
+    accountabilityId?: string;
   }) {
-    const { withPartyBankAccount, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, companyId, userId, startDate, endDate } = filters;
+    const { withPartyBankAccount, accountabilityId, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, companyId, userId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -434,6 +440,10 @@ export class ZentraDocumentService {
       where.transactionType = { id: transactionTypeId };
     }
 
+    if (accountabilityId && accountabilityId.trim() !== '') {
+      where.accountability = { id: accountabilityId };
+    }
+    
     if (userId && userId.trim() !== '') {
       where.user = { id: userId };
     }
@@ -508,7 +518,9 @@ export class ZentraDocumentService {
 
   }
 
-  private async createDocument(dataDocument: any) {
+
+  async createDocument(dataDocument: any) {
+
     const created = await this.prisma.zentraDocument.create({
       data: {
         code: dataDocument.code,
@@ -536,6 +548,18 @@ export class ZentraDocumentService {
         currency: { connect: { id: dataDocument.currencyId } },
         user: { connect: { id: dataDocument.userId } },
         documentCategory: { connect: { id: dataDocument.documentCategoryId } },
+
+        ...(dataDocument.financialNatureId && {
+          financialNature: { connect: { id: dataDocument.financialNatureId } },
+        }),
+        ...(dataDocument.documentTransactionMethodId && {
+          documentTransactionMethod: { connect: { id: dataDocument.documentTransactionMethodId } },
+        }),
+        ...(dataDocument.accountabilityId && {
+          accountability: { connect: { id: dataDocument.accountabilityId } },
+        })
+        
+
       },
       select: { id: true, code: true }, // 👈 solo traemos el id
     });
