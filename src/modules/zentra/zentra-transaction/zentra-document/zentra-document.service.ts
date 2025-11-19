@@ -332,6 +332,19 @@ export class ZentraDocumentService {
     });
   }
 
+  async updateSimple(id: string, updateDto: any) {
+    await this.prisma.zentraDocument.update({
+      where: { id },
+      data: {
+        ...updateDto
+      },
+    });
+
+    return {
+      id: id
+    }
+  }
+
   async updateStatusAndPaidAmount(id: string, updateDto: any) {
     return this.prisma.zentraDocument.update({
       where: { id },
@@ -443,7 +456,7 @@ export class ZentraDocumentService {
     if (accountabilityId && accountabilityId.trim() !== '') {
       where.accountability = { id: accountabilityId };
     }
-    
+
     if (userId && userId.trim() !== '') {
       where.user = { id: userId };
     }
@@ -558,7 +571,7 @@ export class ZentraDocumentService {
         ...(dataDocument.accountabilityId && {
           accountability: { connect: { id: dataDocument.accountabilityId } },
         })
-        
+
 
       },
       select: { id: true, code: true }, // 👈 solo traemos el id

@@ -200,6 +200,7 @@ export class ZentraMovementService {
 
       bankAccountId: item.bankAccount.id,
       bankAccountName: item.bankAccount.bank.name,
+      bankAccountCurrencyId: item.bankAccount.currency.id,
       bankAccountCurrency: item.bankAccount.currency.name,
       bankAccountComplete: item.bankAccount.bank.name + ' - ' + item.bankAccount.currency.name,
 
@@ -418,7 +419,7 @@ export class ZentraMovementService {
           fromTelecredito: updateDto.fromTelecredito ?? existing.fromTelecredito,
         },
       });
-      
+
       // Ajustar balances con los nuevos valores
       await this.adjustBalances(
         tx,
@@ -876,6 +877,107 @@ export class ZentraMovementService {
   }
 
 
+  // Utilidad para dividir en lotes
+  chunkArray<T>(array: T[], size: number): T[][] {
+    const chunks: T[][] = [];
+    for (let i = 0; i < array.length; i += size) {
+      chunks.push(array.slice(i, i + size));
+    }
+    return chunks;
+  }
+
+  async recalculateBudgetItems(companyId: string, preview: boolean) {
+    // 1. Traer partidas
+    const budgetItems = await this.prisma.zentraBudgetItem.findMany({
+      where: { definition: { project: { companyId } } },
+      select: { id: true },
+    });
+
+    // 2. Traer movimientos
+    const movements = await this.prisma.zentraMovement.findMany({
+      where: {
+        deletedAt: null,
+        budgetItem: {
+          definition: { project: { companyId } },
+        },
+      },
+      select: {
+        budgetItemId: true,
+        executedAmount: true,
+        executedSoles: true,
+        executedDolares: true,
+      },
+    });
+
+    // Solo preview
+    if (preview) {
+      return {
+        preview: true,
+        totalPartidas: budgetItems.length,
+        totalMovimientos: movements.length,
+      };
+    }
+
+    // 3. Agrupar por partida
+    const grouped = movements.reduce((acc, m) => {
+      if (!acc[m.budgetItemId]) acc[m.budgetItemId] = [];
+      acc[m.budgetItemId].push(m);
+      return acc;
+    }, {} as Record<string, typeof movements>);
+
+    const updates: any[] = [];
+
+    // 4. Construir updates
+    for (const item of budgetItems) {
+      const list = grouped[item.id] || [];
+
+      const executedAmount = Number(
+        list.reduce((s, m) => s + Number(m.executedAmount), 0).toFixed(2)
+      );
+      const executedSoles = Number(
+        list.reduce((s, m) => s + Number(m.executedSoles), 0).toFixed(2)
+      );
+      const executedDolares = Number(
+        list.reduce((s, m) => s + Number(m.executedDolares), 0).toFixed(2)
+      );
+
+      updates.push({
+        id: item.id,
+        executedAmount,
+        executedSoles,
+        executedDolares,
+      });
+    }
+
+    // 5. Dividir updates en chunks de 500
+    const chunks = this.chunkArray(updates, 500);
+
+    for (const chunk of chunks) {
+      await Promise.all(
+        chunk.map((u) =>
+          this.prisma.zentraBudgetItem.update({
+            where: { id: u.id },
+            data: {
+              executedAmount: u.executedAmount,
+              executedSoles: u.executedSoles,
+              executedDolares: u.executedDolares,
+            },
+          })
+        )
+      );
+
+      console.log(`Chunk procesado: ${chunk.length} items`);
+    }
+
+    return {
+      preview: false,
+      message: "Partidas recalculadas correctamente",
+      totalPartidas: budgetItems.length,
+      totalMovimientos: movements.length,
+    };
+
+
+  }
 
 
 }

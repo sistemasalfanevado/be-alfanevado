@@ -31,6 +31,15 @@ export class ZentraMovementController {
     return this.zentraMovementService.update(id, updateDto);
   }
 
+  @Put('simple/:id')
+  updateSimple(
+    @Param('id') id: string,
+    @Body() updateDto: any
+  ) {
+    return this.zentraMovementService.updateSimple(id, updateDto);
+  }
+
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.zentraMovementService.remove(id);
@@ -127,6 +136,18 @@ export class ZentraMovementController {
   findAllByBankStatement(@Param('bankAccountId') bankAccountId: string) {
     return this.zentraMovementService.findAllByBankStatement(bankAccountId);
   }
-  
+
+
+  @Post('recalculateBudgetItems')
+  recalculateBudgetItems(@Body() body: {
+    companyId: string;
+    preview: boolean;
+  }) {
+    return this.zentraMovementService.recalculateBudgetItems(
+      body.companyId,
+      body.preview
+    );
+  }
+
 
 }

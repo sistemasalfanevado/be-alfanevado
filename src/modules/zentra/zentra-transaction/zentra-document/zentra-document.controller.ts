@@ -33,6 +33,14 @@ export class ZentraDocumentController {
     return { message: 'Documento actualizado exitosamente' };
   }
 
+  @Put('simple/:id')
+  updateSimple(
+    @Param('id') id: string,
+    @Body() updateDto: any
+  ) {
+    return this.zentraDocumentService.updateSimple(id, updateDto);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.zentraDocumentService.remove(id);
