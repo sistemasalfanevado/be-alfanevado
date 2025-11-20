@@ -78,6 +78,7 @@ import { ZentraDebtInvestmentModule } from './zentra/zentra-transaction/zentra-d
 import { ZentraDocumentSalesModule } from './zentra/zentra-transaction/zentra-document-sales/zentra-document-sales.module';
 import { ZentraDocumentExpenseModule } from './zentra/zentra-transaction/zentra-document-expense/zentra-document-expense.module';
 import { ZentraDocumentFileModule } from './zentra/zentra-transaction/zentra-document-file/zentra-document-file.module';
+import { ZentraInstallmentFileModule } from './zentra/zentra-transaction/zentra-installment-file/zentra-installment-file.module';
 
 import { ZentraTransactionGeneralModule } from './zentra/zentra-transaction/zentra-transaction-general/zentra-transaction-general.module';
 import { ZentraTelecreditoOperationModule } from './zentra/zentra-transaction/zentra-telecredito-operation/zentra-telecredito-operation.module';
@@ -174,6 +175,8 @@ import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-a
     ZentraTransactionGeneralModule,
     ZentraTelecreditoOperationModule,
     ZentraTelecreditoOperationDetailModule,
+
+    ZentraInstallmentFileModule,
 
 
     // Utils

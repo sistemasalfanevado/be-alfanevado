@@ -1052,6 +1052,23 @@ model ZentraDocumentFile {
   @@map("zentra_document_file")
 }
 
+
+model ZentraInstallmentFile {
+  id           String         @id @default(uuid())
+  
+  installment     ZentraInstallment @relation(fields: [installmentId], references: [id], onDelete: Cascade)
+  installmentId   String
+
+  fileName     String         @db.VarChar(255) // Nombre original del archivo
+  fileUrl      String         @db.VarChar(700) // URL completa en Firebase Storage
+  
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  deletedAt   DateTime?
+  
+  @@map("zentra_installment_file")
+}
+
 model ZentraExchangeRate {
   id         String   @id @default(uuid())
   date       DateTime @unique          // Fecha del tipo de cambio (ej: 2025-08-21)
@@ -1225,6 +1242,7 @@ model ZentraInstallment {
   paidAmount    Decimal  @default(0.00) @db.Decimal(12, 2)  
   description   String                @db.VarChar(200)
   movements     ZentraMovement[]
+  files     ZentraInstallmentFile[]
 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

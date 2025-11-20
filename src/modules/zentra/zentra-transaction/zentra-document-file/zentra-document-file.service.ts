@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraDocumentFileDto } from './dto/create-zentra-document-file.dto';
 import { UpdateZentraDocumentFileDto } from './dto/update-zentra-document-file.dto';
+import * as moment from 'moment';
 
 @Injectable()
 export class ZentraDocumentFileService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createZentraDocumentFileDto: CreateZentraDocumentFileDto) {
     return this.prisma.zentraDocumentFile.create({
@@ -47,13 +48,26 @@ export class ZentraDocumentFileService {
     });
   }
 
+
   async findByDocumentId(documentId: string) {
-    return this.prisma.zentraDocumentFile.findMany({
+    
+    const results = await this.prisma.zentraDocumentFile.findMany({
       where: {
         documentId,
         deletedAt: null,
       },
       orderBy: { createdAt: 'desc' },
     });
+
+
+    return results.map((item) => ({
+      id: item.id,
+      fileName: item.fileName,
+      fileUrl: item.fileUrl,
+      documentId: item.documentId,
+      createdAtClean: moment(item.createdAt).utcOffset(-5).format('DD/MM/YYYY'),
+      createdAt: item.createdAt
+    }));
+
   }
 }

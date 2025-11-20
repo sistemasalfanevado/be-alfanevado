@@ -100,6 +100,7 @@ export class ZentraPartyService {
           include: {
             type: true,
             bank: true,
+            currency: true
           },
           take: 1, // solo la principal
         },
@@ -141,6 +142,7 @@ export class ZentraPartyService {
         bankAccountCci: principalBankAccount?.cci || null,
 
         bankName: principalBankAccount ? principalBankAccount.bank.name : null,
+        bankAccountCurrency: principalBankAccount ? principalBankAccount.currency.name : null,
 
         partyDocumentComplete: principalDocument
           ? `${principalDocument.documentType?.name || ''}: ${principalDocument.document}`
