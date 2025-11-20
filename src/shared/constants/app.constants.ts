@@ -60,3 +60,11 @@ export const EXCHANGE_RATE = {
   SALIDA: 'Mov. Salida',
   ENTRADA: 'Mov. Entrada'
 };
+
+export const MOVEMENT_CATEGORY = {
+  TRANSFERENCIA: '22dff505-62ab-4239-bb85-b8214212fa09',
+  RENTABILIDAD: '708d4aa7-194b-4e9f-8c3c-82b4e2b69704',
+  INVERSION: '8bf377ae-39e0-4569-b87a-2686119cb1b0',
+  DEUDA: 'f058573b-6982-4b69-8d8e-b9a5b7e3c6f5',
+  OPEFINANCIERA: '7b53fac7-ea3f-4f07-8fac-3cfa35732053'
+};

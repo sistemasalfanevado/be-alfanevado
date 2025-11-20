@@ -949,6 +949,9 @@ export class ZentraMovementService {
       });
     }
 
+    console.log(updates)
+
+    return 
     // 5. Dividir updates en chunks de 500
     const chunks = this.chunkArray(updates, 500);
 

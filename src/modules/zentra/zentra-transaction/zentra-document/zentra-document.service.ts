@@ -9,7 +9,7 @@ import { ZentraMovementService } from '../../zentra-transaction/zentra-movement/
 import { ZentraScheduledIncomeDocumentService } from '../../zentra-master/zentra-scheduled-income-document/zentra-scheduled-income-document.service';
 import { ZentraScheduledDebtDocumentService } from '../../zentra-master/zentra-scheduled-debt-document/zentra-scheduled-debt-document.service';
 
-import { TRANSACTION_TYPE, CURRENCY, INSTALLMENT_STATUS, BANK_ACCOUNT_HIERARCHY, EXCHANGE_RATE } from 'src/shared/constants/app.constants';
+import { TRANSACTION_TYPE, CURRENCY, MOVEMENT_CATEGORY, BANK_ACCOUNT_HIERARCHY, EXCHANGE_RATE } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
 
@@ -876,7 +876,7 @@ export class ZentraDocumentService {
         documentId: document.id,
         amount: dataDocument.transferFee,
         transactionTypeId: dataDocument.transactionTypeOrigin,
-        movementCategoryId: dataDocument.movementCategoryId,
+        movementCategoryId: MOVEMENT_CATEGORY.RENTABILIDAD,
         budgetItemId: dataDocument.budgetItemId,
         bankAccountId: dataDocument.backAccountOriginId,
         movementStatusId: dataDocument.movementStatusId,

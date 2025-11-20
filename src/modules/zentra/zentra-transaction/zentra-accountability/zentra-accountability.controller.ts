@@ -1,5 +1,5 @@
-import { 
-  Controller, Get, Post, Body, Param, Patch, Put, Delete 
+import {
+  Controller, Get, Post, Body, Param, Patch, Put, Delete
 } from '@nestjs/common';
 import { ZentraAccountabilityService } from './zentra-accountability.service';
 import { CreateZentraAccountabilityDto } from './dto/create-zentra-accountability.dto';
@@ -12,7 +12,7 @@ import { Public } from '../../../../auth/shared/decorators/public.decorator';
 export class ZentraAccountabilityController {
   constructor(
     private readonly zentraAccountabilityService: ZentraAccountabilityService
-  ) {}
+  ) { }
 
   @Post()
   async create(
@@ -51,4 +51,18 @@ export class ZentraAccountabilityController {
   restore(@Param('id') id: string) {
     return this.zentraAccountabilityService.restore(id);
   }
+
+  @Post('search')
+  @Public()
+  search(@Body() filters: {
+    accountabilityStatusId?: string;
+    partyId?: string;
+    startDate?: string;
+    endDate?: string;
+    userId?: string;
+  }) {
+    return this.zentraAccountabilityService.findByFilters(filters);
+  }
+
+
 }

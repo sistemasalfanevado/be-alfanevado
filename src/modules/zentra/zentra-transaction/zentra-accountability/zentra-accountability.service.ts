@@ -9,7 +9,7 @@ import * as moment from 'moment';
 
 @Injectable()
 export class ZentraAccountabilityService {
-  
+
   constructor(private prisma: PrismaService, private zentraDocumentService: ZentraDocumentService) { }
 
   private includeRelations = {
@@ -78,7 +78,7 @@ export class ZentraAccountabilityService {
 
     const newCode = `RC-${String(nextNumber).padStart(4, '0')}`;
 
-    const created = await  this.prisma.zentraAccountability.create({
+    const created = await this.prisma.zentraAccountability.create({
       data: {
         ...createDto,
         code: newCode,
@@ -119,7 +119,7 @@ export class ZentraAccountabilityService {
 
     return { message: 'Documento creado exitosamente' };
   }
-  
+
 
   async findAll() {
     const items = await this.prisma.zentraAccountability.findMany({
@@ -171,4 +171,64 @@ export class ZentraAccountabilityService {
       data: { deletedAt: null },
     });
   }
+
+
+  async findByFilters(filters: {
+    accountabilityStatusId?: string;
+    partyId?: string;
+    projectId?: string;
+    startDate?: string;
+    endDate?: string;
+    userId?: string;
+  }) {
+    const { accountabilityStatusId, partyId, projectId, userId, startDate, endDate } = filters;
+
+    const where: any = {
+      deletedAt: null,
+    };
+
+    if (startDate || endDate) {
+      where.registeredAt = {};
+      if (startDate) {
+        where.registeredAt.gte = moment(startDate).startOf('day').toDate();
+      }
+      if (endDate) {
+        where.registeredAt.lte = moment(endDate).endOf('day').toDate();
+      }
+    }
+
+    if (accountabilityStatusId && accountabilityStatusId.trim() !== '') {
+      where.accountabilityStatus = { id: accountabilityStatusId };
+    }
+
+    if (partyId && partyId.trim() !== '') {
+      where.party = { id: partyId };
+    }
+    
+    if (userId && userId.trim() !== '') {
+      where.user = { id: userId };
+    }
+
+    if (projectId && projectId.trim() !== '') {
+      where.budgetItem = {
+        definition: {
+          projectId: projectId,
+        },
+      };
+    }
+    
+    const results = await this.prisma.zentraAccountability.findMany({
+      where,
+      include: this.includeRelations,
+      orderBy: {
+        registeredAt: 'desc',
+      },
+    });
+    
+    return results;
+
+
+  }
+
+
 }
