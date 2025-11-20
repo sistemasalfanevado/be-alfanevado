@@ -31,7 +31,9 @@ export const BUDGET_NATURE = {
   GASTO: '230d0901-b36b-4356-b709-1518eccf7b81',
   COSTO_DIRECTO: 'c2f6ef95-04dd-4a3f-8ecf-1739dd5b4849',
   INGRESO: 'eccee710-3022-4af9-83d1-42f47a9bb3fb',
-  SISTEMAS: 'e9fb5a54-7059-4f25-885e-d3a8fd7f4dfa'
+  SISTEMAS: 'e9fb5a54-7059-4f25-885e-d3a8fd7f4dfa',
+  CUADRE: '22feac37-28c0-410a-8533-5254dfc202f1',
+  RENDICION_CUENTA: '94f5dbc1-bbb0-49bb-87ce-452613d99759',
 };
 
 

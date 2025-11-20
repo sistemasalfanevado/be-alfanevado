@@ -167,37 +167,47 @@ export class ZentraProjectService {
       },
       include: {
         company: true,
-        budgetItemDefinitions: {
-          where: {
-            natureId: BUDGET_NATURE.SISTEMAS,
-          },
-          include: {
-            budgetItems: {
-              take: 1,
-            },
-          },
-        },
-        incomes: { // 👈 se agregan los ingresos del proyecto
+        incomes: {
           where: { deletedAt: null },
           include: {
             budgetItem: {
               include: {
-                definition: true,
+                definition: {
+                  include: {
+                    nature: true
+                  }
+                },
               },
             },
           },
-          take: 1, // si solo quieres el primero; si quieres todos, elimina esta línea
         },
       },
       orderBy: { name: 'asc' },
     });
 
     return results.map((project) => {
-      const definition = project.budgetItemDefinitions?.[0];
-      const budgetItem = definition?.budgetItems?.[0];
 
-      // 🔹 Tomamos el primer ingreso (si existe)
-      const income = project.incomes?.[0];
+      const budgetItem = project.incomes;
+
+      // Aqui estan todas las partidas por defecto, solo hay que identificarlas
+      // por su naturaleza
+
+      let budgetItemDefault: any = '';
+      let budgetItemIncome: any = '';
+      let budgetItemAccountability: any = '';
+
+      for (let itemBudget of budgetItem) {
+        if (itemBudget.budgetItem.definition.nature.id === BUDGET_NATURE.SISTEMAS) {
+          budgetItemDefault = itemBudget.budgetItem;
+        }
+        if (itemBudget.budgetItem.definition.nature.id === BUDGET_NATURE.INGRESO) {
+          budgetItemIncome = itemBudget.budgetItem;
+        }
+        if (itemBudget.budgetItem.definition.nature.id === BUDGET_NATURE.RENDICION_CUENTA) {
+          budgetItemAccountability = itemBudget.budgetItem;
+        }
+      }
+      
 
       return {
         id: project.id,
@@ -213,13 +223,19 @@ export class ZentraProjectService {
         legalRepresentative: project.company?.legalRepresentative ?? null,
         representativeDocumentNumber: project.company?.representativeDocumentNumber ?? null,
 
-        // 🔹 Presupuesto (definición)
-        budgetItemId: budgetItem?.id ?? null,
-        budgetItemName: definition?.name ?? null,
+        // 🔹 Partida por Defecto
+        budgetItemId: budgetItemDefault?.id ?? '',
+        budgetItemName: budgetItemDefault?.definition?.name ?? '',
 
-        // 🔹 Ingreso (si existe)
-        incomeBudgetItemId: income?.budgetItem?.id ?? '',
-        incomeBudgetItemName: income?.budgetItem?.definition?.name ?? '',
+        // 🔹 Partida Ingreso x Ventas
+        incomeBudgetItemId: budgetItemIncome?.id ?? '',
+        incomeBudgetItemName: budgetItemIncome?.definition?.name ?? '',
+
+        // 🔹 Partida Rendición de Cuenta
+        accountabilityBudgetItemId: budgetItemAccountability?.id ?? '',
+        accountabilityBudgetItemName: budgetItemAccountability?.definition?.name ?? '',
+
+
       };
     });
   }

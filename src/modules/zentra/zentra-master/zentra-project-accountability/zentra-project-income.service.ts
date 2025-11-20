@@ -18,33 +18,20 @@ export class ZentraProjectIncomeService {
   async findAll() {
     const incomes = await this.prisma.zentraProjectIncome.findMany({
       where: { deletedAt: null },
+      orderBy: { createdAt: 'asc' },
       include: {
         project: { select: { name: true } },
-        budgetItem: {
-          select: {
-            definition: {
-              select: {
-                name: true,
-                nature: { select: { name: true } }
-              }
-            }
-          }
-        },
+        budgetItem: { select: { definition: { select: { name: true } } } },
       },
-      orderBy: {
-        project: {
-          name: 'asc'
-        }
-      }
     });
 
+    // Transformar para simplificar
     return incomes.map(i => ({
       id: i.id,
       projectId: i.projectId,
       budgetItemId: i.budgetItemId,
       projectName: i.project?.name ?? null,
       budgetItemDefinitionName: i.budgetItem?.definition?.name ?? null,
-      natureName: i.budgetItem?.definition?.nature?.name ?? null,
     }));
   }
 
@@ -118,5 +105,5 @@ export class ZentraProjectIncomeService {
       budgetItemId: item.budgetItem?.id ?? '',
     };
   }
-
+  
 }
