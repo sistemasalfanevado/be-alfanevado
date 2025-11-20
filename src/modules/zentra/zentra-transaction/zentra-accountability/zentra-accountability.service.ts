@@ -204,7 +204,7 @@ export class ZentraAccountabilityService {
     if (partyId && partyId.trim() !== '') {
       where.party = { id: partyId };
     }
-    
+
     if (userId && userId.trim() !== '') {
       where.user = { id: userId };
     }
@@ -216,7 +216,7 @@ export class ZentraAccountabilityService {
         },
       };
     }
-    
+
     const results = await this.prisma.zentraAccountability.findMany({
       where,
       include: this.includeRelations,
@@ -224,8 +224,8 @@ export class ZentraAccountabilityService {
         registeredAt: 'desc',
       },
     });
-    
-    return results;
+
+    return results.map(item => this.mapEntityToDto(item));;
 
 
   }
