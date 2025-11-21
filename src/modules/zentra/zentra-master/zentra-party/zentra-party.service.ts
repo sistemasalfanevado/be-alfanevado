@@ -5,10 +5,17 @@ import { UpdateZentraPartyDto } from './dto/update-zentra-party.dto';
 
 import { BANK_ACCOUNT_HIERARCHY, PARTY_DOCUMENT_HIERARCHY } from 'src/shared/constants/app.constants';
 
+import { ZentraPartyBankAccountService } from '../zentra-party-bank-account/zentra-party-bank-account.service';
+import { ZentraPartyDocumentService } from '../zentra-party-document/zentra-party-document.service';
 
 @Injectable()
 export class ZentraPartyService {
-  constructor(private prisma: PrismaService) { }
+  constructor(
+    private prisma: PrismaService,
+    private zentraPartyBankAccountService: ZentraPartyBankAccountService,
+    private zentraPartyDocumentService: ZentraPartyDocumentService) {
+
+  }
 
   async create(createZentraPartyDto: CreateZentraPartyDto) {
     const { partyRoleId, ...partyData } = createZentraPartyDto;
@@ -25,6 +32,55 @@ export class ZentraPartyService {
         name: true,
       },
     });
+
+    return newParty;
+  }
+
+
+  async createComplex(dataParty: any) {
+    
+    const validation = await this.zentraPartyDocumentService.validateDocumentUniqueness(dataParty.document);
+
+    if (!validation.success) return validation;
+    
+    const dataTempParty = {
+      name: dataParty.name,
+      document: dataParty.document,
+      email: dataParty.email,
+      phone: dataParty.phone,
+      address: dataParty.address,
+      idFirebase: '',
+    }
+    const newParty = await this.prisma.zentraParty.create({
+      data: {
+        ...dataTempParty,
+        partyRole: {
+          connect: { id: dataParty.partyRoleId },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    await this.zentraPartyBankAccountService.create({
+      account: dataParty.account,
+      cci: dataParty.cci,
+      partyId: newParty.id,
+      bankId: dataParty.bankId,
+      currencyId: dataParty.currencyId,
+      typeId: dataParty.bankAccountTypeId,
+      hierarchyId: dataParty.bankAccountHierarchyId
+    })
+
+    await this.zentraPartyDocumentService.create({
+      document: dataParty.document,
+      observation: '',
+      partyId: newParty.id,
+      documentTypeId: dataParty.partyDocumentTypeId,
+      documentHierarchyId: dataParty.documentHierarchyId
+    })
 
     return newParty;
   }
@@ -82,7 +138,7 @@ export class ZentraPartyService {
       return {
         id: item.id,
         name: item.name,
-        partyDocument: principalDocument ? principalDocument.document: '',
+        partyDocument: principalDocument ? principalDocument.document : '',
       }
     })
 
@@ -253,10 +309,41 @@ export class ZentraPartyService {
   }
 
   async remove(id: string) {
-    return this.prisma.zentraParty.update({
-      where: { id },
-      data: { deletedAt: new Date() }
-    });
+    return this.prisma.$transaction(
+      async (tx) => {
+
+        const listPartyBankAccount = await tx.zentraPartyBankAccount.findMany({
+          where: { partyId: id, deletedAt: null }
+        });
+
+        const listPartyDocument = await tx.zentraPartyDocument.findMany({
+          where: { partyId: id, deletedAt: null }
+        });
+
+        for (const item of listPartyBankAccount) {
+          await tx.zentraPartyBankAccount.update({
+            where: { id: item.id },
+            data: { deletedAt: new Date() }
+          });
+        }
+
+        for (const item of listPartyDocument) {
+          await tx.zentraPartyDocument.update({
+            where: { id: item.id },
+            data: { deletedAt: new Date() }
+          });
+        }
+
+        return tx.zentraParty.update({
+          where: { id },
+          data: { deletedAt: new Date() }
+        });
+      },
+      {
+        timeout: 20000,
+        maxWait: 15000,
+      }
+    );
   }
 
   async restore(id: string) {

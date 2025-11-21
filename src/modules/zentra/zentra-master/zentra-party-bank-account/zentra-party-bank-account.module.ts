@@ -8,5 +8,6 @@ import { AuthModule } from '../../../../auth/landing/auth.module';
   imports: [PrismaModule, AuthModule],
   providers: [ZentraPartyBankAccountService],
   controllers: [ZentraPartyBankAccountController],
+  exports: [ZentraPartyBankAccountService]
 })
 export class ZentraPartyBankAccountModule {}

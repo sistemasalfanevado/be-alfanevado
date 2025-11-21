@@ -39,14 +39,12 @@ export class ZentraPartyDocumentController {
     @Param('id') id: string,
     @Body() updateDto: UpdateZentraPartyDocumentDto,
   ) {
-    await this.zentraPartyDocumentService.update(id, updateDto);
-    return { message: 'Documento de parte actualizado correctamente' };
+    return this.zentraPartyDocumentService.update(id, updateDto);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    await this.zentraPartyDocumentService.remove(id);
-    return { message: 'Documento de parte eliminado correctamente' };
+    return this.zentraPartyDocumentService.remove(id);
   }
 
   @Patch(':id/restore')

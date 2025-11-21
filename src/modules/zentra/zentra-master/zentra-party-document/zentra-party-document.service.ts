@@ -8,10 +8,32 @@ import { PARTY_DOCUMENT_HIERARCHY } from 'src/shared/constants/app.constants';
 export class ZentraPartyDocumentService {
   constructor(private prisma: PrismaService) { }
 
-  // Crear documento de parte
+  async validateDocumentUniqueness(document: string, excludeId?: string) {
+
+    const existing = await this.prisma.zentraPartyDocument.findFirst({
+      where: {
+        document,
+        deletedAt: null,
+        ...(excludeId && { id: { not: excludeId } }),
+      },
+      include: { party: true },
+    });
+
+    if (!existing) return { success: true };
+
+    return {
+      success: false,
+      code: "DOCUMENT_ALREADY_EXISTS",
+      message: `Ya existe un proveedor con este documento (${existing.party.name}).`,
+    };
+  }
+
   async create(createDto: CreateZentraPartyDocumentDto) {
 
-    // Si el documento es PRINCIPAL, degradamos el anterior a ADICIONAL
+    const validation = await this.validateDocumentUniqueness(createDto.document);
+
+    if (!validation.success) return validation;
+
     if (createDto.documentHierarchyId === PARTY_DOCUMENT_HIERARCHY.PRINCIPAL) {
       await this.prisma.zentraPartyDocument.updateMany({
         where: {
@@ -24,7 +46,6 @@ export class ZentraPartyDocumentService {
       });
     }
 
-    // Crear el documento
     await this.prisma.zentraPartyDocument.create({
       data: {
         document: createDto.document,
@@ -107,10 +128,15 @@ export class ZentraPartyDocumentService {
     });
   }
 
-  // Actualizar documento
-  // Actualizar documento
   async update(id: string, updateDto: UpdateZentraPartyDocumentDto) {
-    // Obtener el documento actual para saber partyId y jerarquía
+
+    if (updateDto.document) {
+      const validation = await this.validateDocumentUniqueness(updateDto.document, id);
+      if (!validation.success) {
+        return validation;
+      }
+    }
+
     const current = await this.prisma.zentraPartyDocument.findUnique({
       where: { id },
     });

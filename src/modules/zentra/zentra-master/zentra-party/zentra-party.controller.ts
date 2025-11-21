@@ -15,6 +15,11 @@ export class ZentraPartyController {
     return this.zentraPartyService.create(createZentraPartyDto);
   }
 
+  @Post('complex')
+  createComplex(@Body() createZentraPartyDto: any) {
+    return this.zentraPartyService.createComplex(createZentraPartyDto);
+  }
+  
   @Get()
   @Public()
   findAll() {
@@ -50,7 +55,7 @@ export class ZentraPartyController {
   findAllSimple(@Body() body: any) {
     return this.zentraPartyService.findAllSimple();
   }
-   
+
   @Post('find-one-with-principal')
   async findOneWithPrincipal(@Body('id') id: string) {
     return this.zentraPartyService.findOneWithPrincipal(id);
