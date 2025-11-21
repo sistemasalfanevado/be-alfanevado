@@ -12,8 +12,7 @@ export class ZentraDocumentController {
 
   @Post()
   async create(@Body() createZentraDocumentDto: CreateZentraDocumentDto) {
-    await this.zentraDocumentService.create(createZentraDocumentDto);
-    return { message: 'Documento creado exitosamente' };
+    return this.zentraDocumentService.create(createZentraDocumentDto);
   }
 
   @Get()

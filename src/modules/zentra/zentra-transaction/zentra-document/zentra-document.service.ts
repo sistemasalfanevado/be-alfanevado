@@ -218,7 +218,7 @@ export class ZentraDocumentService {
     return results.map(this.mapEntityToDto);
   }
 
-  async create(createDto: CreateZentraDocumentDto): Promise<{ message: string }> {
+  async create(createDto: CreateZentraDocumentDto): Promise<{ id: string }> {
     const {
       documentStatusId,
       transactionTypeId,
@@ -237,7 +237,7 @@ export class ZentraDocumentService {
       ...data
     } = createDto;
 
-    await this.prisma.zentraDocument.create({
+    const created = await this.prisma.zentraDocument.create({
       data: {
         ...data,
         registeredAt: new Date(registeredAt),
@@ -251,7 +251,6 @@ export class ZentraDocumentService {
         currency: { connect: { id: currencyId } },
         user: { connect: { id: userId } },
         documentCategory: { connect: { id: documentCategoryId } },
-
         ...(financialNatureId && {
           financialNature: { connect: { id: financialNatureId } },
         }),
@@ -260,13 +259,14 @@ export class ZentraDocumentService {
         }),
         ...(accountabilityId && {
           accountability: { connect: { id: accountabilityId } },
-        })
-
-        ,
+        }),
+      },
+      select: {
+        id: true,
       },
     });
 
-    return { message: 'Documento creado exitosamente' };
+    return { id: created.id };
   }
 
   async findAll(): Promise<any[]> {
