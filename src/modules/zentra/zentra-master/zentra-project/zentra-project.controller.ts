@@ -57,7 +57,7 @@ export class ZentraProjectController {
   findAllByCompany(@Param('companyId') companyId: string) {
     return this.zentraProjectService.findAllByCompany(companyId);
   }
-
+  
   @Get('user/:userId')
   findAllWithCompanyUser(@Param('userId') userId: string) {
     return this.zentraProjectService.findAllWithCompanyUser(userId);

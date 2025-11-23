@@ -3,8 +3,8 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraProjectDto } from './dto/create-zentra-project.dto';
 import { UpdateZentraProjectDto } from './dto/update-zentra-project.dto';
 
-import { BUDGET_NATURE } from 'src/shared/constants/app.constants';
-
+import { BUDGET_NATURE, MOVEMENT_CATEGORY } from 'src/shared/constants/app.constants';
+import * as moment from 'moment';
 
 @Injectable()
 export class ZentraProjectService {
@@ -155,6 +155,9 @@ export class ZentraProjectService {
 
   async findAllWithCompanyUser(userId: string) {
 
+    const weekStart = moment().startOf('week').add(1, 'day').toDate();  // Lunes
+    const weekEnd = moment().endOf('week').add(1, 'day').toDate();    // Domingo
+    
     const results = await this.prisma.zentraProject.findMany({
       where: {
         deletedAt: null,
@@ -181,6 +184,29 @@ export class ZentraProjectService {
             },
           },
         },
+        budgetItemDefinitions: {
+          include: {
+            budgetItems: {
+              include: {
+                movements: {
+                  where: {
+                    deletedAt: null,
+                    movementCategoryId: MOVEMENT_CATEGORY.RENTABILIDAD,
+                    paymentDate: {
+                      gte: weekStart,
+                      lte: weekEnd
+                    }
+                  },
+                  select: {
+                    id: true,
+                    paymentDate: true,
+                    executedDolares: true
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       orderBy: { name: 'asc' },
     });
@@ -189,9 +215,7 @@ export class ZentraProjectService {
 
       const budgetItem = project.incomes;
 
-      // Aqui estan todas las partidas por defecto, solo hay que identificarlas
-      // por su naturaleza
-
+      
       let budgetItemDefault: any = '';
       let budgetItemIncome: any = '';
       let budgetItemAccountability: any = '';
@@ -207,14 +231,29 @@ export class ZentraProjectService {
           budgetItemAccountability = itemBudget.budgetItem;
         }
       }
-      
+
+      let profitabilityDaily = 0;
+      let profitabilityWeekly = 0;
+
+      const today = moment().startOf("day");
+
+      for (const def of project.budgetItemDefinitions) {
+        for (const item of def.budgetItems) {
+          for (const mv of item.movements) {
+            const payment = moment(mv.paymentDate);
+            profitabilityWeekly += Number(mv.executedDolares) ?? 0;
+            if (payment.isSame(today, "day")) {
+              profitabilityDaily += Number(mv.executedDolares) ?? 0;
+            }
+          }
+        }
+      }
 
       return {
         id: project.id,
         name: project.name,
         imageUrl: project.imageUrl,
 
-        // 🔹 Datos de compañía
         companyId: project.company?.id ?? null,
         companyName: project.company?.name ?? null,
         businessName: project.company?.businessName ?? null,
@@ -223,19 +262,19 @@ export class ZentraProjectService {
         legalRepresentative: project.company?.legalRepresentative ?? null,
         representativeDocumentNumber: project.company?.representativeDocumentNumber ?? null,
 
-        // 🔹 Partida por Defecto
         budgetItemId: budgetItemDefault?.id ?? '',
         budgetItemName: budgetItemDefault?.definition?.name ?? '',
 
-        // 🔹 Partida Ingreso x Ventas
         incomeBudgetItemId: budgetItemIncome?.id ?? '',
         incomeBudgetItemName: budgetItemIncome?.definition?.name ?? '',
 
-        // 🔹 Partida Rendición de Cuenta
         accountabilityBudgetItemId: budgetItemAccountability?.id ?? '',
         accountabilityBudgetItemName: budgetItemAccountability?.definition?.name ?? '',
 
-
+        // Rentabilidad diaria y semanal 
+        profitabilityDaily,
+        profitabilityWeekly
+      
       };
     });
   }
