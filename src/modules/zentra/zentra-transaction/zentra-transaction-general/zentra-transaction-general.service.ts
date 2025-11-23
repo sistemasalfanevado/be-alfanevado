@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import * as moment from 'moment';
 
-import { INSTALLMENT_STATUS, CURRENCY } from 'src/shared/constants/app.constants';
+import { INSTALLMENT_STATUS, CURRENCY, BUDGET_NATURE } from 'src/shared/constants/app.constants';
 
 
 @Injectable()
@@ -18,10 +18,21 @@ export class ZentraTransactionGeneralService {
     const endOfMonth = moment({ year, month }).endOf('month').endOf('day');
 
     const projectIncome = await this.prisma.zentraProjectIncome.findFirst({
-      where: { deletedAt: null, projectId },
-      include: { project: true, budgetItem: true },
-    });
-
+      where: { 
+        deletedAt: null, 
+        budgetItem: {
+          definition: {
+            natureId: BUDGET_NATURE.INGRESO
+          }
+        },
+        projectId
+      },
+      include: { 
+        project: true, 
+        budgetItem: true 
+      },
+    }); 
+    
     if (!projectIncome) {
       return { weeks: [] };
     }
@@ -41,7 +52,15 @@ export class ZentraTransactionGeneralService {
       },
       select: {
         executedDolares: true,
+        executedSoles: true,
+        executedAmount: true,
+        amount: true,
         paymentDate: true,
+        bankAccount: {
+          select: {
+            currency: true
+          }
+        },
         document: {
           select: {
             party: { select: { name: true } },
@@ -76,7 +95,6 @@ export class ZentraTransactionGeneralService {
             budgetItemId: ingresoVentasBudgetItemId,
           },
         },
-
       },
       select: {
         id: true,
@@ -84,7 +102,7 @@ export class ZentraTransactionGeneralService {
         totalAmount: true,
         paidAmount: true,
         dueDate: true,
-        currencyId: true,
+        currency: true,
         scheduledIncomeDocument: {
           select: {
             lot: { select: { name: true } },
@@ -128,25 +146,30 @@ export class ZentraTransactionGeneralService {
       const incomesInWeek = incomes
         .filter(mov => isDateInRange(mov.paymentDate, w.start, w.end))
         .map(mov => {
-          const amount = Number(mov.executedDolares ?? 0);
           return {
+            amountSoles: (Number(mov.executedSoles).toFixed(2)),
+            amountDolares: (Number(mov.executedDolares).toFixed(2)),
+            amount: (Number(mov.amount).toFixed(2)),
+            currencyId: mov.bankAccount.currency.id,
+            currencyName: mov.bankAccount.currency.name,
             provider: mov.document?.party?.name?.trim() ?? null,
-            amountDollars: Number(amount.toFixed(2)),
+            
             paymentDate: moment(mov.paymentDate).format('DD/MM/YYYY'),
             installmentNumber: mov.installment?.letra ?? null,
             lot: mov.installment?.scheduledIncomeDocument?.lot?.name ?? null,
           };
         });
 
-      const totalIncomes = incomesInWeek.reduce((s, it) => s + Number(it.amountDollars), 0);
+      const totalIncomes = incomesInWeek.reduce((s, it) => s + Number(it.amountDolares), 0);
 
       // debts in this week
       const debtsInWeek = debts
         .filter(inst => isDateInRange(inst.dueDate, w.start, w.end))
         .map(inst => {
-          let pending = Math.abs(Number(inst.totalAmount) - Number(inst.paidAmount));
+          let amountPending = Number(inst.totalAmount) - Number(inst.paidAmount);
+          let pending = amountPending;
           // convert from soles to dollars if needed (assuming exchangeRate.buyRate present)
-          if (inst.currencyId === CURRENCY.SOLES && exchangeRate) {
+          if (inst.currency.id === CURRENCY.SOLES && exchangeRate) {
             pending = pending / Number(exchangeRate.buyRate);
           }
           const pendingFixed = Number(pending.toFixed(2));
@@ -155,10 +178,15 @@ export class ZentraTransactionGeneralService {
             dueDate: moment(inst.dueDate).format('DD/MM/YYYY'),
             installmentNumber: inst.letra,
             installmentAmount: Number(Number(inst.totalAmount).toFixed(2)),
+            currencyId: inst.currency.id,
+            currencyName: inst.currency.name,
+            lot: inst.scheduledIncomeDocument?.lot?.name ?? null,
+
             paidAmount: Number(Number(inst.paidAmount).toFixed(2)),
             pending: pendingFixed,
-            currency: inst.currencyId,
-            lot: inst.scheduledIncomeDocument?.lot?.name ?? null,
+            exchangeRate: exchangeRate?.buyRate,
+            amountPending: Number(amountPending.toFixed(2)),
+
           };
         });
 

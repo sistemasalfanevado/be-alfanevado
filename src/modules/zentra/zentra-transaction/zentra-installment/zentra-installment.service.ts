@@ -395,10 +395,9 @@ export class ZentraInstallmentService {
             },
             document: {
               include: {
-                party: {
+                party: { 
                   select: { id: true, name: true, document: true }, // Proveedor
                 },
-                currency: { select: { id: true, name: true } },
               },
             },
           },
@@ -425,9 +424,9 @@ export class ZentraInstallmentService {
       let totalAmount = Number(i.totalAmount);
       let paidAmount = Number(i.paidAmount);
 
-      let amountUSD = Number(Math.abs(totalAmount - paidAmount));
-
-
+      let amountUSD = Number((totalAmount - paidAmount));
+      let amountPending = Number((totalAmount - paidAmount));
+      
       // Si la cuota está en SOLES → convertir a dólares
       if (i.currencyId === CURRENCY.SOLES && exchangeRate) {
         amountUSD = amountUSD / Number(exchangeRate.buyRate);
@@ -438,8 +437,12 @@ export class ZentraInstallmentService {
         dueDate: moment(i.dueDate).format('DD/MM/YYYY'),
         status: i.installmentStatusId,
         amountUSD: Number(amountUSD.toFixed(2)),
+        amountPending: Number(amountPending.toFixed(2)),
 
+        exchangeRate: Number(exchangeRate?.buyRate),
+        currencyId: i.currency.id,
         currencyName: i.currency.name,
+
         letra: i.letra,
         totalAmount: i.totalAmount,
         paidAmount: i.paidAmount,
