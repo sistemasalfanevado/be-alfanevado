@@ -214,7 +214,6 @@ export class ZentraProjectService {
     return results.map((project) => {
 
       const budgetItem = project.incomes;
-
       
       let budgetItemDefault: any = '';
       let budgetItemIncome: any = '';

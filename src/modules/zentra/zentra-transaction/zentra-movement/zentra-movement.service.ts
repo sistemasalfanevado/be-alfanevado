@@ -676,7 +676,8 @@ export class ZentraMovementService {
         ingresos.push(mov);
       } else if (
         natureId === BUDGET_NATURE.GASTO ||
-        natureId === BUDGET_NATURE.COSTO_DIRECTO
+        natureId === BUDGET_NATURE.COSTO_DIRECTO ||
+        natureId === BUDGET_NATURE.RENDICION_CUENTA
       ) {
         gastos.push(mov);
       }
