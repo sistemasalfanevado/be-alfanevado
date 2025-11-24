@@ -593,7 +593,14 @@ export class ZentraMovementService {
     }
 
     if (bankAccountId && bankAccountId.trim() !== '') {
-      where.bankAccount = { id: bankAccountId };
+      where.bankAccount = {
+        deletedAt: null,
+        id: bankAccountId
+      };
+    } else {
+      where.bankAccount = {
+        deletedAt: null
+      };
     }
 
     if (partyId && partyId.trim() !== '') {
@@ -952,7 +959,7 @@ export class ZentraMovementService {
 
     console.log(updates)
 
-    return 
+    return
     // 5. Dividir updates en chunks de 500
     const chunks = this.chunkArray(updates, 500);
 

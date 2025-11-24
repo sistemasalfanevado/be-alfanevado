@@ -3,7 +3,7 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraAccountabilityDto } from './dto/create-zentra-accountability.dto';
 import { UpdateZentraAccountabilityDto } from './dto/update-zentra-accountability.dto';
 import { ZentraDocumentService } from '../zentra-document/zentra-document.service';
-import { DOCUMENT_CATEGORY, DOCUMENT_STATUS } from 'src/shared/constants/app.constants';
+import { DOCUMENT_CATEGORY, DOCUMENT_STATUS, DOCUMENT_ORIGIN, ACCOUNTABILITY_STATUS } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
 
@@ -31,8 +31,10 @@ export class ZentraAccountabilityService {
       id: item.id,
       code: item.code,
       description: item.description,
-      amountToPay: item.amountToPay,
-      paidAmount: item.paidAmount,
+
+      requestedAmount: item.requestedAmount,
+      approvedAmount: item.approvedAmount,
+      accountedAmount: item.accountedAmount,
 
       registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
 
@@ -86,16 +88,19 @@ export class ZentraAccountabilityService {
       select: { id: true, code: true },
     });
 
-    const document = await this.zentraDocumentService.createDocument(
+    await this.zentraDocumentService.createDocument(
       {
         code: newCode,
         description: createDto.description,
-        totalAmount: createDto.amountToPay,
+
+        totalAmount: createDto.requestedAmount,
+        amountToPay: createDto.requestedAmount,
+
         taxAmount: 0,
         netAmount: 0,
         detractionRate: 0,
         detractionAmount: 0,
-        amountToPay: createDto.amountToPay,
+
         paidAmount: 0,
         observation: '',
         idFirebase: '',
@@ -114,6 +119,7 @@ export class ZentraAccountabilityService {
         userId: createDto.userId,
         documentCategoryId: DOCUMENT_CATEGORY.CLASICO,
         accountabilityId: created.id,
+        documentOriginId: DOCUMENT_ORIGIN.RENDICION_CUENTAS
       }
     );
 
@@ -138,16 +144,9 @@ export class ZentraAccountabilityService {
   async findOne(id: string) {
     return this.prisma.zentraAccountability.findUnique({
       where: { id },
-      include: {
-        party: true,
-        currency: true,
-        documentType: true,
-        accountabilityStatus: true,
-        transactionType: true,
-        budgetItem: true,
-        user: true,
-        documents: true,
-      },
+      select: {
+        id: true
+      }
     });
   }
 
@@ -156,6 +155,19 @@ export class ZentraAccountabilityService {
       where: { id },
       data: updateDto,
     });
+  }
+
+  async updateSimple(id: string, updateDto: any) {
+    await this.prisma.zentraAccountability.update({
+      where: { id },
+      data: {
+        ...updateDto
+      },
+    });
+
+    return {
+      id: id
+    }
   }
 
   async remove(id: string) {
@@ -228,6 +240,144 @@ export class ZentraAccountabilityService {
     return results.map(item => this.mapEntityToDto(item));;
 
 
+  }
+
+  async addIncrement(dataAccountability: any) {
+
+    await this.zentraDocumentService.createDocument(
+      {
+        code: dataAccountability.code,
+        description: dataAccountability.description,
+
+        totalAmount: dataAccountability.requestedAmount,
+        amountToPay: dataAccountability.requestedAmount,
+
+        taxAmount: 0,
+        netAmount: 0,
+        detractionRate: 0,
+        detractionAmount: 0,
+
+        paidAmount: 0,
+        observation: '',
+        idFirebase: '',
+        hasMovements: false,
+
+        registeredAt: new Date(dataAccountability.registeredAt),
+        documentDate: new Date(dataAccountability.registeredAt),
+        expireDate: new Date(dataAccountability.registeredAt),
+
+        documentStatusId: DOCUMENT_STATUS.PENDIENTE,
+        transactionTypeId: dataAccountability.transactionTypeId,
+        documentTypeId: dataAccountability.documentTypeId,
+        partyId: dataAccountability.partyId,
+        budgetItemId: dataAccountability.budgetItemId,
+        currencyId: dataAccountability.currencyId,
+        userId: dataAccountability.userId,
+        documentCategoryId: DOCUMENT_CATEGORY.CLASICO,
+        accountabilityId: dataAccountability.id,
+        documentOriginId: DOCUMENT_ORIGIN.RENDICION_CUENTAS
+      }
+    );
+
+    let documentList = await this.prisma.zentraDocument.findMany({
+      where: {
+        deletedAt: null,
+        accountabilityId: dataAccountability.id,
+      },
+      select: {
+        amountToPay: true,
+      }
+    });
+
+    let totalRequestedAmount = 0;
+
+    for (let item of documentList) {
+      totalRequestedAmount += Number(item.amountToPay)
+    }
+
+    return this.updateSimple(dataAccountability.id, {
+      requestedAmount: totalRequestedAmount,
+      accountabilityStatusId: ACCOUNTABILITY_STATUS.PENDIENTE,
+    })
+  }
+
+
+  async addDocument(dataAccountability: any) {
+
+    return await this.zentraDocumentService.createDocument(
+      {
+        code: dataAccountability.code,
+        description: dataAccountability.description,
+
+        totalAmount: dataAccountability.totalAmount,
+        amountToPay: dataAccountability.amountToPay,
+
+        taxAmount: dataAccountability.taxAmount,
+        netAmount: dataAccountability.netAmount,
+        detractionRate: dataAccountability.detractionRate,
+        detractionAmount: dataAccountability.detractionAmount,
+
+        paidAmount: 0,
+        observation: dataAccountability.observation,
+        idFirebase: '',
+        hasMovements: false,
+
+        registeredAt: new Date(dataAccountability.registeredAt),
+        documentDate: new Date(dataAccountability.documentDate),
+        expireDate: new Date(dataAccountability.expireDate),
+
+        documentStatusId: DOCUMENT_STATUS.PENDIENTE,
+        transactionTypeId: dataAccountability.transactionTypeId,
+        documentTypeId: dataAccountability.documentTypeId,
+        partyId: dataAccountability.partyId,
+        budgetItemId: dataAccountability.budgetItemId,
+        currencyId: dataAccountability.currencyId,
+        userId: dataAccountability.userId,
+        documentCategoryId: dataAccountability.documentCategoryId,
+        accountabilityId: dataAccountability.accountabilityId,
+        documentOriginId: DOCUMENT_ORIGIN.RENDICION_CUENTAS
+      },
+
+    );
+  }
+
+  async updateDocument(id: string, dataAccountability: any) {
+
+    return await this.zentraDocumentService.updateSimple(id, 
+      {
+        code: dataAccountability.code,
+        description: dataAccountability.description,
+
+        totalAmount: dataAccountability.totalAmount,
+        amountToPay: dataAccountability.amountToPay,
+
+        taxAmount: dataAccountability.taxAmount,
+        netAmount: dataAccountability.netAmount,
+        detractionRate: dataAccountability.detractionRate,
+        detractionAmount: dataAccountability.detractionAmount,
+
+        paidAmount: 0,
+        observation: dataAccountability.observation,
+        idFirebase: '',
+        hasMovements: false,
+
+        registeredAt: new Date(dataAccountability.registeredAt),
+        documentDate: new Date(dataAccountability.documentDate),
+        expireDate: new Date(dataAccountability.expireDate),
+
+        documentStatusId: dataAccountability.documentStatusId,
+        transactionTypeId: dataAccountability.transactionTypeId,
+        documentTypeId: dataAccountability.documentTypeId,
+        partyId: dataAccountability.partyId,
+        budgetItemId: dataAccountability.budgetItemId,
+        currencyId: dataAccountability.currencyId,
+        userId: dataAccountability.userId,
+        documentCategoryId: dataAccountability.documentCategoryId,
+        accountabilityId: dataAccountability.accountabilityId,
+        documentOriginId: DOCUMENT_ORIGIN.RENDICION_CUENTAS
+      },
+
+    );
   }
 
 

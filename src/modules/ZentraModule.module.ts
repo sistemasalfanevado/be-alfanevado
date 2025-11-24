@@ -27,6 +27,9 @@ import { ZentraCompanyModule } from './zentra/zentra-master/zentra-company/zentr
 import { ZentraPartyModule } from './zentra/zentra-master/zentra-party/zentra-party.module';
 import { ZentraPartyRoleModule } from './zentra/zentra-master/zentra-party-role/zentra-party-role.module';
 import { ZentraPartyBankAccountModule } from './zentra/zentra-master/zentra-party-bank-account/zentra-party-bank-account.module';
+import { ZentraDocumentOriginModule } from './zentra/zentra-master/zentra-document-origin/zentra-document-origin.module';
+import { ZentraFinancialImpactModule } from './zentra/zentra-master/zentra-financial-impact/zentra-financial-impact.module';
+
 
 import { ZentraPartyDocumentModule } from './zentra/zentra-master/zentra-party-document/zentra-party-document.module';
 import { ZentraPartyDocumentHierarchyModule } from './zentra/zentra-master/zentra-party-document-hierarchy/zentra-party-document-hierarchy.module';
@@ -97,7 +100,6 @@ import { ZentraAccountabilityStatusModule } from './zentra/zentra-master/zentra-
 import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-accountability/zentra-accountability.module';
 
 
-
 @Module({
   imports: [
     ZentraAuthModule,
@@ -112,6 +114,8 @@ import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-a
     ZentraPasswordResetTokenModule,
     ZentraTelecreditoConfigModule,
     ZentraUserProjectModule,
+    ZentraDocumentOriginModule,
+    ZentraFinancialImpactModule,
     
     ZentraTelecreditoOperationStateModule,
     

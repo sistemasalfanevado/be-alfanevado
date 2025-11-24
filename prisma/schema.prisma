@@ -923,6 +923,9 @@ model ZentraDocument {
 
   accountability     ZentraAccountability? @relation(fields: [accountabilityId], references: [id])
   accountabilityId   String?
+
+  documentOrigin     ZentraDocumentOrigin? @relation(fields: [documentOriginId], references: [id])
+  documentOriginId   String?
   
   movements          ZentraMovement[]
   files              ZentraDocumentFile[]
@@ -998,6 +1001,7 @@ model ZentraMovement {
   @@map("zentra_movement")
 }
 
+
 model ZentraDocumentStatus {
 
   id          String            @id @default(uuid())
@@ -1021,6 +1025,30 @@ model ZentraDocumentCategory {
   deletedAt   DateTime?
   
   @@map("zentra_document_category")
+}
+
+model ZentraDocumentOrigin {
+  id          String            @id @default(uuid())
+  name        String            @db.VarChar(50)
+  
+  documents   ZentraDocument[]
+  
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  deletedAt   DateTime?
+  
+  @@map("zentra_document_origin")
+}
+
+model ZentraFinancialImpact {
+  id          String            @id @default(uuid())
+  name        String            @db.VarChar(50)
+  
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  deletedAt   DateTime?
+  
+  @@map("zentra_financial_impact")
 }
 
 model ZentraMovementStatus {
@@ -1500,8 +1528,9 @@ model ZentraAccountability {
   description        String                @db.VarChar(500)
   registeredAt       DateTime              // Fecha registrada por el usuario
   
-  amountToPay        Decimal  @default(0.00) @db.Decimal(12, 2)
-  paidAmount         Decimal  @default(0.00) @db.Decimal(12, 2)
+  requestedAmount   Decimal @default(0.00) @db.Decimal(12,2)  // Lo que se pidió
+  approvedAmount    Decimal @default(0.00) @db.Decimal(12,2)  // Lo que se entregó
+  accountedAmount   Decimal @default(0.00) @db.Decimal(12,2)  // Lo rendido / sustentado
 
   party              ZentraParty           @relation(fields: [partyId], references: [id])
   partyId            String

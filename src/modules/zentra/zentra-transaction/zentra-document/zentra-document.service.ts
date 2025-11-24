@@ -46,12 +46,16 @@ export class ZentraDocumentService {
         movementCategory: true,
       }
     },
+    documentOrigin: true,
+    accountability: true,
   };
 
   private includeRelationsWithBankAccount = {
     documentStatus: true,
     transactionType: true,
     documentType: true,
+    documentOrigin: true,
+    accountability: true,
     party: {
       include: {
         partyBankAccounts: {
@@ -144,6 +148,9 @@ export class ZentraDocumentService {
       movementCategoryId: item.financialNature?.movementCategory?.id ?? null,
       movementCategoryName: item.financialNature?.movementCategory?.name ?? null,
 
+      documentOriginId: item.documentOrigin?.id ?? null,
+      accountabilityId: item.accountability?.id ?? null,
+      
       partyBankAccountInfo: principalAccount
         ? `${principalAccount.bank?.name ?? '-'} | ${principalAccount.currency?.name ?? '-'} | ${principalAccount.type?.name ?? '-'} | ${principalAccount.account ?? '-'} | CCI: ${principalAccount.cci ?? '-'}`
         : '',
@@ -234,6 +241,7 @@ export class ZentraDocumentService {
       financialNatureId,
       documentTransactionMethodId,
       accountabilityId,
+      documentOriginId,
       ...data
     } = createDto;
 
@@ -259,6 +267,9 @@ export class ZentraDocumentService {
         }),
         ...(accountabilityId && {
           accountability: { connect: { id: accountabilityId } },
+        }),
+        ...(documentOriginId && {
+          documentOrigin: { connect: { id: documentOriginId } },
         }),
       },
       select: {
@@ -570,7 +581,11 @@ export class ZentraDocumentService {
         }),
         ...(dataDocument.accountabilityId && {
           accountability: { connect: { id: dataDocument.accountabilityId } },
-        })
+        }),
+        ...(dataDocument.documentOriginId && {
+          documentOrigin: { connect: { id: dataDocument.documentOriginId } },
+        }),
+
 
 
       },

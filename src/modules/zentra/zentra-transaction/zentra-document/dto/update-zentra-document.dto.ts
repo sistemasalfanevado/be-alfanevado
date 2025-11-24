@@ -123,4 +123,8 @@ export class UpdateZentraDocumentDto {
   @IsString()
   @IsOptional()
   accountabilityId?: string;
+
+  @IsString()
+  @IsOptional()
+  documentOriginId?: string;
 }

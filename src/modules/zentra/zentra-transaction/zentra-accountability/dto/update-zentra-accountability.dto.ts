@@ -14,11 +14,15 @@ export class UpdateZentraAccountabilityDto {
 
   @IsNumber()
   @IsOptional()
-  amountToPay?: number;
+  requestedAmount?: number;
 
   @IsNumber()
   @IsOptional()
-  paidAmount?: number;
+  approvedAmount?: number;
+
+  @IsNumber()
+  @IsOptional()
+  accountedAmount?: number;
 
   @IsDateString()
   @IsOptional()

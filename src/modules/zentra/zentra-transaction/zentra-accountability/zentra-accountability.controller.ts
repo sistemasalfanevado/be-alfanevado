@@ -64,5 +64,28 @@ export class ZentraAccountabilityController {
     return this.zentraAccountabilityService.findByFilters(filters);
   }
 
+  @Post('add-increment')
+  @Public()
+  addIncrement(@Body() dataAccountability: any) {
+    return this.zentraAccountabilityService.addIncrement(dataAccountability);
+  }
+
+  @Post('add-document')
+  @Public()
+  addDocument(@Body() dataAccountability: any) {
+    return this.zentraAccountabilityService.addDocument(dataAccountability);
+  }
+
+  @Put('update-document/:id')
+  async updateDocument(
+    @Param('id') id: string,
+    @Body() updateZentraAccountabilityDto: any
+  ) {
+    await this.zentraAccountabilityService.updateDocument(id, updateZentraAccountabilityDto);
+    return { message: 'Accountability actualizada exitosamente' };
+  }
+  
+
+
 
 }
