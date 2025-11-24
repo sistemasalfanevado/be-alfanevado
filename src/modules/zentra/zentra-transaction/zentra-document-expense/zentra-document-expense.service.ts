@@ -18,6 +18,7 @@ export class ZentraDocumentExpenseService {
   ) { }
 
 
+
   async addMovement(data: any) {
     await this.createMovement({
       code: data.code,
@@ -100,7 +101,7 @@ export class ZentraDocumentExpenseService {
       documentStatusId = DOCUMENT_STATUS.PENDIENTE;
     }
 
-
+    
     // Revisar si viene de una rendicion de cuentas
     if (documentData?.documentOriginId === DOCUMENT_ORIGIN.RENDICION_CUENTAS) {
       // Si existe debo de actualizar la rendicion de cuentas

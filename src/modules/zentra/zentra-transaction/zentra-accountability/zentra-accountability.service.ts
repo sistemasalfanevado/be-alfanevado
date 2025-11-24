@@ -286,24 +286,28 @@ export class ZentraAccountabilityService {
       },
       select: {
         amountToPay: true,
+        documentCategoryId: true
       }
     });
 
     let totalRequestedAmount = 0;
 
     for (let item of documentList) {
-      totalRequestedAmount += Number(item.amountToPay)
+      if (item.documentCategoryId === DOCUMENT_CATEGORY.CLASICO) {
+        totalRequestedAmount += Number(item.amountToPay)
+      }
     }
 
     return this.updateSimple(dataAccountability.id, {
       requestedAmount: totalRequestedAmount,
       accountabilityStatusId: ACCOUNTABILITY_STATUS.PENDIENTE,
     })
+
   }
 
 
   async addDocument(dataAccountability: any) {
-
+     
     return await this.zentraDocumentService.createDocument(
       {
         code: dataAccountability.code,

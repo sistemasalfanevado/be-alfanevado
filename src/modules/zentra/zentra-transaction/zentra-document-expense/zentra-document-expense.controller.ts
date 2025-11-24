@@ -6,7 +6,7 @@ import { ZentraDocumentExpenseService } from './zentra-document-expense.service'
 import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
 import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
-@Controller('zentra-document-expenses')
+@Controller('zentra-document-expenses') 
 //@UseGuards(JwtAuthGuard)
 export class ZentraDocumentExpenseController {
   constructor(
