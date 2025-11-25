@@ -157,7 +157,7 @@ export class ZentraProjectService {
 
     const weekStart = moment().startOf('week').add(1, 'day').toDate();  // Lunes
     const weekEnd = moment().endOf('week').add(1, 'day').toDate();    // Domingo
-    
+
     const results = await this.prisma.zentraProject.findMany({
       where: {
         deletedAt: null,
@@ -195,12 +195,55 @@ export class ZentraProjectService {
                     paymentDate: {
                       gte: weekStart,
                       lte: weekEnd
+                    },
+                    bankAccount: {
+                      deletedAt: null
                     }
                   },
                   select: {
                     id: true,
                     paymentDate: true,
-                    executedDolares: true
+                    executedAmount: true,
+                    executedDolares: true,
+                    executedSoles: true,
+                    code: true,
+                    amount: true,
+                    document: {
+                      select: {
+                        id: true,
+                        description: true,
+                        party: {
+                          select: {
+                            id: true,
+                            name: true
+                          }
+                        }
+                      }
+                    },
+                    bankAccount: {
+                      select: {
+                        id: true,
+                        currency: {
+                          select: {
+                            name: true
+                          }
+                        },
+                        bank: {
+                          select: {
+                            id: true,
+                            name: true
+                          }
+                        }
+                      }
+                    },
+                    transactionType: {
+                      select: {
+                        id: true,
+                        name: true
+                      }
+                    }
+
+
                   }
                 }
               }
@@ -214,7 +257,7 @@ export class ZentraProjectService {
     return results.map((project) => {
 
       const budgetItem = project.incomes;
-      
+
       let budgetItemDefault: any = '';
       let budgetItemIncome: any = '';
       let budgetItemAccountability: any = '';
@@ -236,14 +279,65 @@ export class ZentraProjectService {
 
       const today = moment().startOf("day");
 
+      const profitabilityDailyMovements: any = [];
+      const profitabilityWeeklyMovements: any = [];
+
       for (const def of project.budgetItemDefinitions) {
         for (const item of def.budgetItems) {
           for (const mv of item.movements) {
-            const payment = moment(mv.paymentDate);
-            profitabilityWeekly += Number(mv.executedDolares) ?? 0;
-            if (payment.isSame(today, "day")) {
-              profitabilityDaily += Number(mv.executedDolares) ?? 0;
+
+            // 1. tipo de cambio calculado si no hay relación exchangeRate
+            const executedAmount = Number(mv.executedAmount);
+            const executedSoles = Number(mv.executedSoles);
+            const executedDolares = Number(mv.executedDolares);
+
+            let exchangeRate = 1;
+
+            if (executedDolares !== 0) {
+              if (executedAmount === executedDolares) {
+                exchangeRate = executedSoles / executedDolares;
+              } else {
+                exchangeRate = executedAmount / executedDolares;
+              }
             }
+
+            exchangeRate = Number(exchangeRate.toFixed(2));
+
+            const movementResult = {
+              id: mv.id,
+              paymentDate: moment(mv.paymentDate).format('DD/MM/YYYY'),
+              code: mv.code,
+              description: mv.document?.description ?? "",
+              partyName: mv.document?.party?.name ?? null,
+
+              bankAccountComplete: mv.bankAccount
+                ? `${mv.bankAccount.bank?.name ?? ''} - ${mv.bankAccount.currency?.name ?? ''}`
+                : null,
+
+              transactionTypeName: mv.transactionType?.name ?? null,
+
+              amount: mv.amount,
+              // Valores originales
+              executedAmount,
+              executedSoles,
+              montoDolares: executedDolares,
+
+              // Tipo de cambio calculado
+              tipoCambio: exchangeRate
+            };
+
+
+            const payment = moment(mv.paymentDate);
+            profitabilityWeekly += executedDolares;
+            profitabilityWeeklyMovements.push(movementResult);
+
+
+            if (payment.isSame(today, "day")) {
+              profitabilityDaily += executedDolares;
+              profitabilityDailyMovements.push(movementResult);
+            }
+
+
           }
         }
       }
@@ -272,8 +366,15 @@ export class ZentraProjectService {
 
         // Rentabilidad diaria y semanal 
         profitabilityDaily,
-        profitabilityWeekly
-      
+        profitabilityWeekly,
+
+        profitabilityDailyMovements,
+        profitabilityWeeklyMovements,
+
+        profitabilityDailyDate: moment(today).format('DD/MM/YYYY'),
+        profitabilityWeeklyStart: moment(weekStart).format('DD/MM/YYYY'),
+        profitabilityWeeklyEnd: moment(weekEnd).format('DD/MM/YYYY'),
+
       };
     });
   }
