@@ -94,8 +94,15 @@ export class ZentraBudgetItemService {
       available: available,
       completeName: `${item.definition.name} - ${item.currency.name}${available !== null ? ' - ' + formatter.format(available) : ''
         }`,
-
+        
       projectName: `${item.definition.project.name}`,
+
+      budgetSubCategoryName: item?.definition?.category
+        ? `${item.definition.category.name}`
+        : null,
+      budgetCategoryName: item?.definition?.category?.budgetCategory
+        ? `${item.definition.category.budgetCategory.name}`
+        : null,
 
       idFirebase: item.idFirebase,
     };
@@ -134,11 +141,17 @@ export class ZentraBudgetItemService {
     const results = await this.prisma.zentraBudgetItem.findMany({
       where: { deletedAt: null, definition: { projectId } },
       include: {
-        currency: true, definition: {
+        currency: true,
+        definition: {
           include: {
-            project: true
-          }
-        }
+            project: true,
+            category: {
+              include: {
+                budgetCategory: true
+              }
+            },
+          },
+        },
       },
       orderBy: [
         { definition: { name: 'asc' } },
@@ -163,7 +176,7 @@ export class ZentraBudgetItemService {
         { definition: { name: 'asc' } },
         { currency: { name: 'asc' } },
       ],
-    }); 
+    });
 
     return results.map((item) => this.mapToDto(item));
   }

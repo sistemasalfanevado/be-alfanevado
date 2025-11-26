@@ -45,7 +45,12 @@ export class ZentraMovementService {
         definition: {
           include: {
             project: true,
-          }
+            category: {
+              include: {
+                budgetCategory: true
+              }
+            },
+          },
         },
         currency: true,
       },
@@ -195,7 +200,14 @@ export class ZentraMovementService {
       budgetItemName: item.budgetItem
         ? `${item.budgetItem.definition.name}`
         : null,
+      budgetSubCategoryName: item.budgetItem
+        ? `${item.budgetItem.definition.category.name}`
+        : null,
+      budgetCategoryName: item.budgetItem
+        ? `${item.budgetItem.definition.category.budgetCategory.name}`
+        : null,
 
+      
       projectName: item.budgetItem.definition.project.name,
 
       bankAccountId: item.bankAccount.id,
