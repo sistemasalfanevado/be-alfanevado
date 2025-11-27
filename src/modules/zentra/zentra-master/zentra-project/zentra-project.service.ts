@@ -315,7 +315,8 @@ export class ZentraProjectService {
                 : null,
 
               transactionTypeName: mv.transactionType?.name ?? null,
-
+              transactionTypeId: mv.transactionType?.id ?? null,
+              
               amount: mv.amount,
               // Valores originales
               executedAmount,
