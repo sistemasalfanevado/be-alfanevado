@@ -3,7 +3,7 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraAccountabilityDto } from './dto/create-zentra-accountability.dto';
 import { UpdateZentraAccountabilityDto } from './dto/update-zentra-accountability.dto';
 import { ZentraDocumentService } from '../zentra-document/zentra-document.service';
-import { DOCUMENT_CATEGORY, DOCUMENT_STATUS, DOCUMENT_ORIGIN, ACCOUNTABILITY_STATUS } from 'src/shared/constants/app.constants';
+import { DOCUMENT_CATEGORY, DOCUMENT_STATUS, DOCUMENT_ORIGIN, ACCOUNTABILITY_STATUS, DOCUMENT_TYPE } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
 
@@ -35,6 +35,9 @@ export class ZentraAccountabilityService {
       requestedAmount: item.requestedAmount,
       approvedAmount: item.approvedAmount,
       accountedAmount: item.accountedAmount,
+
+      balance: Number(item.approvedAmount) - Number(item.accountedAmount),
+
 
       registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
 
@@ -112,7 +115,7 @@ export class ZentraAccountabilityService {
 
         documentStatusId: DOCUMENT_STATUS.PENDIENTE,
         transactionTypeId: createDto.transactionTypeId,
-        documentTypeId: createDto.documentTypeId,
+        documentTypeId: DOCUMENT_TYPE.ADELANTO,
         partyId: createDto.partyId,
         budgetItemId: createDto.budgetItemId,
         currencyId: createDto.currencyId,
@@ -171,11 +174,36 @@ export class ZentraAccountabilityService {
   }
 
   async remove(id: string) {
-    return this.prisma.zentraAccountability.update({
+
+    // Se elimina la rendicion de cuentas
+    const accountability = await this.prisma.zentraAccountability.update({
       where: { id },
       data: { deletedAt: new Date() },
     });
+
+    if (!accountability) {
+      throw new Error("Rendicion de cuentas no encontrado");
+    }
+
+    const documentList = await this.prisma.zentraDocument.findMany({
+      where: { accountabilityId: id },
+      select: { id: true }
+    });
+
+    for (const document of documentList) {
+      try {
+        await this.zentraDocumentService.remove(document.id);
+      } catch (error) {
+        console.error(`Error al eliminar documento ${document.id}:`, error);
+      }
+    }
+
+    return { message: "Rendición de cuenta, documento y movimientos eliminados correctamente" };
+
+
   }
+
+
 
   async restore(id: string) {
     return this.prisma.zentraAccountability.update({
@@ -192,12 +220,16 @@ export class ZentraAccountabilityService {
     startDate?: string;
     endDate?: string;
     userId?: string;
+    deletedAt?: boolean;
   }) {
-    const { accountabilityStatusId, partyId, projectId, userId, startDate, endDate } = filters;
+    const { deletedAt, accountabilityStatusId, partyId, projectId, userId, startDate, endDate } = filters;
 
-    const where: any = {
-      deletedAt: null,
-    };
+    const where: any = {};
+
+    if (deletedAt !== false) {
+      where.deletedAt = null;
+    }
+
 
     if (startDate || endDate) {
       where.registeredAt = {};
@@ -242,15 +274,15 @@ export class ZentraAccountabilityService {
 
   }
 
-  async addIncrement(dataAccountability: any) {
+  async addIncrement(dataDocument: any) {
 
     await this.zentraDocumentService.createDocument(
       {
-        code: dataAccountability.code,
-        description: dataAccountability.description,
+        code: dataDocument.code,
+        description: dataDocument.description,
 
-        totalAmount: dataAccountability.requestedAmount,
-        amountToPay: dataAccountability.requestedAmount,
+        totalAmount: dataDocument.amountToPay,
+        amountToPay: dataDocument.amountToPay,
 
         taxAmount: 0,
         netAmount: 0,
@@ -262,19 +294,19 @@ export class ZentraAccountabilityService {
         idFirebase: '',
         hasMovements: false,
 
-        registeredAt: new Date(dataAccountability.registeredAt),
-        documentDate: new Date(dataAccountability.registeredAt),
-        expireDate: new Date(dataAccountability.registeredAt),
+        registeredAt: new Date(dataDocument.documentDate),
+        documentDate: new Date(dataDocument.documentDate),
+        expireDate: new Date(dataDocument.documentDate),
 
-        documentStatusId: DOCUMENT_STATUS.PENDIENTE,
-        transactionTypeId: dataAccountability.transactionTypeId,
-        documentTypeId: dataAccountability.documentTypeId,
-        partyId: dataAccountability.partyId,
-        budgetItemId: dataAccountability.budgetItemId,
-        currencyId: dataAccountability.currencyId,
-        userId: dataAccountability.userId,
+        documentStatusId: dataDocument.documentStatusId,
+        transactionTypeId: dataDocument.transactionTypeId,
+        documentTypeId: dataDocument.documentTypeId,
+        partyId: dataDocument.partyId,
+        budgetItemId: dataDocument.budgetItemId,
+        currencyId: dataDocument.currencyId,
+        userId: dataDocument.userId,
         documentCategoryId: DOCUMENT_CATEGORY.CLASICO,
-        accountabilityId: dataAccountability.id,
+        accountabilityId: dataDocument.accountabilityId,
         documentOriginId: DOCUMENT_ORIGIN.RENDICION_CUENTAS
       }
     );
@@ -282,7 +314,7 @@ export class ZentraAccountabilityService {
     let documentList = await this.prisma.zentraDocument.findMany({
       where: {
         deletedAt: null,
-        accountabilityId: dataAccountability.id,
+        accountabilityId: dataDocument.accountabilityId,
       },
       select: {
         amountToPay: true,
@@ -298,16 +330,15 @@ export class ZentraAccountabilityService {
       }
     }
 
-    return this.updateSimple(dataAccountability.id, {
+    return this.updateSimple(dataDocument.accountabilityId, {
       requestedAmount: totalRequestedAmount,
       accountabilityStatusId: ACCOUNTABILITY_STATUS.PENDIENTE,
     })
 
   }
 
-
   async addDocument(dataAccountability: any) {
-     
+
     return await this.zentraDocumentService.createDocument(
       {
         code: dataAccountability.code,
@@ -345,43 +376,104 @@ export class ZentraAccountabilityService {
     );
   }
 
-  async updateDocument(id: string, dataAccountability: any) {
+  async updateDocument(id: string, dataDocument: any) {
 
-    return await this.zentraDocumentService.updateSimple(id, 
+    await this.zentraDocumentService.updateSimple(id,
       {
-        code: dataAccountability.code,
-        description: dataAccountability.description,
+        code: dataDocument.code,
+        description: dataDocument.description,
 
-        totalAmount: dataAccountability.totalAmount,
-        amountToPay: dataAccountability.amountToPay,
+        totalAmount: dataDocument.totalAmount,
+        amountToPay: dataDocument.amountToPay,
 
-        taxAmount: dataAccountability.taxAmount,
-        netAmount: dataAccountability.netAmount,
-        detractionRate: dataAccountability.detractionRate,
-        detractionAmount: dataAccountability.detractionAmount,
+        taxAmount: dataDocument.taxAmount,
+        netAmount: dataDocument.netAmount,
+        detractionRate: dataDocument.detractionRate,
+        detractionAmount: dataDocument.detractionAmount,
 
         paidAmount: 0,
-        observation: dataAccountability.observation,
+        observation: dataDocument.observation,
         idFirebase: '',
         hasMovements: false,
 
-        registeredAt: new Date(dataAccountability.registeredAt),
-        documentDate: new Date(dataAccountability.documentDate),
-        expireDate: new Date(dataAccountability.expireDate),
+        registeredAt: new Date(dataDocument.registeredAt),
+        documentDate: new Date(dataDocument.documentDate),
+        expireDate: new Date(dataDocument.expireDate),
 
-        documentStatusId: dataAccountability.documentStatusId,
-        transactionTypeId: dataAccountability.transactionTypeId,
-        documentTypeId: dataAccountability.documentTypeId,
-        partyId: dataAccountability.partyId,
-        budgetItemId: dataAccountability.budgetItemId,
-        currencyId: dataAccountability.currencyId,
-        userId: dataAccountability.userId,
-        documentCategoryId: dataAccountability.documentCategoryId,
-        accountabilityId: dataAccountability.accountabilityId,
+        documentStatusId: dataDocument.documentStatusId,
+        transactionTypeId: dataDocument.transactionTypeId,
+        documentTypeId: dataDocument.documentTypeId,
+        partyId: dataDocument.partyId,
+        budgetItemId: dataDocument.budgetItemId,
+        currencyId: dataDocument.currencyId,
+        userId: dataDocument.userId,
+        documentCategoryId: dataDocument.documentCategoryId,
+        accountabilityId: dataDocument.accountabilityId,
         documentOriginId: DOCUMENT_ORIGIN.RENDICION_CUENTAS
       },
-
     );
+
+    let documentList = await this.prisma.zentraDocument.findMany({
+      where: {
+        deletedAt: null,
+        accountabilityId: dataDocument.accountabilityId,
+      },
+      select: {
+        amountToPay: true,
+        documentCategoryId: true
+      }
+    });
+
+    let totalRequestedAmount = 0;
+
+    for (let item of documentList) {
+      if (item.documentCategoryId === DOCUMENT_CATEGORY.CLASICO) {
+        totalRequestedAmount += Number(item.amountToPay)
+      }
+    }
+
+    return this.updateSimple(dataDocument.accountabilityId, {
+      requestedAmount: totalRequestedAmount,
+      accountabilityStatusId: ACCOUNTABILITY_STATUS.PENDIENTE,
+    })
+
+
+
+
+  }
+
+  async removeDocument(id: string, accountabilityId: string) {
+
+    await this.zentraDocumentService.updateSimple(id,
+      {
+        deletedAt: new Date()
+      },
+    );
+
+    let documentList = await this.prisma.zentraDocument.findMany({
+      where: {
+        deletedAt: null,
+        accountabilityId: accountabilityId,
+      },
+      select: {
+        amountToPay: true,
+        documentCategoryId: true
+      }
+    });
+
+    let totalRequestedAmount = 0;
+
+    for (let item of documentList) {
+      if (item.documentCategoryId === DOCUMENT_CATEGORY.CLASICO) {
+        totalRequestedAmount += Number(item.amountToPay)
+      }
+    }
+
+    return this.updateSimple(accountabilityId, {
+      requestedAmount: totalRequestedAmount,
+      accountabilityStatusId: ACCOUNTABILITY_STATUS.PENDIENTE,
+    })
+
   }
 
 

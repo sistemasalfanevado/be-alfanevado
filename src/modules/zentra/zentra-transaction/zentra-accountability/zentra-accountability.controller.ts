@@ -60,6 +60,7 @@ export class ZentraAccountabilityController {
     startDate?: string;
     endDate?: string;
     userId?: string;
+    deletedAt?: boolean;
   }) {
     return this.zentraAccountabilityService.findByFilters(filters);
   }
@@ -84,7 +85,14 @@ export class ZentraAccountabilityController {
     await this.zentraAccountabilityService.updateDocument(id, updateZentraAccountabilityDto);
     return { message: 'Accountability actualizada exitosamente' };
   }
-  
+
+  @Delete('remove-document/:id/:accountabilityId')
+  removeDocument(
+    @Param('id') id: string,
+    @Param('accountabilityId') accountabilityId: string,
+  ) {
+    return this.zentraAccountabilityService.removeDocument(id, accountabilityId);
+  }
 
 
 

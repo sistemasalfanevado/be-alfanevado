@@ -90,5 +90,7 @@ export const FINANCIAL_IMPACT = {
   PARTIDA: 'e38c91b2-9142-455b-a5a6-855ec45bbeaf',
 };
 
-
+export const DOCUMENT_TYPE = {
+  ADELANTO: 'd6c19939-2f6d-425e-a4bc-c31f49d514c3',
+};
 
