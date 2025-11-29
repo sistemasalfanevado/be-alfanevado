@@ -316,7 +316,7 @@ export class ZentraProjectService {
 
               transactionTypeName: mv.transactionType?.name ?? null,
               transactionTypeId: mv.transactionType?.id ?? null,
-              
+
               amount: mv.amount,
               // Valores originales
               executedAmount,
@@ -342,6 +342,18 @@ export class ZentraProjectService {
           }
         }
       }
+
+      profitabilityWeeklyMovements.sort((a, b) =>
+        moment(b.paymentDate, "DD/MM/YYYY").toDate().getTime() -
+        moment(a.paymentDate, "DD/MM/YYYY").toDate().getTime()
+      );
+
+      profitabilityDailyMovements.sort((a, b) =>
+        moment(b.paymentDate, "DD/MM/YYYY").toDate().getTime() -
+        moment(a.paymentDate, "DD/MM/YYYY").toDate().getTime()
+      );
+
+
 
       return {
         id: project.id,
