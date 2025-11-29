@@ -65,6 +65,8 @@ export class ZentraDocumentController {
     endDate?: string;
     withPartyBankAccount?: boolean;
     accountabilityId?: string;
+    documentTypeId?: string;
+    excludeDocumentTypeId?: string;
   }) { 
     return this.zentraDocumentService.findByFilters(filters);
   }

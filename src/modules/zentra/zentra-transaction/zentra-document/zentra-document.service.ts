@@ -150,7 +150,7 @@ export class ZentraDocumentService {
 
       documentOriginId: item.documentOrigin?.id ?? null,
       accountabilityId: item.accountability?.id ?? null,
-      
+
       partyBankAccountInfo: principalAccount
         ? `${principalAccount.bank?.name ?? '-'} | ${principalAccount.currency?.name ?? '-'} | ${principalAccount.type?.name ?? '-'} | ${principalAccount.account ?? '-'} | CCI: ${principalAccount.cci ?? '-'}`
         : '',
@@ -426,8 +426,10 @@ export class ZentraDocumentService {
     userId?: string;
     withPartyBankAccount?: boolean;
     accountabilityId?: string;
+    documentTypeId?: string;
+    excludeDocumentTypeId?: string;
   }) {
-    const { withPartyBankAccount, accountabilityId, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, companyId, userId, startDate, endDate } = filters;
+    const { documentTypeId, excludeDocumentTypeId, withPartyBankAccount, accountabilityId, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, companyId, userId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -462,6 +464,14 @@ export class ZentraDocumentService {
 
     if (transactionTypeId && transactionTypeId.trim() !== '') {
       where.transactionType = { id: transactionTypeId };
+    }
+
+    if (excludeDocumentTypeId && excludeDocumentTypeId.trim() !== '') {
+      where.documentType = { id: { not: excludeDocumentTypeId } };
+    }
+
+    if (documentTypeId && documentTypeId.trim() !== '') {
+      where.documentType = { id: documentTypeId };
     }
 
     if (accountabilityId && accountabilityId.trim() !== '') {

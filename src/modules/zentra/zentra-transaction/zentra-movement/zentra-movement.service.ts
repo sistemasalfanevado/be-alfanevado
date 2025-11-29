@@ -207,7 +207,7 @@ export class ZentraMovementService {
         ? `${item.budgetItem.definition.category.budgetCategory.name}`
         : null,
 
-      
+
       projectName: item.budgetItem.definition.project.name,
 
       bankAccountId: item.bankAccount.id,
@@ -969,11 +969,7 @@ export class ZentraMovementService {
       });
     }
 
-    console.log(updates)
-
-    return
-    // 5. Dividir updates en chunks de 500
-    const chunks = this.chunkArray(updates, 500);
+    const chunks = this.chunkArray(updates, 100);
 
     for (const chunk of chunks) {
       await Promise.all(
@@ -988,8 +984,6 @@ export class ZentraMovementService {
           })
         )
       );
-
-      console.log(`Chunk procesado: ${chunk.length} items`);
     }
 
     return {
