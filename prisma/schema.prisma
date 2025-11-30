@@ -264,6 +264,10 @@ model ZentraUser {
   genreId      String?
   genre        ZentraGenre? @relation(fields: [genreId], references: [id])
 
+  areaId      String?
+  area        ZentraArea? @relation(fields: [areaId], references: [id])
+
+
   mainRoute    String?      @db.VarChar(200)
 
   documents             ZentraDocument[]
@@ -271,7 +275,8 @@ model ZentraUser {
   budgetItemHistories   ZentraBudgetItemHistory[]
   passwordResetTokens   ZentraPasswordResetToken[]
   userProjects          ZentraUserProject[]
-  accountability         ZentraAccountability[]
+  accountability        ZentraAccountability[]
+  userParties           ZentraUserParty[]
 
   deletedAt    DateTime?
   createdAt    DateTime     @default(now())
@@ -630,7 +635,8 @@ model ZentraParty {
   partyDocuments    ZentraPartyDocument[]
   partyBankAccounts ZentraPartyBankAccount[]
   increaseRequests  ZentraBudgetIncreaseRequest[]
-  accountability         ZentraAccountability[]
+  accountability    ZentraAccountability[]
+  userParties       ZentraUserParty[]
 
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
@@ -1488,6 +1494,40 @@ model ZentraTelecreditoOperationDetail {
   @@map("zentra_telecredito_operation_detail")
 }
 
+
+model ZentraUserParty {
+  id        String       @id @default(uuid())
+
+  user      ZentraUser   @relation(fields: [userId], references: [id])
+  userId    String
+
+  party     ZentraParty @relation(fields: [partyId], references: [id])
+  partyId   String
+
+  deletedAt DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("zentra_user_party")
+}
+
+model ZentraArea {
+  id        String       @id @default(uuid())
+
+  name        String                   @db.VarChar(50)
+
+  users ZentraUser[]
+
+  deletedAt DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("zentra_area")
+}
+
+
+
+
 // Marketing
 model ZentraLandingLead {
   id             String   @id @default(uuid())
@@ -1505,6 +1545,12 @@ model ZentraLandingLead {
 
   @@map("zentra_landing_lead")
 }
+
+
+
+
+
+
 
 // Rendicion de Cuentas
 
@@ -1561,3 +1607,5 @@ model ZentraAccountability {
 
   @@map("zentra_accountability")
 }
+
+

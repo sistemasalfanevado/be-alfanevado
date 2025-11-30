@@ -17,6 +17,13 @@ export const INSTALLMENT_STATUS = {
   PENDIENTE: 'f3da23d6-fced-4410-8ca2-61bd5c716d92',
 };
 
+/** IDs de estados de party rol */
+export const PARTY_ROL = {
+  CLIENTE: '1a5a5dfe-f56d-4874-8485-6bf7252b34d5',
+  PROVEEDOR: 'e4eaff1f-a7c4-482b-93c4-0c6ff27c1816',
+  CLIENTE_PROVEEDOR: '88f4dd34-9fac-467c-af2e-e84c59cef75a',
+};
+
 /** IDs de estados de documento */
 export const DOCUMENT_STATUS = {
   PAGADO: '98ecd655-c699-4922-97a8-a998931c5226',

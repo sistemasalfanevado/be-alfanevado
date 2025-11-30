@@ -32,6 +32,10 @@ export class ZentraUpdateUserDto {
   @IsString()
   genreId?: string;
 
+  @IsOptional()
+  @IsString()
+  areaId?: string;
+
   @IsString()
   @IsOptional()
   @MaxLength(30)

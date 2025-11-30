@@ -3,7 +3,7 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraPartyDto } from './dto/create-zentra-party.dto';
 import { UpdateZentraPartyDto } from './dto/update-zentra-party.dto';
 
-import { BANK_ACCOUNT_HIERARCHY, PARTY_DOCUMENT_HIERARCHY } from 'src/shared/constants/app.constants';
+import { BANK_ACCOUNT_HIERARCHY, PARTY_DOCUMENT_HIERARCHY, PARTY_ROL } from 'src/shared/constants/app.constants';
 
 import { ZentraPartyBankAccountService } from '../zentra-party-bank-account/zentra-party-bank-account.service';
 import { ZentraPartyDocumentService } from '../zentra-party-document/zentra-party-document.service';
@@ -38,11 +38,13 @@ export class ZentraPartyService {
 
 
   async createComplex(dataParty: any) {
-    
+
+    const { partyRoleId } = dataParty;
+
     const validation = await this.zentraPartyDocumentService.validateDocumentUniqueness(dataParty.document);
 
     if (!validation.success) return validation;
-    
+
     const dataTempParty = {
       name: dataParty.name,
       document: dataParty.document,
@@ -64,15 +66,22 @@ export class ZentraPartyService {
       },
     });
 
-    await this.zentraPartyBankAccountService.create({
-      account: dataParty.account,
-      cci: dataParty.cci,
-      partyId: newParty.id,
-      bankId: dataParty.bankId,
-      currencyId: dataParty.currencyId,
-      typeId: dataParty.bankAccountTypeId,
-      hierarchyId: dataParty.bankAccountHierarchyId
-    })
+
+    const isProveedor =
+      partyRoleId === PARTY_ROL.PROVEEDOR ||
+      partyRoleId === PARTY_ROL.CLIENTE_PROVEEDOR;
+
+    if (isProveedor) {
+      await this.zentraPartyBankAccountService.create({
+        account: dataParty.account,
+        cci: dataParty.cci,
+        partyId: newParty.id,
+        bankId: dataParty.bankId,
+        currencyId: dataParty.currencyId,
+        typeId: dataParty.bankAccountTypeId,
+        hierarchyId: dataParty.bankAccountHierarchyId,
+      });
+    }
 
     await this.zentraPartyDocumentService.create({
       document: dataParty.document,
@@ -180,6 +189,11 @@ export class ZentraPartyService {
       return {
         id: item.id,
         name: item.name,
+
+        partyRoleName: item?.partyRole.name || null,
+        partyRoleId: item?.partyRole.id || null,
+
+        
 
         // Documento principal
         partyDocument: principalDocument?.document || null,

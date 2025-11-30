@@ -11,7 +11,7 @@ export class ZentraUsersService {
   constructor(private prisma: PrismaService) { }
 
   async create(createUserDto: ZentraCreateUserDto) {
-    const { email, password, firstName, lastName, profileUrl, mainRoute, roleId, genreId } = createUserDto;
+    const { email, password, firstName, lastName, profileUrl, mainRoute, roleId, genreId, areaId } = createUserDto;
 
     const existingUser = await this.prisma.zentraUser.findUnique({ where: { email } });
     if (existingUser) {
@@ -30,6 +30,7 @@ export class ZentraUsersService {
         mainRoute,
         roleId,
         genreId,
+        areaId,
       },
     });
 
@@ -42,10 +43,11 @@ export class ZentraUsersService {
       include: {
         role: true,
         genre: true,
+        area: true,
       }
     });
 
-    return results.map((item) => ({
+    const mapped = results.map((item) => ({
       id: item.id,
       firstName: item.firstName,
       lastName: item.lastName,
@@ -59,11 +61,16 @@ export class ZentraUsersService {
       genreId: item.genre?.id ?? null,
       genreName: item.genre?.name ?? null,
 
+      areaId: item.area?.id ?? null,
+      areaName: item.area?.name ?? null,
+
       completeName: item.firstName + ' ' + item.lastName,
 
       idFirebase: item.idFirebase,
-
     }));
+
+    // Ordenar por completeName
+    return mapped.sort((a, b) => a.completeName.localeCompare(b.completeName));
   }
 
   async findOne(id: string) {
@@ -120,6 +127,7 @@ export class ZentraUsersService {
           },
         },
         genre: true,
+        area: true
       },
     });
 
@@ -132,6 +140,10 @@ export class ZentraUsersService {
 
     if (user.genre?.deletedAt) {
       user.genre = null;
+    }
+
+    if (user.area?.deletedAt) {
+      user.area = null;
     }
 
     return user;

@@ -29,6 +29,8 @@ import { ZentraPartyRoleModule } from './zentra/zentra-master/zentra-party-role/
 import { ZentraPartyBankAccountModule } from './zentra/zentra-master/zentra-party-bank-account/zentra-party-bank-account.module';
 import { ZentraDocumentOriginModule } from './zentra/zentra-master/zentra-document-origin/zentra-document-origin.module';
 import { ZentraFinancialImpactModule } from './zentra/zentra-master/zentra-financial-impact/zentra-financial-impact.module';
+import { ZentraUserPartyModule } from './zentra/zentra-master/zentra-user-party/zentra-user-party.module';
+import { ZentraAreaModule } from './zentra/zentra-master/zentra-area/zentra-area.module';
 
 
 import { ZentraPartyDocumentModule } from './zentra/zentra-master/zentra-party-document/zentra-party-document.module';
@@ -116,8 +118,9 @@ import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-a
     ZentraUserProjectModule,
     ZentraDocumentOriginModule,
     ZentraFinancialImpactModule,
-    
+    ZentraUserPartyModule,
     ZentraTelecreditoOperationStateModule,
+    ZentraAreaModule,
     
     ZentraBankModule,
     ZentraBudgetItemCategoryModule,

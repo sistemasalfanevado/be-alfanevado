@@ -20,8 +20,7 @@ export class ZentraPartyDocumentController {
 
   @Post()
   async create(@Body() createDto: CreateZentraPartyDocumentDto) {
-    await this.zentraPartyDocumentService.create(createDto);
-    return { message: 'Documento de parte creado correctamente' };
+    return this.zentraPartyDocumentService.create(createDto);
   }
 
   @Get()
