@@ -29,12 +29,12 @@ export class ZentraUserPartyService {
 
     return results.map((item) => ({
       id: item.id,
-    
+
       userId: item.user.id,
       userName: item.user.firstName + ' ' + item.user.lastName,
       partyId: item.party.id,
       partyName: item.party.name,
-    
+
     }));
   }
 
@@ -54,8 +54,8 @@ export class ZentraUserPartyService {
   }
 
   async update(id: string, updateDto: UpdateZentraUserPartyDto) {
-    
-    const updateData: any = { };
+
+    const updateData: any = {};
 
     if (updateDto.userId) {
       updateData.user = { connect: { id: updateDto.userId } };
@@ -88,4 +88,30 @@ export class ZentraUserPartyService {
     });
     return { success: true, message: 'Nature restaurada con éxito' };
   }
+
+  async findByUserId(userId: string) {
+    const result = await this.prisma.zentraUserParty.findFirst({
+      where: {
+        userId,
+        deletedAt: null,
+      },
+      include: {
+        party: true,
+      },
+    });
+
+    if (!result) {
+      return {
+        partyId: '',
+        partyName: '',
+      };
+    }
+
+    // Retornar datos del party
+    return {
+      partyId: result.party.id,
+      partyName: result.party.name,
+    };
+  }
+
 }

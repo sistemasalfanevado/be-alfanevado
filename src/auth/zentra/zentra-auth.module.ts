@@ -9,6 +9,7 @@ import { JwtStrategy } from '../shared/strategies/jwt.strategy';
 
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ZentraExchangeRateModule } from '../../modules/zentra/zentra-master/zentra-exchange-rate/zentra-exchange-rate.module'
+import { ZentraUserPartyModule } from '../../modules/zentra/zentra-master/zentra-user-party/zentra-user-party.module'
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ZentraExchangeRateModule } from '../../modules/zentra/zentra-master/zen
     ZentraUsersModule,
     PassportModule,
     ZentraExchangeRateModule,
+    ZentraUserPartyModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

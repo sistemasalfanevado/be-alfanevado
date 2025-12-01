@@ -3,7 +3,7 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraProjectDto } from './dto/create-zentra-project.dto';
 import { UpdateZentraProjectDto } from './dto/update-zentra-project.dto';
 
-import { BUDGET_NATURE, MOVEMENT_CATEGORY } from 'src/shared/constants/app.constants';
+import { BUDGET_NATURE, MOVEMENT_CATEGORY, BANK, CURRENCY } from 'src/shared/constants/app.constants';
 import * as moment from 'moment';
 
 @Injectable()
@@ -169,7 +169,24 @@ export class ZentraProjectService {
         }
       },
       include: {
-        company: true,
+        company: {
+          include: {
+            projects: {
+              include: {
+                bankAccounts: {
+                  where: {
+                    bankId: BANK.BCP,
+                    currencyId: CURRENCY.SOLES
+                  },
+                  include: {
+                    bank: true,
+                    currency: true
+                  }
+                }
+              }
+            }
+          }
+        },
         incomes: {
           where: { deletedAt: null },
           include: {
@@ -249,7 +266,8 @@ export class ZentraProjectService {
               }
             }
           }
-        }
+        },
+
       },
       orderBy: { name: 'asc' },
     });
@@ -353,6 +371,11 @@ export class ZentraProjectService {
         moment(a.paymentDate, "DD/MM/YYYY").toDate().getTime()
       );
 
+      const projectWithBankAccount = project.company?.projects?.find(
+        (p) => p.bankAccounts && p.bankAccounts.length > 0
+      );
+      const bankAccount = projectWithBankAccount?.bankAccounts?.[0] ?? null;
+
 
 
       return {
@@ -387,6 +410,12 @@ export class ZentraProjectService {
         profitabilityDailyDate: moment(today).format('DD/MM/YYYY'),
         profitabilityWeeklyStart: moment(weekStart).format('DD/MM/YYYY'),
         profitabilityWeeklyEnd: moment(weekEnd).format('DD/MM/YYYY'),
+
+        // Bank Id
+        bankAccountId: bankAccount?.id ?? null,
+        bankAccountName: bankAccount
+          ? `${bankAccount.bank?.name ?? ''} - ${bankAccount.currency?.name ?? ''}`
+          : null,
 
       };
     });

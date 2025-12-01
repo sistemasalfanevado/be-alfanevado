@@ -8,7 +8,7 @@ import { Public } from '../../../../auth/shared/decorators/public.decorator';
 @Controller('zentra-user-parties')
 //@UseGuards(JwtAuthGuard)
 export class ZentraUserPartyController {
-  constructor(private readonly zentraUserPartyService: ZentraUserPartyService) {}
+  constructor(private readonly zentraUserPartyService: ZentraUserPartyService) { }
 
   @Post()
   create(@Body() createZentraUserPartyDto: CreateZentraUserPartyDto) {
@@ -26,9 +26,15 @@ export class ZentraUserPartyController {
     return this.zentraUserPartyService.findOne(id);
   }
 
+  @Get('by-user/:userId')
+  @Public()
+  findByUser(@Param('userId') userId: string) {
+    return this.zentraUserPartyService.findByUserId(userId);
+  }
+
   @Put(':id')
   update(
-    @Param('id') id: string, 
+    @Param('id') id: string,
     @Body() updateZentraUserPartyDto: UpdateZentraUserPartyDto
   ) {
     return this.zentraUserPartyService.update(id, updateZentraUserPartyDto);

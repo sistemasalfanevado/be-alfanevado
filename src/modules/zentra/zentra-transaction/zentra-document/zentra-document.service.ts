@@ -9,7 +9,10 @@ import { ZentraMovementService } from '../../zentra-transaction/zentra-movement/
 import { ZentraScheduledIncomeDocumentService } from '../../zentra-master/zentra-scheduled-income-document/zentra-scheduled-income-document.service';
 import { ZentraScheduledDebtDocumentService } from '../../zentra-master/zentra-scheduled-debt-document/zentra-scheduled-debt-document.service';
 
-import { TRANSACTION_TYPE, CURRENCY, MOVEMENT_CATEGORY, BANK_ACCOUNT_HIERARCHY, EXCHANGE_RATE } from 'src/shared/constants/app.constants';
+import { ZentraAccountabilityService } from '../../zentra-transaction/zentra-accountability/zentra-accountability.service';
+
+
+import { TRANSACTION_TYPE, CURRENCY, MOVEMENT_CATEGORY, BANK_ACCOUNT_HIERARCHY, EXCHANGE_RATE, DOCUMENT_ORIGIN } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
 
@@ -21,6 +24,9 @@ export class ZentraDocumentService {
     private zentraScheduledIncomeDocumentService: ZentraScheduledIncomeDocumentService,
     private zentraMovementService: ZentraMovementService,
     private zentraExchangeRateService: ZentraExchangeRateService,
+    
+    @Inject(forwardRef(() => ZentraAccountabilityService))
+    private readonly zentraAccountabilityService: ZentraAccountabilityService,
 
     @Inject(forwardRef(() => ZentraInstallmentService))
     private readonly zentraInstallmentService: ZentraInstallmentService,
@@ -639,12 +645,12 @@ export class ZentraDocumentService {
 
   private async removeDocumentWithMovements(documentId: string) {
     // 1. Buscar el documento con sus movimientos
-    const document = await this.prisma.zentraDocument.findUnique({
+    const documentData = await this.prisma.zentraDocument.findUnique({
       where: { id: documentId },
       include: { movements: true },
     });
 
-    if (!document) {
+    if (!documentData) {
       throw new Error("Documento no encontrado");
     }
 
@@ -654,8 +660,16 @@ export class ZentraDocumentService {
       data: { deletedAt: new Date() },
     });
 
-    // 3. Eliminar movimientos relacionados
-    for (const movement of document.movements) {
+
+    // 3. Revisar el accountability
+
+    if (documentData?.documentOriginId === DOCUMENT_ORIGIN.RENDICION_CUENTAS) {
+      // Si existe debo de actualizar la rendicion de cuentas
+      await this.zentraAccountabilityService.updataAccountabilityData(documentData);
+    }
+    
+    // 4. Eliminar movimientos relacionados
+    for (const movement of documentData.movements) {
       try {
         await this.zentraMovementService.remove(movement.id);
       } catch (error) {

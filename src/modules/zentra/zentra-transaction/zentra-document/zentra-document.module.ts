@@ -10,12 +10,18 @@ import { ZentraScheduledIncomeDocumentModule } from '../../zentra-master/zentra-
 import { ZentraScheduledDebtDocumentModule } from '../../zentra-master/zentra-scheduled-debt-document/zentra-scheduled-debt-document.module';
 
 import { ZentraInstallmentModule } from '../../zentra-transaction/zentra-installment/zentra-installment.module';
+import { ZentraAccountabilityModule } from '../../zentra-transaction/zentra-accountability/zentra-accountability.module';
 
 
 @Module({
-  imports: [PrismaModule, AuthModule, 
-    ZentraExchangeRateModule, ZentraMovementModule, ZentraScheduledIncomeDocumentModule, ZentraScheduledDebtDocumentModule,
-  forwardRef(() => ZentraInstallmentModule)],
+  imports: [PrismaModule, AuthModule,
+    ZentraExchangeRateModule,
+    ZentraMovementModule,
+    ZentraScheduledIncomeDocumentModule,
+    ZentraScheduledDebtDocumentModule,
+    forwardRef(() => ZentraInstallmentModule),
+    forwardRef(() => ZentraAccountabilityModule)
+  ],
   providers: [ZentraDocumentService],
   controllers: [ZentraDocumentController],
   exports: [ZentraDocumentService]

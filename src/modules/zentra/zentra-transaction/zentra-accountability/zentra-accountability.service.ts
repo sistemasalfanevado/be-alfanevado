@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraAccountabilityDto } from './dto/create-zentra-accountability.dto';
 import { UpdateZentraAccountabilityDto } from './dto/update-zentra-accountability.dto';
 import { ZentraDocumentService } from '../zentra-document/zentra-document.service';
+import { ZentraDocumentSalesService } from '../zentra-document-sales/zentra-document-sales.service';
+
 import { DOCUMENT_CATEGORY, DOCUMENT_STATUS, DOCUMENT_ORIGIN, ACCOUNTABILITY_STATUS, DOCUMENT_TYPE } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
@@ -10,7 +12,14 @@ import * as moment from 'moment';
 @Injectable()
 export class ZentraAccountabilityService {
 
-  constructor(private prisma: PrismaService, private zentraDocumentService: ZentraDocumentService) { }
+  constructor(
+    private prisma: PrismaService,
+    @Inject(forwardRef(() => ZentraDocumentService))
+    private readonly zentraDocumentService: ZentraDocumentService,
+    @Inject(forwardRef(() => ZentraDocumentSalesService))
+    private readonly zentraDocumentSalesService: ZentraDocumentSalesService,
+
+  ) { }
 
   private includeRelations = {
     party: true,
@@ -203,15 +212,12 @@ export class ZentraAccountabilityService {
 
   }
 
-
-
   async restore(id: string) {
     return this.prisma.zentraAccountability.update({
       where: { id },
       data: { deletedAt: null },
     });
   }
-
 
   async findByFilters(filters: {
     accountabilityStatusId?: string;
@@ -473,6 +479,113 @@ export class ZentraAccountabilityService {
       requestedAmount: totalRequestedAmount,
       accountabilityStatusId: ACCOUNTABILITY_STATUS.PENDIENTE,
     })
+
+  }
+
+  // Devolucion
+  async addDocumentReturn(dataDocument: any) {
+
+    let document = await this.zentraDocumentService.createDocument(
+      {
+        code: dataDocument.code,
+        description: dataDocument.description,
+
+        totalAmount: dataDocument.amountToPay,
+        amountToPay: dataDocument.amountToPay,
+
+        taxAmount: 0,
+        netAmount: 0,
+        detractionRate: 0,
+        detractionAmount: 0,
+
+        paidAmount: 0,
+        observation: dataDocument.codeMovement,
+        idFirebase: '',
+        hasMovements: false,
+
+        registeredAt: new Date(dataDocument.registeredAt),
+        documentDate: new Date(dataDocument.registeredAt),
+        expireDate: new Date(dataDocument.registeredAt),
+
+        documentStatusId: dataDocument.documentStatusId,
+        transactionTypeId: dataDocument.transactionTypeId,
+        documentTypeId: dataDocument.documentTypeId,
+        partyId: dataDocument.partyId,
+        budgetItemId: dataDocument.budgetItemId,
+        currencyId: dataDocument.currencyId,
+        userId: dataDocument.userId,
+        accountabilityId: dataDocument.accountabilityId,
+        documentCategoryId: DOCUMENT_CATEGORY.CLASICO,
+        documentOriginId: DOCUMENT_ORIGIN.RENDICION_CUENTAS
+      }
+    );
+
+    await this.zentraDocumentSalesService.addMovement({
+      code: dataDocument.codeMovement,
+      description: dataDocument.description,
+      documentId: document.id,
+      amount: dataDocument.amountToPay,
+      transactionTypeId: dataDocument.transactionTypeId,
+      movementCategoryId: dataDocument.movementCategoryId,
+
+      budgetItemId: dataDocument.budgetItemId,
+      bankAccountId: dataDocument.bankAccountId,
+      movementStatusId: dataDocument.movementStatusId,
+
+      paymentDate: dataDocument.registeredAt,
+
+      idFirebase: '',
+      documentUrl: '',
+      documentName: '',
+    })
+
+    return { message: "Documento y movimientos creados correctamente" };
+  }
+
+
+
+  async updataAccountabilityData(documentData: any) {
+
+    const accountabilityData = await this.findOne(documentData.accountabilityId);
+
+    let documentList = await this.prisma.zentraDocument.findMany({
+      where: {
+        deletedAt: null,
+        accountabilityId: documentData.accountabilityId,
+      },
+      select: {
+        documentCategoryId: true,
+        documentTypeId: true,
+        paidAmount: true,
+      }
+    });
+
+    let totalRequestedAmount = 0;
+    let totalPaidAmount = 0;
+
+    for (let item of documentList) {
+      if (item.documentCategoryId === DOCUMENT_CATEGORY.CLASICO && item.documentTypeId === DOCUMENT_TYPE.ADELANTO) {
+        totalRequestedAmount += Number(item.paidAmount)
+      }
+      if (item.documentCategoryId === DOCUMENT_CATEGORY.CLASICO && item.documentTypeId === DOCUMENT_TYPE.DEVOLUCION_USUARIO) {
+        totalPaidAmount += Number(item.paidAmount)
+      }
+      if (item.documentCategoryId === DOCUMENT_CATEGORY.RENDICION_CUENTA) {
+        totalPaidAmount += Number(item.paidAmount)
+      }
+    }
+
+    let stateAccountability = ACCOUNTABILITY_STATUS.RENDICION_PENDIENTE
+
+    if (totalRequestedAmount === totalPaidAmount && totalRequestedAmount > 0 && totalPaidAmount > 0) {
+      stateAccountability = ACCOUNTABILITY_STATUS.VALIDACION_CONTABLE_PENDIENTE
+    }
+
+    return this.updateSimple(accountabilityData?.id + '', {
+      accountedAmount: totalPaidAmount,
+      approvedAmount: totalRequestedAmount,
+      accountabilityStatusId: stateAccountability,
+    });
 
   }
 

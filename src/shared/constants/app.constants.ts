@@ -33,6 +33,7 @@ export const DOCUMENT_STATUS = {
 export const DOCUMENT_CATEGORY = {
   CLASICO: '0c4d8c87-aaed-4e08-8520-14e79fad324c',
   RENDICION_CUENTA: 'b07b084a-6822-4a4a-b93f-868f9ea36488',
+  DEVOLUCION: 'e82da912-b142-4cb2-b3e2-623b266a912b',
 };
 
 export const BUDGET_NATURE = {
@@ -98,6 +99,12 @@ export const FINANCIAL_IMPACT = {
 };
 
 export const DOCUMENT_TYPE = {
+  RENDICION_CUENTA: 'ce02d26d-99cb-40a0-aec6-b47ecf85f314',
   ADELANTO: 'd6c19939-2f6d-425e-a4bc-c31f49d514c3',
+  DEVOLUCION_USUARIO: '94c666b5-2324-435f-b3ab-6b4330db174b',
+};
+
+export const BANK = {
+  BCP: '60eb3a72-b656-46b7-9f38-85a9a3cac881',
 };
 

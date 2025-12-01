@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ZentraUsersService } from '../../modules/zentra/zentra-config/zentra-users/zentra-users.service';
 import { ZentraExchangeRateService } from '../../modules/zentra/zentra-master/zentra-exchange-rate/zentra-exchange-rate.service';
-
+import { ZentraUserPartyService } from '../../modules/zentra/zentra-master/zentra-user-party/zentra-user-party.service';
 
 import * as bcrypt from 'bcrypt';
 
@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 export class ZentraAuthService {
   constructor(
     private zentraExchangeRateService: ZentraExchangeRateService,
+    private zentraUserPartyService: ZentraUserPartyService,
     private zentraUsersService: ZentraUsersService, // Asegúrate de que esto esté inyectado
     private jwtService: JwtService, // Asegúrate de que esto esté inyectado
   ) { }
@@ -59,11 +60,14 @@ export class ZentraAuthService {
 
     const actions = user.role?.roleActions?.map((ra) => ra.action.id) || [];
 
-
     let exchangeRate = await this.zentraExchangeRateService.findOneByDate(normalizedDate);
     if (!exchangeRate) {
       exchangeRate = await this.zentraExchangeRateService.upsertTodayRateFromSunat();
     }
+
+    const userParty = await this.zentraUserPartyService.findByUserId(user.id);
+
+
 
     return {
       access_token: this.jwtService.sign(payload),
@@ -81,7 +85,10 @@ export class ZentraAuthService {
       menuItems,
       exchangeRate,
       actions,
-      
+
+      partyId: userParty.partyId,
+      partyName: userParty.partyName,
+
     };
   }
 }
