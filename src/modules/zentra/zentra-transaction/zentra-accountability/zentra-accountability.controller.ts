@@ -16,7 +16,7 @@ export class ZentraAccountabilityController {
 
   @Post()
   async create(
-    @Body() createZentraAccountabilityDto: CreateZentraAccountabilityDto
+    @Body() createZentraAccountabilityDto: any
   ) {
     await this.zentraAccountabilityService.create(createZentraAccountabilityDto);
     return { message: 'Accountability creada exitosamente' };
@@ -71,6 +71,12 @@ export class ZentraAccountabilityController {
     return this.zentraAccountabilityService.addIncrement(dataAccountability);
   }
 
+  @Post('add-refund')
+  @Public()
+  addRefund(@Body() dataAccountability: any) {
+    return this.zentraAccountabilityService.addRefund(dataAccountability);
+  }
+
   @Post('add-document')
   @Public()
   addDocument(@Body() dataAccountability: any) {
@@ -82,16 +88,14 @@ export class ZentraAccountabilityController {
     @Param('id') id: string,
     @Body() updateZentraAccountabilityDto: any
   ) {
-    await this.zentraAccountabilityService.updateDocument(id, updateZentraAccountabilityDto);
-    return { message: 'Accountability actualizada exitosamente' };
+    return this.zentraAccountabilityService.updateDocument(id, updateZentraAccountabilityDto);
   }
 
-  @Delete('remove-document/:id/:accountabilityId')
+  @Delete('remove-document/:id')
   removeDocument(
     @Param('id') id: string,
-    @Param('accountabilityId') accountabilityId: string,
   ) {
-    return this.zentraAccountabilityService.removeDocument(id, accountabilityId);
+    return this.zentraAccountabilityService.removeDocument(id);
   }
 
   

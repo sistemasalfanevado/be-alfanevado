@@ -74,7 +74,7 @@ export class ZentraAccountabilityService {
     };
   }
 
-  async create(createDto: CreateZentraAccountabilityDto) {
+  async create(createDto: any) {
 
     const last = await this.prisma.zentraAccountability.findFirst({
       where: {},
@@ -122,15 +122,18 @@ export class ZentraAccountabilityService {
         documentDate: new Date(createDto.registeredAt),
         expireDate: new Date(createDto.registeredAt),
 
-        documentStatusId: DOCUMENT_STATUS.PENDIENTE,
+        
         transactionTypeId: createDto.transactionTypeId,
-        documentTypeId: DOCUMENT_TYPE.ADELANTO,
+        documentTypeId: createDto.documentTypeId,
         partyId: createDto.partyId,
         budgetItemId: createDto.budgetItemId,
         currencyId: createDto.currencyId,
         userId: createDto.userId,
-        documentCategoryId: DOCUMENT_CATEGORY.CLASICO,
+        documentCategoryId: createDto.documentCategoryId,
+        
         accountabilityId: created.id,
+
+        documentStatusId: DOCUMENT_STATUS.PENDIENTE,
         documentOriginId: DOCUMENT_ORIGIN.RENDICION_CUENTAS
       }
     );
@@ -311,35 +314,61 @@ export class ZentraAccountabilityService {
         budgetItemId: dataDocument.budgetItemId,
         currencyId: dataDocument.currencyId,
         userId: dataDocument.userId,
-        documentCategoryId: DOCUMENT_CATEGORY.CLASICO,
         accountabilityId: dataDocument.accountabilityId,
+
+        documentCategoryId: dataDocument.documentCategoryId,
         documentOriginId: DOCUMENT_ORIGIN.RENDICION_CUENTAS
       }
     );
 
-    let documentList = await this.prisma.zentraDocument.findMany({
-      where: {
-        deletedAt: null,
+
+    await this.updataAccountabilityData(dataDocument)
+
+    return { message: 'Accountability actualizada exitosamente' };
+
+  }
+
+  async addRefund(dataDocument: any) {
+
+    await this.zentraDocumentService.createDocument(
+      {
+        code: dataDocument.code,
+        description: dataDocument.description,
+
+        totalAmount: dataDocument.amountToPay,
+        amountToPay: dataDocument.amountToPay,
+
+        taxAmount: 0,
+        netAmount: 0,
+        detractionRate: 0,
+        detractionAmount: 0,
+
+        paidAmount: 0,
+        observation: '',
+        idFirebase: '',
+        hasMovements: false,
+
+        registeredAt: new Date(dataDocument.documentDate),
+        documentDate: new Date(dataDocument.documentDate),
+        expireDate: new Date(dataDocument.documentDate),
+
+        documentStatusId: dataDocument.documentStatusId,
+        transactionTypeId: dataDocument.transactionTypeId,
+        documentTypeId: dataDocument.documentTypeId,
+        partyId: dataDocument.partyId,
+        budgetItemId: dataDocument.budgetItemId,
+        currencyId: dataDocument.currencyId,
+        userId: dataDocument.userId,
         accountabilityId: dataDocument.accountabilityId,
-      },
-      select: {
-        amountToPay: true,
-        documentCategoryId: true
+
+        documentCategoryId: dataDocument.documentCategoryId,
+        documentOriginId: DOCUMENT_ORIGIN.RENDICION_CUENTAS
       }
-    });
+    );
+    
+    //await this.updataAccountabilityData(dataDocument)
 
-    let totalRequestedAmount = 0;
-
-    for (let item of documentList) {
-      if (item.documentCategoryId === DOCUMENT_CATEGORY.CLASICO) {
-        totalRequestedAmount += Number(item.amountToPay)
-      }
-    }
-
-    return this.updateSimple(dataDocument.accountabilityId, {
-      requestedAmount: totalRequestedAmount,
-      accountabilityStatusId: ACCOUNTABILITY_STATUS.PENDIENTE,
-    })
+    return { message: 'Accountability actualizada exitosamente' };
 
   }
 
@@ -397,7 +426,7 @@ export class ZentraAccountabilityService {
         detractionRate: dataDocument.detractionRate,
         detractionAmount: dataDocument.detractionAmount,
 
-        paidAmount: 0,
+        paidAmount: dataDocument.paidAmount,
         observation: dataDocument.observation,
         idFirebase: '',
         hasMovements: false,
@@ -419,67 +448,15 @@ export class ZentraAccountabilityService {
       },
     );
 
-    let documentList = await this.prisma.zentraDocument.findMany({
-      where: {
-        deletedAt: null,
-        accountabilityId: dataDocument.accountabilityId,
-      },
-      select: {
-        amountToPay: true,
-        documentCategoryId: true
-      }
-    });
-
-    let totalRequestedAmount = 0;
-
-    for (let item of documentList) {
-      if (item.documentCategoryId === DOCUMENT_CATEGORY.CLASICO) {
-        totalRequestedAmount += Number(item.amountToPay)
-      }
-    }
-
-    return this.updateSimple(dataDocument.accountabilityId, {
-      requestedAmount: totalRequestedAmount,
-      accountabilityStatusId: ACCOUNTABILITY_STATUS.PENDIENTE,
-    })
-
-
-
+    await this.updataAccountabilityData(dataDocument)
+    
+    return { message: 'Accountability actualizada exitosamente' };
+    
 
   }
 
-  async removeDocument(id: string, accountabilityId: string) {
-
-    await this.zentraDocumentService.updateSimple(id,
-      {
-        deletedAt: new Date()
-      },
-    );
-
-    let documentList = await this.prisma.zentraDocument.findMany({
-      where: {
-        deletedAt: null,
-        accountabilityId: accountabilityId,
-      },
-      select: {
-        amountToPay: true,
-        documentCategoryId: true
-      }
-    });
-
-    let totalRequestedAmount = 0;
-
-    for (let item of documentList) {
-      if (item.documentCategoryId === DOCUMENT_CATEGORY.CLASICO) {
-        totalRequestedAmount += Number(item.amountToPay)
-      }
-    }
-
-    return this.updateSimple(accountabilityId, {
-      requestedAmount: totalRequestedAmount,
-      accountabilityStatusId: ACCOUNTABILITY_STATUS.PENDIENTE,
-    })
-
+  async removeDocument(id: string) {
+    await this.zentraDocumentService.remove(id);
   }
 
   // Devolucion
@@ -557,36 +534,48 @@ export class ZentraAccountabilityService {
         documentCategoryId: true,
         documentTypeId: true,
         paidAmount: true,
+        amountToPay: true,
       }
     });
 
     let totalRequestedAmount = 0;
-    let totalPaidAmount = 0;
-
+    let totalApprovedAmount = 0;
+    let totalAccountedAmount = 0;
+    
+    
     for (let item of documentList) {
       if (item.documentCategoryId === DOCUMENT_CATEGORY.CLASICO && item.documentTypeId === DOCUMENT_TYPE.ADELANTO) {
-        totalRequestedAmount += Number(item.paidAmount)
+        totalRequestedAmount += Number(item.amountToPay)
+        totalApprovedAmount += Number(item.paidAmount)
       }
       if (item.documentCategoryId === DOCUMENT_CATEGORY.CLASICO && item.documentTypeId === DOCUMENT_TYPE.DEVOLUCION_USUARIO) {
-        totalPaidAmount += Number(item.paidAmount)
+        totalAccountedAmount += Number(item.paidAmount)
       }
       if (item.documentCategoryId === DOCUMENT_CATEGORY.RENDICION_CUENTA) {
-        totalPaidAmount += Number(item.paidAmount)
+        totalAccountedAmount += Number(item.paidAmount)
+      }
+      if (item.documentCategoryId === DOCUMENT_CATEGORY.CLASICO && item.documentTypeId === DOCUMENT_TYPE.REEMBOLSO) {
+        totalApprovedAmount += Number(item.paidAmount)
       }
     }
 
     let stateAccountability = ACCOUNTABILITY_STATUS.RENDICION_PENDIENTE
 
-    if (totalRequestedAmount === totalPaidAmount && totalRequestedAmount > 0 && totalPaidAmount > 0) {
+    if (totalAccountedAmount === totalApprovedAmount && totalAccountedAmount > 0 && totalApprovedAmount > 0) {
       stateAccountability = ACCOUNTABILITY_STATUS.VALIDACION_CONTABLE_PENDIENTE
     }
 
+    if (totalAccountedAmount > totalApprovedAmount && totalAccountedAmount > 0 && totalApprovedAmount > 0) {
+      stateAccountability = ACCOUNTABILITY_STATUS.LIQUIDADO_PARCIAL
+    }
+
     return this.updateSimple(accountabilityData?.id + '', {
-      accountedAmount: totalPaidAmount,
-      approvedAmount: totalRequestedAmount,
+      accountedAmount: totalAccountedAmount,
+      approvedAmount: totalApprovedAmount,
+      requestedAmount: totalRequestedAmount,
       accountabilityStatusId: stateAccountability,
     });
-
+    
   }
 
 

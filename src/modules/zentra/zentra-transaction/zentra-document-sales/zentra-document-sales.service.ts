@@ -109,18 +109,13 @@ export class ZentraDocumentSalesService {
       totalOutflow: paidAmountDocumentExit
     });
 
-
     if (documentData?.documentOriginId === DOCUMENT_ORIGIN.RENDICION_CUENTAS) {
       // Si existe debo de actualizar la rendicion de cuentas
       await this.zentraAccountabilityService.updataAccountabilityData(documentData);
     }
     
-    return await this.zentraDocumentService.updateDocumentSale(documentId, {
-      documentStatusId: documentStatusId,
-      paidAmount: paidTotal,
-      totalInflow: paidAmountDocumentEntry,
-      totalOutflow: paidAmountDocumentExit
-    });
+    return { message: 'Accountability actualizada exitosamente' };
+    
 
   }
 
