@@ -98,13 +98,22 @@ export class ZentraAccountabilityController {
     return this.zentraAccountabilityService.removeDocument(id);
   }
 
-  
+
   // Devoluviones
   @Post('add-document-return')
   @Public()
   addDocumentReturn(@Body() dataAccountability: any) {
     return this.zentraAccountabilityService.addDocumentReturn(dataAccountability);
   }
+
+  // Reportes
+
+  @Post('get-data-report')
+  @Public()
+  getAllDataReport(@Body('id') accountabilityId: string) {
+    return this.zentraAccountabilityService.getAllDataReport(accountabilityId);
+  }
+
 
 
 }

@@ -1,0 +1,45 @@
+import { Controller, Get, Post, Body, Param, Patch, Put, Delete, UseGuards } from '@nestjs/common';
+import { ZentraVisibilityService } from './zentra-visibility.service';
+import { CreateZentraVisibilityDto } from './dto/create-zentra-visibility.dto';
+import { UpdateZentraVisibilityDto } from './dto/update-zentra-visibility.dto';
+
+import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
+import { Public } from '../../../../auth/shared/decorators/public.decorator';
+
+@Controller('zentra-visibility')
+//@UseGuards(JwtAuthGuard)
+export class ZentraVisibilityController {
+  constructor(private readonly zentraVisibilityService: ZentraVisibilityService) {}
+
+  @Post()
+  create(@Body() createZentraVisibilityDto: CreateZentraVisibilityDto) {
+    return this.zentraVisibilityService.create(createZentraVisibilityDto);
+  }
+
+  @Get()
+  @Public()
+  findAll() {
+    return this.zentraVisibilityService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.zentraVisibilityService.findOne(id);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateZentraVisibilityDto: UpdateZentraVisibilityDto) {
+    return this.zentraVisibilityService.update(id, updateZentraVisibilityDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.zentraVisibilityService.remove(id);
+  }
+
+  @Patch(':id/restore')
+  restore(@Param('id') id: string) {
+    return this.zentraVisibilityService.restore(id);
+  }
+
+}

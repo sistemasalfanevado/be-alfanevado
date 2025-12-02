@@ -41,4 +41,9 @@ export class ZentraDocumentTypeController {
   restore(@Param('id') id: string) {
     return this.zentraDocumentTypeService.restore(id);
   }
+
+  @Get('visibility/:visibilityId')
+  findAllByVisibility(@Param('visibilityId') visibilityId: string) {
+    return this.zentraDocumentTypeService.findAllByVisibility(visibilityId);
+  }
 }

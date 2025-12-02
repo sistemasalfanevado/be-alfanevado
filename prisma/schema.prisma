@@ -456,9 +456,12 @@ model ZentraDocumentType {
   id          String    @id @default(uuid())
   name        String    @db.VarChar(50)
   
-  documents   ZentraDocument[]
-  accountability         ZentraAccountability[]
+  documents         ZentraDocument[]
+  accountability    ZentraAccountability[]
   
+  visibility        ZentraVisibility? @relation(fields: [visibilityId], references: [id])
+  visibilityId      String?
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
@@ -1525,7 +1528,18 @@ model ZentraArea {
   @@map("zentra_area")
 }
 
+model ZentraVisibility {
+  id          String       @id @default(uuid())
+  name        String     @db.VarChar(50)
 
+  documentTypes ZentraDocumentType[]
+
+  deletedAt DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("zentra_visibility")
+}
 
 
 // Marketing

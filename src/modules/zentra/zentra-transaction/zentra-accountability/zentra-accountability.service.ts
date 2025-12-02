@@ -122,7 +122,7 @@ export class ZentraAccountabilityService {
         documentDate: new Date(createDto.registeredAt),
         expireDate: new Date(createDto.registeredAt),
 
-        
+
         transactionTypeId: createDto.transactionTypeId,
         documentTypeId: createDto.documentTypeId,
         partyId: createDto.partyId,
@@ -130,7 +130,7 @@ export class ZentraAccountabilityService {
         currencyId: createDto.currencyId,
         userId: createDto.userId,
         documentCategoryId: createDto.documentCategoryId,
-        
+
         accountabilityId: created.id,
 
         documentStatusId: DOCUMENT_STATUS.PENDIENTE,
@@ -365,7 +365,7 @@ export class ZentraAccountabilityService {
         documentOriginId: DOCUMENT_ORIGIN.RENDICION_CUENTAS
       }
     );
-    
+
     //await this.updataAccountabilityData(dataDocument)
 
     return { message: 'Accountability actualizada exitosamente' };
@@ -449,9 +449,9 @@ export class ZentraAccountabilityService {
     );
 
     await this.updataAccountabilityData(dataDocument)
-    
+
     return { message: 'Accountability actualizada exitosamente' };
-    
+
 
   }
 
@@ -519,8 +519,6 @@ export class ZentraAccountabilityService {
     return { message: "Documento y movimientos creados correctamente" };
   }
 
-
-
   async updataAccountabilityData(documentData: any) {
 
     const accountabilityData = await this.findOne(documentData.accountabilityId);
@@ -541,8 +539,8 @@ export class ZentraAccountabilityService {
     let totalRequestedAmount = 0;
     let totalApprovedAmount = 0;
     let totalAccountedAmount = 0;
-    
-    
+
+
     for (let item of documentList) {
       if (item.documentCategoryId === DOCUMENT_CATEGORY.CLASICO && item.documentTypeId === DOCUMENT_TYPE.ADELANTO) {
         totalRequestedAmount += Number(item.amountToPay)
@@ -575,7 +573,89 @@ export class ZentraAccountabilityService {
       requestedAmount: totalRequestedAmount,
       accountabilityStatusId: stateAccountability,
     });
-    
+
+  }
+
+  // Report
+
+  async getAllDataReport(accountabilityId: string) {
+    return this.prisma.zentraDocument.findMany({
+      where: {
+        deletedAt: null,
+        accountabilityId,
+      },
+      select: {
+        documentCategoryId: true,
+        documentType: true,
+        paidAmount: true,
+        amountToPay: true,
+        code: true,
+        description: true,
+        transactionTypeId: true,
+        party: {
+          select: {
+            name: true,
+            partyDocuments: {
+              where: {
+                deletedAt: null,
+              },
+              select: {
+                document: true
+              }
+            }
+          }
+        },
+        budgetItem: {
+          select: {
+            definition: {
+              select: {
+                name: true
+              }
+            }
+          }
+        },
+        currencyId: true,
+        user: {
+          select: {
+            area: {
+              select: {
+                name: true
+              }
+            },
+            firstName: true,
+            lastName: true
+          }
+        },
+        documentStatusId: true,
+        registeredAt: true,
+        files: {
+          where: {
+            deletedAt: null,
+          }
+        },
+        movements: {
+          select: {
+            code: true,
+            description: true, 
+            amount: true,
+            transactionType: true,
+            budgetItemId: true,
+            paymentDate: true,
+            documentUrl: true,
+            documentName: true,
+            fromTelecredito: true,
+            files: {
+              where: {
+                deletedAt: null,
+              }
+            }
+          },
+          where: {
+            deletedAt: null,
+          }
+        }
+      }
+    });
   }
 
 

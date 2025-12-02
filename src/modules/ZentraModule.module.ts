@@ -31,6 +31,7 @@ import { ZentraDocumentOriginModule } from './zentra/zentra-master/zentra-docume
 import { ZentraFinancialImpactModule } from './zentra/zentra-master/zentra-financial-impact/zentra-financial-impact.module';
 import { ZentraUserPartyModule } from './zentra/zentra-master/zentra-user-party/zentra-user-party.module';
 import { ZentraAreaModule } from './zentra/zentra-master/zentra-area/zentra-area.module';
+import { ZentraVisibilityModule } from './zentra/zentra-master/zentra-visibility/zentra-visibility.module';
 
 
 import { ZentraPartyDocumentModule } from './zentra/zentra-master/zentra-party-document/zentra-party-document.module';
@@ -121,6 +122,7 @@ import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-a
     ZentraUserPartyModule,
     ZentraTelecreditoOperationStateModule,
     ZentraAreaModule,
+    ZentraVisibilityModule,
     
     ZentraBankModule,
     ZentraBudgetItemCategoryModule,

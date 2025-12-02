@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraDocumentTypeDto } from './dto/create-zentra-document-type.dto';
 import { UpdateZentraDocumentTypeDto } from './dto/update-zentra-document-type.dto';
@@ -7,33 +7,54 @@ import { UpdateZentraDocumentTypeDto } from './dto/update-zentra-document-type.d
 export class ZentraDocumentTypeService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createZentraDocumentTypeDto: CreateZentraDocumentTypeDto) {
+  async create(createDto: CreateZentraDocumentTypeDto) {
     return this.prisma.zentraDocumentType.create({
-      data: createZentraDocumentTypeDto,
+      data: {
+        name: createDto.name,
+        visibilityId: createDto.visibilityId ?? null,
+      },
     });
   }
 
   async findAll() {
-    return this.prisma.zentraDocumentType.findMany({
-      where: {
-        deletedAt: null,
-      },
-      orderBy: {
-        name: 'asc',
+    const results = await this.prisma.zentraDocumentType.findMany({
+      where: { deletedAt: null },
+      orderBy: { name: 'asc' },
+      include: {
+        visibility: true, // 👉 para traer la relación
       },
     });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+      visibilityName: item.visibility?.name,
+      visibilityId: item.visibility?.id,
+    }));
+
   }
 
   async findOne(id: string) {
-    return this.prisma.zentraDocumentType.findUnique({
-      where: { id, deletedAt: null },
+    const found = await this.prisma.zentraDocumentType.findUnique({
+      where: { id },
+      include: { visibility: true },
     });
+
+    if (!found || found.deletedAt) {
+      throw new NotFoundException(`DocumentType ${id} no existe`);
+    }
+
+    return found;
   }
 
-  async update(id: string, updateZentraDocumentTypeDto: UpdateZentraDocumentTypeDto) {
+  async update(id: string, updateDto: UpdateZentraDocumentTypeDto) {
     return this.prisma.zentraDocumentType.update({
       where: { id },
-      data: updateZentraDocumentTypeDto,
+      data: {
+        ...updateDto,
+        visibilityId: updateDto.visibilityId ?? undefined, // 👉 mantiene relación
+      },
+      include: { visibility: true },
     });
   }
 
@@ -50,4 +71,23 @@ export class ZentraDocumentTypeService {
       data: { deletedAt: null },
     });
   }
+
+  async findAllByVisibility(visibilityId: string) {
+    const results = await this.prisma.zentraDocumentType.findMany({
+      where: { deletedAt: null, visibilityId },
+      include: { visibility: true },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+      visibilityName: item.visibility?.name,
+      visibilityId: item.visibility?.id,
+    }));
+
+  }
+
 }
