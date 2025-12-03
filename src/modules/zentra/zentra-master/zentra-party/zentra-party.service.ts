@@ -8,6 +8,8 @@ import { BANK_ACCOUNT_HIERARCHY, PARTY_DOCUMENT_HIERARCHY, PARTY_ROL } from 'src
 import { ZentraPartyBankAccountService } from '../zentra-party-bank-account/zentra-party-bank-account.service';
 import { ZentraPartyDocumentService } from '../zentra-party-document/zentra-party-document.service';
 
+import * as moment from 'moment';
+
 @Injectable()
 export class ZentraPartyService {
   constructor(
@@ -193,7 +195,7 @@ export class ZentraPartyService {
         partyRoleName: item?.partyRole.name || null,
         partyRoleId: item?.partyRole.id || null,
 
-        
+
 
         // Documento principal
         partyDocument: principalDocument?.document || null,
@@ -366,4 +368,113 @@ export class ZentraPartyService {
       data: { deletedAt: null }
     });
   }
+
+
+
+  async cleanPartiesWithoutDocuments(preview: boolean = true) {
+    // 1. Identificar Partys sin documentos
+    const partiesToDelete = await this.prisma.zentraParty.findMany({
+      where: {
+        deletedAt: null, // Solo parties activos
+        documents: {
+          none: {}, // Filtra por parties que NO tienen ningún documento asociado
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    // Solo preview
+    if (preview) {
+      return {
+        preview: true,
+        totalPartiesFound: partiesToDelete.length,
+        partiesToErase: partiesToDelete,
+        message: "Lista de ZentraParty que serán eliminados al ejecutar con preview: false.",
+      };
+    }
+
+    // 2. Proceder a la eliminación si preview es false
+    const partyIdsToDelete = partiesToDelete.map(p => p.id);
+    const results: { id: string, name: string }[] = [];
+
+    for (const partyId of partyIdsToDelete) {
+      const removedParty = await this.remove(partyId);
+      results.push({ id: removedParty.id, name: removedParty.name });
+    }
+
+    return {
+      preview: false,
+      message: "Limpieza de ZentraParty sin documentos completada correctamente.",
+      totalPartiesCleaned: results.length,
+      cleanedParties: results,
+    };
+  }
+
+
+  async getPartyDocumentCountAndList(partyId: string) {
+    const partyWithDocuments = await this.prisma.zentraParty.findUnique({
+      where: {
+        id: partyId,
+        deletedAt: null,
+      },
+      select: {
+        documents: {
+          select: {
+            code: true,
+            description: true,
+            amountToPay: true,
+            documentDate: true,
+            budgetItem: {
+              select: {
+                definition: {
+                  select: {
+                    name: true,
+                    project: {
+                      select: {
+                        name: true
+                      }
+                    }
+                  }
+                },
+              }
+            }
+          },
+          where: {
+            deletedAt: null,
+          }
+        },
+        _count: {
+          select: {
+            documents: true,
+          },
+        },
+      },
+    });
+
+    if (!partyWithDocuments) {
+      throw new Error(`No se encontró el Party con ID ${partyId}`);
+    }
+
+    const documentCount = partyWithDocuments._count.documents;
+    
+    const documentList = partyWithDocuments.documents.map(doc => ({
+      code: doc.code,
+      description: doc.description,
+      amountToPay: Number(doc.amountToPay),
+      documentDate: moment(doc.documentDate).format('DD/MM/YYYY'),
+      budgetItemName: doc.budgetItem.definition.name,
+      projectName: doc.budgetItem.definition.project.name
+    }));
+
+    return {
+      partyId,
+      totalDocuments: documentCount,
+      documentList: documentList,
+      listLimit: partyWithDocuments.documents.length < documentCount ? documentList.length : undefined, 
+    };
+  }
 }
+

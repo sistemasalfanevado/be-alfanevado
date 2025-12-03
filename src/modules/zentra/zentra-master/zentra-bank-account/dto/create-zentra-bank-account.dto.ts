@@ -19,6 +19,10 @@ export class CreateZentraBankAccountDto {
 
   @IsString()
   @IsOptional()
+  partyId?: string;
+
+  @IsString()
+  @IsOptional()
   @MaxLength(30)
   idFirebase?: string;
 }

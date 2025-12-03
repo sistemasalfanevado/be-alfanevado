@@ -1048,6 +1048,7 @@ export class ZentraDocumentService {
       orderBy: { documentDate: 'desc' },
       select: {
         id: true,
+        party: true,
         movements: {
           where: { deletedAt: null },
           select: {
@@ -1095,6 +1096,8 @@ export class ZentraDocumentService {
           transactionTypeId: mov.transactionType.id,
           budgetItemId: mov.budgetItem.id,
           codeMovement: mov.code,
+
+          partyName: doc.party.name,
         };
       });
   }

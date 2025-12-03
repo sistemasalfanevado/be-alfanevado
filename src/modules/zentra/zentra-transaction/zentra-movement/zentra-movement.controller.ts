@@ -150,5 +150,18 @@ export class ZentraMovementController {
     );
   }
 
+  @Post('recalculateBankAccount')
+  recalculateBankAccount(@Body() body: {
+    companyId: string;
+    preview: boolean;
+  }) {
+    return this.zentraMovementService.recalculateBankAccount(
+      body.companyId,
+      body.preview
+    );
+  }
+
+  
+
 
 }

@@ -996,5 +996,91 @@ export class ZentraMovementService {
 
   }
 
+  async recalculateBankAccount(companyId: string, preview: boolean) {
+    // 1. Traer cuentas bancarias
+    const bankAccounts = await this.prisma.zentraBankAccount.findMany({
+      where: { project: { companyId } },
+      select: { id: true },
+    });
+
+    // 2. Traer movimientos
+    const movements = await this.prisma.zentraMovement.findMany({
+      where: {
+        deletedAt: null,
+        budgetItem: {
+          definition: { project: { companyId } },
+        },
+      },
+      select: {
+        transactionTypeId: true,
+        amount: true,
+        bankAccountId: true,
+      },
+    });
+
+    // Solo preview
+    if (preview) {
+      return {
+        preview: true,
+        totalBankAccount: bankAccounts.length,
+        totalMovimientos: movements.length,
+      };
+    }
+
+    // 3. Agrupar por bank Account
+    const grouped = movements.reduce((acc, m) => {
+      if (!acc[m.bankAccountId]) acc[m.bankAccountId] = [];
+      acc[m.bankAccountId].push(m);
+      return acc;
+    }, {} as Record<string, typeof movements>);
+
+    const updates: any[] = [];
+
+    // 4. Construir updates
+    for (const item of bankAccounts) {
+      const list = grouped[item.id] || [];
+
+      let amount: number = 0;
+
+      for (let itemMov of list) {
+        if (itemMov.transactionTypeId === TRANSACTION_TYPE.ENTRY) {
+          amount = Number((amount + Number(itemMov.amount)).toFixed(2))
+        }
+        if (itemMov.transactionTypeId === TRANSACTION_TYPE.EXIT) {
+          amount = Number((amount - Number(itemMov.amount)).toFixed(2))
+        }
+      }
+      
+      updates.push({
+        id: item.id,
+        amount,
+      });
+    }
+
+    const chunks = this.chunkArray(updates, 100);
+
+    for (const chunk of chunks) {
+      await Promise.all(
+        chunk.map((u) =>
+          this.prisma.zentraBankAccount.update({
+            where: { id: u.id },
+            data: {
+              amount: u.amount,
+            },
+          })
+        )
+      );
+    }
+
+    return {
+      preview: false,
+      message: "Bank Accounts recalculados correctamente",
+      totalBankAccount: bankAccounts.length,
+      totalMovimientos: movements.length,
+    };
+
+
+  }
+
 
 }

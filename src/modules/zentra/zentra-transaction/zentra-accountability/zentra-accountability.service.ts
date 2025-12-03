@@ -5,7 +5,7 @@ import { UpdateZentraAccountabilityDto } from './dto/update-zentra-accountabilit
 import { ZentraDocumentService } from '../zentra-document/zentra-document.service';
 import { ZentraDocumentSalesService } from '../zentra-document-sales/zentra-document-sales.service';
 
-import { DOCUMENT_CATEGORY, DOCUMENT_STATUS, DOCUMENT_ORIGIN, ACCOUNTABILITY_STATUS, DOCUMENT_TYPE } from 'src/shared/constants/app.constants';
+import { DOCUMENT_CATEGORY, DOCUMENT_STATUS, DOCUMENT_ORIGIN, ACCOUNTABILITY_STATUS, DOCUMENT_TYPE, PARTY_DOCUMENT_HIERARCHY } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
 
@@ -94,7 +94,18 @@ export class ZentraAccountabilityService {
 
     const created = await this.prisma.zentraAccountability.create({
       data: {
-        ...createDto,
+        description: createDto.description,
+        requestedAmount: createDto.requestedAmount,
+        approvedAmount: createDto.approvedAmount,
+        accountedAmount: createDto.accountedAmount,
+        registeredAt: createDto.registeredAt,
+        partyId: createDto.partyId,
+        currencyId: createDto.currencyId,
+        documentTypeId: createDto.documentTypeId,
+        accountabilityStatusId: createDto.accountabilityStatusId,
+        transactionTypeId: createDto.transactionTypeId,
+        budgetItemId: createDto.budgetItemId,
+        userId: createDto.userId,
         code: newCode,
       },
       select: { id: true, code: true },
@@ -598,6 +609,7 @@ export class ZentraAccountabilityService {
             partyDocuments: {
               where: {
                 deletedAt: null,
+                documentHierarchyId: PARTY_DOCUMENT_HIERARCHY.PRINCIPAL
               },
               select: {
                 document: true
@@ -636,7 +648,7 @@ export class ZentraAccountabilityService {
         movements: {
           select: {
             code: true,
-            description: true, 
+            description: true,
             amount: true,
             transactionType: true,
             budgetItemId: true,

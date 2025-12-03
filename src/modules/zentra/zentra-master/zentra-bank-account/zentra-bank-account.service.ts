@@ -8,19 +8,21 @@ export class ZentraBankAccountService {
   constructor(private prisma: PrismaService) { }
 
   async create(createDto: CreateZentraBankAccountDto) {
-    const { bankId, projectId, currencyId, ...data } = createDto;
+    const { partyId, bankId, projectId, currencyId, ...data } = createDto;
 
     return this.prisma.zentraBankAccount.create({
       data: {
         ...data,
         bank: { connect: { id: bankId } },
         project: { connect: { id: projectId } },
-        currency: { connect: { id: currencyId } }
+        currency: { connect: { id: currencyId } },
+        party: { connect: { id: partyId } }
       },
       include: {
         bank: true,
         project: true,
-        currency: true
+        currency: true,
+        party: true
       }
     });
   }
@@ -31,7 +33,8 @@ export class ZentraBankAccountService {
       include: {
         bank: true,
         project: true,
-        currency: true
+        currency: true,
+        party: true
       },
       orderBy: [
         { project: { name: 'asc' } },
@@ -50,6 +53,10 @@ export class ZentraBankAccountService {
       currencyId: item.currency.id,
       currencyName: item.currency.name,
       completeName: `${item.project.name} - ${item.bank.name} - ${item.currency.name}`,
+      
+      partyId: item.party?.id,
+      partyName: item.party?.name,
+      
       idFirebase: item.idFirebase
     }));
   }
@@ -61,12 +68,13 @@ export class ZentraBankAccountService {
   }
 
   async update(id: string, updateDto: UpdateZentraBankAccountDto) {
-    const { bankId, projectId, currencyId, ...data } = updateDto;
+    const { partyId, bankId, projectId, currencyId, ...data } = updateDto;
     const updateData: any = { ...data };
 
     if (bankId) updateData.bank = { connect: { id: bankId } };
     if (projectId) updateData.project = { connect: { id: projectId } };
     if (currencyId) updateData.currency = { connect: { id: currencyId } };
+    if (partyId) updateData.party = { connect: { id: partyId } };
 
     return this.prisma.zentraBankAccount.update({
       where: { id },
@@ -74,7 +82,8 @@ export class ZentraBankAccountService {
       include: {
         bank: true,
         project: true,
-        currency: true
+        currency: true,
+        party: true
       }
     });
   }
@@ -103,6 +112,7 @@ export class ZentraBankAccountService {
         bank: true,
         project: true,
         currency: true,
+        party: true,
       },
       orderBy: [
         { project: { name: 'asc' } },
@@ -122,6 +132,10 @@ export class ZentraBankAccountService {
       currencyName: item.currency.name,
       bankComplete: `${item.bank.name} - ${item.currency.name}`,
       completeName: `${item.project.name} - ${item.bank.name} - ${item.currency.name}`,
+
+      partyId: item.party?.id,
+      partyName: item.party?.name,
+
       idFirebase: item.idFirebase
     }));
   }
@@ -138,6 +152,7 @@ export class ZentraBankAccountService {
         bank: true,
         project: true,
         currency: true,
+        party: true
       },
       orderBy: [
         { project: { name: 'asc' } },
@@ -157,6 +172,10 @@ export class ZentraBankAccountService {
       currencyName: item.currency.name,
       bankComplete: `${item.bank.name} - ${item.currency.name}`,
       completeName: `${item.bank.name} - ${item.currency.name}`,
+
+      partyId: item.party?.id,
+      partyName: item.party?.name,
+
       idFirebase: item.idFirebase
     }));
   }

@@ -19,7 +19,7 @@ export class ZentraPartyController {
   createComplex(@Body() createZentraPartyDto: any) {
     return this.zentraPartyService.createComplex(createZentraPartyDto);
   }
-  
+
   @Get()
   @Public()
   findAll() {
@@ -59,6 +59,19 @@ export class ZentraPartyController {
   @Post('find-one-with-principal')
   async findOneWithPrincipal(@Body('id') id: string) {
     return this.zentraPartyService.findOneWithPrincipal(id);
+  }
+
+
+  @Post('clean-without-documents')
+  async cleanPartiesWithoutDocuments(@Body() body: {
+    preview: boolean;
+  }) {
+    return this.zentraPartyService.cleanPartiesWithoutDocuments(body.preview);
+  }
+
+  @Post('document-count-and-list')
+  async getDocumentCountAndList(@Body('partyId') partyId: string) {
+    return this.zentraPartyService.getPartyDocumentCountAndList(partyId);
   }
 
 }

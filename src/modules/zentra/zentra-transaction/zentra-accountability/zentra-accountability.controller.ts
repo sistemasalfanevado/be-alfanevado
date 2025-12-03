@@ -18,8 +18,7 @@ export class ZentraAccountabilityController {
   async create(
     @Body() createZentraAccountabilityDto: any
   ) {
-    await this.zentraAccountabilityService.create(createZentraAccountabilityDto);
-    return { message: 'Accountability creada exitosamente' };
+    return this.zentraAccountabilityService.create(createZentraAccountabilityDto);
   }
 
   @Get()
