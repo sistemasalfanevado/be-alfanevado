@@ -621,7 +621,12 @@ export class ZentraAccountabilityService {
           select: {
             definition: {
               select: {
-                name: true
+                name: true,
+                category: {
+                  select: {
+                    name: true
+                  }
+                }
               }
             }
           }
@@ -638,7 +643,11 @@ export class ZentraAccountabilityService {
             lastName: true
           }
         },
-        documentStatusId: true,
+        documentStatus: {
+          select: {
+            name: true
+          }
+        },
         registeredAt: true,
         files: {
           where: {
