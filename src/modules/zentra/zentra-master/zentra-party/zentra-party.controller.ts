@@ -51,6 +51,11 @@ export class ZentraPartyController {
     return this.zentraPartyService.findAllWithPrincipal();
   }
 
+  @Post('with-principal-deleted')
+  findAllWithPrincipalDeleted(@Body() body: any) {
+    return this.zentraPartyService.findAllWithPrincipalDeleted();
+  }
+
   @Post('simple')
   findAllSimple(@Body() body: any) {
     return this.zentraPartyService.findAllSimple();

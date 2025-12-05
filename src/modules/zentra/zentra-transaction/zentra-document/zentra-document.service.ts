@@ -844,8 +844,7 @@ export class ZentraDocumentService {
         party: updateData.partyId
           ? { connect: { id: updateData.partyId } }
           : undefined,
-
-
+        
         documentTransactionMethod: updateData.documentTransactionMethodId
           ? { connect: { id: updateData.documentTransactionMethodId } }
           : undefined,
@@ -946,6 +945,9 @@ export class ZentraDocumentService {
       orderBy: { documentDate: 'desc' },
       select: {
         id: true,
+        code: true,
+        description: true,
+        documentType: true,
         documentDate: true,
         idFirebase: true,
         party: { select: { name: true, id: true } },
@@ -960,7 +962,7 @@ export class ZentraDocumentService {
             bankAccount: {
               select: {
                 bank: { select: { name: true } },
-                currency: { select: { name: true } },
+                currency: { select: { id: true, name: true } },
                 id: true
               },
             },
@@ -988,12 +990,15 @@ export class ZentraDocumentService {
         originBankAccount: originMovement
           ? `${originMovement.bankAccount.bank.name} ${originMovement.bankAccount.currency.name}`
           : null,
+        currencyOriginId: originMovement?.bankAccount?.currency?.id,
+        currencyOriginName: originMovement?.bankAccount?.currency?.name,
 
         backAccountDestinyId: destinyMovement ? destinyMovement.bankAccount.id : '',
         destinyBankAccount: destinyMovement
           ? `${destinyMovement.bankAccount.bank.name} ${destinyMovement.bankAccount.currency.name}`
           : null,
-
+        currencyDestinyId: destinyMovement?.bankAccount?.currency?.id,
+        currencyDestinyName: destinyMovement?.bankAccount?.currency?.name,
 
         amountOrigin: originMovement?.amount ?? null,
         amountDestiny: destinyMovement?.amount ?? null,
@@ -1002,7 +1007,10 @@ export class ZentraDocumentService {
         documentTransactionMethodId: doc.documentTransactionMethod?.id ?? '',
         documentTransactionMethodName: doc.documentTransactionMethod?.name ?? '',
         observation: doc.observation,
-        idFirebase: doc.idFirebase
+        idFirebase: doc.idFirebase,
+        code: doc.code,
+        description: doc.description,
+        documentTypeName: doc.documentType.name,
       };
     });
   }
@@ -1049,6 +1057,7 @@ export class ZentraDocumentService {
       select: {
         id: true,
         party: true,
+        documentType: true,
         movements: {
           where: { deletedAt: null },
           select: {
@@ -1096,7 +1105,7 @@ export class ZentraDocumentService {
           transactionTypeId: mov.transactionType.id,
           budgetItemId: mov.budgetItem.id,
           codeMovement: mov.code,
-
+          documentTypeName: doc.documentType.name,
           partyName: doc.party.name,
         };
       });

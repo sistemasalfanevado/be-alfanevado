@@ -226,6 +226,77 @@ export class ZentraPartyService {
     });
   }
 
+  async findAllWithPrincipalDeleted() {
+    const results = await this.prisma.zentraParty.findMany({
+      where: { },
+      include: {
+        partyRole: true,
+        partyBankAccounts: {
+          where: {
+            hierarchyId: BANK_ACCOUNT_HIERARCHY.PRINCIPAL,
+          },
+          include: {
+            type: true,
+            bank: true,
+            currency: true
+          },
+          take: 1, // solo la principal
+        },
+        partyDocuments: {
+          where: {
+            documentHierarchyId: PARTY_DOCUMENT_HIERARCHY.PRINCIPAL,
+          },
+          include: {
+            documentType: true,
+          },
+          take: 1, // solo el principal
+        },
+      },
+      orderBy: { name: 'asc' },
+    });
+
+    return results.map((item) => {
+      const principalDocument = item.partyDocuments[0];
+      const principalBankAccount = item.partyBankAccounts[0];
+
+      return {
+        id: item.id,
+        name: item.name,
+
+        partyRoleName: item?.partyRole.name || null,
+        partyRoleId: item?.partyRole.id || null,
+
+
+
+        // Documento principal
+        partyDocument: principalDocument?.document || null,
+        partyDocumentType: principalDocument?.documentType?.name || null,
+
+        email: item.email,
+        phone: item.phone,
+        address: item.address,
+        completeName: `${item.name}`,
+        document: item.document,
+        idFirebase: item.idFirebase,
+
+        // Cuenta bancaria principal
+        bankAccountNumber: principalBankAccount?.account || null,
+        bankAccountType: principalBankAccount?.type?.name || null,
+        bankAccountCci: principalBankAccount?.cci || null,
+
+        bankName: principalBankAccount ? principalBankAccount.bank.name : null,
+        bankAccountCurrency: principalBankAccount ? principalBankAccount.currency.name : null,
+
+        partyDocumentComplete: principalDocument
+          ? `${principalDocument.documentType?.name || ''}: ${principalDocument.document}`
+          : null,
+        bankAccountComplete: principalBankAccount
+          ? `${principalBankAccount.type?.name || ''}: ${principalBankAccount.account} (CCI: ${principalBankAccount.cci})`
+          : null,
+      };
+    });
+  }
+
   async findOneWithPrincipal(id: string) {
     const item = await this.prisma.zentraParty.findFirst({
       where: {
