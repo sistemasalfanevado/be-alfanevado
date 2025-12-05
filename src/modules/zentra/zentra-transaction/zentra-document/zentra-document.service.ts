@@ -434,8 +434,9 @@ export class ZentraDocumentService {
     accountabilityId?: string;
     documentTypeId?: string;
     excludeDocumentTypeId?: string;
+    currencyId?: string;
   }) {
-    const { documentTypeId, excludeDocumentTypeId, withPartyBankAccount, accountabilityId, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, companyId, userId, startDate, endDate } = filters;
+    const { currencyId, documentTypeId, excludeDocumentTypeId, withPartyBankAccount, accountabilityId, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, companyId, userId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -459,6 +460,9 @@ export class ZentraDocumentService {
       where.party = { id: partyId };
     }
 
+    if (currencyId && currencyId.trim() !== '') {
+      where.currency = { id: currencyId };
+    }
 
     if (documentCategoryId && documentCategoryId.trim() !== '') {
       where.documentCategory = { id: documentCategoryId };

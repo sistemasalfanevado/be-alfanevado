@@ -67,6 +67,7 @@ export class ZentraDocumentController {
     accountabilityId?: string;
     documentTypeId?: string;
     excludeDocumentTypeId?: string;
+    currencyId?: string;
   }) { 
     return this.zentraDocumentService.findByFilters(filters);
   }
