@@ -494,6 +494,7 @@ export class ZentraPartyService {
       select: {
         documents: {
           select: {
+            id: true,
             code: true,
             description: true,
             amountToPay: true,
@@ -532,6 +533,7 @@ export class ZentraPartyService {
     const documentCount = partyWithDocuments._count.documents;
     
     const documentList = partyWithDocuments.documents.map(doc => ({
+      id: doc.id,
       code: doc.code,
       description: doc.description,
       amountToPay: Number(doc.amountToPay),

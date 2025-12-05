@@ -90,6 +90,14 @@ export class ZentraAccountabilityController {
     return this.zentraAccountabilityService.updateDocument(id, updateZentraAccountabilityDto);
   }
 
+   @Put('update-simple-document/:id')
+  async updateSimpleDocument(
+    @Param('id') id: string,
+    @Body() updateZentraAccountabilityDto: any
+  ) {
+    return this.zentraAccountabilityService.updateSimpleDocument(id, updateZentraAccountabilityDto);
+  }
+
   @Delete('remove-document/:id')
   removeDocument(
     @Param('id') id: string,

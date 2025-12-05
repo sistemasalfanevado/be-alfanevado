@@ -466,6 +466,23 @@ export class ZentraAccountabilityService {
 
   }
 
+  async updateSimpleDocument(id: string, dataDocument: any) {
+
+    await this.zentraDocumentService.updateSimple(id,
+      {
+        documentCategoryId: dataDocument.documentCategoryId,
+        accountabilityId: dataDocument.accountabilityId,
+        documentOriginId: DOCUMENT_ORIGIN.RENDICION_CUENTAS
+      },
+    );
+
+    await this.updataAccountabilityData(dataDocument)
+
+    return { message: 'Accountability actualizada exitosamente' };
+
+
+  }
+
   async removeDocument(id: string) {
     await this.zentraDocumentService.remove(id);
   }
