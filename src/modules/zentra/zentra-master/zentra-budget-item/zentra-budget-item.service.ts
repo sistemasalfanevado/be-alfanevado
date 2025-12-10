@@ -66,7 +66,7 @@ export class ZentraBudgetItemService {
   }
 
 
-  private mapToDto(item: any, includeCategory = false) {
+  private mapToDto(item: any) {
     const available =
       item.amount !== null && item.executedDolares !== null
         ? Number((Number(item.amount) - Number(Math.abs(item.executedDolares))).toFixed(2))
@@ -100,21 +100,22 @@ export class ZentraBudgetItemService {
       budgetSubCategoryName: item?.definition?.category
         ? `${item.definition.category.name}`
         : null,
+
+      budgetSubCategoryId: item?.definition?.category
+        ? `${item.definition.category.id}`
+        : null,
+
       budgetCategoryName: item?.definition?.category?.budgetCategory
         ? `${item.definition.category.budgetCategory.name}`
         : null,
 
+      budgetCategoryId: item?.definition?.category?.budgetCategory
+        ? `${item.definition.category.budgetCategory.id}`
+        : null,
+
       idFirebase: item.idFirebase,
     };
-
-    if (includeCategory && item.definition.category) {
-      return {
-        ...base,
-        categoryId: item.definition.category.id,
-        categoryName: item.definition.category.name,
-      };
-    }
-
+    
     return base;
   }
 
@@ -187,7 +188,12 @@ export class ZentraBudgetItemService {
       where: { deletedAt: null, definition: { categoryId, projectId } },
       include: {
         currency: true,
-        definition: { include: { category: true, project: true } },
+        definition: { 
+          include: { 
+            category: true, 
+            project: true 
+          } 
+        },
       },
       orderBy: [
         { definition: { name: 'asc' } },
@@ -195,7 +201,7 @@ export class ZentraBudgetItemService {
       ],
     });
 
-    return results.map((item) => this.mapToDto(item, true));
+    return results.map((item) => this.mapToDto(item));
   }
 
 
@@ -229,7 +235,7 @@ export class ZentraBudgetItemService {
       },
     });
 
-    return results.map((item) => this.mapToDto(item, true));
+    return results.map((item) => this.mapToDto(item));
   }
 
   async findByFiltersExtra(filters: { projectId?: string }): Promise<any[]> {
@@ -252,6 +258,7 @@ export class ZentraBudgetItemService {
         { currency: { name: 'asc' } },
       ],
     });
+
 
     return results.map((item) => this.mapToDto(item));
   }

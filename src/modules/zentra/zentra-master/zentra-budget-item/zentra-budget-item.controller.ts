@@ -51,6 +51,7 @@ export class ZentraBudgetItemController {
     return this.zentraBudgetItemService.findAllByCompany(companyId);
   }  
 
+  
   @Post('category')
   findAllByCategory(@Body() body: { categoryId: string; projectId: string }) {
     return this.zentraBudgetItemService.findAllByCategory(body.categoryId, body.projectId);

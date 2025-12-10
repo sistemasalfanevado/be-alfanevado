@@ -72,7 +72,7 @@ export class ZentraLandingPageRelationService {
 
 
   async getLotsByProjectId(zentraProjectId: string) {
-    // 1. Buscar la relación para obtener el landingPageId
+
     const relation = await this.prisma.zentraLandingPageRelation.findFirst({
       where: { zentraProjectId, deletedAt: null },
       include: {
@@ -93,9 +93,16 @@ export class ZentraLandingPageRelationService {
       throw new Error('No se encontró una LandingPage para este proyecto');
     }
 
-    return relation.landingPage.lots.map((lot) => ({
+    
+    const lots = relation.landingPage.lots;
+
+    lots.sort((a, b) => {
+      return a.status.title.localeCompare(b.status.title);
+    });
+
+    return lots.map((lot) => ({
       id: lot.id,
-      title: `${lot.name} - ${lot.status.title}`, // Concatenar nombre + estado
+      title: `${lot.name} - ${lot.status.title}`,
       number: lot.number,
       block: lot.block,
       code: lot.code,
@@ -106,7 +113,7 @@ export class ZentraLandingPageRelationService {
       pricePerSquareMeter: lot.pricePerSquareMeter ?? 0,
       totalPrice: lot.totalPrice ?? 0,
     }));
+
+
   }
-
-
 }

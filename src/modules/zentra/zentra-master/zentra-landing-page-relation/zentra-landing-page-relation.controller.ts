@@ -56,5 +56,5 @@ export class ZentraLandingPageRelationController {
   getLotsByProjectId(@Param('id') id: string) {
     return this.zentraLandingPageRelationService.getLotsByProjectId(id);
   }
-
+  
 }
