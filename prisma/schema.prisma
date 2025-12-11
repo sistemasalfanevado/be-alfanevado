@@ -564,12 +564,13 @@ model ZentraProject {
   
   budgetItemDefinitions  ZentraBudgetItemDefinition[]
   bankAccounts  ZentraBankAccount[]
-  
   landingPages      ZentraLandingPageRelation[]
   bankStatements    ZentraBankStatement[]
   incomes           ZentraProjectIncome[]
   subProjects       ZentraSubProject[]
   projectUsers      ZentraUserProject[]
+  subStageProgress  ZentraSubStageProgress[]
+
   imageUrl      String?      @db.VarChar(300)
   
   createdAt     DateTime         @default(now())
@@ -1544,6 +1545,66 @@ model ZentraVisibility {
 
   @@map("zentra_visibility")
 }
+
+
+model ZentraStage {
+  id        String          @id @default(uuid())
+
+  name            String    @db.VarChar(50)
+  percentage      Decimal   @default(0.00) @db.Decimal(12, 2)
+
+  subStages  ZentraSubStage[]
+
+  deletedAt DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("zentra_stage")
+}
+
+model ZentraSubStage {
+  id        String      @id @default(uuid())
+
+  name        String      @db.VarChar(50)
+  percentage  Decimal     @default(0.00) @db.Decimal(12, 2)
+  
+  stageId    String
+  stage      ZentraStage @relation(fields: [stageId], references: [id])
+
+  subStageProgress  ZentraSubStageProgress[]
+  
+  deletedAt DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("zentra_sub_stage")
+}
+
+model ZentraSubStageProgress {
+  id                 String       @id @default(uuid())
+
+  responsible        String       @db.VarChar(100)
+  status             String       @db.VarChar(200)
+  finishDate         DateTime?
+
+  progressPercentage Decimal      @default(0.00) @db.Decimal(12, 2)
+  investmentAmount   Decimal      @default(0.00) @db.Decimal(14, 2)
+
+  subStageId         String
+  subStage           ZentraSubStage @relation(fields: [subStageId], references: [id])
+
+  projectId          String
+  project            ZentraProject @relation(fields: [projectId], references: [id])
+
+  deletedAt          DateTime?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@map("zentra_sub_stage_progress")
+}
+
+
+
 
 
 // Marketing
