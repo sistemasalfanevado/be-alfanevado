@@ -91,11 +91,11 @@ export class ZentraDocumentExpenseService {
     paidTotal = Math.abs(paidAmountDocumentEntry - paidAmountDocumentExit)
     let documentStatusId = DOCUMENT_STATUS.PENDIENTE;
 
-    // 🔹 Evaluar estado del documento
-    if (paidTotal >= Number(documentData?.amountToPay)) {
+    // 🔹 Evaluar estado del documento      
+    if (paidTotal >= Number(documentData?.totalAmount)) {
       documentStatusId = DOCUMENT_STATUS.PAGADO;
     } else if (
-      paidTotal < Number(documentData?.amountToPay) &&
+      paidTotal < Number(documentData?.totalAmount) &&
       paidTotal > 0
     ) {
       documentStatusId = DOCUMENT_STATUS.PENDIENTE;
