@@ -1532,9 +1532,15 @@ export class ZentraDocumentService {
       }, 0);
 
       const paidAmount = installments.reduce((sum, inst) => {
+        
         if (inst.installmentStatusId === INSTALLMENT_STATUS.PAGADO) {
           return sum + Number(inst.totalAmount || 0);
         }
+        
+        if (inst.installmentStatusId === INSTALLMENT_STATUS.PARCIAL) {
+          return sum + Number(inst.paidAmount || 0); 
+        }
+
         return sum;
       }, 0);
 
