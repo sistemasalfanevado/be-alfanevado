@@ -72,8 +72,6 @@ export class ZentraSubStageService {
 
   async findAllWithStage() {
 
-    console.log('Si entra: ')
-
     const data = await this.prisma.zentraSubStage.findMany({
       where: {
         deletedAt: null,
@@ -101,7 +99,7 @@ export class ZentraSubStageService {
       stageName: item.stage.name,
       stagePercentage: item.stage.percentage,
 
-      completeName: item.stage.name + ' - ' + item.stage.name,
+      completeName: item.stage.name + ' - ' + item.name,
 
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,

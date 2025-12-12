@@ -20,7 +20,7 @@ import { Public } from '../../../../auth/shared/decorators/public.decorator';
 export class ZentraSubStageProgressController {
   constructor(
     private readonly service: ZentraSubStageProgressService,
-  ) {}
+  ) { }
 
   @Post()
   create(@Body() dto: CreateZentraSubStageProgressDto) {
@@ -67,4 +67,18 @@ export class ZentraSubStageProgressController {
   findByProject(@Param('projectId') projectId: string) {
     return this.service.findByProject(projectId);
   }
+
+  @Post('by-sub-stage-and-project')
+  @Public()
+  findBySubStageAndProject(
+    @Body() filters: {
+      subStageId: string;
+      projectId: string;
+    }
+  ) {
+    return this.service.findBySubStageAndProject(filters);
+  }
+
+
+
 }

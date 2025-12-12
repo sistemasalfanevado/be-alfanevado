@@ -12,7 +12,10 @@ import { ZentraScheduledDebtDocumentService } from '../../zentra-master/zentra-s
 import { ZentraAccountabilityService } from '../../zentra-transaction/zentra-accountability/zentra-accountability.service';
 
 
-import { TRANSACTION_TYPE, CURRENCY, MOVEMENT_CATEGORY, BANK_ACCOUNT_HIERARCHY, EXCHANGE_RATE, DOCUMENT_ORIGIN } from 'src/shared/constants/app.constants';
+import {
+  TRANSACTION_TYPE, CURRENCY, MOVEMENT_CATEGORY,
+  BANK_ACCOUNT_HIERARCHY, EXCHANGE_RATE, DOCUMENT_ORIGIN, INSTALLMENT_STATUS
+} from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
 
@@ -24,7 +27,7 @@ export class ZentraDocumentService {
     private zentraScheduledIncomeDocumentService: ZentraScheduledIncomeDocumentService,
     private zentraMovementService: ZentraMovementService,
     private zentraExchangeRateService: ZentraExchangeRateService,
-    
+
     @Inject(forwardRef(() => ZentraAccountabilityService))
     private readonly zentraAccountabilityService: ZentraAccountabilityService,
 
@@ -671,7 +674,7 @@ export class ZentraDocumentService {
       // Si existe debo de actualizar la rendicion de cuentas
       await this.zentraAccountabilityService.updataAccountabilityData(documentData);
     }
-    
+
     // 4. Eliminar movimientos relacionados
     for (const movement of documentData.movements) {
       try {
@@ -848,7 +851,7 @@ export class ZentraDocumentService {
         party: updateData.partyId
           ? { connect: { id: updateData.partyId } }
           : undefined,
-        
+
         documentTransactionMethod: updateData.documentTransactionMethodId
           ? { connect: { id: updateData.documentTransactionMethodId } }
           : undefined,
@@ -1169,6 +1172,7 @@ export class ZentraDocumentService {
       saleTypeId: dataDocument.saleTypeId,
       lotId: dataDocument.lotId,
       statusId: dataDocument.statusId,
+      transactionNatureId: dataDocument.transactionNatureId,
 
       // Extra info
       serialNumber: dataDocument.serialNumber,
@@ -1235,6 +1239,7 @@ export class ZentraDocumentService {
             saleType: true,
             lot: true,
             status: true,
+            transactionNature: true,
             installments: {
               where: { deletedAt: null },
               include: {
@@ -1316,6 +1321,9 @@ export class ZentraDocumentService {
 
         brokerId: sched?.broker?.id ?? null,
         brokerName: sched?.broker?.name ?? null,
+
+        transactionNatureId: sched?.transactionNature?.id ?? null,
+        transactionNatureName: sched?.transactionNature?.name ?? null,
 
         saleTypeId: sched?.saleType?.id ?? null,
         saleTypeName: sched?.saleType?.name ?? null,
@@ -1404,6 +1412,7 @@ export class ZentraDocumentService {
               saleTypeId: updateData.saleTypeId,
               lotId: updateData.lotId,
               statusId: updateData.statusId,
+              transactionNatureId: updateData.transactionNatureId,
 
               serialNumber: updateData.serialNumber,
               referenceCode: updateData.referenceCode,
@@ -1453,7 +1462,7 @@ export class ZentraDocumentService {
     });
   }
 
-  async findByFiltersScheduledIncomeReport(filters: { projectId: string, documentCategoryId: string }) {
+  async findByFiltersScheduledIncomeReport(filters: { projectId: string, documentCategoryId: string, transactionNatureId: string }) {
 
     const documentList = await this.prisma.zentraDocument.findMany({
       where: {
@@ -1475,7 +1484,7 @@ export class ZentraDocumentService {
           },
         },
         scheduledIncomeDocuments: {
-          where: { deletedAt: null },
+          where: { deletedAt: null, transactionNatureId: filters.transactionNatureId },
           include: {
             broker: true,
             saleType: true,
@@ -1483,6 +1492,7 @@ export class ZentraDocumentService {
               include: { status: true }, // importante para lot.status.title
             },
             status: true,
+            installments: true
           },
         },
       },
@@ -1515,8 +1525,19 @@ export class ZentraDocumentService {
       const lastBroker = lastScheduled?.broker;
       const lastSaleType = lastScheduled?.saleType;
 
-      const amountToPay = Number(doc.amountToPay || 0);
-      const paidAmount = Number(doc.paidAmount || 0);
+      const installments = lastScheduled?.installments ?? [];
+
+      const amountToPay = installments.reduce((sum, inst) => {
+        return sum + Number(inst.totalAmount || 0);
+      }, 0);
+
+      const paidAmount = installments.reduce((sum, inst) => {
+        if (inst.installmentStatusId === INSTALLMENT_STATUS.PAGADO) {
+          return sum + Number(inst.totalAmount || 0);
+        }
+        return sum;
+      }, 0);
+
 
       return {
         id: doc.id,

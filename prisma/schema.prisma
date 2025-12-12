@@ -1169,6 +1169,19 @@ model ZentraBroker {
   @@map("zentra_broker")
 }
 
+model ZentraTransactionNature {
+  id          String                   @id @default(uuid())
+  name        String                   @db.VarChar(100)
+
+  scheduledIncomeDocuments ZentraScheduledIncomeDocument[]
+
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+  deletedAt   DateTime?
+  
+  @@map("zentra_transaction_nature")
+}
+
 model ZentraScheduledIncomeDocument {
   id           String         @id @default(uuid())
 
@@ -1177,6 +1190,9 @@ model ZentraScheduledIncomeDocument {
 
   broker       ZentraBroker?  @relation(fields: [brokerId], references: [id])
   brokerId     String?
+
+  transactionNature       ZentraTransactionNature?  @relation(fields: [transactionNatureId], references: [id])
+  transactionNatureId     String?
 
   saleType     ZentraSaleType? @relation(fields: [saleTypeId], references: [id])
   saleTypeId   String?

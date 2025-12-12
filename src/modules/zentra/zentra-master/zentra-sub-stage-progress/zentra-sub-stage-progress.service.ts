@@ -106,7 +106,52 @@ export class ZentraSubStageProgressService {
 
       stageId: item.subStage.stage.id,
       stageName: item.subStage.stage.name,
-      
+
+      projectId: item.projectId,
+      projectName: item.project.name,
+
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
+    }));
+  }
+
+  async findBySubStageAndProject(filters: { subStageId: string; projectId: string }) {
+    const { subStageId, projectId } = filters;
+
+    const list = await this.prisma.zentraSubStageProgress.findMany({
+      where: { deletedAt: null, projectId, subStageId },
+      include: {
+        subStage: {
+          select: {
+            name: true,
+            stage: true
+          },
+        },
+        project: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return list.map(item => ({
+      id: item.id,
+
+      responsible: item.responsible,
+      status: item.status,
+      finishDate: moment(item.finishDate).format('DD/MM/YYYY'),
+
+      progressPercentage: item.progressPercentage,
+      investmentAmount: item.investmentAmount,
+
+      subStageId: item.subStageId,
+      subStageName: item.subStage.name,
+
+      stageId: item.subStage.stage.id,
+      stageName: item.subStage.stage.name,
+
       projectId: item.projectId,
       projectName: item.project.name,
 

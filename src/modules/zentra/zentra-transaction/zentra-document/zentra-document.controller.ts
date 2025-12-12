@@ -132,7 +132,7 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.updateFinancialExpense(id, updateZentraDocumentDto);
   }
 
-  // Scheduled Document Income
+  // Scheduled Document Income 
   @Post('scheduled-income')
   createScheduledIncome(@Body() createZentraDocumentDto: any) {
     return this.zentraDocumentService.createScheduledIncome(createZentraDocumentDto);
@@ -172,9 +172,11 @@ export class ZentraDocumentController {
   searchScheduledIncomeReport(@Body() filters: {
     projectId: string;
     documentCategoryId: string;
+    transactionNatureId: string;
   }) {
-    return this.zentraDocumentService.findByFiltersScheduledIncomeReport(filters);
+    return this.zentraDocumentService.findByFiltersScheduledIncomeReport(filters); 
   }
+  
 
   @Post('scheduled-income/ia')
   @Public()

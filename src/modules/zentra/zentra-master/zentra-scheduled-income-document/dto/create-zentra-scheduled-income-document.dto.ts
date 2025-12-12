@@ -21,6 +21,10 @@ export class CreateZentraScheduledIncomeDocumentDto {
   @IsOptional()
   statusId?: string;
 
+  @IsString()
+  @IsOptional()
+  transactionNatureId?: string;
+  
   // 🔹 New optional fields (English)
   @IsString()
   @IsOptional()
