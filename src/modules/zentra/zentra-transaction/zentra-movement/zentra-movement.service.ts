@@ -24,9 +24,9 @@ export class ZentraMovementService {
             partyDocuments: {
               where: {
                 deletedAt: null,
-                documentHierarchyId: PARTY_DOCUMENT_HIERARCHY.PRINCIPAL, // 🔥 filtro principal
+                documentHierarchyId: PARTY_DOCUMENT_HIERARCHY.PRINCIPAL,
               },
-              take: 1, // solo uno
+              take: 1,
               include: {
                 documentType: true,
                 documentHierarchy: true,
@@ -218,6 +218,7 @@ export class ZentraMovementService {
 
       installmentId: !item.installment?.id ? '' : item.installment?.id,
       installmentCuota: !item.installment?.letra ? '' : 'Cuota: ' + item.installment?.letra,
+
 
       documentUrl: item.documentUrl,
       documentName: item.documentName,

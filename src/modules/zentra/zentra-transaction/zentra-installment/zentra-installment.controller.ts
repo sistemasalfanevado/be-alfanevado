@@ -104,6 +104,10 @@ export class ZentraInstallmentController {
     return this.zentraInstallmentService.findAllByCompanyDebt(companyId);
   }
 
+  @Post('recalculate')
+  recalculateInstallment(@Body() body: { installmentId: string }) {
+    return this.zentraInstallmentService.recalculateSimpleInstallmentAndDocument(body.installmentId);
+  }
 
 
 }

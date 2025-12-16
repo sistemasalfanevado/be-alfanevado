@@ -1438,6 +1438,8 @@ export class ZentraDocumentService {
           });
         }
 
+
+
         // 3. Retornar algo simple (ej: solo el id actualizado)
         return {
           id,
@@ -1450,6 +1452,7 @@ export class ZentraDocumentService {
       },
     );
   }
+  
 
   async removeScheduledIncome(id: string) {
     return this.removeDocumentWithScheduledIncome(id);
@@ -1521,27 +1524,44 @@ export class ZentraDocumentService {
 
     const reportData = documentList.map((doc) => {
       const lastScheduled = doc.scheduledIncomeDocuments[0];
+
       const lot = lastScheduled?.lot;
       const lastBroker = lastScheduled?.broker;
       const lastSaleType = lastScheduled?.saleType;
 
       const installments = lastScheduled?.installments ?? [];
 
+
+
       const amountToPay = installments.reduce((sum, inst) => {
         return sum + Number(inst.totalAmount || 0);
       }, 0);
 
       const paidAmount = installments.reduce((sum, inst) => {
-        
+
         if (inst.installmentStatusId === INSTALLMENT_STATUS.PAGADO) {
           return sum + Number(inst.totalAmount || 0);
         }
-        
+
         if (inst.installmentStatusId === INSTALLMENT_STATUS.PARCIAL) {
-          return sum + Number(inst.paidAmount || 0); 
+          return sum + Number(inst.paidAmount || 0);
         }
 
         return sum;
+      }, 0);
+
+      const paidAmountInstallment = installments.reduce((sumTemp, inst) => {
+
+        if (inst.installmentStatusId === INSTALLMENT_STATUS.PAGADO) {
+          return sumTemp + Number(inst.paidAmount || 0);
+        }
+
+        if (inst.installmentStatusId === INSTALLMENT_STATUS.PARCIAL) {
+          return sumTemp + Number(inst.paidAmount || 0);
+        }
+        
+
+        return sumTemp;
       }, 0);
 
 
@@ -1563,6 +1583,10 @@ export class ZentraDocumentService {
         documentCurrencyId: doc.currency?.id || '',
         documentAmountToPay: amountToPay,
         documentPaidAmount: paidAmount,
+
+        paidAmountInstallment: paidAmountInstallment,
+
+
         documentPendingAmount: Math.round((amountToPay - paidAmount) * 100) / 100,
 
         brokerName: lastBroker?.name || '',
@@ -1603,6 +1627,7 @@ export class ZentraDocumentService {
         documentCurrencyId: '',
         documentAmountToPay: 0,
         documentPaidAmount: 0,
+        paidAmountInstallment: 0,
         documentPendingAmount: 0,
         brokerName: '',
         partyName: '',

@@ -223,6 +223,8 @@ export class ZentraInstallmentService {
     return this.recalculateInstallmentAndDocument(data.installmentId);
   }
 
+
+
   async removeMovement(id: string) {
     const movementData = await this.zentraMovementService.findOne(id);
     const installmentData = movementData?.installment;
@@ -240,6 +242,11 @@ export class ZentraInstallmentService {
     await this.zentraMovementService.update(id, data);
     return this.recalculateInstallmentAndDocument(data.installmentId);
   }
+
+  async recalculateSimpleInstallmentAndDocument(installmentId: string) {
+    return this.recalculateInstallmentAndDocument(installmentId);
+  }
+
 
   private async recalculateInstallmentAndDocument(installmentId: string) {
     const installmentData = await this.findOne(installmentId);
