@@ -109,7 +109,7 @@ model LandingProject {
   linkImage2    String      @db.VarChar(400)
   title         String      @db.VarChar(150)
   subtitle      String      @db.VarChar(400)
-  textButton    String      @db.VarChar(50)
+  textButton    String      @db.VarChar(100)
   linkRedirect1 String?     @db.VarChar(400)
   linkRedirect2 String?     @db.VarChar(400)
   pageId        String

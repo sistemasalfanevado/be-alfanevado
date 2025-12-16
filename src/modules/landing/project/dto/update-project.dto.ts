@@ -38,12 +38,12 @@ export class UpdateProjectDto {
 
   @IsString()
   @IsOptional()
-  @MaxLength(50)
+  @MaxLength(100)
   textButton?: string;
 
   @IsString()
   @IsOptional()
-  @MaxLength(200)f
+  @MaxLength(200)
   linkRedirect1?: string;
 
   @IsString()

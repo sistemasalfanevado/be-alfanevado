@@ -38,7 +38,7 @@ export class CreateProjectDto {
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(50)
+  @MaxLength(100)
   textButton: string;
 
   @IsString()
