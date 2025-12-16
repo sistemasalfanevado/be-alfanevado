@@ -6,6 +6,7 @@ import { AuthModule } from '../../../../auth/landing/auth.module';
 import { ZentraMovementModule } from '../../zentra-transaction/zentra-movement/zentra-movement.module';
 import { ZentraDocumentModule } from '../../zentra-transaction/zentra-document/zentra-document.module';
 
+
 @Module({
   imports: [PrismaModule, AuthModule, ZentraMovementModule,
     forwardRef(() => ZentraDocumentModule),

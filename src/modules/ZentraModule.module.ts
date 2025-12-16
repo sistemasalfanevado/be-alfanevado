@@ -98,6 +98,10 @@ import { ZentraTelecreditoOperationDetailModule } from './zentra/zentra-transact
 // Zentra Ollama
 import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-ollama.module';
 
+// Zentra Mail
+import { MailModule } from '../mail/mail.module';
+
+
 // Zentra Marketing
 import { ZentraLandingLeadModule } from './zentra/zentra-mkt/zentra-landing-lead/zentra-landing-lead.module';
 
@@ -105,6 +109,7 @@ import { ZentraLandingLeadModule } from './zentra/zentra-mkt/zentra-landing-lead
 // Zentra Rendición de Cuentas
 import { ZentraAccountabilityStatusModule } from './zentra/zentra-master/zentra-accountability-status/zentra-accountability-status.module';
 import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-accountability/zentra-accountability.module';
+
 
 
 @Module({
@@ -196,10 +201,11 @@ import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-a
     ZentraInstallmentFileModule,
 
 
+
     // Utils
     ZentraBankStatementModule,
     ZentraOllamaModule,
-
+    MailModule,
 
     // Marketing
     ZentraLandingLeadModule,
