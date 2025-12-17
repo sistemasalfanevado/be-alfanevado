@@ -1366,6 +1366,137 @@ export class ZentraDocumentService {
 
   }
 
+  async findByFiltersScheduledIncomeWithDetail(filters: {
+    documentCategoryId?: string;
+    documentStatusId?: string;
+    partyId?: string;
+    startDate?: string;
+    endDate?: string;
+    projectId?: string;
+    companyId?: string;
+  }) {
+    const where = this.buildDocumentFilters(filters);
+
+    const results = await this.prisma.zentraDocument.findMany({
+      where,
+      include: {
+        documentStatus: true,
+        party: true,
+        currency: true,
+        budgetItem: {
+          include: {
+            definition: {
+              include: {
+                project: true,
+              }
+            },
+          },
+        },
+        user: true,
+        scheduledIncomeDocuments: {
+          where: { deletedAt: null },
+          include: {
+            saleType: true,
+            lot: true,
+            status: true,
+            transactionNature: true,
+            installments: {
+              where: { deletedAt: null },
+              include: {
+                currency: true,
+                installmentStatus: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        documentDate: 'desc',
+      },
+    });
+
+    const mappedResults = results.map((doc) => {
+      const sched = doc.scheduledIncomeDocuments?.[0];
+
+      return {
+        id: doc.id,
+        code: doc.code,
+        description: doc.description,
+
+        totalAmount: doc.totalAmount,
+        taxAmount: doc.taxAmount,
+        netAmount: doc.netAmount,
+        detractionRate: doc.detractionRate,
+        detractionAmount: doc.detractionAmount,
+        amountToPay: doc.amountToPay,
+        paidAmount: doc.paidAmount,
+
+        registeredAt: moment(doc.registeredAt).format('DD/MM/YYYY'),
+        documentDate: moment(doc.documentDate).format('DD/MM/YYYY'),
+        expireDate: moment(doc.expireDate).format('DD/MM/YYYY'),
+
+        partyId: doc.party?.id,
+        partyName: doc.party?.name,
+        partyAddress: doc.party?.address,
+
+        documentStatusId: doc.documentStatus?.id,
+        documentStatusName: doc.documentStatus?.name,
+
+        currencyId: doc.currency?.id,
+        currencyName: doc.currency?.name,
+
+        userId: doc.user?.id,
+
+        observation: doc.observation,
+        idFirebase: doc.idFirebase,
+
+        scheduledIncomeDocumentId: sched?.id,
+
+        saleTypeId: sched?.saleType?.id ?? null,
+        saleTypeName: sched?.saleType?.name ?? null,
+
+        lotId: sched?.lot?.id ?? null,
+        lotName: sched?.lot?.name ?? null,
+        lotCode: sched?.lot?.code ?? null,
+
+        lotComplete: `${sched?.saleType?.name ?? ''} ${sched?.lot?.name ?? ''}`.trim(),
+
+        statusId: sched?.status?.id ?? null,
+        statusName: sched?.status?.name ?? null,
+
+        installments: sched?.installments
+          ?.sort((a, b) => a.letra - b.letra)
+          .map((inst) => ({
+            id: inst.id,
+            scheduledIncomeDocumentId: inst.scheduledIncomeDocumentId,
+            letra: inst.letra,
+            extra: inst.extra,
+            capital: inst.capital,
+            interest: inst.interest,
+            totalAmount: inst.totalAmount,
+            paidAmount: inst.paidAmount,
+            description: inst.description,
+            dueDate: moment(inst.dueDate).format('DD/MM/YYYY'),
+            currencyId: inst.currency?.id,
+            currencyName: inst.currency?.name,
+            installmentStatusId: inst.installmentStatus?.id,
+            installmentStatusName: inst.installmentStatus?.name,
+            idFirebase: inst.idFirebase,
+          })) ?? [],
+      };
+    });
+
+
+    return mappedResults.sort((a, b) => {
+      if (!a.lotCode) return 1;
+      if (!b.lotCode) return -1;
+      return a.lotCode.localeCompare(b.lotCode, 'es', { numeric: true });
+    });
+
+
+
+  }
+
   async updateScheduledIncome(id: string, updateData: any) {
     return this.prisma.$transaction(
       async (tx) => {
@@ -2202,7 +2333,7 @@ export class ZentraDocumentService {
       budgetItemName: item.budgetItem
         ? `${item.budgetItem.definition.name}`
         : null,
-      
+
       projectName: item.budgetItem
         ? `${item.budgetItem.definition.project.name}`
         : null,
@@ -2215,7 +2346,7 @@ export class ZentraDocumentService {
 
       documentCategoryId: item.documentCategory?.id,
       documentCategoryName: item.documentCategory?.name,
-    
+
     }));
 
 
