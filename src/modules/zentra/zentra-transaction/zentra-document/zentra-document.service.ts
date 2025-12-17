@@ -1452,7 +1452,7 @@ export class ZentraDocumentService {
       },
     );
   }
-  
+
 
   async removeScheduledIncome(id: string) {
     return this.removeDocumentWithScheduledIncome(id);
@@ -1559,7 +1559,7 @@ export class ZentraDocumentService {
         if (inst.installmentStatusId === INSTALLMENT_STATUS.PARCIAL) {
           return sumTemp + Number(inst.paidAmount || 0);
         }
-        
+
 
         return sumTemp;
       }, 0);
@@ -2073,6 +2073,154 @@ export class ZentraDocumentService {
   async removeScheduledDebt(id: string) {
     return this.removeDocumentWithScheduledDebt(id);
   }
+
+
+
+
+  async findByFiltersReport(filters: {
+    documentDateId?: string,
+    transactionTypeId?: string,
+    documentStatusId?: string;
+    documentCategoryId?: string;
+    companyId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    const { documentDateId, transactionTypeId, documentStatusId, documentCategoryId, companyId, startDate, endDate } = filters;
+
+    const where: any = {
+      deletedAt: null,
+    };
+
+    if ((startDate || endDate) && documentDateId === '1') {
+      where.registeredAt = {};
+      if (startDate) {
+        where.registeredAt.gte = moment(startDate).startOf('day').toDate();
+      }
+      if (endDate) {
+        where.registeredAt.lte = moment(endDate).endOf('day').toDate();
+      }
+    }
+
+    if ((startDate || endDate) && documentDateId === '2') {
+      where.documentDate = {};
+      if (startDate) {
+        where.documentDate.gte = moment(startDate).startOf('day').toDate();
+      }
+      if (endDate) {
+        where.documentDate.lte = moment(endDate).endOf('day').toDate();
+      }
+    }
+
+    if (documentStatusId && documentStatusId.trim() !== '') {
+      where.documentStatus = { id: documentStatusId };
+    }
+
+    if (documentCategoryId && documentCategoryId.trim() !== '') {
+      where.documentCategory = { id: documentCategoryId };
+    }
+
+    if (transactionTypeId && transactionTypeId.trim() !== '') {
+      where.transactionType = { id: transactionTypeId };
+    }
+
+    if (companyId && companyId.trim() !== '') {
+      where.budgetItem = {
+        definition: {
+          project: {
+            companyId
+          }
+        },
+      };
+    }
+
+    let orderBy: any = {
+      documentDate: 'desc',
+    };
+
+    if (documentDateId === '1') {
+      orderBy = { registeredAt: 'desc' };
+    }
+
+    if (documentDateId === '2') {
+      orderBy = { documentDate: 'desc' };
+    }
+
+    const results = await this.prisma.zentraDocument.findMany({
+      where,
+      include: {
+        documentStatus: true,
+        transactionType: true,
+        documentType: true,
+        party: true,
+        budgetItem: {
+          include: {
+            definition: {
+              include: {
+                project: true
+              }
+            },
+          }
+        },
+        currency: true,
+        user: true,
+        documentCategory: true,
+      },
+      orderBy
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      code: item.code,
+      description: item.description,
+
+      totalAmount: item.totalAmount,
+      taxAmount: item.taxAmount,
+      netAmount: item.netAmount,
+      detractionRate: item.detractionRate,
+      detractionAmount: item.detractionAmount,
+      amountToPay: item.amountToPay,
+      paidAmount: item.paidAmount,
+
+      registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
+      documentDate: moment(item.documentDate).format('DD/MM/YYYY'),
+      expireDate: moment(item.expireDate).format('DD/MM/YYYY'),
+
+      transactionTypeId: item.transactionType.id,
+      transactionTypeName: item.transactionType.name,
+
+      documentTypeId: item.documentType.id,
+      documentTypeName: item.documentType.name,
+
+      partyId: item.party.id,
+      partyName: item.party.name,
+
+      documentStatusId: item.documentStatus.id,
+      documentStatusName: item.documentStatus.name,
+
+      budgetItemId: item.budgetItem.id,
+      budgetItemName: item.budgetItem
+        ? `${item.budgetItem.definition.name}`
+        : null,
+      
+      projectName: item.budgetItem
+        ? `${item.budgetItem.definition.project.name}`
+        : null,
+
+      currencyId: item.currency.id,
+      currencyName: item.currency.name,
+
+      userId: item.user.id,
+      userName: item.user.firstName,
+
+      documentCategoryId: item.documentCategory?.id,
+      documentCategoryName: item.documentCategory?.name,
+    
+    }));
+
+
+  }
+
 
 
 }

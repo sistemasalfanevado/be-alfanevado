@@ -75,6 +75,8 @@ export class ZentraDocumentController {
 
 
 
+
+
   @Post('exchange-rate')
   createExchangeRate(@Body() createZentraDocumentDto: any) {
     return this.zentraDocumentService.createExchangeRate(createZentraDocumentDto);
@@ -218,5 +220,19 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.removeScheduledDebt(id);
   }
   
+
+  @Post('search-report')
+  @Public()
+  searchReport(@Body() filters: {
+    documentDateId?: string,
+    transactionTypeId?: string,
+    documentStatusId?: string;
+    documentCategoryId?: string;
+    companyId?: string;
+    startDate?: string;
+    endDate?: string;
+    }) { 
+    return this.zentraDocumentService.findByFiltersReport(filters);
+  }
 
 }
