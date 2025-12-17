@@ -277,6 +277,7 @@ model ZentraUser {
   userProjects          ZentraUserProject[]
   accountability        ZentraAccountability[]
   userParties           ZentraUserParty[]
+  notificationRecipients          ZentraNotificationRecipient[]
 
   deletedAt    DateTime?
   createdAt    DateTime     @default(now())
@@ -1619,6 +1620,19 @@ model ZentraSubStageProgress {
   @@map("zentra_sub_stage_progress")
 }
 
+
+model ZentraNotificationRecipient {
+  id        String     @id @default(uuid())
+
+  userId    String
+  user      ZentraUser @relation(fields: [userId], references: [id])
+
+  deletedAt DateTime?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("zentra_notification_recipient")
+}
 
 
 

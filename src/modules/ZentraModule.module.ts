@@ -36,6 +36,7 @@ import { ZentraStageModule } from './zentra/zentra-master/zentra-stage/zentra-st
 import { ZentraSubStageModule } from './zentra/zentra-master/zentra-sub-stage/zentra-sub-stage.module';
 import { ZentraSubStageProgressModule } from './zentra/zentra-master/zentra-sub-stage-progress/zentra-sub-stage-progress.module';
 import { ZentraTransactionNatureModule } from './zentra/zentra-master/zentra-transaction-nature/zentra-transaction-nature.module';
+import { ZentraNotificationRecipientModule } from './zentra/zentra-master/zentra-notification-recipient/zentra-notification-recipient.module';
 
 
 import { ZentraPartyDocumentModule } from './zentra/zentra-master/zentra-party-document/zentra-party-document.module';
@@ -136,6 +137,7 @@ import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-a
     ZentraSubStageModule,
     ZentraSubStageProgressModule,
     ZentraTransactionNatureModule,
+    ZentraNotificationRecipientModule,
     
     ZentraBankModule,
     ZentraBudgetItemCategoryModule,
