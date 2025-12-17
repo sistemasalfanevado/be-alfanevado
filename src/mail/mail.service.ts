@@ -43,111 +43,119 @@ export class MailService {
     });
   }
 
-
   async notifyDocumentsPaid(
-    documentList: { documentId: string; documentUrl: string }[],
-  ) {
-    // 🔹 Mapa documentId → documentUrl (Firebase)
-    const documentUrlMap = new Map<string, string>();
+  documentList: {
+    documentId: string;
+    documentUrl: string;
+    partyName: string;
+    documentCode: string;
+    documentDescription: string;
+    currencyName: string;
+    amount: string;
+  }[],
+) {
+  if (!documentList.length) {
+    return { sent: 0 };
+  }
 
-    for (const doc of documentList) {
-      documentUrlMap.set(doc.documentId, doc.documentUrl);
-    }
+  // 🔹 URL única (se repite siempre)
+  const documentUrl = documentList[0].documentUrl;
 
-    // 🔹 1️⃣ Buscar documentos con su usuario creador
-    const dbDocuments = await this.prisma.zentraDocument.findMany({
-      where: {
-        id: { in: documentList.map(d => d.documentId) },
-        deletedAt: null,
-      },
-      select: {
-        id: true,
-        code: true,
-        description: true,
-        user: {
-          select: {
-            email: true,
-            firstName: true,
-            lastName: true,
-          },
+  // 🔹 Receptores activos
+  const recipients = await this.prisma.zentraNotificationRecipient.findMany({
+    where: {
+      deletedAt: null,
+    },
+    include: {
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
         },
       },
-    });
+    },
+  });
 
-    // 🔹 2️⃣ Agrupar por usuario (evitar correos duplicados)
-    const notificationsMap = new Map<
-      string,
-      {
-        email: string;
-        fullName: string;
-        documents: {
-          code: string;
-          description: string;
-          url: string;
-        }[];
-      }
-    >();
+  // 🔹 Tabla HTML
+  const documentsTable = `
+    <table width="100%" cellpadding="0" cellspacing="0"
+      style="border-collapse: collapse; margin-top: 16px; font-size: 14px;">
+      <thead>
+        <tr style="background-color:#f1f5f9;">
+          <th style="border:1px solid #e2e8f0; padding:8px; text-align:left;">Proveedor</th>
+          <th style="border:1px solid #e2e8f0; padding:8px; text-align:left;">Documento</th>
+          <th style="border:1px solid #e2e8f0; padding:8px; text-align:left;">Descripción</th>
+          <th style="border:1px solid #e2e8f0; padding:8px; text-align:left;">Moneda</th>
+          <th style="border:1px solid #e2e8f0; padding:8px; text-align:right;">Monto</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${documentList
+          .map(
+            d => `
+            <tr>
+              <td style="border:1px solid #e2e8f0; padding:8px;">${d.partyName}</td>
+              <td style="border:1px solid #e2e8f0; padding:8px;"><strong>${d.documentCode}</strong></td>
+              <td style="border:1px solid #e2e8f0; padding:8px;">${d.documentDescription}</td>
+              <td style="border:1px solid #e2e8f0; padding:8px;">${d.currencyName}</td>
+              <td style="border:1px solid #e2e8f0; padding:8px; text-align:right;">${d.amount}</td>
+            </tr>
+          `,
+          )
+          .join('')}
+      </tbody>
+    </table>
+  `;
 
-    for (const doc of dbDocuments) {
-      if (!doc.user?.email) continue;
+  // 🔹 Botón link único
+  const documentLinkHtml = `
+    <div style="margin-top:20px; text-align:center;">
+      <a href="${documentUrl}" target="_blank"
+        style="
+          display:inline-block;
+          padding:12px 18px;
+          background-color:#2563eb;
+          color:#ffffff;
+          text-decoration:none;
+          border-radius:6px;
+          font-weight:600;
+        ">
+        📎 Ver documento
+      </a>
+    </div>
+  `;
 
-      if (!notificationsMap.has(doc.user.email)) {
-        notificationsMap.set(doc.user.email, {
-          email: doc.user.email,
-          fullName: `${doc.user.firstName} ${doc.user.lastName}`,
-          documents: [],
-        });
-      }
+  // 🔹 Envío de correos
+  for (const recipient of recipients) {
+    const fullName = `${recipient.user.firstName} ${recipient.user.lastName}`;
 
-      notificationsMap.get(doc.user.email)!.documents.push({
-        code: doc.code ?? doc.id,
-        description: doc.description ?? '',
-        url: documentUrlMap.get(doc.id) ?? '#',
-      });
-    }
+    await this.sendCustomEmail(
+      recipient.user.email,
+      '💰 Documentos pagados',
+      'Pago confirmado',
+      `
+        Hola ${fullName},<br /><br />
 
-    // 🔹 3️⃣ Enviar correos (1 por usuario)
-    for (const [, notification] of notificationsMap) {
-      const documentsHtml = notification.documents
-        .map(
-          d => `
-        <li style="margin-bottom: 12px;">
-          <strong>${d.code}</strong><br />
-          ${d.description}<br />
-          <a href="${d.url}" target="_blank" style="color:#2563eb;">
-            📎 Ver documento
-          </a>
-        </li>
+        Te informamos que los siguientes documentos ya fueron pagados mediante
+        <strong>Telecrédito</strong>:<br />
+
+        ${documentsTable}
+
+        ${documentLinkHtml}
+
+        <br /><br />
+        Gracias,<br />
+        <strong>Alfa Nevado</strong>
       `,
-        )
-        .join('');
-
-      await this.sendCustomEmail(
-        notification.email,
-        '💰 Documentos pagados',
-        'Pago confirmado',
-        `
-      Hola ${notification.fullName},<br /><br />
-
-      Te informamos que los siguientes documentos ya fueron pagados:<br /><br />
-
-      <ul>
-        ${documentsHtml}
-      </ul>
-
-      <br />
-      Gracias,<br />
-      <strong>Alfa Nevado</strong>
-      `,
-      );
-    }
-
-    // 🔹 4️⃣ Respuesta final
-    return {
-      totalDocuments: dbDocuments.length,
-      totalUsersNotified: notificationsMap.size,
-    };
+    );
   }
+
+  return {
+    totalRecipients: recipients.length,
+    totalDocuments: documentList.length,
+  };
+}
 
 
 

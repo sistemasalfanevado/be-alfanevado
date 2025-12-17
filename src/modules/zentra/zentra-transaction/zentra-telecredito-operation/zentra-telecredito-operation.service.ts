@@ -174,12 +174,13 @@ export class ZentraTelecreditoOperationService {
     });
 
     if (details && details.length > 0) {
-      for (const detail of details) {
+      for (const detail of details) { 
         await this.prisma.zentraTelecreditoOperationDetail.create({
           data: {
             telecreditoOperationId: operation.id,
             documentId: detail.documentId,
             totalAmount: detail.totalAmount,
+            
           },
         });
       }

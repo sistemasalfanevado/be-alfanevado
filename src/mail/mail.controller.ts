@@ -26,6 +26,11 @@ export class MailController {
     dto: {
       documents: {
         documentId: string;
+        partyName: string;
+        documentCode: string;
+        documentDescription: string;
+        currencyName: string;
+        amount: string;
         documentUrl: string;
       }[];
     },

@@ -55,8 +55,7 @@ export class ZentraNotificationRecipientService {
     return recipients.map((r) => ({
       id: r.id,
       userId: r.userId,
-      firstName: r.user.firstName,
-      lastName: r.user.lastName,
+      completeName: r.user.firstName + ' ' + r.user.lastName,
       email: r.user.email,
       createdAt: r.createdAt,
     }));
