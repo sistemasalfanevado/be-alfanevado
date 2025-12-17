@@ -6,20 +6,7 @@ import { SendTestMailDto } from './dto/send-test-mail.dto';
 export class MailController {
   constructor(private readonly mailService: MailService) { }
 
-  // 🔹 correo de prueba (ya funciona)
-  @Post('test')
-  sendTestMail(@Body() dto: SendTestMailDto) {
-    return this.mailService.sendCustomEmail(
-      dto.to,
-      dto.subject ?? '✅ Prueba de notificación',
-      dto.title ?? 'Notificación de prueba',
-      dto.message ??
-      'Este correo confirma que el servicio de correos funciona correctamente.',
-    );
-  }
-
-  // 🔹 NUEVO: notificar documentos pagados
-  // mail.controller.ts
+  
   @Post('notify-paid')
   notifyPaidDocuments(
     @Body()
@@ -37,4 +24,7 @@ export class MailController {
   ) {
     return this.mailService.notifyDocumentsPaid(dto.documents);
   }
+
+  
+
 }

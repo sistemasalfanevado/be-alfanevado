@@ -44,41 +44,41 @@ export class MailService {
   }
 
   async notifyDocumentsPaid(
-  documentList: {
-    documentId: string;
-    documentUrl: string;
-    partyName: string;
-    documentCode: string;
-    documentDescription: string;
-    currencyName: string;
-    amount: string;
-  }[],
-) {
-  if (!documentList.length) {
-    return { sent: 0 };
-  }
+    documentList: {
+      documentId: string;
+      documentUrl: string;
+      partyName: string;
+      documentCode: string;
+      documentDescription: string;
+      currencyName: string;
+      amount: string;
+    }[],
+  ) {
+    if (!documentList.length) {
+      return { sent: 0 };
+    }
 
-  // 🔹 URL única (se repite siempre)
-  const documentUrl = documentList[0].documentUrl;
+    // 🔹 URL única (se repite siempre)
+    const documentUrl = documentList[0].documentUrl;
 
-  // 🔹 Receptores activos
-  const recipients = await this.prisma.zentraNotificationRecipient.findMany({
-    where: {
-      deletedAt: null,
-    },
-    include: {
-      user: {
-        select: {
-          firstName: true,
-          lastName: true,
-          email: true,
+    // 🔹 Receptores activos
+    const recipients = await this.prisma.zentraNotificationRecipient.findMany({
+      where: {
+        deletedAt: null,
+      },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
         },
       },
-    },
-  });
+    });
 
-  // 🔹 Tabla HTML
-  const documentsTable = `
+    // 🔹 Tabla HTML
+    const documentsTable = `
     <table width="100%" cellpadding="0" cellspacing="0"
       style="border-collapse: collapse; margin-top: 16px; font-size: 14px;">
       <thead>
@@ -92,8 +92,8 @@ export class MailService {
       </thead>
       <tbody>
         ${documentList
-          .map(
-            d => `
+        .map(
+          d => `
             <tr>
               <td style="border:1px solid #e2e8f0; padding:8px;">${d.partyName}</td>
               <td style="border:1px solid #e2e8f0; padding:8px;"><strong>${d.documentCode}</strong></td>
@@ -102,14 +102,14 @@ export class MailService {
               <td style="border:1px solid #e2e8f0; padding:8px; text-align:right;">${d.amount}</td>
             </tr>
           `,
-          )
-          .join('')}
+        )
+        .join('')}
       </tbody>
     </table>
   `;
 
-  // 🔹 Botón link único
-  const documentLinkHtml = `
+    // 🔹 Botón link único
+    const documentLinkHtml = `
     <div style="margin-top:20px; text-align:center;">
       <a href="${documentUrl}" target="_blank"
         style="
@@ -126,15 +126,15 @@ export class MailService {
     </div>
   `;
 
-  // 🔹 Envío de correos
-  for (const recipient of recipients) {
-    const fullName = `${recipient.user.firstName} ${recipient.user.lastName}`;
+    // 🔹 Envío de correos
+    for (const recipient of recipients) {
+      const fullName = `${recipient.user.firstName} ${recipient.user.lastName}`;
 
-    await this.sendCustomEmail(
-      recipient.user.email,
-      '💰 Documentos pagados',
-      'Pago confirmado',
-      `
+      await this.sendCustomEmail(
+        recipient.user.email,
+        '💰 Documentos pagados',
+        'Pago confirmado',
+        `
         Hola ${fullName},<br /><br />
 
         Te informamos que los siguientes documentos ya fueron pagados mediante
@@ -148,15 +148,110 @@ export class MailService {
         Gracias,<br />
         <strong>Alfa Nevado</strong>
       `,
-    );
+      );
+    }
+
+    return {
+      totalRecipients: recipients.length,
+      totalDocuments: documentList.length,
+    };
   }
 
-  return {
-    totalRecipients: recipients.length,
-    totalDocuments: documentList.length,
-  };
-}
 
+  async notifyExpenseReportPendingAccounting(accountability: {
+    id: string;
+    approvedAmount: any;
+    accountedAmount: any;
+    user: {
+      firstName: string;
+      lastName: string;
+    };
+    budgetItem: {
+      definition: {
+        project: {
+          name: string;
+        };
+      };
+    };
+  }) {
+    // 🔹 Receptores (todos)
+    const recipients = await this.prisma.zentraNotificationRecipient.findMany({
+      where: {
+        deletedAt: null,
+      },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (!recipients.length) {
+      return { sent: 0 };
+    }
+
+    const userName = `${accountability.user.firstName} ${accountability.user.lastName}`;
+    const projectName =
+      accountability.budgetItem?.definition?.project?.name ?? '-';
+
+    // 🔹 Tabla HTML
+    const expenseReportTable = `
+    <table width="100%" cellpadding="0" cellspacing="0"
+      style="border-collapse: collapse; margin-top: 16px; font-size: 14px;">
+      <tbody>
+        <tr>
+          <td style="border:1px solid #e2e8f0; padding:8px;"><strong>Usuario</strong></td>
+          <td style="border:1px solid #e2e8f0; padding:8px;">${userName}</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #e2e8f0; padding:8px;"><strong>Código rendición</strong></td>
+          <td style="border:1px solid #e2e8f0; padding:8px;">${accountability.id}</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #e2e8f0; padding:8px;"><strong>Proyecto</strong></td>
+          <td style="border:1px solid #e2e8f0; padding:8px;">${projectName}</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #e2e8f0; padding:8px;"><strong>Monto solicitado</strong></td>
+          <td style="border:1px solid #e2e8f0; padding:8px;">
+            ${Number(accountability.approvedAmount).toFixed(2)}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  `;
+
+    // 🔹 Envío
+    for (const recipient of recipients) {
+      const fullName = `${recipient.user.firstName} ${recipient.user.lastName}`;
+
+      await this.sendCustomEmail(
+        recipient.user.email,
+        '🧾 Rendición pendiente de validación contable',
+        'Validación contable pendiente',
+        `
+        Hola ${fullName},<br /><br />
+
+        Se ha completado una <strong>rendición de cuentas</strong> y se encuentra
+        en estado de <strong>Validación Contable Pendiente</strong>.<br /><br />
+
+        ${expenseReportTable}
+
+        <br />
+        Por favor, ingresa al sistema para realizar la validación correspondiente.<br /><br />
+
+        Gracias,<br />
+        <strong>Alfa Nevado</strong>
+      `,
+      );
+    }
+
+    return { sent: recipients.length };
+  }
 
 
 

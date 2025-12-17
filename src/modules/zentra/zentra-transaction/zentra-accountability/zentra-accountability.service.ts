@@ -4,6 +4,8 @@ import { CreateZentraAccountabilityDto } from './dto/create-zentra-accountabilit
 import { UpdateZentraAccountabilityDto } from './dto/update-zentra-accountability.dto';
 import { ZentraDocumentService } from '../zentra-document/zentra-document.service';
 import { ZentraDocumentSalesService } from '../zentra-document-sales/zentra-document-sales.service';
+import { MailService } from '../../../../mail/mail.service';
+
 
 import { DOCUMENT_CATEGORY, DOCUMENT_STATUS, DOCUMENT_ORIGIN, ACCOUNTABILITY_STATUS, DOCUMENT_TYPE, PARTY_DOCUMENT_HIERARCHY } from 'src/shared/constants/app.constants';
 
@@ -18,7 +20,7 @@ export class ZentraAccountabilityService {
     private readonly zentraDocumentService: ZentraDocumentService,
     @Inject(forwardRef(() => ZentraDocumentSalesService))
     private readonly zentraDocumentSalesService: ZentraDocumentSalesService,
-
+    private mailService: MailService
   ) { }
 
   private includeRelations = {
@@ -171,10 +173,33 @@ export class ZentraAccountabilityService {
     return this.prisma.zentraAccountability.findUnique({
       where: { id },
       select: {
-        id: true
+        id: true,
+        approvedAmount: true,
+        accountedAmount: true,
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+          }
+        },
+        budgetItem: {
+          select: {
+            definition: {
+              select: {
+                project: {
+                  select: {
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     });
   }
+
+
 
   async update(id: string, updateDto: UpdateZentraAccountabilityDto) {
     return this.prisma.zentraAccountability.update({
@@ -588,6 +613,9 @@ export class ZentraAccountabilityService {
     let stateAccountability = ACCOUNTABILITY_STATUS.RENDICION_PENDIENTE
 
     if (totalAccountedAmount === totalApprovedAmount && totalAccountedAmount > 0 && totalApprovedAmount > 0) {
+      if (accountabilityData?.id) {
+        await this.mailService.notifyExpenseReportPendingAccounting(accountabilityData)
+      } 
       stateAccountability = ACCOUNTABILITY_STATUS.VALIDACION_CONTABLE_PENDIENTE
     }
 
