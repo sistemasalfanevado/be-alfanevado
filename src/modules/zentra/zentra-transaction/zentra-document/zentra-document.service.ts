@@ -1388,7 +1388,7 @@ export class ZentraDocumentService {
             definition: {
               include: {
                 project: true,
-              }
+              },
             },
           },
         },
@@ -1411,91 +1411,71 @@ export class ZentraDocumentService {
         },
       },
       orderBy: {
-        documentDate: 'desc',
+        documentDate: 'desc', // orden base
       },
     });
 
-    const mappedResults = results.map((doc) => {
+    const mappedResults = results.flatMap((doc) => {
       const sched = doc.scheduledIncomeDocuments?.[0];
 
-      return {
-        id: doc.id,
-        code: doc.code,
-        description: doc.description,
+      if (!sched?.installments?.length) return [];
 
-        totalAmount: doc.totalAmount,
-        taxAmount: doc.taxAmount,
-        netAmount: doc.netAmount,
-        detractionRate: doc.detractionRate,
-        detractionAmount: doc.detractionAmount,
-        amountToPay: doc.amountToPay,
-        paidAmount: doc.paidAmount,
-
-        registeredAt: moment(doc.registeredAt).format('DD/MM/YYYY'),
-        documentDate: moment(doc.documentDate).format('DD/MM/YYYY'),
-        expireDate: moment(doc.expireDate).format('DD/MM/YYYY'),
-
-        partyId: doc.party?.id,
+      return sched.installments.map((inst) => ({
+        // 🔹 Cabecera
+        documentId: doc.id,
+        projectName: doc.budgetItem.definition.project.name,
+        documentTotalAmount: doc.totalAmount,
+        documentAmountToPay: doc.amountToPay,
+        documentCurrencyName: doc.currency?.name,
         partyName: doc.party?.name,
-        partyAddress: doc.party?.address,
 
-        documentStatusId: doc.documentStatus?.id,
-        documentStatusName: doc.documentStatus?.name,
+        lotId: sched.lot?.id ?? null,
+        lotName: sched.lot?.name ?? null,
+        lotCode: sched.lot?.code ?? null,
 
-        currencyId: doc.currency?.id,
-        currencyName: doc.currency?.name,
-
-        userId: doc.user?.id,
-
-        observation: doc.observation,
-        idFirebase: doc.idFirebase,
-
-        scheduledIncomeDocumentId: sched?.id,
-
-        saleTypeId: sched?.saleType?.id ?? null,
-        saleTypeName: sched?.saleType?.name ?? null,
-
-        lotId: sched?.lot?.id ?? null,
-        lotName: sched?.lot?.name ?? null,
-        lotCode: sched?.lot?.code ?? null,
-
-        lotComplete: `${sched?.saleType?.name ?? ''} ${sched?.lot?.name ?? ''}`.trim(),
-
-        statusId: sched?.status?.id ?? null,
-        statusName: sched?.status?.name ?? null,
-
-        installments: sched?.installments
-          ?.sort((a, b) => a.letra - b.letra)
-          .map((inst) => ({
-            id: inst.id,
-            scheduledIncomeDocumentId: inst.scheduledIncomeDocumentId,
-            letra: inst.letra,
-            extra: inst.extra,
-            capital: inst.capital,
-            interest: inst.interest,
-            totalAmount: inst.totalAmount,
-            paidAmount: inst.paidAmount,
-            description: inst.description,
-            dueDate: moment(inst.dueDate).format('DD/MM/YYYY'),
-            currencyId: inst.currency?.id,
-            currencyName: inst.currency?.name,
-            installmentStatusId: inst.installmentStatus?.id,
-            installmentStatusName: inst.installmentStatus?.name,
-            idFirebase: inst.idFirebase,
-          })) ?? [],
-      };
+        // 🔹 Cuota
+        installmentId: inst.id,
+        letra: inst.letra,
+        installmentStatusId: inst.installmentStatus?.id,
+        installmentStatusName: inst.installmentStatus?.name,
+        dueDate: moment(inst.dueDate).format('DD/MM/YYYY'),
+        description: inst.description,
+        capital: inst.capital,
+        interest: inst.interest,
+        extra: inst.extra,
+        totalAmount: inst.totalAmount,
+        paidAmount: inst.paidAmount,
+      }));
     });
-
 
     return mappedResults.sort((a, b) => {
+      // 1️⃣ Proyecto
+      const projectCompare = (a.projectName || '').localeCompare(
+        b.projectName || '',
+        'es',
+        { sensitivity: 'base' }
+      );
+      if (projectCompare !== 0) return projectCompare;
+
+      // 2️⃣ Lote
       if (!a.lotCode) return 1;
       if (!b.lotCode) return -1;
-      return a.lotCode.localeCompare(b.lotCode, 'es', { numeric: true });
+
+      const lotCompare = a.lotCode.localeCompare(
+        b.lotCode,
+        'es',
+        { numeric: true }
+      );
+      if (lotCompare !== 0) return lotCompare;
+
+      // 3️⃣ Letra
+      return (a.letra ?? 0) - (b.letra ?? 0);
     });
 
 
-
+    
   }
+
 
   async updateScheduledIncome(id: string, updateData: any) {
     return this.prisma.$transaction(

@@ -53,6 +53,11 @@ export class UpdateZentraInstallmentDto {
   
   @IsString()
   @IsOptional()
+  @MaxLength(50)
+  code: string;
+
+  @IsString() 
+  @IsOptional()
   @MaxLength(200)
   description: string;
   

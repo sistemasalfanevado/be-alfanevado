@@ -1298,7 +1298,9 @@ model ZentraInstallment {
   extra        Decimal @db.Decimal(12, 2)
   dueDate      DateTime
 
-  paidAmount    Decimal  @default(0.00) @db.Decimal(12, 2)  
+  paidAmount    Decimal  @default(0.00) @db.Decimal(12, 2) 
+  code String? @default("") @db.VarChar(50)
+
   description   String                @db.VarChar(200)
   movements     ZentraMovement[]
   files     ZentraInstallmentFile[]

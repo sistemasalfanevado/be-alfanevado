@@ -49,6 +49,11 @@ export class CreateZentraInstallmentDto {
   paidAmount: number;
   
   @IsString()
+  @IsOptional()
+  @MaxLength(50)
+  code: string;
+
+  @IsString()
   @MaxLength(200)
   description: string;
 

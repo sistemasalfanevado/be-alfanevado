@@ -63,6 +63,7 @@ export class ZentraInstallmentService {
 
       paidAmount: i.paidAmount,
       description: i.description,
+      code: i.code ?? '',
 
       currencyId: i.currency.id,
       currencyName: i.currency.name,
@@ -150,6 +151,7 @@ export class ZentraInstallmentService {
       scheduledIncomeDocumentId: i.scheduledIncomeDocumentId,
       paidAmount: i.paidAmount,
       description: i.description,
+      code: i.code ?? '',
 
       currencyId: i.currency.id,
       currencyName: i.currency.name,
@@ -195,6 +197,7 @@ export class ZentraInstallmentService {
       scheduledDebtDocumentId: i.scheduledDebtDocumentId,
       paidAmount: i.paidAmount,
       description: i.description,
+      code: i.code ?? '',
 
       currencyId: i.currency.id,
       currencyName: i.currency.name,
@@ -581,6 +584,7 @@ export class ZentraInstallmentService {
 
       paidAmount: i.paidAmount,
       description: i.description,
+      code: i.code ?? '',
 
       currencyId: i.currency.id,
       currencyName: i.currency.name,
@@ -646,6 +650,7 @@ export class ZentraInstallmentService {
 
       paidAmount: i.paidAmount,
       description: i.description,
+      code: i.code ?? '',
 
       currencyId: i.currency.id,
       currencyName: i.currency.name,
@@ -714,6 +719,7 @@ export class ZentraInstallmentService {
 
       paidAmount: i.paidAmount,
       description: i.description,
+      code: i.code ?? '',
 
       currencyId: i.currency.id,
       currencyName: i.currency.name,
