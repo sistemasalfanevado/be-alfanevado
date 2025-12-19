@@ -14,7 +14,7 @@ export class UpdateZentraInstallmentDto {
   @IsString()
   @IsOptional()
   scheduledDebtDocumentId?: string;
-  
+
   @IsString()
   @IsOptional()
   installmentStatusId?: string;
@@ -50,17 +50,25 @@ export class UpdateZentraInstallmentDto {
   @IsNumber()
   @IsOptional()
   paidAmount: number;
-  
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(200)
+  description: string;
+
   @IsString()
   @IsOptional()
   @MaxLength(50)
   code: string;
 
-  @IsString() 
+  @IsDateString()
   @IsOptional()
-  @MaxLength(200)
-  description: string;
-  
+  documentDate?: string;
+
+  @IsString()
+  @IsOptional()
+  documentTypeId?: string;
+
   @IsString()
   @IsOptional()
   @MaxLength(30)

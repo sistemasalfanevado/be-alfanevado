@@ -49,17 +49,27 @@ export class CreateZentraInstallmentDto {
   paidAmount: number;
   
   @IsString()
-  @IsOptional()
-  @MaxLength(50)
-  code: string;
-
-  @IsString()
   @MaxLength(200)
   description: string;
 
   @IsDateString()
   @IsNotEmpty()
   dueDate: string;
+
+    
+  @IsString()
+  @IsOptional()
+  @MaxLength(50)
+  code: string;
+
+  @IsDateString()
+  @IsOptional()
+  documentDate?: string;
+
+  @IsString()
+  @IsOptional()
+  documentTypeId?: string;
+  
 
   @IsString()
   @IsOptional()

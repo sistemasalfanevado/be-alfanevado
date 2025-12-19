@@ -459,6 +459,7 @@ model ZentraDocumentType {
   
   documents         ZentraDocument[]
   accountability    ZentraAccountability[]
+  installments      ZentraInstallment[]
   
   visibility        ZentraVisibility? @relation(fields: [visibilityId], references: [id])
   visibilityId      String?
@@ -1299,11 +1300,18 @@ model ZentraInstallment {
   dueDate      DateTime
 
   paidAmount    Decimal  @default(0.00) @db.Decimal(12, 2) 
-  code String? @default("") @db.VarChar(50)
-
-  description   String                @db.VarChar(200)
+  
   movements     ZentraMovement[]
   files     ZentraInstallmentFile[]
+
+
+  code String?      @default("") @db.VarChar(50)
+  description       String       @db.VarChar(200)
+  documentDate      DateTime?
+
+  documentType   ZentraDocumentType? @relation(fields: [documentTypeId], references: [id])
+  documentTypeId String?
+  
 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

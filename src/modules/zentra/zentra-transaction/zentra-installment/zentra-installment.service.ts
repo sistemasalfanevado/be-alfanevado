@@ -44,6 +44,12 @@ export class ZentraInstallmentService {
             documentId: true, // 👈 aquí obtienes el documentId
           },
         },
+        documentType: {               // 👈 AÑADIR
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -62,12 +68,19 @@ export class ZentraInstallmentService {
       documentId: i.scheduledIncomeDocument?.documentId ?? null,
 
       paidAmount: i.paidAmount,
-      description: i.description,
-      code: i.code ?? '',
 
       currencyId: i.currency.id,
       currencyName: i.currency.name,
-      idFirebase: !i.idFirebase ? '' : i.idFirebase
+      idFirebase: !i.idFirebase ? '' : i.idFirebase,
+
+      code: i.code ?? '',
+      description: i.description,
+      documentDate: i.documentDate
+        ? moment(i.documentDate).format('DD/MM/YYYY')
+        : null,
+      documentTypeId: i.documentType?.id ?? null,
+      documentTypeName: i.documentType?.name ?? null,
+
     }));
   }
 
@@ -135,6 +148,12 @@ export class ZentraInstallmentService {
             documentId: true, // 👈 aquí obtienes el documentId
           },
         },
+        documentType: {               // 👈 AÑADIR
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -156,6 +175,14 @@ export class ZentraInstallmentService {
       currencyId: i.currency.id,
       currencyName: i.currency.name,
       documentId: i.scheduledIncomeDocument?.documentId ?? null,
+
+
+      documentDate: i.documentDate
+        ? moment(i.documentDate).format('DD/MM/YYYY')
+        : null,
+      documentTypeId: i.documentType?.id ?? null,
+      documentTypeName: i.documentType?.name ?? null,
+
     }));
 
 
@@ -181,6 +208,12 @@ export class ZentraInstallmentService {
             documentId: true, // 👈 aquí obtienes el documentId
           },
         },
+        documentType: {               // 👈 AÑADIR
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -202,6 +235,13 @@ export class ZentraInstallmentService {
       currencyId: i.currency.id,
       currencyName: i.currency.name,
       documentId: i.scheduledDebtDocument?.documentId ?? null,
+
+      documentDate: i.documentDate
+        ? moment(i.documentDate).format('DD/MM/YYYY')
+        : null,
+      documentTypeId: i.documentType?.id ?? null,
+      documentTypeName: i.documentType?.name ?? null,
+
     }));
 
 
@@ -289,7 +329,7 @@ export class ZentraInstallmentService {
           ? Math.abs(Number(item.executedSoles))
           : Math.abs(Number(item.executedDolares)),
       );
-    } 
+    }
 
     // 🔹 Calcular monto pagado del documento
     for (const item of listMovementDocument) {
@@ -405,7 +445,7 @@ export class ZentraInstallmentService {
             },
             document: {
               include: {
-                party: { 
+                party: {
                   select: { id: true, name: true, document: true }, // Proveedor
                 },
               },
@@ -436,7 +476,7 @@ export class ZentraInstallmentService {
 
       let amountUSD = Number((totalAmount - paidAmount));
       let amountPending = Number((totalAmount - paidAmount));
-      
+
       // Si la cuota está en SOLES → convertir a dólares
       if (i.currencyId === CURRENCY.SOLES && exchangeRate) {
         amountUSD = amountUSD / Number(exchangeRate.buyRate);
@@ -565,6 +605,13 @@ export class ZentraInstallmentService {
             documentId: true, // 👈 aquí obtienes el documentId
           },
         },
+        documentType: {               // 👈 AÑADIR
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+
       },
     });
 
@@ -588,7 +635,15 @@ export class ZentraInstallmentService {
 
       currencyId: i.currency.id,
       currencyName: i.currency.name,
-      idFirebase: !i.idFirebase ? '' : i.idFirebase
+      idFirebase: !i.idFirebase ? '' : i.idFirebase,
+
+
+      documentDate: i.documentDate
+        ? moment(i.documentDate).format('DD/MM/YYYY')
+        : null,
+      documentTypeId: i.documentType?.id ?? null,
+      documentTypeName: i.documentType?.name ?? null,
+
     }));
   }
 
@@ -631,6 +686,12 @@ export class ZentraInstallmentService {
             }
           },
         },
+        documentType: {               // 👈 AÑADIR
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -657,7 +718,14 @@ export class ZentraInstallmentService {
 
       budgetItemId: i.scheduledIncomeDocument?.document.budgetItem.id,
 
-      idFirebase: !i.idFirebase ? '' : i.idFirebase
+      idFirebase: !i.idFirebase ? '' : i.idFirebase,
+
+      documentDate: i.documentDate
+        ? moment(i.documentDate).format('DD/MM/YYYY')
+        : null,
+      documentTypeId: i.documentType?.id ?? null,
+      documentTypeName: i.documentType?.name ?? null,
+
     }));
   }
 
@@ -700,6 +768,12 @@ export class ZentraInstallmentService {
             }
           },
         },
+        documentType: {               // 👈 AÑADIR
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -726,7 +800,14 @@ export class ZentraInstallmentService {
 
       budgetItemId: i.scheduledDebtDocument?.document.budgetItem.id,
 
-      idFirebase: !i.idFirebase ? '' : i.idFirebase
+      idFirebase: !i.idFirebase ? '' : i.idFirebase,
+
+      documentDate: i.documentDate
+        ? moment(i.documentDate).format('DD/MM/YYYY')
+        : null,
+      documentTypeId: i.documentType?.id ?? null,
+      documentTypeName: i.documentType?.name ?? null,
+
     }));
   }
 
