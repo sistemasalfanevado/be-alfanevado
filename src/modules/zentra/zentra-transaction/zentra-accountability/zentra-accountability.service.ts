@@ -174,6 +174,7 @@ export class ZentraAccountabilityService {
       where: { id },
       select: {
         id: true,
+        code: true,
         approvedAmount: true,
         accountedAmount: true,
         user: {

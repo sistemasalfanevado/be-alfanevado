@@ -160,6 +160,7 @@ export class MailService {
 
   async notifyExpenseReportPendingAccounting(accountability: {
     id: string;
+    code: string;
     approvedAmount: any;
     accountedAmount: any;
     user: {
@@ -209,7 +210,7 @@ export class MailService {
         </tr>
         <tr>
           <td style="border:1px solid #e2e8f0; padding:8px;"><strong>Código rendición</strong></td>
-          <td style="border:1px solid #e2e8f0; padding:8px;">${accountability.id}</td>
+          <td style="border:1px solid #e2e8f0; padding:8px;">${accountability.code}</td>
         </tr>
         <tr>
           <td style="border:1px solid #e2e8f0; padding:8px;"><strong>Proyecto</strong></td>
