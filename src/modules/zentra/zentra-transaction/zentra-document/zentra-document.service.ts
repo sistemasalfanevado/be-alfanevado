@@ -1022,7 +1022,7 @@ export class ZentraDocumentService {
     });
   }
 
-  // Scheduled Financial Expense
+  // Financial Expense
 
   async createFinancialExpense(dataDocument: any) {
 
@@ -1161,6 +1161,149 @@ export class ZentraDocumentService {
       updated: true,
     };
   }
+
+
+  // Not Identified
+
+  async createNotIdentified(dataDocument: any) {
+
+    const document = await this.createDocument(dataDocument);
+
+    await this.createMovement({
+      code: dataDocument.codeMovement,
+      description: dataDocument.description,
+      documentId: document.id,
+      amount: dataDocument.amountOrigin,
+      transactionTypeId: dataDocument.transactionTypeId,
+      movementCategoryId: dataDocument.movementCategoryId,
+      budgetItemId: dataDocument.budgetItemId,
+      bankAccountId: dataDocument.backAccountOriginId,
+      movementStatusId: dataDocument.movementStatusId,
+      date: dataDocument.documentDate,
+      idFirebase: dataDocument.idFirebase,
+      fromTelecredito: dataDocument.fromTelecredito ?? false,
+    });
+
+    return { message: 'Documento no identificado creado correctamente' };
+  }
+  
+  async removeNotIdentified(id: string) {
+    return this.removeDocumentWithMovements(id);
+  }
+
+  async findByFiltersNotIdentified(filters: {
+    projectId?: string;
+    documentCategoryId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    const where = this.buildDocumentFilters(filters);
+
+    const results = await this.prisma.zentraDocument.findMany({
+      where,
+      orderBy: { documentDate: 'desc' },
+      select: {
+        id: true,
+        party: true,
+        documentType: true,
+        movements: {
+          where: { deletedAt: null },
+          select: {
+            id: true,
+            amount: true,
+            code: true,
+            paymentDate: true,
+            description: true,
+            budgetItem: {
+              select: {
+                id: true,
+              }
+            },
+            transactionType: {
+              select: {
+                id: true,
+                name: true
+              }
+            },
+            bankAccount: {
+              select: {
+                id: true,
+                bank: { select: { name: true } },
+                currency: { select: { name: true } },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return results
+      .filter((doc) => doc.movements.length > 0)
+      .map((doc) => {
+        const mov = doc.movements[0];
+        return {
+          id: doc.id,
+          documentDate: moment(mov.paymentDate).format("DD/MM/YYYY"),
+          description: mov.description ?? null,
+          bankAccount: `${mov.bankAccount.bank.name} ${mov.bankAccount.currency.name}`,
+          typeTransaction: mov.transactionType.name,
+          amountOrigin: mov.amount,
+          movementId: mov.id,
+          backAccountOriginId: mov.bankAccount.id,
+          transactionTypeId: mov.transactionType.id,
+          budgetItemId: mov.budgetItem.id,
+          codeMovement: mov.code,
+          documentTypeName: doc.documentType.name,
+          partyName: doc.party.name,
+        };
+      });
+  }
+
+  async updateNotIdentified(id: string, updateData: any) {
+
+    // 1. Actualizar documento principal
+    await this.prisma.zentraDocument.update({
+      where: { id },
+      data: {
+        code: updateData.code,
+        description: updateData.description,
+        budgetItemId: updateData.budgetItemId,
+        documentTypeId: updateData.documentTypeId,
+      },
+    });
+
+    // 2. Buscar el movimiento asociado
+    const movement = await this.prisma.zentraMovement.findFirst({
+      where: { documentId: id, deletedAt: null },
+    });
+
+    // 3. Si existe movimiento, actualizarlo
+    if (movement) {
+      await this.zentraMovementService.update(movement.id, {
+        amount: updateData.amountOrigin,
+        autorizeDate: updateData.documentDate,
+        generateDate: updateData.documentDate,
+        paymentDate: updateData.documentDate,
+        code: updateData.codeMovement,
+        description: updateData.description,
+        idFirebase: !movement.idFirebase ? '' : movement.idFirebase,
+        documentId: !movement.documentId ? '' : movement.documentId,
+        transactionTypeId: updateData.transactionTypeId,
+        bankAccountId: updateData.backAccountOriginId,
+        budgetItemId: updateData.budgetItemId,
+        movementCategoryId: movement.movementCategoryId,
+        movementStatusId: movement.movementStatusId,
+      });
+    }
+
+    // 4. Retornar algo (si quieres)
+    return {
+      id,
+      updated: true,
+    };
+  }
+
+
 
   // Scheduled Income Document
 

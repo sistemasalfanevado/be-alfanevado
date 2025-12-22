@@ -134,6 +134,36 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.updateFinancialExpense(id, updateZentraDocumentDto);
   }
 
+
+  // Not Identified Documento or Movement
+
+  @Post('not-identified')
+  createNotIdentified(@Body() createZentraDocumentDto: any) {
+    return this.zentraDocumentService.createNotIdentified(createZentraDocumentDto);
+  }
+
+  @Delete('not-identified/:id')
+  removeNotIdentified(@Param('id') id: string) {
+    return this.zentraDocumentService.removeNotIdentified(id);
+  }
+
+  @Post('not-identified/search')
+  @Public()
+  searchNotIdentified(@Body() filters: {
+    projectId?: string;
+    documentCategoryId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    return this.zentraDocumentService.findByFiltersNotIdentified(filters);
+  }
+
+  @Put('not-identified/:id')
+  updateNotIdentified(@Param('id') id: string, @Body() updateZentraDocumentDto: any) {
+    return this.zentraDocumentService.updateNotIdentified(id, updateZentraDocumentDto);
+  }
+
+
   // Scheduled Document Income 
   @Post('scheduled-income')
   createScheduledIncome(@Body() createZentraDocumentDto: any) {
