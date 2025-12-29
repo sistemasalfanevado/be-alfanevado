@@ -250,6 +250,7 @@ export class ZentraDocumentService {
       financialNatureId,
       documentTransactionMethodId,
       accountabilityId,
+      pettyCashId,
       documentOriginId,
       ...data
     } = createDto;
@@ -276,6 +277,9 @@ export class ZentraDocumentService {
         }),
         ...(accountabilityId && {
           accountability: { connect: { id: accountabilityId } },
+        }),
+        ...(pettyCashId && {
+          pettyCash: { connect: { id: pettyCashId } },
         }),
         ...(documentOriginId && {
           documentOrigin: { connect: { id: documentOriginId } },

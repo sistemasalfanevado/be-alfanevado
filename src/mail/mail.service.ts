@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { defaultTemplate } from './templates/default.template';
 import { PrismaService } from '../prisma/prisma.service';
+import { CURRENCY } from 'src/shared/constants/app.constants';
+
 
 @Injectable()
 export class MailService {
@@ -253,6 +255,116 @@ export class MailService {
 
     return { sent: recipients.length };
   }
+
+  async notifyRefundRequested(accountability: {
+    id: string;
+    code: string;
+    approvedAmount: any;
+    accountedAmount: any;
+    user: {
+      firstName: string;
+      lastName: string;
+    };
+    budgetItem: {
+      definition: {
+        project: {
+          name: string;
+        };
+      };
+    };
+  }, amountToPay, currencyId) {
+
+
+    let currencyLabel = '';
+    
+    if (currencyId === CURRENCY.SOLES) {
+      currencyLabel = 'S/.';
+    }
+
+    if (currencyId === CURRENCY.DOLARES) {
+      currencyLabel = '$';
+    }
+
+    const recipients = await this.prisma.zentraNotificationRecipient.findMany({
+      where: {
+        deletedAt: null,
+      },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (!recipients.length) {
+      return { sent: 0 };
+    }
+
+    const userName = `${accountability.user.firstName} ${accountability.user.lastName}`;
+    const projectName =
+      accountability.budgetItem?.definition?.project?.name ?? '-';
+
+    // 🔹 Tabla HTML
+    const expenseReportTable = `
+    <table width="100%" cellpadding="0" cellspacing="0"
+      style="border-collapse: collapse; margin-top: 16px; font-size: 14px;">
+      <tbody>
+        <tr>
+          <td style="border:1px solid #e2e8f0; padding:8px;"><strong>Usuario</strong></td>
+          <td style="border:1px solid #e2e8f0; padding:8px;">${userName}</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #e2e8f0; padding:8px;"><strong>Código de rendición</strong></td>
+          <td style="border:1px solid #e2e8f0; padding:8px;">${accountability.code}</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #e2e8f0; padding:8px;"><strong>Proyecto</strong></td>
+          <td style="border:1px solid #e2e8f0; padding:8px;">${projectName}</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #e2e8f0; padding:8px;">
+            <strong>Monto de reembolso solicitado</strong>
+          </td>
+          <td style="border:1px solid #e2e8f0; padding:8px;">
+            ${currencyLabel} ${Number(amountToPay).toFixed(2)}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  `;
+
+    // 🔹 Envío de correos
+    for (const recipient of recipients) {
+      const fullName = `${recipient.user.firstName} ${recipient.user.lastName}`;
+
+      await this.sendCustomEmail(
+        recipient.user.email,
+        '💰 Solicitud de reembolso creada',
+        'Solicitud de reembolso',
+        `
+        Hola ${fullName},<br /><br />
+
+        Se ha creado una <strong>solicitud de reembolso</strong> asociada a la siguiente
+        <strong>rendición de cuentas</strong>:<br /><br />
+
+        ${expenseReportTable}
+
+        <br />
+        La solicitud ha sido registrada para su posterior revisión y procesamiento.<br /><br />
+
+        Gracias,<br />
+        <strong>Alfa Nevado</strong>
+      `,
+      );
+    }
+
+    return { sent: recipients.length };
+  }
+
 
 
 

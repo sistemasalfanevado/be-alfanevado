@@ -403,8 +403,15 @@ export class ZentraAccountabilityService {
       }
     );
 
-    //await this.updataAccountabilityData(dataDocument)
+    const accountabilityData = await this.findOne(dataDocument.accountabilityId);
+    
+    if (accountabilityData?.id) {
+      await this.mailService.notifyExpenseReportPendingAccounting(accountabilityData)
+    }
 
+
+
+    
     return { message: 'Accountability actualizada exitosamente' };
 
   }

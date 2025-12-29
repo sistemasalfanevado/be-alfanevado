@@ -127,6 +127,10 @@ export class CreateZentraDocumentDto {
 
   @IsString()
   @IsOptional()
+  pettyCashId?: string;
+  
+  @IsString()
+  @IsOptional()
   documentOriginId?: string;
 
 }

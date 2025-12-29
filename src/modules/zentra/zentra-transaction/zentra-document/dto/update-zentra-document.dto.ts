@@ -126,5 +126,9 @@ export class UpdateZentraDocumentDto {
 
   @IsString()
   @IsOptional()
+  pettyCashId?: string;
+
+  @IsString()
+  @IsOptional()
   documentOriginId?: string;
 }
