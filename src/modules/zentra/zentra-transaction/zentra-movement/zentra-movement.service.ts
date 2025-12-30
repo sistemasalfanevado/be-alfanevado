@@ -450,6 +450,55 @@ export class ZentraMovementService {
     });
   }
 
+  async updateExchangeRate(id: string, updateDto: any) {
+    return this.prisma.$transaction(async (tx) => {
+      const existing = await tx.zentraMovement.findUnique({ where: { id } });
+
+      if (!existing) throw new Error('Movimiento no encontrado');
+
+      // Revertir balances
+      await this.reverseBalances(
+        tx,
+        existing.bankAccountId,
+        existing.budgetItemId,
+        Number(existing.executedAmount),
+        Number(existing.executedSoles),
+        Number(existing.executedDolares)
+      );
+      
+      // Nuevos montos
+      const executedAmount = Number(updateDto.executedAmount);
+      const executedSoles = Number(updateDto.executedSoles);
+      const executedDolares  = Number(updateDto.executedDolares);
+
+      // Actualizar movimiento
+      const updated = await tx.zentraMovement.update({
+        where: { id },
+        data: {
+          amount: Number(updateDto.amount),
+          executedAmount,
+          executedSoles,
+          executedDolares,
+        },
+      });
+
+      // Ajustar balances con los nuevos valores
+      await this.adjustBalances(
+        tx,
+        updated.bankAccountId,
+        updated.budgetItemId,
+        executedAmount,
+        executedSoles,
+        executedDolares
+      );
+
+      return updated;
+    }, {
+      timeout: 20000, // Aumentar timeout para operaciones largas
+      maxWait: 15000, // Tiempo máximo de espera para adquirir la transacción
+    });
+  }
+
   async remove(id: string) {
     return this.prisma.$transaction(async (tx) => {
       const movement = await tx.zentraMovement.findUnique({

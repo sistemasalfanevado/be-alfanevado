@@ -57,6 +57,12 @@ export class ZentraDocumentExpenseService {
     return this.recalculateDocument(data.documentId);
   }
 
+  async updateMovementExchangeRate(id: string, data: any) {
+    await this.zentraMovementService.updateExchangeRate(id, data);
+    return this.recalculateDocument(data.documentId);
+  }
+
+
   private async recalculateDocument(documentId: string) {
 
     const documentData = await this.zentraDocumentService.findOne(documentId);

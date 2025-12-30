@@ -27,6 +27,11 @@ export class ZentraDocumentExpenseController {
   updateMovement(@Param('id') id: string, @Body() updateDataDto: any) {
     return this.zentraDocumentExpenseService.updateMovement(id, updateDataDto);
   }
+
+  @Put('movement-exchange-rate/:id')
+  updateMovementExchangeRate(@Param('id') id: string, @Body() updateDataDto: any) {
+    return this.zentraDocumentExpenseService.updateMovementExchangeRate(id, updateDataDto);
+  }
   
 
 }
