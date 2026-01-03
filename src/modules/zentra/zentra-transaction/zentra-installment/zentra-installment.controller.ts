@@ -53,6 +53,15 @@ export class ZentraInstallmentController {
     return this.zentraInstallmentService.update(id, updateZentraInstallmentDto);
   }
 
+  @Put('simple/:id')
+  updateSimple(
+    @Param('id') id: string,
+    @Body() updateZentraInstallmentDto: any
+  ) {
+    return this.zentraInstallmentService.update(id, updateZentraInstallmentDto);
+  }
+
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.zentraInstallmentService.remove(id);

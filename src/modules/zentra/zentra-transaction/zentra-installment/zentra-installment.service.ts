@@ -103,6 +103,15 @@ export class ZentraInstallmentService {
     });
   }
 
+  async updateSimple(id: string, updateZentraInstallmentDto: any) {
+    return this.prisma.zentraInstallment.update({
+      where: { id },
+      data: updateZentraInstallmentDto,
+    });
+  }
+
+
+
   async remove(id: string) {
 
     // Primero debes de remover todos los movimientos asignados a esta cuota
