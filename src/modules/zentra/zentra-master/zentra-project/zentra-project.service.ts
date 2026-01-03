@@ -279,6 +279,7 @@ export class ZentraProjectService {
       let budgetItemDefault: any = '';
       let budgetItemIncome: any = '';
       let budgetItemAccountability: any = '';
+      let budgetItemFinancialExpense: any = '';
 
       for (let itemBudget of budgetItem) {
         if (itemBudget.budgetItem.definition.nature.id === BUDGET_NATURE.SISTEMAS) {
@@ -289,6 +290,9 @@ export class ZentraProjectService {
         }
         if (itemBudget.budgetItem.definition.nature.id === BUDGET_NATURE.RENDICION_CUENTA) {
           budgetItemAccountability = itemBudget.budgetItem;
+        }
+        if (itemBudget.budgetItem.definition.nature.id === BUDGET_NATURE.GASTO) {
+          budgetItemFinancialExpense = itemBudget.budgetItem;
         }
       }
 
@@ -399,6 +403,10 @@ export class ZentraProjectService {
 
         accountabilityBudgetItemId: budgetItemAccountability?.id ?? '',
         accountabilityBudgetItemName: budgetItemAccountability?.definition?.name ?? '',
+
+        financialExpenseBudgetItemId: budgetItemFinancialExpense?.id ?? '',
+        financialExpenseBudgetItemName: budgetItemFinancialExpense?.definition?.name ?? '',
+        
 
         // Rentabilidad diaria y semanal 
         profitabilityDaily,
