@@ -8,6 +8,9 @@ import { BitrixMainModule } from './modules/BitrixModule.module';
 import { LandingMainModule } from './modules/LandingModule.module';
 import { ZentraMainModule } from './modules/ZentraModule.module';
 
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AuditInterceptor } from './common/interceptors/audit.interceptor'; // Ajusta la ruta
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,6 +36,12 @@ import { ZentraMainModule } from './modules/ZentraModule.module';
     BitrixMainModule,
     LandingMainModule,
     ZentraMainModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AuditInterceptor, // Esto lo activa globalmente
+    },
   ],
 })
 export class AppModule {}

@@ -37,6 +37,7 @@ import { ZentraSubStageModule } from './zentra/zentra-master/zentra-sub-stage/ze
 import { ZentraSubStageProgressModule } from './zentra/zentra-master/zentra-sub-stage-progress/zentra-sub-stage-progress.module';
 import { ZentraTransactionNatureModule } from './zentra/zentra-master/zentra-transaction-nature/zentra-transaction-nature.module';
 import { ZentraNotificationRecipientModule } from './zentra/zentra-master/zentra-notification-recipient/zentra-notification-recipient.module';
+import { ZentraAuditLogModule } from './zentra/zentra-master/zentra-audit-log/zentra-audit-log.module';
 
 
 import { ZentraPartyDocumentModule } from './zentra/zentra-master/zentra-party-document/zentra-party-document.module';
@@ -138,7 +139,8 @@ import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-a
     ZentraSubStageProgressModule,
     ZentraTransactionNatureModule,
     ZentraNotificationRecipientModule,
-    
+    ZentraAuditLogModule,
+
     ZentraBankModule,
     ZentraBudgetItemCategoryModule,
     ZentraCurrencyModule,
@@ -154,7 +156,7 @@ import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-a
     ZentraPartyDocumentModule,
     ZentraPartyDocumentHierarchyModule,
     ZentraPartyDocumentTypeModule,
-    
+
 
     ZentraBankAccountModule,
     ZentraBankAccountHierarchyModule,
@@ -167,7 +169,7 @@ import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-a
     ZentraBudgetItemDefinitionModule,
     ZentraBudgetNatureModule,
     ZentraBudgetItemHistoryModule,
-    
+
     ZentraExchangeRateModule,
     ZentraInstallmentStatusModule,
     ZentraFinancialNatureModule,
@@ -178,7 +180,7 @@ import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-a
     ZentraScheduledIncomeDocumentStatusModule,
 
     ZentraScheduledDebtDocumentModule,
-    
+
     ZentraDocumentStatusModule,
     ZentraDocumentCategoryModule,
     ZentraMovementStatusModule,
@@ -186,7 +188,7 @@ import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-a
     ZentraBudgetIncreaseStatusModule,
 
     ZentraProjectIncomeModule,
-    
+
 
     ZentraDocumentModule,
     ZentraDocumentFileModule,
@@ -217,6 +219,10 @@ import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-a
     ZentraAccountabilityStatusModule,
     ZentraAccountabilityModule
 
-  ],  
+  ],
+  exports: [
+    ZentraAuthModule,     // <-- Vital para que el Interceptor vea el JwtService
+    ZentraAuditLogModule, // <-- Vital para que vea el ZentraAuditLogService
+  ],
 })
-export class ZentraMainModule {}
+export class ZentraMainModule { }

@@ -65,6 +65,7 @@ export class ZentraMovementService {
     installment: {
       include: {
         currency: true,
+        documentType: true,
       },
     },
   };
@@ -163,6 +164,11 @@ export class ZentraMovementService {
   private formatMovement(item: any) {
     const principalDoc = item.document?.party?.partyDocuments?.[0];
 
+    // 1. Identificamos si existe un installment válido
+    const inst = item.installment;
+    const doc = item.document;
+
+
     return {
       id: item.id,
       code: item.code,
@@ -174,13 +180,15 @@ export class ZentraMovementService {
       paymentDate: moment(item.paymentDate).format('DD/MM/YYYY'),
 
       documentId: item.document.id,
-      documentCode: item.document.code,
-      documentDescription: item.document.description,
-      documentDate: moment(item.document.documentDate).format('DD/MM/YYYY'),
-      documentType: item.document.documentType.name,
-      documentAmountToPay: item.document.amountToPay,
       documentDetractionAmount: item.document.detractionAmount,
       documentTaxAmount: item.document.taxAmount,
+
+      documentCode: inst?.code || doc?.code || 'Sin definir',
+      documentDescription: inst?.description || doc?.description || 'Sin definir',
+      
+      documentDate: moment(inst?.documentDate ?? doc.documentDate).format('DD/MM/YYYY'),
+      documentType: inst?.documentType?.name ?? doc.documentType?.name,
+      documentAmountToPay: inst?.totalAmount ?? doc.amountToPay,
 
 
       transactionTypeId: item.transactionType.id,
@@ -465,11 +473,11 @@ export class ZentraMovementService {
         Number(existing.executedSoles),
         Number(existing.executedDolares)
       );
-      
+
       // Nuevos montos
       const executedAmount = Number(updateDto.executedAmount);
       const executedSoles = Number(updateDto.executedSoles);
-      const executedDolares  = Number(updateDto.executedDolares);
+      const executedDolares = Number(updateDto.executedDolares);
 
       // Actualizar movimiento
       const updated = await tx.zentraMovement.update({
@@ -1100,7 +1108,7 @@ export class ZentraMovementService {
           amount = Number((amount - Number(itemMov.amount)).toFixed(2))
         }
       }
-      
+
       updates.push({
         id: item.id,
         amount,

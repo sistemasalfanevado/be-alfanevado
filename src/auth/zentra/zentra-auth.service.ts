@@ -23,7 +23,7 @@ export class ZentraAuthService {
     }
     return null;
   }
-
+  
 
   async login(user: any) {
     const payload = { email: user.email, sub: user.id };

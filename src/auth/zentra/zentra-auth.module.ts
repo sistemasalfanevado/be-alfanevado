@@ -28,6 +28,7 @@ import { ZentraUserPartyModule } from '../../modules/zentra/zentra-master/zentra
     }),
   ],
   controllers: [ZentraAuthController],
-  providers: [ZentraAuthService, ZentraLocalStrategy, JwtStrategy],
+  providers: [ZentraAuthService, ZentraLocalStrategy, JwtStrategy], 
+  exports: [ZentraAuthService, JwtModule],
 })
 export class ZentraAuthModule { }
