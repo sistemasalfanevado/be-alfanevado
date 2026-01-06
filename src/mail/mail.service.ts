@@ -11,24 +11,6 @@ export class MailService {
 
   constructor(private readonly mailerService: MailerService, private prisma: PrismaService) { }
 
-  async sendTestEmail(to: string) {
-    try {
-      await this.mailerService.sendMail({
-        to,
-        subject: '✅ Prueba de notificación',
-        html: defaultTemplate({
-          title: 'Notificación de prueba',
-          message: 'Este correo confirma que el servicio de correos funciona correctamente.',
-        }),
-      });
-
-      return { message: 'Correo enviado correctamente' };
-    } catch (error) {
-      this.logger.error('Error enviando correo', error);
-      throw error;
-    }
-  }
-
   async sendCustomEmail(
     to: string,
     subject: string,
@@ -56,107 +38,125 @@ export class MailService {
       amount: string;
     }[],
   ) {
-    if (!documentList.length) {
-      return { sent: 0 };
-    }
+    if (!documentList.length) return { sent: 0 };
 
-    // 🔹 URL única (se repite siempre)
     const documentUrl = documentList[0].documentUrl;
 
-    // 🔹 Receptores activos
+    // 1. Obtener Recipientes (Administradores)
     const recipients = await this.prisma.zentraNotificationRecipient.findMany({
-      where: {
-        deletedAt: null,
-      },
+      where: { deletedAt: null },
       include: {
         user: {
-          select: {
-            firstName: true,
-            lastName: true,
-            email: true,
-          },
+          select: { id: true, firstName: true, lastName: true, email: true },
         },
       },
     });
 
-    // 🔹 Tabla HTML
-    const documentsTable = `
-    <table width="100%" cellpadding="0" cellspacing="0"
-      style="border-collapse: collapse; margin-top: 16px; font-size: 14px;">
+    // 2. Obtener los creadores de los documentos recibidos
+    const documentIds = documentList.map((d) => d.documentId);
+    const documentsFromDb = await this.prisma.zentraDocument.findMany({
+      where: { id: { in: documentIds } },
+      include: {
+        user: {
+          select: { id: true, firstName: true, lastName: true, email: true },
+        },
+        // Traemos el nombre del proyecto siguiendo la relación
+        budgetItem: {
+          include: {
+            definition: {
+              include: {
+                project: {
+                  select: { name: true }
+                }
+              }
+            }
+          }
+        }
+      },
+    });
+
+    const projectName = documentsFromDb[0]?.budgetItem?.definition?.project?.name || 'Proyecto No Especificado';
+
+    // 3. Agrupar documentos por creador (UserId -> DocumentList)
+    // Usamos un Map para que si un usuario tiene 3 documentos, se guarden en un solo array
+    const creatorMap = new Map<string, { user: any; docs: any[] }>();
+    for (const docDb of documentsFromDb) {
+      const detail = documentList.find((d) => d.documentId === docDb.id);
+      if (!detail) continue;
+
+      if (!creatorMap.has(docDb.userId)) {
+        creatorMap.set(docDb.userId, { user: docDb.user, docs: [] });
+      }
+      const group = creatorMap.get(docDb.userId);
+      if (group) group.docs.push(detail);
+    }
+
+    // --- TEMPLATE DE CABECERA Y TABLA ---
+    const getEmailBody = (userName: string, tableHtml: string) => `
+    <div style="font-family: sans-serif; color: #334155;">
+      Hola <strong>${userName}</strong>,<br /><br />
+      Te informamos que se han procesado pagos correspondientes al proyecto:<br />
+      <span style="font-size: 18px; color: #2563eb; font-weight: bold;">🏢 ${projectName}</span>
+      <br /><br />
+      Los documentos pagados son los siguientes:
+      ${tableHtml}
+      <div style="margin-top:20px; text-align:center;">
+        <a href="${documentUrl}" target="_blank" style="display:inline-block; padding:12px 18px; background-color:#2563eb; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">📎 Ver documentos en plataforma</a>
+      </div>
+      <br />
+      Gracias,<br />
+      <strong>Alfa Nevado</strong>
+    </div>
+  `;
+
+    const generateTable = (list: any[]) => `
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin-top: 16px; font-size: 14px;">
       <thead>
         <tr style="background-color:#f1f5f9;">
           <th style="border:1px solid #e2e8f0; padding:8px; text-align:left;">Proveedor</th>
           <th style="border:1px solid #e2e8f0; padding:8px; text-align:left;">Documento</th>
           <th style="border:1px solid #e2e8f0; padding:8px; text-align:left;">Descripción</th>
-          <th style="border:1px solid #e2e8f0; padding:8px; text-align:left;">Moneda</th>
           <th style="border:1px solid #e2e8f0; padding:8px; text-align:right;">Monto</th>
         </tr>
       </thead>
       <tbody>
-        ${documentList
-        .map(
-          d => `
-            <tr>
-              <td style="border:1px solid #e2e8f0; padding:8px;">${d.partyName}</td>
-              <td style="border:1px solid #e2e8f0; padding:8px;"><strong>${d.documentCode}</strong></td>
-              <td style="border:1px solid #e2e8f0; padding:8px;">${d.documentDescription}</td>
-              <td style="border:1px solid #e2e8f0; padding:8px;">${d.currencyName}</td>
-              <td style="border:1px solid #e2e8f0; padding:8px; text-align:right;">${d.amount}</td>
-            </tr>
-          `,
-        )
-        .join('')}
+        ${list.map(d => `
+          <tr>
+            <td style="border:1px solid #e2e8f0; padding:8px;">${d.partyName}</td>
+            <td style="border:1px solid #e2e8f0; padding:8px;"><strong>${d.documentCode}</strong></td>
+            <td style="border:1px solid #e2e8f0; padding:8px;">${d.documentDescription}</td>
+            <td style="border:1px solid #e2e8f0; padding:8px; text-align:right;">${d.currencyName} ${d.amount}</td>
+          </tr>`).join('')}
       </tbody>
-    </table>
-  `;
+    </table>`;
 
-    // 🔹 Botón link único
-    const documentLinkHtml = `
-    <div style="margin-top:20px; text-align:center;">
-      <a href="${documentUrl}" target="_blank"
-        style="
-          display:inline-block;
-          padding:12px 18px;
-          background-color:#2563eb;
-          color:#ffffff;
-          text-decoration:none;
-          border-radius:6px;
-          font-weight:600;
-        ">
-        📎 Ver documento
-      </a>
-    </div>
-  `;
+    // 4. Envío a Administradores
+    const adminIds = recipients.map(r => r.user.id);
+    const adminTable = generateTable(documentList);
 
-    // 🔹 Envío de correos
     for (const recipient of recipients) {
-      const fullName = `${recipient.user.firstName} ${recipient.user.lastName}`;
-
       await this.sendCustomEmail(
         recipient.user.email,
-        '💰 Documentos pagados',
-        'Pago confirmado',
-        `
-        Hola ${fullName},<br /><br />
-
-        Te informamos que los siguientes documentos ya fueron pagados mediante
-        <strong>Telecrédito</strong>:<br />
-
-        ${documentsTable}
-
-        ${documentLinkHtml}
-
-        <br /><br />
-        Gracias,<br />
-        <strong>Alfa Nevado</strong>
-      `,
+        `💰 Pagos Procesados - ${projectName}`,
+        'Confirmación de pago',
+        getEmailBody(recipient.user.firstName, adminTable)
       );
     }
 
-    return {
-      totalRecipients: recipients.length,
-      totalDocuments: documentList.length,
-    };
+    // 5. Envío a Creadores (Agrupados)
+    for (const [userId, data] of creatorMap) {
+      if (adminIds.includes(userId)) continue;
+
+      const userTable = generateTable(data.docs);
+      await this.sendCustomEmail(
+        data.user.email,
+        `💰 Pagos Procesados - ${projectName}`,
+        'Confirmación de pago',
+        getEmailBody(data.user.firstName, userTable)
+      );
+    }
+
+    return { totalRecipients: recipients.length, totalCreators: creatorMap.size };
   }
 
 
@@ -276,7 +276,7 @@ export class MailService {
 
 
     let currencyLabel = '';
-    
+
     if (currencyId === CURRENCY.SOLES) {
       currencyLabel = 'S/.';
     }

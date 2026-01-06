@@ -3,6 +3,8 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraAuditLogDto } from './dto/create-zentra-audit-log.dto';
 
 import * as moment from 'moment';
+import { DateTime } from 'luxon';
+
 
 @Injectable()
 export class ZentraAuditLogService {
@@ -32,18 +34,23 @@ export class ZentraAuditLogService {
 
     // Transformamos el array para aplanar el objeto user
     return logs.map((log) => ({
-      
+
       id: log.id,
       module: log.module,
       action: log.action,
       recordId: log.recordId,
-      
-      serverCreatedAt: moment(log.serverCreatedAt).format("DD/MM/YYYY HH:MM:SS"),
-      localCreatedAt: moment(log.localCreatedAt).format("DD/MM/YYYY HH:MM:SS"),
-      
+
+      serverCreatedAt: DateTime.fromJSDate(log.serverCreatedAt)
+        .setZone('America/Lima')
+        .toFormat('dd/MM/yyyy HH:mm:ss'),
+
+      localCreatedAt: DateTime.fromJSDate(log.localCreatedAt)
+        .setZone('America/Lima')
+        .toFormat('dd/MM/yyyy HH:mm:ss'),
+
       userId: log.userId,
       userComplete: log.user?.firstName + ' ' + log.user?.lastName,
-     
+
     }));
   }
 
@@ -56,5 +63,74 @@ export class ZentraAuditLogService {
       },
     });
   }
+
+  async findByFilters(filters: {
+    userId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    const { userId, startDate, endDate } = filters;
+
+    const where: any = {};
+
+    // Filtro por Usuario
+    if (userId && userId.trim() !== '') {
+      where.userId = userId;
+    }
+
+    // Filtro por Fecha (localCreatedAt)
+    if (startDate || endDate) {
+      where.localCreatedAt = {};
+
+      if (startDate) {
+        // Creamos el inicio del día en zona Lima y lo pasamos a Date para Prisma
+        where.localCreatedAt.gte = DateTime.fromISO(startDate)
+          .setZone('America/Lima')
+          .startOf('day')
+          .toJSDate();
+      }
+
+      if (endDate) {
+        // Creamos el fin del día en zona Lima
+        where.localCreatedAt.lte = DateTime.fromISO(endDate)
+          .setZone('America/Lima')
+          .endOf('day')
+          .toJSDate();
+      }
+    }
+
+    const logs = await this.prisma.zentraAuditLog.findMany({
+      where,
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
+      orderBy: {
+        serverCreatedAt: 'desc',
+      },
+    });
+
+    // Mapeo y formateo de respuesta
+    return logs.map((log) => ({
+      id: log.id,
+      module: log.module,
+      action: log.action,
+      recordId: log.recordId,
+      serverCreatedAt: DateTime.fromJSDate(log.serverCreatedAt)
+        .setZone('America/Lima')
+        .toFormat('dd/MM/yyyy HH:mm:ss'),
+      localCreatedAt: DateTime.fromJSDate(log.localCreatedAt)
+        .setZone('America/Lima')
+        .toFormat('dd/MM/yyyy HH:mm:ss'),
+      userId: log.userId,
+      userComplete: `${log.user?.firstName || ''} ${log.user?.lastName || ''}`.trim(),
+    }));
+  }
+
 
 }
