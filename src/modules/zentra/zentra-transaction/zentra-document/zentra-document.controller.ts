@@ -265,18 +265,31 @@ export class ZentraDocumentController {
   }
   
 
-  @Post('search-report')
+  
+  @Post('search-report-expense')
   @Public()
-  searchReport(@Body() filters: {
-    documentDateId?: string,
+  searchReportExpense(@Body() filters: {
     transactionTypeId?: string,
     documentStatusId?: string;
-    documentCategoryId?: string;
     companyId?: string;
     startDate?: string;
     endDate?: string;
     }) { 
-    return this.zentraDocumentService.findByFiltersReport(filters);
+    return this.zentraDocumentService.findByFiltersReportExpense(filters);
   }
+
+  @Post('search-report-sales')
+  @Public()
+  searchReportSales(@Body() filters: {
+    transactionTypeId?: string,
+    documentStatusId?: string;
+    companyId?: string;
+    startDate?: string;
+    endDate?: string;
+    }) { 
+    return this.zentraDocumentService.findByFiltersReportSales(filters);
+  }
+
+
 
 }

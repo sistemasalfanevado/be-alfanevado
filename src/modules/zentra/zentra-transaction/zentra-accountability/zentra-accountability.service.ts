@@ -3,6 +3,7 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraAccountabilityDto } from './dto/create-zentra-accountability.dto';
 import { UpdateZentraAccountabilityDto } from './dto/update-zentra-accountability.dto';
 import { ZentraDocumentService } from '../zentra-document/zentra-document.service';
+import { ZentraDocumentExpenseService } from '../zentra-document-expense/zentra-document-expense.service';
 import { ZentraDocumentSalesService } from '../zentra-document-sales/zentra-document-sales.service';
 import { MailService } from '../../../../mail/mail.service';
 
@@ -13,15 +14,18 @@ import * as moment from 'moment';
 
 @Injectable()
 export class ZentraAccountabilityService {
-
   constructor(
     private prisma: PrismaService,
     @Inject(forwardRef(() => ZentraDocumentService))
     private readonly zentraDocumentService: ZentraDocumentService,
     @Inject(forwardRef(() => ZentraDocumentSalesService))
     private readonly zentraDocumentSalesService: ZentraDocumentSalesService,
-    private mailService: MailService
+    private mailService: MailService,
+    // CORRECCIÓN: Añadir @Inject aquí
+    @Inject(forwardRef(() => ZentraDocumentExpenseService))
+    private zentraDocumentExpenseService: ZentraDocumentExpenseService
   ) { }
+
 
   private includeRelations = {
     party: true,
@@ -404,21 +408,21 @@ export class ZentraAccountabilityService {
     );
 
     const accountabilityData = await this.findOne(dataDocument.accountabilityId);
-    
+
     if (accountabilityData?.id) {
       await this.mailService.notifyExpenseReportPendingAccounting(accountabilityData)
     }
 
 
 
-    
+
     return { message: 'Accountability actualizada exitosamente' };
 
   }
 
   async addDocument(dataAccountability: any) {
 
-    return await this.zentraDocumentService.createDocument(
+    let dataDocument = await this.zentraDocumentService.createDocument(
       {
         code: dataAccountability.code,
         description: dataAccountability.description,
@@ -431,7 +435,7 @@ export class ZentraAccountabilityService {
         detractionRate: dataAccountability.detractionRate,
         detractionAmount: dataAccountability.detractionAmount,
 
-        paidAmount: 0,
+        paidAmount: dataAccountability.totalAmount,
         observation: dataAccountability.observation,
         idFirebase: '',
         hasMovements: false,
@@ -451,8 +455,50 @@ export class ZentraAccountabilityService {
         accountabilityId: dataAccountability.accountabilityId,
         documentOriginId: DOCUMENT_ORIGIN.RENDICION_CUENTAS
       },
-
     );
+
+
+    console.log('Esta es la data: ', {
+      code: dataAccountability.code,
+      description: dataAccountability.description,
+      documentId: dataDocument.id,
+      amount: dataAccountability.totalAmount,
+      budgetItemId: dataAccountability.budgetItemId,
+      date: dataAccountability.documentDate,
+
+      transactionTypeId: dataAccountability.transactionTypeId,
+      movementCategoryId: dataAccountability.movementCategoryId,
+      bankAccountId: dataAccountability.bankAccountId,
+      movementStatusId: dataAccountability.movementStatusId,
+
+      idFirebase: '',
+      documentUrl: '',
+      documentName: '',
+      fromTelecredito: false,
+    })
+
+    await this.zentraDocumentExpenseService.addMovement({
+      code: dataAccountability.code,
+      description: dataAccountability.description,
+      documentId: dataDocument.id,
+      amount: dataAccountability.totalAmount,
+      budgetItemId: dataAccountability.budgetItemId,
+      paymentDate: new Date(dataAccountability.documentDate),
+
+      transactionTypeId: dataAccountability.transactionTypeId,
+      movementCategoryId: dataAccountability.movementCategoryId,
+      bankAccountId: dataAccountability.bankAccountId,
+      movementStatusId: dataAccountability.movementStatusId,
+
+      idFirebase: '',
+      documentUrl: '',
+      documentName: '',
+      fromTelecredito: false,
+    })
+
+    return { message: 'Success' }
+    
+
   }
 
   async updateDocument(id: string, dataDocument: any) {
@@ -623,7 +669,7 @@ export class ZentraAccountabilityService {
     if (totalAccountedAmount === totalApprovedAmount && totalAccountedAmount > 0 && totalApprovedAmount > 0) {
       if (accountabilityData?.id) {
         await this.mailService.notifyExpenseReportPendingAccounting(accountabilityData)
-      } 
+      }
       stateAccountability = ACCOUNTABILITY_STATUS.VALIDACION_CONTABLE_PENDIENTE
     }
 

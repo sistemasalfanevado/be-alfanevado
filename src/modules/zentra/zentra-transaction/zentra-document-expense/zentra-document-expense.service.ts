@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 
 import { ZentraMovementService } from '../zentra-movement/zentra-movement.service';
@@ -9,13 +9,15 @@ import { CURRENCY, DOCUMENT_STATUS, TRANSACTION_TYPE, ACCOUNTABILITY_STATUS, DOC
 
 @Injectable()
 export class ZentraDocumentExpenseService {
-
   constructor(
     private prisma: PrismaService,
     private zentraMovementService: ZentraMovementService,
+    @Inject(forwardRef(() => ZentraDocumentService)) // CORRECCIÓN: Agregar @Inject
     private zentraDocumentService: ZentraDocumentService,
+    @Inject(forwardRef(() => ZentraAccountabilityService))
     private zentraAccountabilityService: ZentraAccountabilityService,
   ) { }
+
 
 
 
@@ -37,8 +39,8 @@ export class ZentraDocumentExpenseService {
       fromTelecredito: data.fromTelecredito ?? false,
     });
     return this.recalculateDocument(data.documentId);
-
   }
+
 
   async removeMovement(id: string) {
     const movementData = await this.zentraMovementService.findOne(id);
@@ -106,7 +108,7 @@ export class ZentraDocumentExpenseService {
     ) {
       documentStatusId = DOCUMENT_STATUS.PENDIENTE;
     }
-    
+
     await this.zentraDocumentService.updateDocumentExpense(documentId, {
       documentStatusId: documentStatusId,
       paidAmount: paidTotal,
@@ -120,7 +122,7 @@ export class ZentraDocumentExpenseService {
     }
 
     return { message: 'Accountability actualizada exitosamente' };
-    
+
 
   }
 
