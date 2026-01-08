@@ -8,7 +8,11 @@ export class UpdateZentraBudgetItemCategoryDto {
 
   @IsString()
   @IsOptional()
-  budgetCategoryId?: string; // Ahora opcional en caso se quiera reasignar
+  budgetCategoryId?: string;
+
+  @IsString()
+  @IsOptional()
+  visibilityId?: string;
 
   @IsString()
   @IsOptional()

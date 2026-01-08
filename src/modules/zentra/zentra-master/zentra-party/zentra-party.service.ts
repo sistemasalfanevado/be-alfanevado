@@ -148,8 +148,9 @@ export class ZentraPartyService {
 
       return {
         id: item.id,
-        name: item.name,
+        name: (principalDocument ? principalDocument.document : '') + ' - ' + item.name,
         partyDocument: principalDocument ? principalDocument.document : '',
+
       }
     })
 

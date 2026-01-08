@@ -529,6 +529,9 @@ model ZentraBudgetItemCategory {
   // Relación con categoría principal
   budgetCategory   ZentraBudgetCategory  @relation(fields: [budgetCategoryId], references: [id])
   budgetCategoryId String
+
+  visibility        ZentraVisibility? @relation(fields: [visibilityId], references: [id])
+  visibilityId      String?
   
   budgetItemDefinition ZentraBudgetItemDefinition[]
 
@@ -767,7 +770,9 @@ model ZentraBudgetItemDefinition {
   category  ZentraBudgetItemCategory @relation(fields: [categoryId], references: [id])
   categoryId String
 
-  // Relación con la naturaleza (Ingreso o Gasto)
+  visibility        ZentraVisibility? @relation(fields: [visibilityId], references: [id])
+  visibilityId      String?
+  
   natureId   String
   nature     ZentraBudgetNature @relation(fields: [natureId], references: [id])
 
@@ -787,6 +792,9 @@ model ZentraBudgetItemDefinition {
 model ZentraBudgetNature {
   id          String   @id @default(uuid())
   name        String   @db.VarChar(50) // Ej: "Ingreso", "Gasto"
+
+  visibility        ZentraVisibility? @relation(fields: [visibilityId], references: [id])
+  visibilityId      String?
 
   definitions ZentraBudgetItemDefinition[]
 
@@ -815,6 +823,9 @@ model ZentraBudgetItem {
   // Relaciones
   definition      ZentraBudgetItemDefinition @relation(fields: [definitionId], references: [id])
   definitionId    String
+
+  visibility        ZentraVisibility? @relation(fields: [visibilityId], references: [id])
+  visibilityId      String?
   
   documents       ZentraDocument[]
   movements       ZentraMovement[]
@@ -1575,6 +1586,11 @@ model ZentraVisibility {
   name        String     @db.VarChar(50)
 
   documentTypes ZentraDocumentType[]
+  budgetItemCategories ZentraBudgetItemCategory[]
+  budgetNatures ZentraBudgetNature[]
+  budgetItemDefinitions ZentraBudgetItemDefinition[]
+  budgetItems ZentraBudgetItem[]
+  
 
   deletedAt DateTime?
   createdAt DateTime      @default(now())
@@ -1582,6 +1598,7 @@ model ZentraVisibility {
 
   @@map("zentra_visibility")
 }
+
 
 
 model ZentraStage {

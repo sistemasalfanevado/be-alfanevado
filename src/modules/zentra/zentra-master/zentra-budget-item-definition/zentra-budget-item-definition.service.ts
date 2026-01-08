@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraBudgetItemDefinitionDto } from './dto/create-zentra-budget-item-definition.dto';
 import { UpdateZentraBudgetItemDefinitionDto } from './dto/update-zentra-budget-item-definition.dto';
+import { VISIBIILITY } from 'src/shared/constants/app.constants';
+
 
 @Injectable()
 export class ZentraBudgetItemDefinitionService {
@@ -17,11 +19,12 @@ export class ZentraBudgetItemDefinitionService {
 
   async findAll() {
     const results = await this.prisma.zentraBudgetItemDefinition.findMany({
-      where: { deletedAt: null },
+      where: { deletedAt: null, visibilityId: VISIBIILITY.VISIBLE },
       include: {
         category: true,
         project: true,
-        nature: true, // 👈 incluimos la relación con BudgetNature
+        nature: true,
+        visibility: true,
       },
       orderBy: {
         name: 'asc',
@@ -40,6 +43,43 @@ export class ZentraBudgetItemDefinitionService {
 
       natureId: item.nature?.id ?? null,
       natureName: item.nature?.name ?? null,
+
+      visibilityId: item.visibility?.id,
+      visibilityName: item.visibility?.name,
+
+      idFirebase: item.idFirebase,
+    }));
+  }
+
+  async findAllComplete() {
+    const results = await this.prisma.zentraBudgetItemDefinition.findMany({
+      where: { deletedAt: null },
+      include: {
+        category: true,
+        project: true,
+        nature: true,
+        visibility: true,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+
+      categoryId: item.category.id,
+      categoryName: item.category.name,
+
+      projectId: item.project.id,
+      projectName: item.project.name,
+
+      natureId: item.nature?.id ?? null,
+      natureName: item.nature?.name ?? null,
+
+      visibilityId: item.visibility?.id,
+      visibilityName: item.visibility?.name,
 
       idFirebase: item.idFirebase,
     }));
@@ -95,13 +135,15 @@ export class ZentraBudgetItemDefinitionService {
     });
   }
 
-  async findAllByProject(projectId: string) {
+  
+  async findAllCompleteByProject(projectId: string) {
     const results = await this.prisma.zentraBudgetItemDefinition.findMany({
       where: { deletedAt: null, projectId },
       include: {
         category: true,
         project: true,
         nature: true,
+        visibility: true,
       },
       orderBy: {
         name: 'asc',
@@ -121,6 +163,43 @@ export class ZentraBudgetItemDefinitionService {
       natureId: item.nature?.id ?? null,
       natureName: item.nature?.name ?? null,
 
+      visibilityId: item.visibility?.id,
+      visibilityName: item.visibility?.name,
+
+      idFirebase: item.idFirebase,
+    }));
+  }
+
+  async findAllByProject(projectId: string) {
+    const results = await this.prisma.zentraBudgetItemDefinition.findMany({
+      where: { deletedAt: null, projectId, visibilityId: VISIBIILITY.VISIBLE },
+      include: {
+        category: true,
+        project: true,
+        nature: true,
+        visibility: true,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+
+      categoryId: item.category.id,
+      categoryName: item.category.name,
+
+      projectId: item.project.id,
+      projectName: item.project.name,
+
+      natureId: item.nature?.id ?? null,
+      natureName: item.nature?.name ?? null,
+
+      visibilityId: item.visibility?.id,
+      visibilityName: item.visibility?.name,
+
       idFirebase: item.idFirebase,
     }));
   }
@@ -131,12 +210,14 @@ export class ZentraBudgetItemDefinitionService {
         deletedAt: null,
         project: {
           companyId
-        }
+        },
+        visibilityId: VISIBIILITY.VISIBLE
       },
       include: {
         category: true,
         project: true,
         nature: true,
+        visibility: true,
       },
       orderBy: {
         name: 'asc',
@@ -157,6 +238,9 @@ export class ZentraBudgetItemDefinitionService {
       natureName: item.nature?.name ?? null,
 
       completeName: item.project.name + ' - ' + item.name,
+
+      visibilityId: item.visibility?.id,
+      visibilityName: item.visibility?.name,
 
       idFirebase: item.idFirebase,
     }));

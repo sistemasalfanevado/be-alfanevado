@@ -22,6 +22,12 @@ export class ZentraBudgetNatureController {
     return this.zentraBudgetNatureService.findAll();
   }
 
+  @Get('complete')
+  @Public()
+  findSimple() {
+    return this.zentraBudgetNatureService.findAllComplete();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.zentraBudgetNatureService.findOne(id);

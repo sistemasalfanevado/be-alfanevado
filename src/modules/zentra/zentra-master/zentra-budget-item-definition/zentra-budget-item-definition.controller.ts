@@ -22,6 +22,12 @@ export class ZentraBudgetItemDefinitionController {
     return this.zentraBudgetItemDefinitionService.findAll();
   }
 
+  @Get('complete')
+  @Public()
+  findSimple() {
+    return this.zentraBudgetItemDefinitionService.findAllComplete();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.zentraBudgetItemDefinitionService.findOne(id);
@@ -43,6 +49,11 @@ export class ZentraBudgetItemDefinitionController {
   @Patch(':id/restore')
   restore(@Param('id') id: string) {
     return this.zentraBudgetItemDefinitionService.restore(id);
+  }
+
+  @Get('complete-project/:projectId')
+  findAllCompleteByProject(@Param('projectId') projectId: string) {
+    return this.zentraBudgetItemDefinitionService.findAllCompleteByProject(projectId);
   }
 
   @Get('project/:projectId')

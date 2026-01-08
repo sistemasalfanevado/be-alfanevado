@@ -8,7 +8,13 @@ export class CreateZentraBudgetItemCategoryDto {
 
   @IsString()
   @IsNotEmpty()
-  budgetCategoryId: string; // Nueva relación obligatoria con ZentraBudgetCategory
+  budgetCategoryId: string;
+
+  @IsString()
+  @IsOptional()
+  visibilityId?: string;
+
+  
 
   @IsString()
   @IsOptional()

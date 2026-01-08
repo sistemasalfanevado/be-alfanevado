@@ -27,6 +27,11 @@ export class CreateZentraBudgetItemDto {
 
   @IsString()
   @IsOptional()
+  visibilityId?: string;
+
+  
+  @IsString()
+  @IsOptional()
   @MaxLength(30)
   idFirebase?: string;
 }

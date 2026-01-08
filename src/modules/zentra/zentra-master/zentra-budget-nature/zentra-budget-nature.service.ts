@@ -2,30 +2,76 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraBudgetNatureDto } from './dto/create-zentra-budget-nature.dto';
 import { UpdateZentraBudgetNatureDto } from './dto/update-zentra-budget-nature.dto';
+import { VISIBIILITY } from 'src/shared/constants/app.constants';
+
 
 @Injectable()
 export class ZentraBudgetNatureService {
   constructor(private prisma: PrismaService) { }
 
   async create(createDto: CreateZentraBudgetNatureDto) {
-    await this.prisma.zentraBudgetNature.create({
-      data: createDto,
+
+    const { visibilityId, ...data } = createDto;
+
+    return this.prisma.zentraBudgetNature.create({
+      data: {
+        ...data,
+        visibility: { connect: { id: visibilityId } },
+      },
     });
 
-    return { message: 'Registrado correctamente' };
   }
 
 
   async findAll() {
-    return this.prisma.zentraBudgetNature.findMany({
-      where: {
-        deletedAt: null,
+    const results = await this.prisma.zentraBudgetNature.findMany({
+      where: { deletedAt: null, visibilityId: VISIBIILITY.VISIBLE },
+      include: {
+        visibility: true,
       },
-      orderBy: {
-        name: 'asc',
-      },
+      orderBy: [
+        { name: 'asc' },
+      ]
+
     });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+
+      visibilityId: item.visibility?.id,
+      visibilityName: item.visibility?.name,
+
+      idFirebase: item.idFirebase,
+
+    }));
+
   }
+
+  async findAllComplete() {
+    const results = await this.prisma.zentraBudgetNature.findMany({
+      where: { deletedAt: null },
+      include: {
+        visibility: true,
+      },
+      orderBy: [
+        { name: 'asc' },
+      ]
+
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+
+      visibilityId: item.visibility?.id,
+      visibilityName: item.visibility?.name,
+
+      idFirebase: item.idFirebase,
+
+    }));
+  }
+
 
   async findOne(id: string) {
     return this.prisma.zentraBudgetNature.findFirst({
@@ -34,10 +80,19 @@ export class ZentraBudgetNatureService {
   }
 
   async update(id: string, updateDto: UpdateZentraBudgetNatureDto) {
+    
+    const { visibilityId, ...data } = updateDto;
+    const updateData: any = { ...data };
+
+    if (visibilityId) {
+      updateData.visibility = { connect: { id: visibilityId } };
+    }
+
     return this.prisma.zentraBudgetNature.update({
       where: { id },
-      data: updateDto,
+      data: updateData,
     });
+
   }
 
   async remove(id: string) {

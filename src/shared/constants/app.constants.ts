@@ -110,3 +110,8 @@ export const BANK = {
   BCP: '60eb3a72-b656-46b7-9f38-85a9a3cac881',
 };
 
+export const VISIBIILITY = {
+  OCULTO: '15c76274-5d4d-4bd2-bcd9-edbd9319248f',
+  VISIBLE: 'bebfddc7-fb71-4caf-8ec9-ef48586f50d1',
+};
+

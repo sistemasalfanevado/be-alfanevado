@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraBudgetItemDto } from './dto/create-zentra-budget-item.dto';
 import { UpdateZentraBudgetItemDto } from './dto/update-zentra-budget-item.dto';
+import { VISIBIILITY } from 'src/shared/constants/app.constants';
+
 
 @Injectable()
 export class ZentraBudgetItemService {
@@ -9,7 +11,7 @@ export class ZentraBudgetItemService {
 
   // Crear un presupuesto
   async create(createDto: CreateZentraBudgetItemDto) {
-    const { currencyId, definitionId, ...data } = createDto;
+    const { currencyId, definitionId, visibilityId, ...data } = createDto;
 
     await this.prisma.zentraBudgetItem.create({
       data: createDto,
@@ -33,18 +35,20 @@ export class ZentraBudgetItemService {
 
   // Actualizar un presupuesto
   async update(id: string, updateDto: UpdateZentraBudgetItemDto) {
-    const { currencyId, definitionId, ...data } = updateDto;
+    const { currencyId, definitionId, visibilityId, ...data } = updateDto;
     const updateData: any = { ...data };
 
     if (currencyId) updateData.currency = { connect: { id: currencyId } };
     if (definitionId) updateData.definition = { connect: { id: definitionId } };
+    if (visibilityId) updateData.visibility = { connect: { id: visibilityId } };
 
     return this.prisma.zentraBudgetItem.update({
       where: { id },
       data: updateData,
       include: {
         currency: true,
-        definition: true
+        definition: true,
+        visibility: true,
       }
     });
   }
@@ -94,7 +98,7 @@ export class ZentraBudgetItemService {
       available: available,
       completeName: `${item.definition.name} - ${item.currency.name}${available !== null ? ' - ' + formatter.format(available) : ''
         }`,
-        
+
       projectName: `${item.definition.project.name}`,
 
       budgetSubCategoryName: item?.definition?.category
@@ -113,21 +117,26 @@ export class ZentraBudgetItemService {
         ? `${item.definition.category.budgetCategory.id}`
         : null,
 
+      visibilityId: item.visibility?.id,
+      visibilityName: item.visibility?.name,
+
       idFirebase: item.idFirebase,
     };
-    
+
     return base;
   }
 
   async findAll(): Promise<any[]> {
     const results = await this.prisma.zentraBudgetItem.findMany({
-      where: { deletedAt: null },
+      where: { deletedAt: null, visibilityId: VISIBIILITY.VISIBLE },
       include: {
-        currency: true, definition: {
+        currency: true,
+        definition: {
           include: {
             project: true
           }
-        }
+        },
+        visibility: true,
       },
       orderBy: [
         { definition: { name: 'asc' } },
@@ -138,7 +147,28 @@ export class ZentraBudgetItemService {
     return results.map((item) => this.mapToDto(item));
   }
 
-  async findAllByProject(projectId: string): Promise<any[]> {
+  async findAllComplete(): Promise<any[]> {
+    const results = await this.prisma.zentraBudgetItem.findMany({
+      where: { deletedAt: null },
+      include: {
+        currency: true,
+        definition: {
+          include: {
+            project: true
+          }
+        },
+        visibility: true,
+      },
+      orderBy: [
+        { definition: { name: 'asc' } },
+        { currency: { name: 'asc' } },
+      ],
+    });
+
+    return results.map((item) => this.mapToDto(item));
+  }
+
+  async findAllCompleteByProject(projectId: string): Promise<any[]> {
     const results = await this.prisma.zentraBudgetItem.findMany({
       where: { deletedAt: null, definition: { projectId } },
       include: {
@@ -153,6 +183,33 @@ export class ZentraBudgetItemService {
             },
           },
         },
+        visibility: true,
+      },
+      orderBy: [
+        { definition: { name: 'asc' } },
+        { currency: { name: 'asc' } },
+      ],
+    });
+
+    return results.map((item) => this.mapToDto(item));
+  }
+
+  async findAllByProject(projectId: string): Promise<any[]> {
+    const results = await this.prisma.zentraBudgetItem.findMany({
+      where: { deletedAt: null, definition: { projectId }, visibilityId: VISIBIILITY.VISIBLE },
+      include: {
+        currency: true,
+        definition: {
+          include: {
+            project: true,
+            category: {
+              include: {
+                budgetCategory: true
+              }
+            },
+          },
+        },
+        visibility: true,
       },
       orderBy: [
         { definition: { name: 'asc' } },
@@ -165,13 +222,15 @@ export class ZentraBudgetItemService {
 
   async findAllByCompany(companyId: string): Promise<any[]> {
     const results = await this.prisma.zentraBudgetItem.findMany({
-      where: { deletedAt: null, definition: { project: { companyId } } },
+      where: { deletedAt: null, definition: { project: { companyId } }, visibilityId: VISIBIILITY.VISIBLE },
       include: {
-        currency: true, definition: {
+        currency: true,
+        definition: {
           include: {
             project: true
           }
-        }
+        },
+        visibility: true,
       },
       orderBy: [
         { definition: { name: 'asc' } },
@@ -185,15 +244,16 @@ export class ZentraBudgetItemService {
 
   async findAllByCategory(categoryId: string, projectId: string): Promise<any[]> {
     const results = await this.prisma.zentraBudgetItem.findMany({
-      where: { deletedAt: null, definition: { categoryId, projectId } },
+      where: { deletedAt: null, definition: { categoryId, projectId }, visibilityId: VISIBIILITY.VISIBLE },
       include: {
         currency: true,
-        definition: { 
-          include: { 
-            category: true, 
-            project: true 
-          } 
+        definition: {
+          include: {
+            category: true,
+            project: true
+          }
         },
+        visibility: true
       },
       orderBy: [
         { definition: { name: 'asc' } },
@@ -210,6 +270,7 @@ export class ZentraBudgetItemService {
 
     const where: any = {
       deletedAt: null,
+      visibilityId: VISIBIILITY.VISIBLE,
       definition: {},
     };
 
@@ -232,6 +293,7 @@ export class ZentraBudgetItemService {
             project: true,
           },
         },
+        visibility: true,
       },
     });
 

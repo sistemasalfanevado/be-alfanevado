@@ -22,6 +22,13 @@ export class ZentraBudgetItemCategoryController {
     return this.zentraBudgetItemCategoryService.findAll();
   }
 
+  @Get('complete')
+  @Public()
+  findSimple() {
+    return this.zentraBudgetItemCategoryService.findAllComplete();
+  }
+
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.zentraBudgetItemCategoryService.findOne(id);

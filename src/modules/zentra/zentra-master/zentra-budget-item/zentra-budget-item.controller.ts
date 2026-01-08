@@ -21,6 +21,13 @@ export class ZentraBudgetItemController {
     return this.zentraBudgetItemService.findAll();
   }
 
+  @Get('complete')
+  @Public()
+  findSimple() {
+    return this.zentraBudgetItemService.findAllComplete();
+  }
+
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.zentraBudgetItemService.findOne(id);
@@ -39,6 +46,11 @@ export class ZentraBudgetItemController {
   @Patch(':id/restore')
   restore(@Param('id') id: string) {
     return this.zentraBudgetItemService.restore(id);
+  }
+
+  @Get('complete-project/:projectId')
+  findAllCompleteByProject(@Param('projectId') projectId: string) {
+    return this.zentraBudgetItemService.findAllCompleteByProject(projectId);
   }
 
   @Get('project/:projectId')
