@@ -2691,6 +2691,54 @@ export class ZentraDocumentService {
 
 
 
+  async validateDuplicate(filters: { code: string; documentDate: string; partyId: string }) {
+    // Normalizamos la fecha para comparar solo el día (YYYY-MM-DD)
+    const startOfDay = moment(filters.documentDate).startOf('day').toDate();
+    const endOfDay = moment(filters.documentDate).endOf('day').toDate();
+
+    const duplicate = await this.prisma.zentraDocument.findFirst({
+      where: {
+        code: filters.code.trim(),
+        partyId: filters.partyId,
+        documentDate: {
+          gte: startOfDay,
+          lte: endOfDay,
+        },
+        deletedAt: null, // No contar documentos eliminados
+      },
+      include: {
+        party: true,
+        budgetItem: {
+          include: {
+            definition: {
+              include: { project: true }
+            }
+          }
+        },
+        user: true
+      }
+    });
+
+    if (duplicate) {
+      return {
+        exists: true,
+        document: {
+          id: duplicate.id,
+          code: duplicate.code,
+          projectName: duplicate.budgetItem?.definition?.project?.name,
+          partyName: duplicate.party?.name,
+          totalAmount: duplicate.totalAmount,
+          userName: duplicate.user.firstName + ' ' + duplicate.user.lastName,
+          documentDate: moment(duplicate.documentDate).format('DD/MM/YYYY')
+        }
+      };
+    }
+
+    return { exists: false };
+  }
+
+
+
 
 
 

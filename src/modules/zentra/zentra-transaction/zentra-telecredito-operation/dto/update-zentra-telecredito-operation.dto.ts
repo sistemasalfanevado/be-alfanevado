@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsDateString } from 'class-validator';
+import { IsString, IsOptional, IsDateString, MaxLength } from 'class-validator';
 
 export class UpdateZentraTelecreditoOperationDto {
   @IsString()
@@ -20,4 +20,19 @@ export class UpdateZentraTelecreditoOperationDto {
   @IsDateString()
   @IsOptional()
   datePayment?: string;
+
+  @IsString()
+  @IsOptional()
+  projectId?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(300)
+  imageUrl?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(20)
+  code?: string;
+
 }

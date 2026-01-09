@@ -61,6 +61,7 @@ export class ZentraTelecreditoOperationController {
       startDate?: string;
       endDate?: string;
       stateId?: string;
+      projectId?: string;
       companyId?: string;
     },
   ) {
@@ -73,5 +74,6 @@ export class ZentraTelecreditoOperationController {
   ) {
     return this.zentraTelecreditoOperationService.createWithDetails(createDto);
   }
+
 
 }

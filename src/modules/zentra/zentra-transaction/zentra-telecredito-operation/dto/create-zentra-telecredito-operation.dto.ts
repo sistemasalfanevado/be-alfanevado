@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsDateString } from 'class-validator';
+import { IsString, IsNotEmpty, IsDateString, IsOptional, MaxLength } from 'class-validator';
 
 export class CreateZentraTelecreditoOperationDto {
   @IsString()
@@ -20,4 +20,20 @@ export class CreateZentraTelecreditoOperationDto {
   @IsDateString()
   @IsNotEmpty()
   datePayment: string;
+
+  // Nuevo campo opcional
+  @IsString()
+  @IsOptional()
+  projectId?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(300)
+  imageUrl?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(20)
+  code?: string;
+
 }

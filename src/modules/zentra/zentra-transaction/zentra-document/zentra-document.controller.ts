@@ -68,7 +68,7 @@ export class ZentraDocumentController {
     documentTypeId?: string;
     excludeDocumentTypeId?: string;
     currencyId?: string;
-  }) { 
+  }) {
     return this.zentraDocumentService.findByFilters(filters);
   }
 
@@ -81,7 +81,7 @@ export class ZentraDocumentController {
   createExchangeRate(@Body() createZentraDocumentDto: any) {
     return this.zentraDocumentService.createExchangeRate(createZentraDocumentDto);
   }
-  
+
   @Delete('exchange-rate/:id')
   removeExchangeRate(@Param('id') id: string) {
     return this.zentraDocumentService.removeExchangeRate(id);
@@ -170,7 +170,7 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.createScheduledIncome(createZentraDocumentDto);
   }
 
-  @Post('scheduled-income/search') 
+  @Post('scheduled-income/search')
   @Public()
   searchScheduledIncome(@Body() filters: {
     documentCategoryId?: string;
@@ -180,15 +180,15 @@ export class ZentraDocumentController {
     endDate?: string;
     projectId?: string;
     companyId?: string;
-  }) { 
+  }) {
     return this.zentraDocumentService.findByFiltersScheduledIncome(filters);
   }
 
-  @Post('scheduled-income/search-detail') 
+  @Post('scheduled-income/search-detail')
   @Public()
   searchScheduledIncomeWithDetail(@Body() filters: {
     companyId?: string;
-  }) { 
+  }) {
     return this.zentraDocumentService.findByFiltersScheduledIncomeWithDetail(filters);
   }
 
@@ -201,12 +201,12 @@ export class ZentraDocumentController {
   removeScheduledIncome(@Param('id') id: string) {
     return this.zentraDocumentService.removeScheduledIncome(id);
   }
-  
+
   @Delete('scheduled-document/:id')
   removeScheduledDocument(@Param('id') id: string) {
     return this.zentraDocumentService.removeScheduledDocument(id);
   }
-  
+
   @Post('scheduled-income/report')
   @Public()
   searchScheduledIncomeReport(@Body() filters: {
@@ -214,9 +214,9 @@ export class ZentraDocumentController {
     documentCategoryId: string;
     transactionNatureId: string;
   }) {
-    return this.zentraDocumentService.findByFiltersScheduledIncomeReport(filters); 
+    return this.zentraDocumentService.findByFiltersScheduledIncomeReport(filters);
   }
-  
+
 
   @Post('scheduled-income/ia')
   @Public()
@@ -234,7 +234,7 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.createScheduledDebt(createZentraDocumentDto);
   }
 
-  @Post('scheduled-debt/search') 
+  @Post('scheduled-debt/search')
   @Public()
   searchScheduledDebt(@Body() filters: {
     documentCategoryId?: string;
@@ -244,7 +244,7 @@ export class ZentraDocumentController {
     endDate?: string;
     projectId?: string;
     companyId?: string;
-  }) { 
+  }) {
     return this.zentraDocumentService.findByFiltersScheduledDebt(filters);
   }
 
@@ -257,9 +257,9 @@ export class ZentraDocumentController {
   removeScheduledDebt(@Param('id') id: string) {
     return this.zentraDocumentService.removeScheduledDebt(id);
   }
-  
 
-  
+
+
   @Post('search-report-expense')
   @Public()
   searchReportExpense(@Body() filters: {
@@ -268,7 +268,7 @@ export class ZentraDocumentController {
     companyId?: string;
     startDate?: string;
     endDate?: string;
-    }) { 
+  }) {
     return this.zentraDocumentService.findByFiltersReportExpense(filters);
   }
 
@@ -280,8 +280,16 @@ export class ZentraDocumentController {
     companyId?: string;
     startDate?: string;
     endDate?: string;
-    }) { 
+  }) {
     return this.zentraDocumentService.findByFiltersReportSales(filters);
+  }
+
+
+  @Post('validate-duplicate')
+  async validateDuplicate(
+    @Body() filters: { code: string; documentDate: string; partyId: string }
+  ) {
+    return this.zentraDocumentService.validateDuplicate(filters);
   }
 
 

@@ -580,6 +580,7 @@ model ZentraProject {
   subProjects       ZentraSubProject[]
   projectUsers      ZentraUserProject[]
   subStageProgress  ZentraSubStageProgress[]
+  telecreditoOperations  ZentraTelecreditoOperation[]
 
   imageUrl      String?      @db.VarChar(300)
   
@@ -1515,6 +1516,9 @@ model ZentraTelecreditoOperation {
   company      ZentraCompany                @relation(fields: [companyId], references: [id])
   companyId    String
 
+  project             ZentraProject?               @relation(fields: [projectId], references: [id])
+  projectId           String?
+
   telecreditoConfig ZentraTelecreditoConfig @relation(fields: [telecreditoConfigId], references: [id])
   telecreditoConfigId String
 
@@ -1522,6 +1526,9 @@ model ZentraTelecreditoOperation {
   stateId      String
 
   datePayment  DateTime
+
+  imageUrl     String?    @db.VarChar(300)
+  code         String?    @db.VarChar(20)
 
   details ZentraTelecreditoOperationDetail[]
 

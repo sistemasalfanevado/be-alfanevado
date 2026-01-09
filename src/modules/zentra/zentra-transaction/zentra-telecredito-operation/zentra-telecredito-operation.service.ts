@@ -26,6 +26,7 @@ export class ZentraTelecreditoOperationService {
           },
         },
         company: true,
+        project: true,
         telecreditoConfig: true,
         state: true,
       },
@@ -47,6 +48,12 @@ export class ZentraTelecreditoOperationService {
 
       stateId: item.stateId,
       stateName: item.state?.name ?? null,
+
+      // 👈 Nuevos campos agregados
+      projectId: item.projectId,
+      projectName: item.project?.name ?? 'Sin Proyecto',
+      imageUrl: item.imageUrl ?? null,
+      code: item.code ?? null,
     }));
   }
 
@@ -56,6 +63,7 @@ export class ZentraTelecreditoOperationService {
       include: {
         bankAccount: true,
         company: true,
+        project: true,
         telecreditoConfig: true,
         state: true,
       },
@@ -88,6 +96,7 @@ export class ZentraTelecreditoOperationService {
    */
   async findByFilters(filters: {
     stateId?: string;
+    projectId?: string;
     companyId?: string;
     startDate?: string;
     endDate?: string;
@@ -105,6 +114,7 @@ export class ZentraTelecreditoOperationService {
           },
         },
         company: true,
+        project: true,
         telecreditoConfig: true,
         state: true,
         details: {
@@ -148,6 +158,11 @@ export class ZentraTelecreditoOperationService {
         detailsCount,
         totalAmountSum,
 
+        projectId: item.projectId,
+        projectName: item.project?.name ?? 'Sin Proyecto',
+        imageUrl: item.imageUrl ?? null,
+        code: item.code ?? null,
+
         // 🟢 Lista de detalles
         details: details.map((detail) => ({
           id: detail.id,
@@ -174,13 +189,13 @@ export class ZentraTelecreditoOperationService {
     });
 
     if (details && details.length > 0) {
-      for (const detail of details) { 
+      for (const detail of details) {
         await this.prisma.zentraTelecreditoOperationDetail.create({
           data: {
             telecreditoOperationId: operation.id,
             documentId: detail.documentId,
             totalAmount: detail.totalAmount,
-            
+
           },
         });
       }
@@ -195,6 +210,7 @@ export class ZentraTelecreditoOperationService {
   private buildTelecreditoFilters(filters: {
     stateId?: string;
     companyId?: string;
+    projectId?: string;
     startDate?: string;
     endDate?: string;
   }) {
@@ -216,6 +232,10 @@ export class ZentraTelecreditoOperationService {
 
     if (filters.companyId?.trim()) {
       where.companyId = filters.companyId;
+    }
+
+    if (filters.projectId?.trim()) {
+      where.projectId = filters.projectId;
     }
 
     return where;
