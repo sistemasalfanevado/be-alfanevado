@@ -1534,16 +1534,18 @@ export class ZentraDocumentService {
         currency: true,
         scheduledIncomeDocument: {
           include: {
-            lot: true, // Para lotName y lotCode
+            lot: true,
+            saleType: true,
+            transactionNature: true,
             document: {
               include: {
                 currency: true,
-                party: true, // Para partyName
+                party: true,
                 budgetItem: {
                   include: {
                     definition: {
                       include: {
-                        project: true // Para projectName
+                        project: true
                       }
                     }
                   }
@@ -1565,12 +1567,15 @@ export class ZentraDocumentService {
         projectName: doc?.budgetItem?.definition?.project?.name ?? null,
         documentTotalAmount: doc?.totalAmount ?? 0,
         documentAmountToPay: doc?.amountToPay ?? 0,
+        documentCurrencyId: doc?.currency?.id ?? null,
         documentCurrencyName: doc?.currency?.name ?? null,
         partyName: doc?.party?.name ?? null,
 
         lotId: sched?.lot?.id ?? null,
         lotName: sched?.lot?.name ?? null,
         lotCode: sched?.lot?.code ?? null,
+        lotSaleType: sched?.saleType?.name ?? null,
+        lotTransactionNature: sched?.transactionNature?.name ?? null,
 
         // 🔹 Cuota (Desde Installment)
         installmentId: inst.id,
@@ -1589,6 +1594,7 @@ export class ZentraDocumentService {
         currencyId: inst.currency?.id,
         currencyName: inst.currency?.name,
         code: inst.code ?? '',
+
       };
     });
 
