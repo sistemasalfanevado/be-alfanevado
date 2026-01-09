@@ -1514,73 +1514,65 @@ export class ZentraDocumentService {
   }
 
   async findByFiltersScheduledIncomeWithDetail(filters: {
-    documentCategoryId?: string;
-    documentStatusId?: string;
-    partyId?: string;
-    startDate?: string;
-    endDate?: string;
-    projectId?: string;
     companyId?: string;
   }) {
-    const where = this.buildDocumentFilters(filters);
-
-    const results = await this.prisma.zentraDocument.findMany({
-      where,
+    const installments = await this.prisma.zentraInstallment.findMany({
+      where: {
+        deletedAt: null,
+        scheduledIncomeDocument: {
+          document: {
+            budgetItem: {
+              definition: {
+                project: { companyId: filters.companyId }
+              }
+            }
+          }
+        }
+      },
       include: {
-        documentStatus: true,
-        party: true,
+        installmentStatus: true,
         currency: true,
-        budgetItem: {
+        scheduledIncomeDocument: {
           include: {
-            definition: {
-              include: {
-                project: true,
-              },
-            },
-          },
-        },
-        user: true,
-        scheduledIncomeDocuments: {
-          where: { deletedAt: null },
-          include: {
-            saleType: true,
-            lot: true,
-            status: true,
-            transactionNature: true,
-            installments: {
-              where: { deletedAt: null },
+            lot: true, // Para lotName y lotCode
+            document: {
               include: {
                 currency: true,
-                installmentStatus: true,
-              },
-            },
-          },
-        },
-      },
-      orderBy: {
-        documentDate: 'desc', // orden base
-      },
+                party: true, // Para partyName
+                budgetItem: {
+                  include: {
+                    definition: {
+                      include: {
+                        project: true // Para projectName
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     });
 
-    const mappedResults = results.flatMap((doc) => {
-      const sched = doc.scheduledIncomeDocuments?.[0];
+    const mappedResults = installments.map((inst) => {
+      const doc = inst.scheduledIncomeDocument?.document;
+      const sched = inst.scheduledIncomeDocument;
 
-      if (!sched?.installments?.length) return [];
+      return {
+        // 🔹 Cabecera (Desde Document y Scheduled)
+        documentId: doc?.id ?? null,
+        projectName: doc?.budgetItem?.definition?.project?.name ?? null,
+        documentTotalAmount: doc?.totalAmount ?? 0,
+        documentAmountToPay: doc?.amountToPay ?? 0,
+        documentCurrencyName: doc?.currency?.name ?? null,
+        partyName: doc?.party?.name ?? null,
 
-      return sched.installments.map((inst) => ({
-        // 🔹 Cabecera
-        documentId: doc.id,
-        projectName: doc.budgetItem.definition.project.name,
-        documentTotalAmount: doc.totalAmount,
-        documentAmountToPay: doc.amountToPay,
-        documentCurrencyName: doc.currency?.name,
-        partyName: doc.party?.name,
+        lotId: sched?.lot?.id ?? null,
+        lotName: sched?.lot?.name ?? null,
+        lotCode: sched?.lot?.code ?? null,
 
-        lotId: sched.lot?.id ?? null,
-        lotName: sched.lot?.name ?? null,
-        lotCode: sched.lot?.code ?? null,
-
-        // 🔹 Cuota
+        // 🔹 Cuota (Desde Installment)
         installmentId: inst.id,
         letra: inst.letra,
         installmentStatusId: inst.installmentStatus?.id,
@@ -1592,9 +1584,15 @@ export class ZentraDocumentService {
         extra: inst.extra,
         totalAmount: inst.totalAmount,
         paidAmount: inst.paidAmount,
-      }));
+
+        // Campos adicionales del segundo esquema si los necesitas:
+        currencyId: inst.currency?.id,
+        currencyName: inst.currency?.name,
+        code: inst.code ?? '',
+      };
     });
 
+    // Aplicamos el mismo ordenamiento lógico
     return mappedResults.sort((a, b) => {
       // 1️⃣ Proyecto
       const projectCompare = (a.projectName || '').localeCompare(
@@ -1607,20 +1605,12 @@ export class ZentraDocumentService {
       // 2️⃣ Lote
       if (!a.lotCode) return 1;
       if (!b.lotCode) return -1;
-
-      const lotCompare = a.lotCode.localeCompare(
-        b.lotCode,
-        'es',
-        { numeric: true }
-      );
+      const lotCompare = a.lotCode.localeCompare(b.lotCode, 'es', { numeric: true });
       if (lotCompare !== 0) return lotCompare;
 
       // 3️⃣ Letra
       return (a.letra ?? 0) - (b.letra ?? 0);
     });
-
-
-
   }
 
 
@@ -2624,7 +2614,7 @@ export class ZentraDocumentService {
       detractionAmount: item.detractionAmount,
       amountToPay: item.amountToPay,
       paidAmount: item.paidAmount,
-      
+
       rawDate: item.documentDate,
       registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
       documentDate: item.documentDate ? moment(item.documentDate).format('DD/MM/YYYY') : null,
@@ -2655,14 +2645,14 @@ export class ZentraDocumentService {
       detractionAmount: 0,
       amountToPay: item.totalAmount,
       paidAmount: item.paidAmount,
-      
+
       rawDate: item.documentDate,
       registeredAt: moment(item.createdAt).format('DD/MM/YYYY'),
       documentDate: item.documentDate ? moment(item.documentDate).format('DD/MM/YYYY') : 'Sin Definir',
-      
+
       documentTypeId: item.documentType?.id || null,
       documentTypeName: item.documentType?.name || 'Sin Documento',
-      
+
       partyId: item.scheduledIncomeDocument?.document.party.id,
       partyName: item.scheduledIncomeDocument?.document.party.name,
 

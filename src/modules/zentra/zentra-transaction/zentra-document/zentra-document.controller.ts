@@ -187,12 +187,6 @@ export class ZentraDocumentController {
   @Post('scheduled-income/search-detail') 
   @Public()
   searchScheduledIncomeWithDetail(@Body() filters: {
-    documentCategoryId?: string;
-    documentStatusId?: string;
-    partyId?: string;
-    startDate?: string;
-    endDate?: string;
-    projectId?: string;
     companyId?: string;
   }) { 
     return this.zentraDocumentService.findByFiltersScheduledIncomeWithDetail(filters);
