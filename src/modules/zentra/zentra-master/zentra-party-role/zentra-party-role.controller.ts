@@ -3,11 +3,7 @@ import { ZentraPartyRoleService } from './zentra-party-role.service';
 import { CreateZentraPartyRoleDto } from './dto/create-zentra-party-role.dto';
 import { UpdateZentraPartyRoleDto } from './dto/update-zentra-party-role.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-party-roles')
-//@UseGuards(JwtAuthGuard)
 export class ZentraPartyRoleController {
   constructor(private readonly zentraPartyRoleService: ZentraPartyRoleService) {}
 
@@ -17,7 +13,6 @@ export class ZentraPartyRoleController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraPartyRoleService.findAll();
   }

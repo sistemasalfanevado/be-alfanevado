@@ -4,11 +4,8 @@ import {
 import { ZentraAccountabilityService } from './zentra-accountability.service';
 import { CreateZentraAccountabilityDto } from './dto/create-zentra-accountability.dto';
 import { UpdateZentraAccountabilityDto } from './dto/update-zentra-accountability.dto';
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-accountabilities')
-// @UseGuards(JwtAuthGuard)
 export class ZentraAccountabilityController {
   constructor(
     private readonly zentraAccountabilityService: ZentraAccountabilityService
@@ -22,7 +19,6 @@ export class ZentraAccountabilityController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraAccountabilityService.findAll();
   }
@@ -52,7 +48,6 @@ export class ZentraAccountabilityController {
   }
 
   @Post('search')
-  @Public()
   search(@Body() filters: {
     accountabilityStatusId?: string;
     partyId?: string;
@@ -65,19 +60,16 @@ export class ZentraAccountabilityController {
   }
 
   @Post('add-increment')
-  @Public()
   addIncrement(@Body() dataAccountability: any) {
     return this.zentraAccountabilityService.addIncrement(dataAccountability);
   }
 
   @Post('add-refund')
-  @Public()
   addRefund(@Body() dataAccountability: any) {
     return this.zentraAccountabilityService.addRefund(dataAccountability);
   }
 
   @Post('add-document')
-  @Public()
   addDocument(@Body() dataAccountability: any) {
     return this.zentraAccountabilityService.addDocument(dataAccountability);
   }
@@ -108,7 +100,6 @@ export class ZentraAccountabilityController {
 
   // Devoluviones
   @Post('add-document-return')
-  @Public()
   addDocumentReturn(@Body() dataAccountability: any) {
     return this.zentraAccountabilityService.addDocumentReturn(dataAccountability);
   }
@@ -116,7 +107,6 @@ export class ZentraAccountabilityController {
   // Reportes
 
   @Post('get-data-report')
-  @Public()
   getAllDataReport(@Body('id') accountabilityId: string) {
     return this.zentraAccountabilityService.getAllDataReport(accountabilityId);
   }

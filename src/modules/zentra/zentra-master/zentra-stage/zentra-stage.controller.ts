@@ -3,11 +3,7 @@ import { ZentraStageService } from './zentra-stage.service';
 import { CreateZentraStageDto } from './dto/create-zentra-stage.dto';
 import { UpdateZentraStageDto } from './dto/update-zentra-stage.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-stages')
-//@UseGuards(JwtAuthGuard)
 export class ZentraStageController {
   constructor(private readonly zentraStageService: ZentraStageService) {}
 
@@ -17,7 +13,6 @@ export class ZentraStageController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraStageService.findAll();
   }

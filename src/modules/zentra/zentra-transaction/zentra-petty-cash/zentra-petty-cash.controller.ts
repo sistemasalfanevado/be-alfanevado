@@ -13,19 +13,11 @@ import { ZentraPettyCashService } from './zentra-petty-cash.service';
 import { CreateZentraPettyCashDto } from './dto/create-zentra-petty-cash.dto';
 import { UpdateZentraPettyCashDto } from './dto/update-zentra-petty-cash.dto';
 
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-// import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-
 @Controller('zentra-petty-cash')
-// @UseGuards(JwtAuthGuard)
 export class ZentraPettyCashController {
   constructor(
     private readonly zentraPettyCashService: ZentraPettyCashService,
   ) {}
-
-  // --------------------
-  // CRUD
-  // --------------------
 
   @Post()
   create(@Body() dto: CreateZentraPettyCashDto) {
@@ -33,7 +25,6 @@ export class ZentraPettyCashController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraPettyCashService.findAll();
   }
@@ -62,12 +53,7 @@ export class ZentraPettyCashController {
     return this.zentraPettyCashService.restore(id);
   }
 
-  // --------------------
-  // SEARCH / FILTERS
-  // --------------------
-
   @Post('search')
-  @Public()
   search(
     @Body()
     filters: {
@@ -82,12 +68,7 @@ export class ZentraPettyCashController {
     return this.zentraPettyCashService.findByFilters(filters);
   }
 
-  // --------------------
-  // AMOUNTS
-  // --------------------
-
   @Post('add-increment')
-  @Public()
   addIncrement(
     @Body() data: { pettyCashId: string; amount: number },
   ) {
@@ -95,19 +76,13 @@ export class ZentraPettyCashController {
   }
 
   @Post('add-refund')
-  @Public()
   addRefund(
     @Body() data: { pettyCashId: string; amount: number },
   ) {
     return this.zentraPettyCashService.addRefund(data);
   }
 
-  // --------------------
-  // DOCUMENTS
-  // --------------------
-
   @Post('add-document')
-  @Public()
   addDocument(
     @Body() data: { pettyCashId: string; documentId: string },
   ) {
@@ -119,12 +94,7 @@ export class ZentraPettyCashController {
     return this.zentraPettyCashService.removeDocument(id);
   }
 
-  // --------------------
-  // REPORTS
-  // --------------------
-
   @Post('get-data-report')
-  @Public()
   getAllDataReport(@Body('id') pettyCashId: string) {
     return this.zentraPettyCashService.getAllDataReport(pettyCashId);
   }

@@ -14,17 +14,13 @@ import { ZentraNotificationRecipientService } from './zentra-notification-recipi
 import { CreateZentraNotificationRecipientDto } from './dto/create-zentra-notification-recipient.dto';
 import { UpdateZentraNotificationRecipientDto } from './dto/update-zentra-notification-recipient.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-
 @Controller('zentra-notification-recipients')
-@UseGuards(JwtAuthGuard)
 export class ZentraNotificationRecipientController {
 
   constructor(
     private readonly service: ZentraNotificationRecipientService
   ) { }
 
-  // ✅ Crear receptor
   @Post()
   create(
     @Body() dto: CreateZentraNotificationRecipientDto
@@ -32,7 +28,6 @@ export class ZentraNotificationRecipientController {
     return this.service.create(dto);
   }
 
-  // ✅ Listar receptores
   @Get()
   findAll() {
     return this.service.findAll();

@@ -15,11 +15,7 @@ import { ZentraDocumentTransactionMethodService } from './zentra-document-transa
 import { CreateZentraDocumentTransactionMethodDto } from './dto/create-zentra-document-transaction-method.dto';
 import { UpdateZentraDocumentTransactionMethodDto } from './dto/update-zentra-document-transaction-method.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-document-transaction-methods')
-// @UseGuards(JwtAuthGuard)
 export class ZentraDocumentTransactionMethodController {
   constructor(
     private readonly service: ZentraDocumentTransactionMethodService
@@ -31,7 +27,6 @@ export class ZentraDocumentTransactionMethodController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.service.findAll();
   }

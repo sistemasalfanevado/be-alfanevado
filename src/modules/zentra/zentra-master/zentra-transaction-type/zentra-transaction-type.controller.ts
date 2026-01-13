@@ -3,11 +3,7 @@ import { ZentraTransactionTypeService } from './zentra-transaction-type.service'
 import { CreateZentraTransactionTypeDto } from './dto/create-zentra-transaction-type.dto';
 import { UpdateZentraTransactionTypeDto } from './dto/update-zentra-transaction-type.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-transaction-types')
-//@UseGuards(JwtAuthGuard)
 export class ZentraTransactionTypeController {
   constructor(private readonly zentraTransactionTypeService: ZentraTransactionTypeService) {}
 
@@ -17,7 +13,6 @@ export class ZentraTransactionTypeController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraTransactionTypeService.findAll();
   }

@@ -3,11 +3,7 @@ import { ZentraBankAccountHierarchyService } from './zentra-bank-account-hierarc
 import { CreateZentraBankAccountHierarchyDto } from './dto/create-zentra-bank-account-hierarchy.dto';
 import { UpdateZentraBankAccountHierarchyDto } from './dto/update-zentra-bank-account-hierarchy.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-bank-account-hierarchies')
-//@UseGuards(JwtAuthGuard)
 export class ZentraBankAccountHierarchyController {
   constructor(
     private readonly zentraBankAccountHierarchyService: ZentraBankAccountHierarchyService,
@@ -19,7 +15,6 @@ export class ZentraBankAccountHierarchyController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraBankAccountHierarchyService.findAll();
   }

@@ -14,11 +14,8 @@ import {
 import { ZentraRolePermissionService } from './zentra-role-permission.service';
 import { CreateZentraRolePermissionDto } from './dto/create-zentra-role-permission.dto';
 import { UpdateZentraRolePermissionDto } from './dto/update-zentra-role-permission.dto';
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-role-permission')
-//@UseGuards(JwtAuthGuard)
 export class ZentraRolePermissionController {
   constructor(private readonly zentraRolePermissionService: ZentraRolePermissionService) {}
 

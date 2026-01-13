@@ -5,11 +5,7 @@ import { ZentraScheduledIncomeDocumentService } from './zentra-scheduled-income-
 import { CreateZentraScheduledIncomeDocumentDto } from './dto/create-zentra-scheduled-income-document.dto';
 import { UpdateZentraScheduledIncomeDocumentDto } from './dto/update-zentra-scheduled-income-document.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-scheduled-income-documents')
-// @UseGuards(JwtAuthGuard)  // Descomenta si quieres proteger todas las rutas
 export class ZentraScheduledIncomeDocumentController {
   constructor(
     private readonly scheduledIncomeDocumentService: ZentraScheduledIncomeDocumentService,
@@ -23,7 +19,6 @@ export class ZentraScheduledIncomeDocumentController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.scheduledIncomeDocumentService.findAll();
   }

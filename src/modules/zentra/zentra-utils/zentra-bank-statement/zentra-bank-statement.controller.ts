@@ -4,7 +4,6 @@ import {
 import { ZentraBankStatementService } from './zentra-bank-statement.service';
 import { CreateZentraBankStatementDto } from './dto/create-zentra-bank-statement.dto';
 import { UpdateZentraBankStatementDto } from './dto/update-zentra-bank-statement.dto';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-bank-statements')
 export class ZentraBankStatementController {
@@ -16,7 +15,6 @@ export class ZentraBankStatementController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraBankStatementService.findAll();
   }

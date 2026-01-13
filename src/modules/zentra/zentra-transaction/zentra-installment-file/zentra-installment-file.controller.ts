@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Param, Patch, Put, Delete } from '@nestjs/
 import { ZentraInstallmentFileService } from './zentra-installment-file.service';
 import { CreateZentraInstallmentFileDto } from './dto/create-zentra-installment-file.dto';
 import { UpdateZentraInstallmentFileDto } from './dto/update-zentra-installment-file.dto';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-installment-files')
 export class ZentraInstallmentFileController {
@@ -14,7 +13,6 @@ export class ZentraInstallmentFileController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraInstallmentFileService.findAll();
   }

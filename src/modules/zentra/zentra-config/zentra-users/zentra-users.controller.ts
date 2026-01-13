@@ -8,7 +8,6 @@ import {
   Delete,
   Patch,
   NotFoundException,
-  UseGuards,
 } from '@nestjs/common';
 import { ZentraUsersService } from './zentra-users.service';
 import { ZentraCreateUserDto } from './dto/zentra-create-user.dto';

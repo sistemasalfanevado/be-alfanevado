@@ -13,8 +13,6 @@ import { ZentraPettyCashStatusService } from './zentra-petty-cash-status.service
 import { CreateZentrPettyCashStatusDto } from './dto/create-zentra-petty-cash-status.dto';
 import { UpdateZentrPettyCashStatusDto } from './dto/update-zentra-petty-cash-status.dto';
 
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-petty-cash-status')
 export class ZentraPettyCashStatusController {
   constructor(
@@ -27,7 +25,6 @@ export class ZentraPettyCashStatusController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraPettyCashStatusService.findAll();
   }

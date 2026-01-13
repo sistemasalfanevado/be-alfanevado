@@ -5,11 +5,7 @@ import { ZentraInstallmentStatusService } from './zentra-installment-status.serv
 import { CreateZentraInstallmentStatusDto } from './dto/create-zentra-installment-status.dto';
 import { UpdateZentraInstallmentStatusDto } from './dto/update-zentra-installment-status.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-installment-status')
-//@UseGuards(JwtAuthGuard)
 export class ZentraInstallmentStatusController {
   constructor(
     private readonly zentraInstallmentStatusService: ZentraInstallmentStatusService,
@@ -21,7 +17,6 @@ export class ZentraInstallmentStatusController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraInstallmentStatusService.findAll();
   }

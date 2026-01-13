@@ -3,11 +3,7 @@ import { ZentraBankAccountTypeService } from './zentra-bank-account-type.service
 import { CreateZentraBankAccountTypeDto } from './dto/create-zentra-bank-account-type.dto';
 import { UpdateZentraBankAccountTypeDto } from './dto/update-zentra-bank-account-type.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-bank-account-types')
-//@UseGuards(JwtAuthGuard)
 export class ZentraBankAccountTypeController {
   constructor(private readonly zentraBankAccountTypeService: ZentraBankAccountTypeService) {}
 
@@ -17,7 +13,6 @@ export class ZentraBankAccountTypeController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraBankAccountTypeService.findAll();
   }

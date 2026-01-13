@@ -3,11 +3,7 @@ import { ZentraBudgetItemDefinitionService } from './zentra-budget-item-definiti
 import { CreateZentraBudgetItemDefinitionDto } from './dto/create-zentra-budget-item-definition.dto';
 import { UpdateZentraBudgetItemDefinitionDto } from './dto/update-zentra-budget-item-definition.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-budget-item-definitions')
-//@UseGuards(JwtAuthGuard)
 export class ZentraBudgetItemDefinitionController {
   constructor(private readonly zentraBudgetItemDefinitionService: ZentraBudgetItemDefinitionService) {}
 
@@ -17,13 +13,11 @@ export class ZentraBudgetItemDefinitionController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraBudgetItemDefinitionService.findAll();
   }
 
   @Get('complete')
-  @Public()
   findSimple() {
     return this.zentraBudgetItemDefinitionService.findAllComplete();
   }

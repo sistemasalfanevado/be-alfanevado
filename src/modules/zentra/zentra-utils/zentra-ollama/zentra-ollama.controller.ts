@@ -6,7 +6,6 @@ import { Public } from '../../../../auth/shared/decorators/public.decorator';
 export class ZentraOllamaController {
   constructor(private readonly zentraOllamaService: ZentraOllamaService) { }
 
-  // Endpoint para preguntar a Ollama
   @Post('ask')
   @Public()
   async ask(@Body('question') question: string) {

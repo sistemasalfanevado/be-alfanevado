@@ -5,11 +5,7 @@ import { ZentraLandingPageRelationService } from './zentra-landing-page-relation
 import { CreateZentraLandingPageRelationDto } from './dto/create-zentra-landing-page-relation.dto';
 import { UpdateZentraLandingPageRelationDto } from './dto/update-zentra-landing-page-relation.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-landing-page-relations') 
-// @UseGuards(JwtAuthGuard)
 export class ZentraLandingPageRelationController {
   constructor(
     private readonly zentraLandingPageRelationService: ZentraLandingPageRelationService,
@@ -23,7 +19,6 @@ export class ZentraLandingPageRelationController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraLandingPageRelationService.findAll();
   }
@@ -52,7 +47,6 @@ export class ZentraLandingPageRelationController {
   }
 
   @Get(':id/lots')
-  @Public()
   getLotsByProjectId(@Param('id') id: string) {
     return this.zentraLandingPageRelationService.getLotsByProjectId(id);
   }

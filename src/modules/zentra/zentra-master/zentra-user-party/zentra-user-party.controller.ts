@@ -2,11 +2,8 @@ import { Controller, Get, Post, Body, Param, Patch, Put, Delete } from '@nestjs/
 import { ZentraUserPartyService } from './zentra-user-party.service';
 import { CreateZentraUserPartyDto } from './dto/create-zentra-user-party.dto';
 import { UpdateZentraUserPartyDto } from './dto/update-zentra-user-party.dto';
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-user-parties')
-//@UseGuards(JwtAuthGuard)
 export class ZentraUserPartyController {
   constructor(private readonly zentraUserPartyService: ZentraUserPartyService) { }
 
@@ -16,7 +13,6 @@ export class ZentraUserPartyController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraUserPartyService.findAll();
   }
@@ -27,7 +23,6 @@ export class ZentraUserPartyController {
   }
 
   @Get('by-user/:userId')
-  @Public()
   findByUser(@Param('userId') userId: string) {
     return this.zentraUserPartyService.findByUserId(userId);
   }

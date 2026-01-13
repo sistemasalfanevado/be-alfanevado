@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Param, Patch, Put, Delete } from '@nestjs/
 import { ZentraExchangeRateService } from './zentra-exchange-rate.service';
 import { CreateZentraExchangeRateDto } from './dto/create-zentra-exchange-rate.dto';
 import { UpdateZentraExchangeRateDto } from './dto/update-zentra-exchange-rate.dto';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('exchange-rates')
 export class ZentraExchangeRateController {
@@ -14,13 +13,11 @@ export class ZentraExchangeRateController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.exchangeRateService.findAll();
   }
 
   @Get('today')
-  @Public()
   findToday() {
     return this.exchangeRateService.getTodayRate();
   }

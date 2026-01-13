@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Param, Patch, Put, Delete } from '@nestjs/
 import { ZentraDocumentOriginService } from './zentra-document-origin.service';
 import { CreateZentraDocumentOriginDto } from './dto/create-zentra-document-origin.dto';
 import { UpdateZentraDocumentOriginDto } from './dto/update-zentra-document-origin.dto';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-document-origin')
 export class ZentraDocumentOriginController {
@@ -16,7 +15,6 @@ export class ZentraDocumentOriginController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraDocumentOriginService.findAll();
   }

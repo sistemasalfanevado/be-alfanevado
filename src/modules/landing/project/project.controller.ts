@@ -6,7 +6,7 @@ import { JwtAuthGuard } from '../../../auth/shared/guards/jwt-auth.guard'
 import { Public } from '../../../auth/shared/decorators/public.decorator';
 
 @Controller('project') 
-//@UseGuards(JwtAuthGuard)
+//
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 

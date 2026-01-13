@@ -3,11 +3,7 @@ import { ZentraTransactionNatureService } from './zentra-transaction-nature.serv
 import { CreateZentraTransactionNatureDto } from './dto/create-zentra-transaction-nature.dto';
 import { UpdateZentraTransactionNatureDto } from './dto/update-zentra-transaction-nature.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-transaction-natures')
-//@UseGuards(JwtAuthGuard)
 export class ZentraTransactionNatureController {
   constructor(private readonly zentraTransactionNatureService: ZentraTransactionNatureService) {}
 
@@ -17,7 +13,6 @@ export class ZentraTransactionNatureController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraTransactionNatureService.findAll();
   }

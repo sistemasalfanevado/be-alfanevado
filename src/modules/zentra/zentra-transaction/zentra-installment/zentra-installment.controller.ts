@@ -5,11 +5,7 @@ import { ZentraInstallmentService } from './zentra-installment.service';
 import { CreateZentraInstallmentDto } from './dto/create-zentra-installment.dto';
 import { UpdateZentraInstallmentDto } from './dto/update-zentra-installment.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-installments')
-//@UseGuards(JwtAuthGuard)
 export class ZentraInstallmentController {
   constructor(
     private readonly zentraInstallmentService: ZentraInstallmentService,
@@ -21,7 +17,6 @@ export class ZentraInstallmentController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraInstallmentService.findAll();
   }
@@ -32,19 +27,15 @@ export class ZentraInstallmentController {
   }
 
   @Get('scheduled/:id')
-  @Public()
   findAllByScheduled(@Param('id') scheduledIncomeDocumentId: string) {
     return this.zentraInstallmentService.findAllByScheduled(scheduledIncomeDocumentId);
   }
 
   @Get('scheduled-debt/:id')
-  @Public()
   findAllByScheduledDebt(@Param('id') scheduledDebtDocumentId: string) {
     return this.zentraInstallmentService.findAllByScheduledDebt(scheduledDebtDocumentId);
   }
-
-
-
+  
   @Put(':id')
   update(
     @Param('id') id: string,

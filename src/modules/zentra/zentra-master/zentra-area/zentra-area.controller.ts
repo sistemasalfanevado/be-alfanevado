@@ -3,11 +3,7 @@ import { ZentraAreaService } from './zentra-area.service';
 import { CreateZentraAreaDto } from './dto/create-zentra-area.dto';
 import { UpdateZentraAreaDto } from './dto/update-zentra-area.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-areas')
-//@UseGuards(JwtAuthGuard)
 export class ZentraAreaController {
   constructor(private readonly zentraAreaService: ZentraAreaService) {}
 
@@ -17,7 +13,6 @@ export class ZentraAreaController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraAreaService.findAll();
   }

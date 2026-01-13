@@ -5,11 +5,7 @@ import { ZentraBrokerService } from './zentra-broker.service';
 import { CreateZentraBrokerDto } from './dto/create-zentra-broker.dto';
 import { UpdateZentraBrokerDto } from './dto/update-zentra-broker.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-brokers')
-// @UseGuards(JwtAuthGuard)  // Descomenta si quieres proteger todas las rutas
 export class ZentraBrokerController {
   constructor(private readonly zentraBrokerService: ZentraBrokerService) {}
 
@@ -19,7 +15,6 @@ export class ZentraBrokerController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraBrokerService.findAll();
   }

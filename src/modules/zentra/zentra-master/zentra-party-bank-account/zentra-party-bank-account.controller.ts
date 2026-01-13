@@ -3,11 +3,7 @@ import { ZentraPartyBankAccountService } from './zentra-party-bank-account.servi
 import { CreateZentraPartyBankAccountDto } from './dto/create-zentra-party-bank-account.dto';
 import { UpdateZentraPartyBankAccountDto } from './dto/update-zentra-party-bank-account.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-party-bank-accounts')
-//@UseGuards(JwtAuthGuard)
 export class ZentraPartyBankAccountController {
   constructor(private readonly zentraPartyBankAccountService: ZentraPartyBankAccountService) { }
 
@@ -17,7 +13,6 @@ export class ZentraPartyBankAccountController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraPartyBankAccountService.findAll();
   }

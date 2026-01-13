@@ -2,11 +2,9 @@ import { Controller, Get, Post, Body, Param, Put, Delete, Patch } from '@nestjs/
 import { ZentraLandingLeadService } from './zentra-landing-lead.service';
 import { CreateZentraLandingLeadDto } from './dto/create-zentra-landing-lead.dto';
 import { UpdateZentraLandingLeadDto } from './dto/update-zentra-landing-lead.dto';
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
 import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-landing-leads')
-//@UseGuards(JwtAuthGuard)
 export class ZentraLandingLeadController {
   constructor(private readonly zentraLandingLeadService: ZentraLandingLeadService) {}
 

@@ -13,11 +13,7 @@ import { ZentraBudgetIncreaseStatusService } from './zentra-budget-increase-stat
 import { CreateZentraBudgetIncreaseStatusDto } from './dto/create-zentra-budget-increase-status.dto';
 import { UpdateZentraBudgetIncreaseStatusDto } from './dto/update-zentra-budget-increase-status.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-budget-increase-statuses')
-// @UseGuards(JwtAuthGuard)
 export class ZentraBudgetIncreaseStatusController {
   constructor(
     private readonly zentraBudgetIncreaseStatusService: ZentraBudgetIncreaseStatusService,
@@ -29,7 +25,6 @@ export class ZentraBudgetIncreaseStatusController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraBudgetIncreaseStatusService.findAll();
   }

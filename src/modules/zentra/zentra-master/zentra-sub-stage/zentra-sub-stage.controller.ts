@@ -3,11 +3,7 @@ import { ZentraSubStageService } from './zentra-sub-stage.service';
 import { CreateZentraSubStageDto } from './dto/create-zentra-sub-stage.dto';
 import { UpdateZentraSubStageDto } from './dto/update-zentra-sub-stage.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-sub-stages')
-//@UseGuards(JwtAuthGuard)
 export class ZentraSubStageController {
   constructor(private readonly zentraSubStageService: ZentraSubStageService) { }
 
@@ -17,7 +13,6 @@ export class ZentraSubStageController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraSubStageService.findAll();
   }
@@ -42,15 +37,12 @@ export class ZentraSubStageController {
     return this.zentraSubStageService.restore(id);
   }
 
-  // ⭐ Nuevo método: obtener sub-stages por stageId
   @Get('by-stage/:stageId')
-  @Public()
   findByStage(@Param('stageId') stageId: string) {
     return this.zentraSubStageService.findByStage(stageId);
   }
 
   @Post('with-stage')
-  @Public()
   findAllWithStage() {
     return this.zentraSubStageService.findAllWithStage();
   }

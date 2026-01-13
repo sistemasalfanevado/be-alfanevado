@@ -3,11 +3,7 @@ import { ZentraVisibilityService } from './zentra-visibility.service';
 import { CreateZentraVisibilityDto } from './dto/create-zentra-visibility.dto';
 import { UpdateZentraVisibilityDto } from './dto/update-zentra-visibility.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-visibility')
-//@UseGuards(JwtAuthGuard)
 export class ZentraVisibilityController {
   constructor(private readonly zentraVisibilityService: ZentraVisibilityService) {}
 
@@ -17,7 +13,6 @@ export class ZentraVisibilityController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraVisibilityService.findAll();
   }

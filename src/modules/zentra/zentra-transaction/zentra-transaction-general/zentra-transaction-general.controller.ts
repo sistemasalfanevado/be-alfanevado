@@ -2,11 +2,7 @@ import { Controller, Get, Post, Body, Param, Patch, Put, Delete, UseGuards } fro
 
 import { ZentraTransactionGeneralService } from './zentra-transaction-general.service';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-transaction-general')
-//@UseGuards(JwtAuthGuard)
 export class ZentraTransactionGeneralController {
   constructor(private readonly zentraTransactionGeneralService: ZentraTransactionGeneralService) { }
 

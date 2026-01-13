@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Param, Patch, Put, Delete } from '@nestjs/
 import { ZentraFinancialImpactService } from './zentra-financial-impact.service';
 import { CreateZentraFinancialImpactDto } from './dto/create-zentra-financial-impact.dto';
 import { UpdateZentraFinancialImpactDto } from './dto/update-zentra-financial-impact.dto';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-financial-impact')
 export class ZentraFinancialImpactController {
@@ -16,7 +15,6 @@ export class ZentraFinancialImpactController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraFinancialImpactService.findAll();
   }

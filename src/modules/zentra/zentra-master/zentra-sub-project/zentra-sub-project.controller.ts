@@ -4,11 +4,8 @@ import {
 import { ZentraSubProjectService } from './zentra-sub-project.service';
 import { CreateZentraSubProjectDto } from './dto/create-zentra-sub-project.dto';
 import { UpdateZentraSubProjectDto } from './dto/update-zentra-sub-project.dto';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-// import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
 
 @Controller('zentra-sub-projects')
-// @UseGuards(JwtAuthGuard)
 export class ZentraSubProjectController {
   constructor(private readonly zentraSubProjectService: ZentraSubProjectService) {}
 
@@ -18,7 +15,6 @@ export class ZentraSubProjectController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraSubProjectService.findAll();
   }

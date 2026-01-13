@@ -5,11 +5,7 @@ import { ZentraScheduledDebtDocumentService } from './zentra-scheduled-debt-docu
 import { CreateZentraScheduledDebtDocumentDto } from './dto/create-zentra-scheduled-debt-document.dto';
 import { UpdateZentraScheduledDebtDocumentDto } from './dto/update-zentra-scheduled-debt-document.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-scheduled-debt-documents')
-// @UseGuards(JwtAuthGuard) // Descomenta si quieres proteger todas las rutas
 export class ZentraScheduledDebtDocumentController {
   constructor(
     private readonly scheduledDebtDocumentService: ZentraScheduledDebtDocumentService,
@@ -23,7 +19,6 @@ export class ZentraScheduledDebtDocumentController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.scheduledDebtDocumentService.findAll();
   }

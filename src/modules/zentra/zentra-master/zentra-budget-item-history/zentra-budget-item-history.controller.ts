@@ -3,8 +3,6 @@ import { ZentraBudgetItemHistoryService } from './zentra-budget-item-history.ser
 import { CreateZentraBudgetItemHistoryDto } from './dto/create-zentra-budget-item-history.dto';
 import { UpdateZentraBudgetItemHistoryDto } from './dto/update-zentra-budget-item-history.dto';
 
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-budget-item-history')
 export class ZentraBudgetItemHistoryController {
   constructor(
@@ -17,7 +15,6 @@ export class ZentraBudgetItemHistoryController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraBudgetItemHistoryService.findAll();
   }

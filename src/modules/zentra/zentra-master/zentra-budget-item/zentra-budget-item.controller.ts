@@ -2,11 +2,8 @@ import { Controller, Get, Post, Body, Param, Patch, Put, Delete, UseGuards } fro
 import { ZentraBudgetItemService } from './zentra-budget-item.service';
 import { CreateZentraBudgetItemDto } from './dto/create-zentra-budget-item.dto';
 import { UpdateZentraBudgetItemDto } from './dto/update-zentra-budget-item.dto';
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-budget-items')
-//@UseGuards(JwtAuthGuard)
 export class ZentraBudgetItemController {
   constructor(private readonly zentraBudgetItemService: ZentraBudgetItemService) { }
 
@@ -16,13 +13,11 @@ export class ZentraBudgetItemController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraBudgetItemService.findAll();
   }
 
   @Get('complete')
-  @Public()
   findSimple() {
     return this.zentraBudgetItemService.findAllComplete();
   }
@@ -70,7 +65,6 @@ export class ZentraBudgetItemController {
   }
   
   @Post('search')
-  @Public()
   search(@Body() filters: {
     natureId?: string;
     projectId?: string;
@@ -79,14 +73,11 @@ export class ZentraBudgetItemController {
   }
 
   @Post('search-extra')
-  @Public()
   searchExtra(@Body() filters: {
     projectId?: string;
   }) {
     return this.zentraBudgetItemService.findByFiltersExtra(filters);
   }
-
-
-
+  
 
 }

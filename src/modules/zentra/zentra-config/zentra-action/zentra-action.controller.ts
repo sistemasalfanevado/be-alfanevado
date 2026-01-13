@@ -14,11 +14,8 @@ import {
 import { ZentraActionService } from './zentra-action.service';
 import { CreateZentraActionDto } from './dto/create-zentra-action.dto';
 import { UpdateZentraActionDto } from './dto/update-zentra-action.dto';
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-action')
-//@UseGuards(JwtAuthGuard) // si quieres protegerlo con JWT
 export class ZentraActionController {
   constructor(private readonly zentraActionService: ZentraActionService) {}
 

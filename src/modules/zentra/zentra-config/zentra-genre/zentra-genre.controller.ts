@@ -14,11 +14,8 @@ import {
 import { ZentraGenreService } from './zentra-genre.service';
 import { CreateZentraGenreDto } from './dto/create-zentra-genre.dto';
 import { UpdateZentraGenreDto } from './dto/update-zentra-genre.dto';
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-genres')
-//@UseGuards(JwtAuthGuard)
 export class ZentraGenreController {
   constructor(private readonly zentraGenreService: ZentraGenreService) { }
 

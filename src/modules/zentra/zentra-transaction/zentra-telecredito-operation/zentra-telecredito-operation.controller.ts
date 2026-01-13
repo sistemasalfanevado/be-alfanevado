@@ -11,7 +11,6 @@ import {
 import { ZentraTelecreditoOperationService } from './zentra-telecredito-operation.service';
 import { CreateZentraTelecreditoOperationDto } from './dto/create-zentra-telecredito-operation.dto';
 import { UpdateZentraTelecreditoOperationDto } from './dto/update-zentra-telecredito-operation.dto';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-telecredito-operations')
 export class ZentraTelecreditoOperationController {
@@ -25,7 +24,6 @@ export class ZentraTelecreditoOperationController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraTelecreditoOperationService.findAll();
   }
@@ -54,7 +52,6 @@ export class ZentraTelecreditoOperationController {
   }
 
   @Post('search')
-  @Public()
   searchByFilters(
     @Body()
     filters: {

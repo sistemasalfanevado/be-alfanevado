@@ -2,11 +2,8 @@ import { Controller, Get, Post, Body, Param, Patch, Put, Delete, UseGuards } fro
 import { ZentraDocumentService } from './zentra-document.service';
 import { CreateZentraDocumentDto } from './dto/create-zentra-document.dto';
 import { UpdateZentraDocumentDto } from './dto/update-zentra-document.dto';
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-documents')
-//@UseGuards(JwtAuthGuard)
 export class ZentraDocumentController {
   constructor(private readonly zentraDocumentService: ZentraDocumentService) { }
 
@@ -16,7 +13,6 @@ export class ZentraDocumentController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraDocumentService.findAll();
   }
@@ -51,7 +47,6 @@ export class ZentraDocumentController {
   }
 
   @Post('search')
-  @Public()
   search(@Body() filters: {
     transactionTypeId?: string,
     documentStatusId?: string;
@@ -89,7 +84,6 @@ export class ZentraDocumentController {
 
 
   @Post('exchange-rate/search')
-  @Public()
   searchExchangeRate(@Body() filters: {
     partyId?: string;
     documentCategoryId?: string;
@@ -119,7 +113,6 @@ export class ZentraDocumentController {
   }
 
   @Post('financial-expense/search')
-  @Public()
   searchFinancialExpense(@Body() filters: {
     projectId?: string;
     documentCategoryId?: string;
@@ -148,7 +141,6 @@ export class ZentraDocumentController {
   }
 
   @Post('not-identified/search')
-  @Public()
   searchNotIdentified(@Body() filters: {
     projectId?: string;
     documentCategoryId?: string;
@@ -171,7 +163,6 @@ export class ZentraDocumentController {
   }
 
   @Post('scheduled-income/search')
-  @Public()
   searchScheduledIncome(@Body() filters: {
     documentCategoryId?: string;
     documentStatusId?: string;
@@ -185,7 +176,6 @@ export class ZentraDocumentController {
   }
 
   @Post('scheduled-income/search-detail')
-  @Public()
   searchScheduledIncomeWithDetail(@Body() filters: {
     companyId?: string;
   }) {
@@ -208,7 +198,6 @@ export class ZentraDocumentController {
   }
 
   @Post('scheduled-income/report')
-  @Public()
   searchScheduledIncomeReport(@Body() filters: {
     projectId: string;
     documentCategoryId: string;
@@ -219,7 +208,6 @@ export class ZentraDocumentController {
 
 
   @Post('scheduled-income/ia')
-  @Public()
   searchScheduledIncomeReportIa(@Body() filters: {
     projectId: string;
     documentCategoryId: string;
@@ -235,7 +223,6 @@ export class ZentraDocumentController {
   }
 
   @Post('scheduled-debt/search')
-  @Public()
   searchScheduledDebt(@Body() filters: {
     documentCategoryId?: string;
     documentStatusId?: string;
@@ -261,7 +248,6 @@ export class ZentraDocumentController {
 
 
   @Post('search-report-expense')
-  @Public()
   searchReportExpense(@Body() filters: {
     transactionTypeId?: string,
     documentStatusId?: string;
@@ -273,7 +259,6 @@ export class ZentraDocumentController {
   }
 
   @Post('search-report-sales')
-  @Public()
   searchReportSales(@Body() filters: {
     transactionTypeId?: string,
     documentStatusId?: string;

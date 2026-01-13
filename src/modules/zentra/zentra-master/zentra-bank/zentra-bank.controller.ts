@@ -3,11 +3,7 @@ import { ZentraBankService } from './zentra-bank.service';
 import { CreateZentraBankDto } from './dto/create-zentra-bank.dto';
 import { UpdateZentraBankDto } from './dto/update-zentra-bank.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-banks')
-//@UseGuards(JwtAuthGuard)
 export class ZentraBankController {
   constructor(private readonly zentraBankService: ZentraBankService) {}
 
@@ -17,7 +13,6 @@ export class ZentraBankController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraBankService.findAll();
   }

@@ -3,11 +3,7 @@ import { ZentraProjectIncomeService } from './zentra-project-income.service';
 import { CreateZentraProjectIncomeDto } from './dto/create-zentra-project-income.dto';
 import { UpdateZentraProjectIncomeDto } from './dto/update-zentra-project-income.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-project-income')
-//@UseGuards(JwtAuthGuard)
 export class ZentraProjectIncomeController {
   constructor(private readonly zentraProjectIncomeService: ZentraProjectIncomeService) {}
 
@@ -17,7 +13,6 @@ export class ZentraProjectIncomeController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraProjectIncomeService.findAll();
   }

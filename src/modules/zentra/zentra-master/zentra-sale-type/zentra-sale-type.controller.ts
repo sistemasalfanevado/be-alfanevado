@@ -5,11 +5,7 @@ import { ZentraSaleTypeService } from './zentra-sale-type.service';
 import { CreateZentraSaleTypeDto } from './dto/create-zentra-sale-type.dto';
 import { UpdateZentraSaleTypeDto } from './dto/update-zentra-sale-type.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-sale-types')
-// @UseGuards(JwtAuthGuard)  // descomenta si quieres proteger todas las rutas
 export class ZentraSaleTypeController {
   constructor(private readonly zentraSaleTypeService: ZentraSaleTypeService) {}
 
@@ -19,7 +15,6 @@ export class ZentraSaleTypeController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraSaleTypeService.findAll();
   }

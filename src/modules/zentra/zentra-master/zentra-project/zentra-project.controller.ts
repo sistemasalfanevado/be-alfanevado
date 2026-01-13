@@ -3,11 +3,7 @@ import { ZentraProjectService } from './zentra-project.service';
 import { CreateZentraProjectDto } from './dto/create-zentra-project.dto';
 import { UpdateZentraProjectDto } from './dto/update-zentra-project.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-projects')
-//@UseGuards(JwtAuthGuard)
 export class ZentraProjectController {
   constructor(private readonly zentraProjectService: ZentraProjectService) { }
 
@@ -17,7 +13,6 @@ export class ZentraProjectController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraProjectService.findAll();
   }

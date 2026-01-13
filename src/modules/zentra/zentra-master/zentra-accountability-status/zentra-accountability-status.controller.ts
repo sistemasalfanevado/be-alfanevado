@@ -6,8 +6,6 @@ import { ZentraAccountabilityStatusService } from './zentra-accountability-statu
 import { CreateZentraAccountabilityStatusDto } from './dto/create-zentra-accountability-status.dto';
 import { UpdateZentraAccountabilityStatusDto } from './dto/update-zentra-accountability-status.dto';
 
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-accountability-status')
 export class ZentraAccountabilityStatusController {
   constructor(
@@ -20,7 +18,6 @@ export class ZentraAccountabilityStatusController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraAccountabilityStatusService.findAll();
   }

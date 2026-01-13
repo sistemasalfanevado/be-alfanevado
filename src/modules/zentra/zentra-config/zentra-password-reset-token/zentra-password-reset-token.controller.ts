@@ -17,9 +17,6 @@ export class ZentraPasswordResetTokenController {
     private readonly passwordResetService: ZentraPasswordResetTokenService,
   ) { }
 
-  /**
-   * (Solo Admin) Genera un token de reseteo de contraseña
-   */
   @Post('generate')
   async generate(@Body() createDto: CreateZentraPasswordResetTokenDto) {
     const token = await this.passwordResetService.generateToken(createDto);

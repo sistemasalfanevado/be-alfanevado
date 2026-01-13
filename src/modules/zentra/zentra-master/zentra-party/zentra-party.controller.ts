@@ -2,11 +2,8 @@ import { Controller, Get, Post, Body, Param, Patch, Put, Delete, UseGuards } fro
 import { ZentraPartyService } from './zentra-party.service';
 import { CreateZentraPartyDto } from './dto/create-zentra-party.dto';
 import { UpdateZentraPartyDto } from './dto/update-zentra-party.dto';
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-parties')
-//@UseGuards(JwtAuthGuard)
 export class ZentraPartyController {
   constructor(private readonly zentraPartyService: ZentraPartyService) { }
 
@@ -21,7 +18,6 @@ export class ZentraPartyController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraPartyService.findAll();
   }

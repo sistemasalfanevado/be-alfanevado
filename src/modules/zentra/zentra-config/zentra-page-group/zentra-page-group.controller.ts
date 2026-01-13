@@ -14,11 +14,8 @@ import {
 import { ZentraPageGroupService } from './zentra-page-group.service';
 import { CreateZentraPageGroupDto } from './dto/create-zentra-page-group.dto';
 import { UpdateZentraPageGroupDto } from './dto/update-zentra-page-group.dto';
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-page-group')
-//@UseGuards(JwtAuthGuard)
 export class ZentraPageGroupController {
   constructor(private readonly zentraPageGroupService: ZentraPageGroupService) {}
 

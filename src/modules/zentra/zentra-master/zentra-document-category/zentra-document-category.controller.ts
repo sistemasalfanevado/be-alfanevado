@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Param, Patch, Put, Delete } from '@nestjs/
 import { ZentraDocumentCategoryService } from './zentra-document-category.service';
 import { CreateZentraDocumentCategoryDto } from './dto/create-zentra-document-category.dto';
 import { UpdateZentraDocumentCategoryDto } from './dto/update-zentra-document-category.dto';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-document-categories')
 export class ZentraDocumentCategoryController {
@@ -16,7 +15,6 @@ export class ZentraDocumentCategoryController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraDocumentCategoryService.findAll();
   }

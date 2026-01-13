@@ -3,11 +3,7 @@ import { ZentraMovementCategoryService } from './zentra-movement-category.servic
 import { CreateZentraMovementCategoryDto } from './dto/create-zentra-movement-category.dto';
 import { UpdateZentraMovementCategoryDto } from './dto/update-zentra-movement-category.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-movement-categories')
-//@UseGuards(JwtAuthGuard)
 export class ZentraMovementCategoryController {
   constructor(private readonly zentraMovementCategoryService: ZentraMovementCategoryService) {}
 
@@ -17,7 +13,6 @@ export class ZentraMovementCategoryController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraMovementCategoryService.findAll();
   }

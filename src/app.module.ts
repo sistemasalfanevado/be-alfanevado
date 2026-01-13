@@ -8,8 +8,9 @@ import { BitrixMainModule } from './modules/BitrixModule.module';
 import { LandingMainModule } from './modules/LandingModule.module';
 import { ZentraMainModule } from './modules/ZentraModule.module';
 
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_INTERCEPTOR, APP_GUARD } from '@nestjs/core'; // Importa APP_GUARD
 import { AuditInterceptor } from './common/interceptors/audit.interceptor'; // Ajusta la ruta
+import { JwtAuthGuard } from './auth/shared/guards/jwt-auth.guard'; // Asegúrate de importar tu Guard
 
 @Module({
   imports: [
@@ -41,6 +42,10 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor'; // A
     {
       provide: APP_INTERCEPTOR,
       useClass: AuditInterceptor, // Esto lo activa globalmente
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard, // Esto activa la seguridad en TODO el sistema
     },
   ],
 })

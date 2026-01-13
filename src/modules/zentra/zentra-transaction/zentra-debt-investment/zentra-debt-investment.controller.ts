@@ -3,11 +3,7 @@ import {
 } from '@nestjs/common';
 import { ZentraDebtInvestmentService } from './zentra-debt-investment.service';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-debt-investments')
-//@UseGuards(JwtAuthGuard)
 export class ZentraDebtInvestmentController {
   constructor(
     private readonly zentraDebtInvestmentService: ZentraDebtInvestmentService,

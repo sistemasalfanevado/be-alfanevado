@@ -3,11 +3,7 @@ import { ZentraDocumentTypeService } from './zentra-document-type.service';
 import { CreateZentraDocumentTypeDto } from './dto/create-zentra-document-type.dto';
 import { UpdateZentraDocumentTypeDto } from './dto/update-zentra-document-type.dto';
 
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-
 @Controller('zentra-document-types')
-//@UseGuards(JwtAuthGuard)
 export class ZentraDocumentTypeController {
   constructor(private readonly zentraDocumentTypeService: ZentraDocumentTypeService) {}
 
@@ -17,7 +13,6 @@ export class ZentraDocumentTypeController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraDocumentTypeService.findAll();
   }

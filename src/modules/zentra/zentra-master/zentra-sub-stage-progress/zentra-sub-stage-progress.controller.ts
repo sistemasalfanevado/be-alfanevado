@@ -8,13 +8,10 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-
 import { ZentraSubStageProgressService } from './zentra-sub-stage-progress.service';
-
 import { CreateZentraSubStageProgressDto } from './dto/create-zentra-sub-stage-progress.dto';
 import { UpdateZentraSubStageProgressDto } from './dto/update-zentra-sub-stage-progress.dto';
 
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-sub-stage-progress')
 export class ZentraSubStageProgressController {
@@ -28,7 +25,6 @@ export class ZentraSubStageProgressController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.service.findAll();
   }
@@ -57,19 +53,16 @@ export class ZentraSubStageProgressController {
   }
 
   @Get('by-sub-stage/:subStageId')
-  @Public()
   findBySubStage(@Param('subStageId') subStageId: string) {
     return this.service.findBySubStage(subStageId);
   }
 
   @Get('by-project/:projectId')
-  @Public()
   findByProject(@Param('projectId') projectId: string) {
     return this.service.findByProject(projectId);
   }
 
   @Post('by-sub-stage-and-project')
-  @Public()
   findBySubStageAndProject(
     @Body() filters: {
       subStageId: string;

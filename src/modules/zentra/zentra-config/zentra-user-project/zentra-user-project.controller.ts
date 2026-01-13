@@ -8,17 +8,13 @@ import {
   Delete,
   Patch,
   NotFoundException,
-  UseGuards,
 } from '@nestjs/common';
 
 import { ZentraUserProjectService } from './zentra-user-project.service';
 import { CreateZentraUserProjectDto } from './dto/create-zentra-user-project.dto';
 import { UpdateZentraUserProjectDto } from './dto/update-zentra-user-project.dto';
-import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
 
 @Controller('zentra-user-project')
-// @UseGuards(JwtAuthGuard)
 export class ZentraUserProjectController {
   constructor(private readonly zentraUserProjectService: ZentraUserProjectService) {}
 

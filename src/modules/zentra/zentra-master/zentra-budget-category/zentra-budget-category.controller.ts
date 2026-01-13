@@ -2,11 +2,8 @@ import { Controller, Get, Post, Body, Param, Patch, Put, Delete } from '@nestjs/
 import { ZentraBudgetCategoryService } from './zentra-budget-category.service';
 import { CreateZentraBudgetCategoryDto } from './dto/create-zentra-budget-category.dto';
 import { UpdateZentraBudgetCategoryDto } from './dto/update-zentra-budget-category.dto';
-import { Public } from '../../../../auth/shared/decorators/public.decorator';
-// import { JwtAuthGuard } from '../../../../auth/shared/guards/jwt-auth.guard';
 
 @Controller('zentra-budget-categories')
-// @UseGuards(JwtAuthGuard)
 export class ZentraBudgetCategoryController {
   constructor(private readonly zentraBudgetCategoryService: ZentraBudgetCategoryService) {}
 
@@ -16,7 +13,6 @@ export class ZentraBudgetCategoryController {
   }
 
   @Get()
-  @Public()
   findAll() {
     return this.zentraBudgetCategoryService.findAll();
   }
