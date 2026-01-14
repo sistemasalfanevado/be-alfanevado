@@ -59,6 +59,7 @@ export class ZentraAccountabilityController {
     return this.zentraAccountabilityService.findByFilters(filters);
   }
 
+
   @Post('add-increment')
   addIncrement(@Body() dataAccountability: any) {
     return this.zentraAccountabilityService.addIncrement(dataAccountability);
@@ -82,7 +83,7 @@ export class ZentraAccountabilityController {
     return this.zentraAccountabilityService.updateDocument(id, updateZentraAccountabilityDto);
   }
 
-   @Put('update-simple-document/:id')
+  @Put('update-simple-document/:id')
   async updateSimpleDocument(
     @Param('id') id: string,
     @Body() updateZentraAccountabilityDto: any

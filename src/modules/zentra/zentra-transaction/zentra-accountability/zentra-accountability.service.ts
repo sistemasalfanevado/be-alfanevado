@@ -8,8 +8,8 @@ import { ZentraDocumentSalesService } from '../zentra-document-sales/zentra-docu
 import { MailService } from '../../../../mail/mail.service';
 
 
-import { DOCUMENT_CATEGORY, DOCUMENT_STATUS, DOCUMENT_ORIGIN, ACCOUNTABILITY_STATUS, DOCUMENT_TYPE, PARTY_DOCUMENT_HIERARCHY } from 'src/shared/constants/app.constants';
-
+import { DOCUMENT_CATEGORY, DOCUMENT_STATUS, DOCUMENT_ORIGIN, ACCOUNTABILITY_STATUS, DOCUMENT_TYPE, PARTY_DOCUMENT_HIERARCHY, TRANSACTION_TYPE } from 'src/shared/constants/app.constants';
+import { Prisma } from '@prisma/client'; // Importante importar Prisma
 import * as moment from 'moment';
 
 @Injectable()
@@ -39,9 +39,49 @@ export class ZentraAccountabilityService {
       }
     },
     user: true,
+    documents: {
+      where: {
+        documentTypeId: DOCUMENT_TYPE.ADELANTO,
+        transactionTypeId: TRANSACTION_TYPE.EXIT,
+        deletedAt: null,
+      },
+      include: {
+        movements: {
+          where: { deletedAt: null },
+          orderBy: { paymentDate: 'asc' as Prisma.SortOrder },
+          take: 1,
+        }
+      }
+    },
   };
 
   private mapEntityToDto(item: any) {
+
+    const firstDoc = item.documents && item.documents.length > 0 ? item.documents[0] : null;
+
+    // 2. Del documento, intentamos obtener el primer movimiento
+    const firstMovement = firstDoc && firstDoc.movements && firstDoc.movements.length > 0
+      ? firstDoc.movements[0]
+      : null;
+
+    // 3. Formateamos la fecha si existe
+    const firstPaymentDate = firstMovement
+      ? moment(firstMovement.paymentDate).format('DD/MM/YYYY')
+      : 'Sin pago'; // O dejarlo vacío ''
+
+    const status = item.accountabilityStatus;
+
+    // Configuramos el badge basado en el ID del estado
+    let badgeConfig = { text: status?.name, class: 'badge-primary' }; // Default
+
+    if (status?.id === ACCOUNTABILITY_STATUS.LIQUIDADO) {
+      badgeConfig = { text: 'LIQUIDADO', class: 'badge-success' }; // Verde
+    } else if (status?.id === ACCOUNTABILITY_STATUS.PENDIENTE) {
+      badgeConfig = { text: 'PENDIENTE', class: 'badge-warning' }; // Amarillo
+    } else if (status?.id === ACCOUNTABILITY_STATUS.LIQUIDADO_PARCIAL) {
+      badgeConfig = { text: 'LIQUIDADO PARCIAL', class: 'badge-info' }; // Azul
+    }
+
     return {
       id: item.id,
       code: item.code,
@@ -66,8 +106,7 @@ export class ZentraAccountabilityService {
       documentTypeName: item.documentType?.name,
 
       accountabilityStatusId: item.accountabilityStatus?.id,
-      accountabilityStatusName: item.accountabilityStatus?.name,
-
+      
       transactionTypeId: item.transactionType?.id,
       transactionTypeName: item.transactionType?.name,
 
@@ -76,6 +115,10 @@ export class ZentraAccountabilityService {
 
       userId: item.user?.id,
       userName: item.user?.firstName,
+
+      firstPaymentDate: firstPaymentDate,
+      accountabilityStatusName: status?.name,
+      statusBadge: badgeConfig, // Enviamos el objeto completo
 
     };
   }
@@ -497,7 +540,7 @@ export class ZentraAccountabilityService {
     })
 
     return { message: 'Success' }
-    
+
 
   }
 
