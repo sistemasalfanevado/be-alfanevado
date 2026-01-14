@@ -5,7 +5,7 @@ import { ZentraPettyCashController } from './zentra-petty-cash.controller';
 import { PrismaModule } from '../../../../prisma/prisma.module';
 import { AuthModule } from '../../../../auth/landing/auth.module';
 import { ZentraDocumentModule } from '../zentra-document/zentra-document.module';
-import { ZentraDocumentSalesModule } from '../zentra-document-sales/zentra-document-sales.module';
+import { ZentraDocumentExpenseModule } from '../zentra-document-expense/zentra-document-expense.module';
 import { MailModule } from '../../../../mail/mail.module';
 
 @Module({
@@ -14,7 +14,7 @@ import { MailModule } from '../../../../mail/mail.module';
     AuthModule,
     MailModule,
     forwardRef(() => ZentraDocumentModule),
-    forwardRef(() => ZentraDocumentSalesModule),
+    forwardRef(() => ZentraDocumentExpenseModule),
   ],
   providers: [ZentraPettyCashService],
   controllers: [ZentraPettyCashController],

@@ -496,26 +496,6 @@ export class ZentraAccountabilityService {
       },
     );
 
-
-    console.log('Esta es la data: ', {
-      code: dataAccountability.code,
-      description: dataAccountability.description,
-      documentId: dataDocument.id,
-      amount: dataAccountability.totalAmount,
-      budgetItemId: dataAccountability.budgetItemId,
-      date: dataAccountability.documentDate,
-
-      transactionTypeId: dataAccountability.transactionTypeId,
-      movementCategoryId: dataAccountability.movementCategoryId,
-      bankAccountId: dataAccountability.bankAccountId,
-      movementStatusId: dataAccountability.movementStatusId,
-
-      idFirebase: '',
-      documentUrl: '',
-      documentName: '',
-      fromTelecredito: false,
-    })
-
     await this.zentraDocumentExpenseService.addMovement({
       code: dataAccountability.code,
       description: dataAccountability.description,
@@ -536,9 +516,10 @@ export class ZentraAccountabilityService {
     })
 
     return { message: 'Success' }
-
-
   }
+
+  
+
 
   async updateDocument(id: string, dataDocument: any) {
 

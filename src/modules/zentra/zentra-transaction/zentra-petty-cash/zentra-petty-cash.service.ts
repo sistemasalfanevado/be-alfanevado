@@ -4,7 +4,7 @@ import { CreateZentraPettyCashDto } from './dto/create-zentra-petty-cash.dto';
 import { UpdateZentraPettyCashDto } from './dto/update-zentra-petty-cash.dto';
 
 import { ZentraDocumentService } from '../zentra-document/zentra-document.service';
-import { ZentraDocumentSalesService } from '../zentra-document-sales/zentra-document-sales.service';
+import { ZentraDocumentExpenseService } from '../zentra-document-expense/zentra-document-expense.service';
 import { MailService } from '../../../../mail/mail.service';
 
 import {
@@ -23,8 +23,8 @@ export class ZentraPettyCashService {
     private prisma: PrismaService,
     @Inject(forwardRef(() => ZentraDocumentService))
     private readonly zentraDocumentService: ZentraDocumentService,
-    @Inject(forwardRef(() => ZentraDocumentSalesService))
-    private readonly zentraDocumentSalesService: ZentraDocumentSalesService,
+    @Inject(forwardRef(() => ZentraDocumentExpenseService))
+    private zentraDocumentExpenseService: ZentraDocumentExpenseService,
     private mailService: MailService,
   ) {}
 
@@ -199,19 +199,6 @@ export class ZentraPettyCashService {
     });
   }
 
-  // -----------------------------
-  // DOCUMENTS
-  // -----------------------------
-  async addDocument(data: {
-    pettyCashId: string;
-    documentId: string;
-  }) {
-    return this.prisma.zentraDocument.update({
-      where: { id: data.documentId },
-      data: { pettyCashId: data.pettyCashId },
-    });
-  }
-
   async removeDocument(documentId: string) {
     return this.prisma.zentraDocument.update({
       where: { id: documentId },
@@ -294,4 +281,68 @@ export class ZentraPettyCashService {
       },
     });
   }
+
+
+
+
+  // Useful Methods
+  async addDocument(dataDocumentOrigin: any) {
+
+    let dataDocument = await this.zentraDocumentService.createDocument(
+      {
+        code: dataDocumentOrigin.code,
+        description: dataDocumentOrigin.description,
+
+        totalAmount: dataDocumentOrigin.totalAmount,
+        amountToPay: dataDocumentOrigin.amountToPay,
+
+        taxAmount: dataDocumentOrigin.taxAmount,
+        netAmount: dataDocumentOrigin.netAmount,
+        detractionRate: dataDocumentOrigin.detractionRate,
+        detractionAmount: dataDocumentOrigin.detractionAmount,
+
+        paidAmount: dataDocumentOrigin.totalAmount,
+        observation: dataDocumentOrigin.observation,
+        idFirebase: '',
+        hasMovements: false,
+
+        registeredAt: new Date(dataDocumentOrigin.registeredAt),
+        documentDate: new Date(dataDocumentOrigin.documentDate),
+        expireDate: new Date(dataDocumentOrigin.expireDate),
+
+        documentStatusId: DOCUMENT_STATUS.PENDIENTE,
+        transactionTypeId: dataDocumentOrigin.transactionTypeId,
+        documentTypeId: dataDocumentOrigin.documentTypeId,
+        partyId: dataDocumentOrigin.partyId,
+        budgetItemId: dataDocumentOrigin.budgetItemId,
+        currencyId: dataDocumentOrigin.currencyId,
+        userId: dataDocumentOrigin.userId,
+        documentCategoryId: dataDocumentOrigin.documentCategoryId,
+        accountabilityId: dataDocumentOrigin.accountabilityId,
+        documentOriginId: DOCUMENT_ORIGIN.CAJA_CHICA
+      },
+    );
+
+    await this.zentraDocumentExpenseService.addMovement({
+      code: dataDocumentOrigin.code,
+      description: dataDocumentOrigin.description,
+      documentId: dataDocument.id,
+      amount: dataDocumentOrigin.totalAmount,
+      budgetItemId: dataDocumentOrigin.budgetItemId,
+      paymentDate: new Date(dataDocumentOrigin.documentDate),
+
+      transactionTypeId: dataDocumentOrigin.transactionTypeId,
+      movementCategoryId: dataDocumentOrigin.movementCategoryId,
+      bankAccountId: dataDocumentOrigin.bankAccountId,
+      movementStatusId: dataDocumentOrigin.movementStatusId,
+
+      idFirebase: '',
+      documentUrl: '',
+      documentName: '',
+      fromTelecredito: false,
+    })
+
+    return { message: 'Success' }
+  }
+
 }

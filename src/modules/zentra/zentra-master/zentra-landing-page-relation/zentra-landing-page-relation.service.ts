@@ -3,6 +3,10 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraLandingPageRelationDto } from './dto/create-zentra-landing-page-relation.dto';
 import { UpdateZentraLandingPageRelationDto } from './dto/update-zentra-landing-page-relation.dto';
 
+import {
+  LOT_STATUS
+} from 'src/shared/constants/app.constants';
+
 @Injectable()
 export class ZentraLandingPageRelationService {
   constructor(private prisma: PrismaService) { }
@@ -93,7 +97,7 @@ export class ZentraLandingPageRelationService {
       throw new Error('No se encontró una LandingPage para este proyecto');
     }
 
-    
+
     const lots = relation.landingPage.lots;
 
     lots.sort((a, b) => {
@@ -116,4 +120,48 @@ export class ZentraLandingPageRelationService {
 
 
   }
+
+  async getAvailableLots(zentraProjectId: string) {
+
+    const relation = await this.prisma.zentraLandingPageRelation.findFirst({
+      where: { zentraProjectId, deletedAt: null },
+      include: {
+        landingPage: {
+          include: {
+            lots: {
+              include: {
+                status: true,
+              },
+              where: { deletedAt: null, statusId: LOT_STATUS.DISPONIBLE },
+            },
+          },
+        },
+      },
+    });
+
+    if (!relation) {
+      throw new Error('No se encontró una LandingPage para este proyecto');
+    }
+
+
+    const lots = relation.landingPage.lots;
+
+    lots.sort((a, b) => {
+      return a.status.title.localeCompare(b.status.title);
+    });
+
+    return lots.map((lot) => ({
+      id: lot.id,
+      title: `${lot.name} - ${lot.status.title}`,
+      number: lot.number,
+      block: lot.block,
+      code: lot.code,
+      status: lot.status.title,
+      area: lot.area,
+      perimeter: lot.perimeter,
+    }));
+
+
+  }
+
 }

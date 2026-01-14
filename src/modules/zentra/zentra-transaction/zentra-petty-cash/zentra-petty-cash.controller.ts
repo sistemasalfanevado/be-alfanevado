@@ -82,12 +82,6 @@ export class ZentraPettyCashController {
     return this.zentraPettyCashService.addRefund(data);
   }
 
-  @Post('add-document')
-  addDocument(
-    @Body() data: { pettyCashId: string; documentId: string },
-  ) {
-    return this.zentraPettyCashService.addDocument(data);
-  }
 
   @Delete('remove-document/:id')
   removeDocument(@Param('id') id: string) {
@@ -98,4 +92,22 @@ export class ZentraPettyCashController {
   getAllDataReport(@Body('id') pettyCashId: string) {
     return this.zentraPettyCashService.getAllDataReport(pettyCashId);
   }
+
+
+
+
+
+  // Useful Methods
+
+
+  @Post('add-document')
+  addDocument(@Body() dataDocument: any) {
+    return this.zentraPettyCashService.addDocument(dataDocument);
+  }
+
+
+
+
+
+
 }

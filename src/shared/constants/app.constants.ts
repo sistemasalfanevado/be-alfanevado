@@ -91,6 +91,7 @@ export const ACCOUNTABILITY_STATUS = {
 export const DOCUMENT_ORIGIN = {
   CLASICO: 'd4560e69-0114-4176-8ca9-6d33c7ea8db1',
   RENDICION_CUENTAS: 'bbc7792b-07e8-4fe1-a705-c78934d3f3c9',
+  CAJA_CHICA: 'cee65986-47bb-4660-85a8-62fb7c7fabcf',
 };
 
 export const FINANCIAL_IMPACT = {
@@ -114,4 +115,9 @@ export const VISIBIILITY = {
   OCULTO: '15c76274-5d4d-4bd2-bcd9-edbd9319248f',
   VISIBLE: 'bebfddc7-fb71-4caf-8ec9-ef48586f50d1',
 };
+
+export const LOT_STATUS = {
+  DISPONIBLE: '98aee82e-4c8c-46e9-b49c-bc3d8a6a98f7',
+};
+
 
