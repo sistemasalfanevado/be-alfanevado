@@ -15,9 +15,9 @@ export class AuditInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     const { method, url, params, headers } = request;
 
-    let user = request.user;
-
-    if (!user && headers.authorization) {
+    let user: any = null;
+    
+    if (headers.authorization) {
       try {
         const token = headers.authorization.replace('Bearer ', '');
         const payload: any = this.jwtService.decode(token);
@@ -25,6 +25,7 @@ export class AuditInterceptor implements NestInterceptor {
         if (payload) {
           user = { sub: payload.sub, email: payload.email };
         }
+
       } catch (error) {
         console.error('Error al decodificar token con JwtService:', error.message);
       }

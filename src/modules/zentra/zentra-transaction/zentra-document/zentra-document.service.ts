@@ -440,7 +440,7 @@ export class ZentraDocumentService {
     withPartyBankAccount?: boolean;
     accountabilityId?: string;
     documentTypeId?: string;
-    excludeDocumentTypeId?: string;
+    excludeDocumentTypeId?: string[];
     currencyId?: string;
   }) {
     const { currencyId, documentTypeId, excludeDocumentTypeId, withPartyBankAccount, accountabilityId, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, companyId, userId, startDate, endDate } = filters;
@@ -483,8 +483,12 @@ export class ZentraDocumentService {
       where.transactionType = { id: transactionTypeId };
     }
 
-    if (excludeDocumentTypeId && excludeDocumentTypeId.trim() !== '') {
-      where.documentType = { id: { not: excludeDocumentTypeId } };
+    if (excludeDocumentTypeId && Array.isArray(excludeDocumentTypeId) && excludeDocumentTypeId.length > 0) {
+      where.documentType = {
+        id: {
+          notIn: excludeDocumentTypeId // Operador para excluir múltiples IDs
+        }
+      };
     }
 
     if (documentTypeId && documentTypeId.trim() !== '') {

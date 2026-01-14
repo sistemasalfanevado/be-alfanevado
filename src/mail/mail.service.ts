@@ -349,7 +349,7 @@ export class MailService {
         Hola ${fullName},<br /><br />
 
         Se ha creado una <strong>solicitud de reembolso</strong> asociada a la siguiente
-        <strong>rendición de cuentas</strong>:<br /><br />
+        <strong>rendición de cuenta</strong>:<br /><br />
 
         ${expenseReportTable}
 

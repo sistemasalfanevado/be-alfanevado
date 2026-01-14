@@ -59,27 +59,26 @@ export class ZentraAccountabilityService {
 
     const firstDoc = item.documents && item.documents.length > 0 ? item.documents[0] : null;
 
-    // 2. Del documento, intentamos obtener el primer movimiento
     const firstMovement = firstDoc && firstDoc.movements && firstDoc.movements.length > 0
       ? firstDoc.movements[0]
       : null;
 
-    // 3. Formateamos la fecha si existe
     const firstPaymentDate = firstMovement
       ? moment(firstMovement.paymentDate).format('DD/MM/YYYY')
-      : 'Sin pago'; // O dejarlo vacío ''
+      : 'Sin pago';
 
     const status = item.accountabilityStatus;
 
-    // Configuramos el badge basado en el ID del estado
-    let badgeConfig = { text: status?.name, class: 'badge-primary' }; // Default
+    let badgeConfig = { text: status?.name, class: 'badge-primary' };
 
     if (status?.id === ACCOUNTABILITY_STATUS.LIQUIDADO) {
-      badgeConfig = { text: 'LIQUIDADO', class: 'badge-success' }; // Verde
-    } else if (status?.id === ACCOUNTABILITY_STATUS.PENDIENTE) {
-      badgeConfig = { text: 'PENDIENTE', class: 'badge-warning' }; // Amarillo
-    } else if (status?.id === ACCOUNTABILITY_STATUS.LIQUIDADO_PARCIAL) {
-      badgeConfig = { text: 'LIQUIDADO PARCIAL', class: 'badge-info' }; // Azul
+      badgeConfig = { text: 'Liquidado', class: 'badge-success' };
+    } else if (status?.id === ACCOUNTABILITY_STATUS.VALIDACION_CONTABLE_PENDIENTE) {
+      badgeConfig = { text: 'Validación Contable Pendiente', class: 'badge-warning' };
+    } else if (status?.id === ACCOUNTABILITY_STATUS.ABONO_PENDIENTE) {
+      badgeConfig = { text: 'Abono Pendiente', class: 'badge-info' };
+    } else if (status?.id === ACCOUNTABILITY_STATUS.RENDICION_PENDIENTE) {
+      badgeConfig = { text: 'Rendición Pendiente', class: 'badge-secondary' };
     }
 
     return {
@@ -453,12 +452,9 @@ export class ZentraAccountabilityService {
     const accountabilityData = await this.findOne(dataDocument.accountabilityId);
 
     if (accountabilityData?.id) {
-      await this.mailService.notifyExpenseReportPendingAccounting(accountabilityData)
+      await this.mailService.notifyRefundRequested(accountabilityData, dataDocument.amountToPay, dataDocument.currencyId) 
     }
-
-
-
-
+    
     return { message: 'Accountability actualizada exitosamente' };
 
   }
