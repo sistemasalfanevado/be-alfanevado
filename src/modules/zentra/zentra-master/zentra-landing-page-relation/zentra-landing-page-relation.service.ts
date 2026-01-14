@@ -136,6 +136,7 @@ export class ZentraLandingPageRelationService {
             },
           },
         },
+        zentraProject: true
       },
     });
 
@@ -143,7 +144,7 @@ export class ZentraLandingPageRelationService {
       throw new Error('No se encontró una LandingPage para este proyecto');
     }
 
-
+    const projectName = relation.zentraProject.name;
     const lots = relation.landingPage.lots;
 
     lots.sort((a, b) => {
@@ -151,15 +152,15 @@ export class ZentraLandingPageRelationService {
     });
 
     return lots.map((lot) => ({
-      id: lot.id,
-      title: `${lot.name} - ${lot.status.title}`,
       number: lot.number,
       block: lot.block,
       code: lot.code,
       status: lot.status.title,
       area: lot.area,
       perimeter: lot.perimeter,
+      project: projectName
     }));
+    
 
 
   }
