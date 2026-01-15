@@ -281,6 +281,7 @@ export class ZentraProjectService {
       let budgetItemAccountability: any = '';
       let budgetItemFinancialExpense: any = '';
       let budgetItemPettyCash: any = '';
+      let budgetItemNotIdentified: any = '';
 
       for (let itemBudget of budgetItem) {
         if (itemBudget.budgetItem.definition.nature.id === BUDGET_NATURE.SISTEMAS) {
@@ -297,6 +298,9 @@ export class ZentraProjectService {
         }
         if (itemBudget.budgetItem.definition.nature.id === BUDGET_NATURE.CAJA_CHICA) {
           budgetItemPettyCash = itemBudget.budgetItem;
+        }
+        if (itemBudget.budgetItem.definition.nature.id === BUDGET_NATURE.NO_IDENTIFICADA) {
+          budgetItemNotIdentified = itemBudget.budgetItem;
         }
       }
 
@@ -413,6 +417,9 @@ export class ZentraProjectService {
 
         pettyCashBudgetItemId: budgetItemPettyCash?.id ?? '',
         pettyCashBudgetItemName: budgetItemPettyCash?.definition?.name ?? '',
+
+        notIdentifiedBudgetItemId: budgetItemNotIdentified?.id ?? '',
+        notIdentifiedBudgetItemName: budgetItemNotIdentified?.definition?.name ?? '',
 
         
 
