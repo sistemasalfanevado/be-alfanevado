@@ -34,6 +34,7 @@ export const DOCUMENT_CATEGORY = {
   CLASICO: '0c4d8c87-aaed-4e08-8520-14e79fad324c',
   RENDICION_CUENTA: 'b07b084a-6822-4a4a-b93f-868f9ea36488',
   DEVOLUCION: 'e82da912-b142-4cb2-b3e2-623b266a912b',
+  CAJA_CHICA: 'b1cfd0d2-25b7-4f4c-9fee-6e6292ff36ee',
 };
 
 export const BUDGET_NATURE = {
@@ -43,6 +44,7 @@ export const BUDGET_NATURE = {
   SISTEMAS: 'e9fb5a54-7059-4f25-885e-d3a8fd7f4dfa',
   CUADRE: '22feac37-28c0-410a-8533-5254dfc202f1',
   RENDICION_CUENTA: '94f5dbc1-bbb0-49bb-87ce-452613d99759',
+  CAJA_CHICA: '707c6223-52ae-4031-836a-152f14ae6684',
 };
 
 
@@ -118,6 +120,12 @@ export const VISIBIILITY = {
 
 export const LOT_STATUS = {
   DISPONIBLE: '98aee82e-4c8c-46e9-b49c-bc3d8a6a98f7',
+};
+
+export const PETTY_CASH_STATUS = {
+  ABONO_PENDIENTE: '5b8c8d38-5d2a-427a-93df-0ec671ac917d',
+  RENDICION_PENDIENTE: '69130e11-df10-46cd-97ed-8780c99f5b6b',
+  FINALIZADO: '15d35692-3767-4ac6-84fa-7d73c3e05c29',
 };
 
 

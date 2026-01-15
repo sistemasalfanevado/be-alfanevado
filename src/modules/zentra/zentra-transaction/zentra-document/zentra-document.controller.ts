@@ -60,6 +60,7 @@ export class ZentraDocumentController {
     endDate?: string;
     withPartyBankAccount?: boolean;
     accountabilityId?: string;
+    pettyCashId?: string;
     documentTypeId?: string;
     excludeDocumentTypeId?: string[],
     currencyId?: string;

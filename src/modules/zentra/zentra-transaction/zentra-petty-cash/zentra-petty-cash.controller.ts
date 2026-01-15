@@ -17,13 +17,9 @@ import { UpdateZentraPettyCashDto } from './dto/update-zentra-petty-cash.dto';
 export class ZentraPettyCashController {
   constructor(
     private readonly zentraPettyCashService: ZentraPettyCashService,
-  ) {}
+  ) { }
 
-  @Post()
-  create(@Body() dto: CreateZentraPettyCashDto) {
-    return this.zentraPettyCashService.create(dto);
-  }
-
+  /*
   @Get()
   findAll() {
     return this.zentraPettyCashService.findAll();
@@ -53,21 +49,6 @@ export class ZentraPettyCashController {
     return this.zentraPettyCashService.restore(id);
   }
 
-  @Post('search')
-  search(
-    @Body()
-    filters: {
-      pettyCashStatusId?: string;
-      partyId?: string;
-      startDate?: string;
-      endDate?: string;
-      userId?: string;
-      deletedAt?: boolean;
-    },
-  ) {
-    return this.zentraPettyCashService.findByFilters(filters);
-  }
-
   @Post('add-increment')
   addIncrement(
     @Body() data: { pettyCashId: string; amount: number },
@@ -93,6 +74,7 @@ export class ZentraPettyCashController {
     return this.zentraPettyCashService.getAllDataReport(pettyCashId);
   }
 
+  */
 
 
 
@@ -105,9 +87,58 @@ export class ZentraPettyCashController {
     return this.zentraPettyCashService.addDocument(dataDocument);
   }
 
+  @Post()
+  async create(
+    @Body() CreateZentraPettyCashDto: any
+  ) {
+    return this.zentraPettyCashService.create(CreateZentraPettyCashDto);
+  }
+
+  @Post('search')
+  search(@Body() filters: {
+    pettyCashStatusId?: string;
+    partyId?: string;
+    companyId?: string;
+    startDate?: string;
+    endDate?: string;
+    userId?: string;
+    deletedAt?: boolean;
+  }) {
+    return this.zentraPettyCashService.findByFilters(filters);
+  }
 
 
+  @Put('update-document/:id')
+  async updateDocument(
+    @Param('id') id: string,
+    @Body() updateZentraPettyCashDto: any
+  ) {
+    return this.zentraPettyCashService.updateDocument(id, updateZentraPettyCashDto);
+  }
 
+  @Put('update-simple-document/:id')
+  async updateSimpleDocument(
+    @Param('id') id: string,
+    @Body() updateZentraPettyCashDto: any
+  ) {
+    return this.zentraPettyCashService.updateSimpleDocument(id, updateZentraPettyCashDto);
+  }
 
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.zentraPettyCashService.remove(id);
+  }
+
+  @Delete('remove-document/:id')
+  removeDocument(
+    @Param('id') id: string,
+  ) {
+    return this.zentraPettyCashService.removeDocument(id);
+  }
+
+  @Post('add-increment')
+  addIncrement(@Body() dataAccountability: any) {
+    return this.zentraPettyCashService.addIncrement(dataAccountability);
+  }
 
 }

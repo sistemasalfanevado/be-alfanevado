@@ -11,6 +11,7 @@ import { ZentraScheduledDebtDocumentModule } from '../../zentra-master/zentra-sc
 
 import { ZentraInstallmentModule } from '../../zentra-transaction/zentra-installment/zentra-installment.module';
 import { ZentraAccountabilityModule } from '../../zentra-transaction/zentra-accountability/zentra-accountability.module';
+import { ZentraPettyCashModule } from '../../zentra-transaction/zentra-petty-cash/zentra-petty-cash.module';
 
 
 @Module({
@@ -20,7 +21,8 @@ import { ZentraAccountabilityModule } from '../../zentra-transaction/zentra-acco
     ZentraScheduledIncomeDocumentModule,
     ZentraScheduledDebtDocumentModule,
     forwardRef(() => ZentraInstallmentModule),
-    forwardRef(() => ZentraAccountabilityModule)
+    forwardRef(() => ZentraAccountabilityModule),
+    forwardRef(() => ZentraPettyCashModule)
   ],
   providers: [ZentraDocumentService],
   controllers: [ZentraDocumentController],

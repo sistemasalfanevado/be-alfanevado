@@ -9,7 +9,7 @@ import { MailService } from '../../../../mail/mail.service';
 
 
 import { DOCUMENT_CATEGORY, DOCUMENT_STATUS, DOCUMENT_ORIGIN, ACCOUNTABILITY_STATUS, DOCUMENT_TYPE, PARTY_DOCUMENT_HIERARCHY, TRANSACTION_TYPE } from 'src/shared/constants/app.constants';
-import { Prisma } from '@prisma/client'; // Importante importar Prisma
+import { Prisma } from '@prisma/client';
 import * as moment from 'moment';
 
 @Injectable()

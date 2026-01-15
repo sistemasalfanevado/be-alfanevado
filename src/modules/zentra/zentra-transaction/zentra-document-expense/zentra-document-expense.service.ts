@@ -4,6 +4,7 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { ZentraMovementService } from '../zentra-movement/zentra-movement.service';
 import { ZentraDocumentService } from '../zentra-document/zentra-document.service';
 import { ZentraAccountabilityService } from '../zentra-accountability/zentra-accountability.service';
+import { ZentraPettyCashService } from '../zentra-petty-cash/zentra-petty-cash.service';
 
 import { CURRENCY, DOCUMENT_STATUS, TRANSACTION_TYPE, ACCOUNTABILITY_STATUS, DOCUMENT_ORIGIN, DOCUMENT_CATEGORY } from 'src/shared/constants/app.constants';
 
@@ -16,6 +17,8 @@ export class ZentraDocumentExpenseService {
     private zentraDocumentService: ZentraDocumentService,
     @Inject(forwardRef(() => ZentraAccountabilityService))
     private zentraAccountabilityService: ZentraAccountabilityService,
+    @Inject(forwardRef(() => ZentraPettyCashService))
+    private zentraPettyCashService: ZentraPettyCashService,
   ) { }
 
 
@@ -117,11 +120,15 @@ export class ZentraDocumentExpenseService {
     });
 
     if (documentData?.documentOriginId === DOCUMENT_ORIGIN.RENDICION_CUENTAS) {
-      // Si existe debo de actualizar la rendicion de cuentas
       await this.zentraAccountabilityService.updataAccountabilityData(documentData);
     }
 
-    return { message: 'Accountability actualizada exitosamente' };
+    if (documentData?.documentOriginId === DOCUMENT_ORIGIN.CAJA_CHICA) {
+      await this.zentraPettyCashService.updataPettyCashData(documentData);
+    }
+
+
+    return { message: 'Document actualizada exitosamente' };
 
 
   }

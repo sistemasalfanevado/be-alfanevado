@@ -95,7 +95,6 @@ import { ZentraInstallmentFileModule } from './zentra/zentra-transaction/zentra-
 import { ZentraTransactionGeneralModule } from './zentra/zentra-transaction/zentra-transaction-general/zentra-transaction-general.module';
 import { ZentraTelecreditoOperationModule } from './zentra/zentra-transaction/zentra-telecredito-operation/zentra-telecredito-operation.module';
 import { ZentraTelecreditoOperationDetailModule } from './zentra/zentra-transaction/zentra-telecredito-operation-detail/zentra-telecredito-operation-detail.module';
-import { ZentraPettyCashModule } from './zentra/zentra-transaction/zentra-petty-cash/zentra-petty-cash.module';
 
 
 // Zentra Ollama
@@ -113,6 +112,9 @@ import { ZentraLandingLeadModule } from './zentra/zentra-mkt/zentra-landing-lead
 import { ZentraAccountabilityStatusModule } from './zentra/zentra-master/zentra-accountability-status/zentra-accountability-status.module';
 import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-accountability/zentra-accountability.module';
 
+// Caja Chica
+import { ZentraPettyCashStatusModule } from './zentra/zentra-master/zentra-petty-cash-status/zentra-petty-cash-status.module';
+import { ZentraPettyCashModule } from './zentra/zentra-transaction/zentra-petty-cash/zentra-petty-cash.module';
 
 
 @Module({
@@ -218,7 +220,10 @@ import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-a
 
     // Rendición de Cuentas
     ZentraAccountabilityStatusModule,
-    ZentraAccountabilityModule
+    ZentraAccountabilityModule,
+
+    // Caja Chica
+    ZentraPettyCashStatusModule,
 
   ],
   exports: [

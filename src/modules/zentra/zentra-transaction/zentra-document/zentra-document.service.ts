@@ -10,6 +10,7 @@ import { ZentraScheduledIncomeDocumentService } from '../../zentra-master/zentra
 import { ZentraScheduledDebtDocumentService } from '../../zentra-master/zentra-scheduled-debt-document/zentra-scheduled-debt-document.service';
 
 import { ZentraAccountabilityService } from '../../zentra-transaction/zentra-accountability/zentra-accountability.service';
+import { ZentraPettyCashService } from '../../zentra-transaction/zentra-petty-cash/zentra-petty-cash.service';
 
 
 import {
@@ -30,6 +31,9 @@ export class ZentraDocumentService {
 
     @Inject(forwardRef(() => ZentraAccountabilityService))
     private readonly zentraAccountabilityService: ZentraAccountabilityService,
+
+    @Inject(forwardRef(() => ZentraPettyCashService))
+    private readonly zentraPettyCashService: ZentraPettyCashService,
 
     @Inject(forwardRef(() => ZentraInstallmentService))
     private readonly zentraInstallmentService: ZentraInstallmentService,
@@ -57,6 +61,7 @@ export class ZentraDocumentService {
     },
     documentOrigin: true,
     accountability: true,
+    pettyCash: true,
   };
 
   private includeRelationsWithBankAccount = {
@@ -65,6 +70,7 @@ export class ZentraDocumentService {
     documentType: true,
     documentOrigin: true,
     accountability: true,
+    pettyCash: true,
     party: {
       include: {
         partyBankAccounts: {
@@ -159,6 +165,7 @@ export class ZentraDocumentService {
 
       documentOriginId: item.documentOrigin?.id ?? null,
       accountabilityId: item.accountability?.id ?? null,
+      pettyCashId: item.pettyCash?.id ?? null,
 
       partyBankAccountInfo: principalAccount
         ? `${principalAccount.bank?.name ?? '-'} | ${principalAccount.currency?.name ?? '-'} | ${principalAccount.type?.name ?? '-'} | ${principalAccount.account ?? '-'} | CCI: ${principalAccount.cci ?? '-'}`
@@ -439,11 +446,12 @@ export class ZentraDocumentService {
     userId?: string;
     withPartyBankAccount?: boolean;
     accountabilityId?: string;
+    pettyCashId?: string;
     documentTypeId?: string;
     excludeDocumentTypeId?: string[];
     currencyId?: string;
   }) {
-    const { currencyId, documentTypeId, excludeDocumentTypeId, withPartyBankAccount, accountabilityId, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, companyId, userId, startDate, endDate } = filters;
+    const { currencyId, documentTypeId, excludeDocumentTypeId, withPartyBankAccount, accountabilityId, pettyCashId, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, companyId, userId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -497,6 +505,10 @@ export class ZentraDocumentService {
 
     if (accountabilityId && accountabilityId.trim() !== '') {
       where.accountability = { id: accountabilityId };
+    }
+
+    if (pettyCashId && pettyCashId.trim() !== '') {
+      where.pettyCash = { id: pettyCashId };
     }
 
     if (userId && userId.trim() !== '') {
@@ -613,6 +625,9 @@ export class ZentraDocumentService {
         ...(dataDocument.accountabilityId && {
           accountability: { connect: { id: dataDocument.accountabilityId } },
         }),
+        ...(dataDocument.pettyCashId && {
+          pettyCash: { connect: { id: dataDocument.pettyCashId } },
+        }),
         ...(dataDocument.documentOriginId && {
           documentOrigin: { connect: { id: dataDocument.documentOriginId } },
         }),
@@ -683,7 +698,14 @@ export class ZentraDocumentService {
       await this.zentraAccountabilityService.updataAccountabilityData(documentData);
     }
 
-    // 4. Eliminar movimientos relacionados
+    // 4. Revisar el petty cash
+
+    if (documentData?.documentOriginId === DOCUMENT_ORIGIN.CAJA_CHICA) {
+      // Si existe debo de actualizar la rendicion de cuentas
+      await this.zentraPettyCashService.updataPettyCashData(documentData);
+    }
+
+    // 5. Eliminar movimientos relacionados
     for (const movement of documentData.movements) {
       try {
         await this.zentraMovementService.remove(movement.id);

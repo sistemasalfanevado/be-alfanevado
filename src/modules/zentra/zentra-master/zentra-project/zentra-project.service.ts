@@ -280,6 +280,7 @@ export class ZentraProjectService {
       let budgetItemIncome: any = '';
       let budgetItemAccountability: any = '';
       let budgetItemFinancialExpense: any = '';
+      let budgetItemPettyCash: any = '';
 
       for (let itemBudget of budgetItem) {
         if (itemBudget.budgetItem.definition.nature.id === BUDGET_NATURE.SISTEMAS) {
@@ -293,6 +294,9 @@ export class ZentraProjectService {
         }
         if (itemBudget.budgetItem.definition.nature.id === BUDGET_NATURE.GASTO) {
           budgetItemFinancialExpense = itemBudget.budgetItem;
+        }
+        if (itemBudget.budgetItem.definition.nature.id === BUDGET_NATURE.CAJA_CHICA) {
+          budgetItemPettyCash = itemBudget.budgetItem;
         }
       }
 
@@ -406,6 +410,10 @@ export class ZentraProjectService {
 
         financialExpenseBudgetItemId: budgetItemFinancialExpense?.id ?? '',
         financialExpenseBudgetItemName: budgetItemFinancialExpense?.definition?.name ?? '',
+
+        pettyCashBudgetItemId: budgetItemPettyCash?.id ?? '',
+        pettyCashBudgetItemName: budgetItemPettyCash?.definition?.name ?? '',
+
         
 
         // Rentabilidad diaria y semanal 
