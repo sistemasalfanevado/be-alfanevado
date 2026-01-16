@@ -120,6 +120,9 @@ export class ZentraBudgetItemService {
       visibilityId: item.visibility?.id,
       visibilityName: item.visibility?.name,
 
+      natureId: item?.definition?.nature?.id || '',
+      natureName: item?.definition?.nature?.name || '',
+
       idFirebase: item.idFirebase,
     };
 
@@ -207,6 +210,7 @@ export class ZentraBudgetItemService {
                 budgetCategory: true
               }
             },
+            nature: true 
           },
         },
         visibility: true,
@@ -227,7 +231,8 @@ export class ZentraBudgetItemService {
         currency: true,
         definition: {
           include: {
-            project: true
+            project: true,
+            nature: true
           }
         },
         visibility: true,

@@ -2375,7 +2375,8 @@ export class ZentraDocumentService {
       id: {
         in: [
           DOCUMENT_CATEGORY.CLASICO,
-          DOCUMENT_CATEGORY.RENDICION_CUENTA
+          DOCUMENT_CATEGORY.RENDICION_CUENTA,
+          DOCUMENT_CATEGORY.CAJA_CHICA
         ]
       }
     };
@@ -2425,7 +2426,13 @@ export class ZentraDocumentService {
           include: {
             definition: {
               include: {
-                project: true
+                project: true,
+                category: {
+                  include: {
+                    budgetCategory: true
+                  }
+                },
+                nature: true
               }
             },
           }
@@ -2437,54 +2444,109 @@ export class ZentraDocumentService {
       orderBy
     });
 
-    return results.map((item) => ({
-      id: item.id,
-      code: item.code,
-      description: item.description,
+    if (results.length === 0) return [];
 
-      totalAmount: item.totalAmount,
-      taxAmount: item.taxAmount,
-      netAmount: item.netAmount,
-      detractionRate: item.detractionRate,
-      detractionAmount: item.detractionAmount,
-      amountToPay: item.amountToPay,
-      paidAmount: item.paidAmount,
+    const uniqueDates = [...new Set(results.map(item =>
+      moment(item.documentDate).startOf('day').toDate().getTime()
+    ))].map(time => new Date(time));
 
-      registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
-      documentDate: moment(item.documentDate).format('DD/MM/YYYY'),
-      expireDate: moment(item.expireDate).format('DD/MM/YYYY'),
+    // 2. Traer todos los tipos de cambio de la DB
+    // Nota: Traemos todos o los del rango para evitar consultas por cada fila
+    const exchangeRates = await this.prisma.zentraExchangeRate.findMany({
+      orderBy: { date: 'asc' }
+    });
 
-      transactionTypeId: item.transactionType.id,
-      transactionTypeName: item.transactionType.name,
+    // 3. Obtener el tipo de cambio más antiguo como fallback
+    const oldestRate = exchangeRates[0];
 
-      documentTypeId: item.documentType.id,
-      documentTypeName: item.documentType.name,
+    // 4. Crear un Map para búsqueda rápida O(1)
+    const rateMap = new Map();
+    exchangeRates.forEach(r => {
+      rateMap.set(moment(r.date).startOf('day').format('YYYY-MM-DD'), r.sellRate);
+    });
 
-      partyId: item.party.id,
-      partyName: item.party.name,
+    return results.map((item) => {
+      const dateKey = moment(item.documentDate).format('YYYY-MM-DD');
 
-      documentStatusId: item.documentStatus.id,
-      documentStatusName: item.documentStatus.name,
+      // Si no existe el tipo de cambio para ese día, usamos el más antiguo
+      const sellRate = rateMap.get(dateKey) || (oldestRate ? oldestRate.sellRate : 1);
 
-      budgetItemId: item.budgetItem.id,
-      budgetItemName: item.budgetItem
-        ? `${item.budgetItem.definition.name}`
-        : null,
+      const factor = item.currency.id === CURRENCY.DOLARES ? sellRate : 1;
+      const round = (value: number) => Math.round(value * 100) / 100;
 
-      projectName: item.budgetItem
-        ? `${item.budgetItem.definition.project.name}`
-        : null,
+      return {
+        id: item.id,
 
-      currencyId: item.currency.id,
-      currencyName: item.currency.name,
+        totalAmountPEN: round(Number(item.totalAmount) * factor),
+        taxAmountPEN: round(Number(item.taxAmount) * factor),
+        netAmountPEN: round(Number(item.netAmount) * factor),
+        detractionAmountPEN: round(Number(item.detractionAmount) * factor),
+        amountToPayPEN: round(Number(item.amountToPay) * factor),
+        paidAmountPEN: round(Number(item.paidAmount) * factor),
 
-      userId: item.user.id,
-      userName: item.user.firstName,
+        exchangeRateUsed: factor,
 
-      documentCategoryId: item.documentCategory?.id,
-      documentCategoryName: item.documentCategory?.name,
 
-    }));
+        code: item.code,
+        description: item.description,
+
+        totalAmount: item.totalAmount,
+        taxAmount: item.taxAmount,
+        netAmount: item.netAmount,
+        detractionRate: item.detractionRate,
+        detractionAmount: item.detractionAmount,
+        amountToPay: item.amountToPay,
+        paidAmount: item.paidAmount,
+
+        registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
+        documentDate: moment(item.documentDate).format('DD/MM/YYYY'),
+        expireDate: moment(item.expireDate).format('DD/MM/YYYY'),
+
+        transactionTypeId: item.transactionType.id,
+        transactionTypeName: item.transactionType.name,
+
+        documentTypeId: item.documentType.id,
+        documentTypeName: item.documentType.name,
+
+        partyId: item.party.id,
+        partyName: item.party.name,
+
+        documentStatusId: item.documentStatus.id,
+        documentStatusName: item.documentStatus.name,
+
+        budgetItemId: item.budgetItem.id,
+        budgetItemName: item.budgetItem
+          ? `${item.budgetItem.definition.name}`
+          : null,
+
+        projectName: item.budgetItem
+          ? `${item.budgetItem.definition.project.name}`
+          : null,
+
+        currencyId: item.currency.id,
+        currencyName: item.currency.name,
+
+        userId: item.user.id,
+        userName: item.user.firstName,
+
+        documentCategoryId: item.documentCategory?.id,
+        documentCategoryName: item.documentCategory?.name,
+
+
+        budgetItemNatureId: item.budgetItem?.definition?.nature?.id || '',
+        budgetItemNatureName: item.budgetItem?.definition?.nature?.name || '',
+
+        budgetItemCategoryId: item.budgetItem?.definition?.category?.budgetCategory.id || '',
+        budgetItemCategoryName: item.budgetItem?.definition?.category?.budgetCategory.name || '',
+
+        budgetItemSubCategoryId: item.budgetItem?.definition?.category?.id || '',
+        budgetItemSubCategoryName: item.budgetItem?.definition?.category?.name || '',
+
+
+
+
+      };
+    });
 
 
   }
