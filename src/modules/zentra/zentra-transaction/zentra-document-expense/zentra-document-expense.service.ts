@@ -123,7 +123,7 @@ export class ZentraDocumentExpenseService {
       await this.zentraAccountabilityService.updataAccountabilityData(documentData);
     }
 
-    if (documentData?.documentOriginId === DOCUMENT_ORIGIN.CAJA_CHICA) {
+    if (documentData?.documentOriginId === DOCUMENT_ORIGIN.CAJA_CHICA && documentData.pettyCashId) {
       await this.zentraPettyCashService.updataPettyCashData(documentData);
     }
 

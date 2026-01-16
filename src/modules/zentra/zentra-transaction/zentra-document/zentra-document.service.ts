@@ -15,7 +15,8 @@ import { ZentraPettyCashService } from '../../zentra-transaction/zentra-petty-ca
 
 import {
   TRANSACTION_TYPE, CURRENCY, MOVEMENT_CATEGORY,
-  BANK_ACCOUNT_HIERARCHY, EXCHANGE_RATE, DOCUMENT_ORIGIN, INSTALLMENT_STATUS, DOCUMENT_CATEGORY
+  BANK_ACCOUNT_HIERARCHY, EXCHANGE_RATE, DOCUMENT_ORIGIN, INSTALLMENT_STATUS, DOCUMENT_CATEGORY,
+  DOCUMENT_TYPE
 } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
@@ -700,7 +701,7 @@ export class ZentraDocumentService {
 
     // 4. Revisar el petty cash
 
-    if (documentData?.documentOriginId === DOCUMENT_ORIGIN.CAJA_CHICA) {
+    if (documentData?.documentOriginId === DOCUMENT_ORIGIN.CAJA_CHICA && documentData.pettyCashId) {
       // Si existe debo de actualizar la rendicion de cuentas
       await this.zentraPettyCashService.updataPettyCashData(documentData);
     }
@@ -1645,7 +1646,6 @@ export class ZentraDocumentService {
     });
   }
 
-
   async updateScheduledIncome(id: string, updateData: any) {
     return this.prisma.$transaction(
       async (tx) => {
@@ -1732,7 +1732,6 @@ export class ZentraDocumentService {
       },
     );
   }
-
 
   async removeScheduledIncome(id: string) {
     return this.removeDocumentWithScheduledIncome(id);
@@ -2446,20 +2445,12 @@ export class ZentraDocumentService {
 
     if (results.length === 0) return [];
 
-    const uniqueDates = [...new Set(results.map(item =>
-      moment(item.documentDate).startOf('day').toDate().getTime()
-    ))].map(time => new Date(time));
-
-    // 2. Traer todos los tipos de cambio de la DB
-    // Nota: Traemos todos o los del rango para evitar consultas por cada fila
     const exchangeRates = await this.prisma.zentraExchangeRate.findMany({
       orderBy: { date: 'asc' }
     });
 
-    // 3. Obtener el tipo de cambio más antiguo como fallback
     const oldestRate = exchangeRates[0];
 
-    // 4. Crear un Map para búsqueda rápida O(1)
     const rateMap = new Map();
     exchangeRates.forEach(r => {
       rateMap.set(moment(r.date).startOf('day').format('YYYY-MM-DD'), r.sellRate);
@@ -2468,7 +2459,6 @@ export class ZentraDocumentService {
     return results.map((item) => {
       const dateKey = moment(item.documentDate).format('YYYY-MM-DD');
 
-      // Si no existe el tipo de cambio para ese día, usamos el más antiguo
       const sellRate = rateMap.get(dateKey) || (oldestRate ? oldestRate.sellRate : 1);
 
       const factor = item.currency.id === CURRENCY.DOLARES ? sellRate : 1;
@@ -2831,6 +2821,87 @@ export class ZentraDocumentService {
     return { exists: false };
   }
 
+
+
+  // Petty Cash
+
+
+  async findByDocumentPettyCash(filters: {
+    companyId?: string;
+    pettyCashId?: string;
+  }) {
+
+    const where: any = {
+      deletedAt: null,
+      documentOriginId: DOCUMENT_ORIGIN.CAJA_CHICA,
+      documentTypeId: {
+        not: DOCUMENT_TYPE.ADELANTO
+      }
+    };
+
+    if (filters.pettyCashId?.trim()) {
+      where.pettyCashId = filters.pettyCashId;
+    } else {
+      where.pettyCashId = null;
+    }
+
+    if (filters.companyId?.trim()) {
+      where.budgetItem = {
+        definition: {
+          project: {
+            companyId: filters.companyId,
+          }
+        },
+      };
+    }
+
+    const results = await this.prisma.zentraDocument.findMany({
+      where,
+      orderBy: { documentDate: 'desc' },
+      include: {
+        party: true,
+        documentType: true,
+        budgetItem: {
+          include: {
+            definition: {
+              include: {
+                project: true
+              }
+            }
+          }
+        },
+        user: true,
+        documentStatus: true,
+        pettyCash: true,
+
+      },
+    });
+
+    return results.map((doc) => {
+      return {
+        id: doc.id,
+        documentDate: moment(doc.documentDate).format("DD/MM/YYYY"),
+        documentStatusName: doc.documentStatus.name,
+        userName: doc.user.firstName + ' ' + doc.user.lastName,
+        budgetItemName: doc.budgetItem.definition.name,
+        projectName: doc.budgetItem.definition.project.name,
+        code: doc.code,
+        documentTypeName: doc.documentType.name,
+        partyName: doc.party.name,
+        description: doc.description,
+
+        totalAmount: doc.totalAmount,
+        taxAmount: doc.taxAmount,
+        netAmount: doc.netAmount,
+        detractionRate: doc.detractionRate,
+        detractionAmount: doc.detractionAmount,
+        amountToPay: doc.amountToPay,
+        paidAmount: doc.paidAmount,
+
+
+      };
+    });
+  }
 
 
 

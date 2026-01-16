@@ -32,166 +32,6 @@ export class ZentraPettyCashService {
     private mailService: MailService,
   ) { }
 
-  /*
-  async findAll() {
-    const items = await this.prisma.zentraPettyCash.findMany({
-      where: { deletedAt: null },
-      orderBy: { registeredAt: 'desc' },
-      include: this.includeRelations,
-    });
-
-    return items.map(item => this.mapEntityToDto(item));
-  }
-
-  async findOne(id: string) {
-    return this.prisma.zentraPettyCash.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        code: true,
-        approvedAmount: true,
-        accountedAmount: true,
-        user: {
-          select: {
-            firstName: true,
-            lastName: true,
-          },
-        },
-        budgetItem: {
-          select: {
-            definition: {
-              select: {
-                project: {
-                  select: {
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    });
-  }
-
-
-
-  async update(id: string, dto: UpdateZentraPettyCashDto) {
-    return this.prisma.zentraPettyCash.update({
-      where: { id },
-      data: dto,
-    });
-  }
-
-  async remove(id: string) {
-    return this.prisma.zentraPettyCash.update({
-      where: { id },
-      data: { deletedAt: new Date() },
-    });
-  }
-
-  async restore(id: string) {
-    return this.prisma.zentraPettyCash.update({
-      where: { id },
-      data: { deletedAt: null },
-    });
-  }
-
-
-
-
-  async removeDocument(documentId: string) {
-    return this.prisma.zentraDocument.update({
-      where: { id: documentId },
-      data: { pettyCashId: null },
-    });
-  }
-
-  // -----------------------------
-  // AMOUNTS
-  // -----------------------------
-  async addIncrement(data: { pettyCashId: string; amount: number }) {
-    return this.prisma.zentraPettyCash.update({
-      where: { id: data.pettyCashId },
-      data: {
-        approvedAmount: {
-          increment: data.amount,
-        },
-      },
-    });
-  }
-
-  async addRefund(data: { pettyCashId: string; amount: number }) {
-    return this.prisma.zentraPettyCash.update({
-      where: { id: data.pettyCashId },
-      data: {
-        accountedAmount: {
-          increment: data.amount,
-        },
-      },
-    });
-  }
-
-  // -----------------------------
-  // REPORT
-  // -----------------------------
-  async getAllDataReport(pettyCashId: string) {
-    return this.prisma.zentraDocument.findMany({
-      where: {
-        deletedAt: null,
-        pettyCashId,
-      },
-      select: {
-        code: true,
-        description: true,
-        amountToPay: true,
-        paidAmount: true,
-        registeredAt: true,
-        documentType: true,
-        party: {
-          select: {
-            name: true,
-            partyDocuments: {
-              where: {
-                deletedAt: null,
-                documentHierarchyId: PARTY_DOCUMENT_HIERARCHY.PRINCIPAL,
-              },
-              select: { document: true },
-            },
-          },
-        },
-        budgetItem: {
-          select: {
-            definition: {
-              select: {
-                name: true,
-                category: { select: { name: true } },
-              },
-            },
-          },
-        },
-        user: {
-          select: {
-            firstName: true,
-            lastName: true,
-            area: { select: { name: true } },
-          },
-        },
-        documentStatus: { select: { name: true } },
-        files: { where: { deletedAt: null } },
-      },
-    });
-  }
-
-  */
-
-
-
-
-  // Useful Methods
-
-
-
   private includeRelations = {
     party: true,
     currency: true,
@@ -348,6 +188,7 @@ export class ZentraPettyCashService {
         userId: dataDocumentOrigin.userId,
         documentCategoryId: dataDocumentOrigin.documentCategoryId,
         accountabilityId: dataDocumentOrigin.accountabilityId,
+        pettyCashId: dataDocumentOrigin.pettyCashId,
         documentOriginId: DOCUMENT_ORIGIN.CAJA_CHICA
       },
     );
@@ -722,5 +563,59 @@ export class ZentraPettyCashService {
 
   }
 
+
+  async processExpenseDocument(pettyCashId: string, documentIds: string[]) {
+    // 1. Buscamos los documentos para obtener montos REALES y evitar duplicidad
+    const documents = await this.prisma.zentraDocument.findMany({
+      where: {
+        id: { in: documentIds },
+        pettyCashId: null,
+      },
+    });
+
+    if (documents.length === 0) {
+      throw new Error('No se encontraron documentos nuevos y válidos para procesar');
+    }
+
+    // 2. Calculamos la sumatoria del monto pagado (PEN/USD según tu lógica previa)
+    const amountToIncrement = documents.reduce((acc, doc) => {
+      return acc + (Number(doc.paidAmount) || 0);
+    }, 0);
+
+    // 3. Actualizamos los documentos individualmente o masivamente
+    await this.prisma.zentraDocument.updateMany({
+      where: { id: { in: documentIds } },
+      data: { pettyCashId: pettyCashId },
+    });
+
+    const pettyCashBefore = await this.prisma.zentraPettyCash.findUnique({
+      where: { id: pettyCashId }
+    });
+
+    const newAccountedAmount = (Number(pettyCashBefore?.accountedAmount) || 0) + amountToIncrement;
+    const approvedAmount = Number(pettyCashBefore?.approvedAmount) || 0;
+
+    let nextStatusId = pettyCashBefore?.pettyCashStatusId;
+    if (newAccountedAmount >= approvedAmount) {
+      nextStatusId = PETTY_CASH_STATUS.FINALIZADO;
+    }
+
+    const updatedPettyCash = await this.prisma.zentraPettyCash.update({
+      where: { id: pettyCashId },
+      data: {
+        accountedAmount: newAccountedAmount,
+        pettyCashStatusId: nextStatusId
+      },
+    });
+
+    return {
+      message: 'Rendición procesada con éxito',
+      processedCount: documents.length,
+      totalAdded: amountToIncrement,
+      newTotalAccounted: newAccountedAmount,
+      isFinalized: nextStatusId === PETTY_CASH_STATUS.FINALIZADO,
+      pettyCash: updatedPettyCash
+    };
+  }
 
 }

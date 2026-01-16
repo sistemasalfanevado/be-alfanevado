@@ -279,5 +279,16 @@ export class ZentraDocumentController {
   }
 
 
+  // Petty Cash
+
+  @Post('petty-cash/search')
+  searchDocumentPettyCash(@Body() filters: {
+    companyId?: string;
+    pettyCashId?: string;
+  }) {
+    return this.zentraDocumentService.findByDocumentPettyCash(filters);
+  }
+
+
 
 }
