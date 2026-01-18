@@ -282,6 +282,7 @@ export class ZentraProjectService {
       let budgetItemFinancialExpense: any = '';
       let budgetItemPettyCash: any = '';
       let budgetItemNotIdentified: any = '';
+      let budgetItemReversal: any = '';
 
       for (let itemBudget of budgetItem) {
         if (itemBudget.budgetItem.definition.nature.id === BUDGET_NATURE.SISTEMAS) {
@@ -301,6 +302,9 @@ export class ZentraProjectService {
         }
         if (itemBudget.budgetItem.definition.nature.id === BUDGET_NATURE.NO_IDENTIFICADA) {
           budgetItemNotIdentified = itemBudget.budgetItem;
+        }
+        if (itemBudget.budgetItem.definition.nature.id === BUDGET_NATURE.EXTORNO) {
+          budgetItemReversal = itemBudget.budgetItem;
         }
       }
 
@@ -421,7 +425,9 @@ export class ZentraProjectService {
         notIdentifiedBudgetItemId: budgetItemNotIdentified?.id ?? '',
         notIdentifiedBudgetItemName: budgetItemNotIdentified?.definition?.name ?? '',
 
-        
+        reversalBudgetItemId: budgetItemReversal?.id ?? '',
+        reversalBudgetItemName: budgetItemReversal?.definition?.name ?? '',
+
 
         // Rentabilidad diaria y semanal 
         profitabilityDaily,

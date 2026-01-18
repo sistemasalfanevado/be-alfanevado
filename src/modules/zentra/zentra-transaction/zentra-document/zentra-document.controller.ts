@@ -156,6 +156,35 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.updateNotIdentified(id, updateZentraDocumentDto);
   }
 
+  // Extorno or Reversal
+
+  @Post('reversal')
+  createReversal(@Body() createZentraDocumentDto: any) {
+    return this.zentraDocumentService.createReversal(createZentraDocumentDto);
+  }
+
+  @Delete('reversal/:id')
+  removeReversal(@Param('id') id: string) {
+    return this.zentraDocumentService.removeReversal(id);
+  }
+
+  @Post('reversal/search')
+  searchReversal(@Body() filters: {
+    projectId?: string;
+    documentCategoryId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    return this.zentraDocumentService.findByFiltersReversal(filters);
+  }
+
+  @Put('reversal/:id')
+  updateReversal(@Param('id') id: string, @Body() updateZentraDocumentDto: any) {
+    return this.zentraDocumentService.updateReversal(id, updateZentraDocumentDto);
+  }
+
+
+
 
   // Scheduled Document Income 
   @Post('scheduled-income')
