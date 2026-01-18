@@ -392,8 +392,10 @@ export class ZentraPettyCashService {
       },
     );
 
-    await this.updataPettyCashData(dataDocument)
-
+    if (dataDocument.pettyCashId) {
+      await this.updataPettyCashData(dataDocument)
+    }
+    
     return { message: 'Petty cash actualizada exitosamente' };
 
 

@@ -528,7 +528,7 @@ export class ZentraAccountabilityService {
         code: dataDocument.code,
         description: dataDocument.description,
 
-        totalAmount: dataDocument.totalAmount,
+        totalAmount: dataDocument.amountToPay,
         amountToPay: dataDocument.amountToPay,
 
         taxAmount: dataDocument.taxAmount,

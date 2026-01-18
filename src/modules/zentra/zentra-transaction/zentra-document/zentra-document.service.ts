@@ -165,9 +165,13 @@ export class ZentraDocumentService {
       movementCategoryName: item.financialNature?.movementCategory?.name ?? null,
 
       documentOriginId: item.documentOrigin?.id ?? null,
-      accountabilityId: item.accountability?.id ?? null,
-      pettyCashId: item.pettyCash?.id ?? null,
 
+      accountabilityId: item.accountability?.id ?? null,
+      accountabilityCode: item.accountability?.code ?? null,
+
+      pettyCashId: item.pettyCash?.id ?? null,
+      pettyCashCode: item.pettyCash?.code ?? 'Sin Asignación',
+      
       partyBankAccountInfo: principalAccount
         ? `${principalAccount.bank?.name ?? '-'} | ${principalAccount.currency?.name ?? '-'} | ${principalAccount.type?.name ?? '-'} | ${principalAccount.account ?? '-'} | CCI: ${principalAccount.cci ?? '-'}`
         : '',
