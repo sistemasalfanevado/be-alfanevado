@@ -5,6 +5,7 @@ import { UpdateZentraPettyCashDto } from './dto/update-zentra-petty-cash.dto';
 
 import { ZentraDocumentService } from '../zentra-document/zentra-document.service';
 import { ZentraDocumentExpenseService } from '../zentra-document-expense/zentra-document-expense.service';
+import { ZentraDocumentSalesService } from '../zentra-document-sales/zentra-document-sales.service';
 import { MailService } from '../../../../mail/mail.service';
 
 import {
@@ -29,8 +30,13 @@ export class ZentraPettyCashService {
     private readonly zentraDocumentService: ZentraDocumentService,
     @Inject(forwardRef(() => ZentraDocumentExpenseService))
     private zentraDocumentExpenseService: ZentraDocumentExpenseService,
+    @Inject(forwardRef(() => ZentraDocumentSalesService))
+    private zentraDocumentSalesService: ZentraDocumentSalesService,
     private mailService: MailService,
   ) { }
+
+  
+  
 
   private includeRelations = {
     party: true,
@@ -395,7 +401,7 @@ export class ZentraPettyCashService {
     if (dataDocument.pettyCashId) {
       await this.updataPettyCashData(dataDocument)
     }
-    
+
     return { message: 'Petty cash actualizada exitosamente' };
 
 
@@ -473,7 +479,7 @@ export class ZentraPettyCashService {
       if (pettyCashData?.id) {
         //await this.mailService.notifyExpenseReportPendingAccounting(accountabilityData)
       }
-      //statePettyCash = ACCOUNTABILITY_STATUS.VALIDACION_CONTABLE_PENDIENTE
+      statePettyCash = PETTY_CASH_STATUS.FINALIZADO
     }
 
     return this.updateSimple(pettyCashData?.id + '', {
@@ -619,5 +625,68 @@ export class ZentraPettyCashService {
       pettyCash: updatedPettyCash
     };
   }
+
+
+  // Devolucion
+  async addDocumentReturn(dataDocument: any) {
+
+    let document = await this.zentraDocumentService.createDocument(
+      {
+        code: dataDocument.code,
+        description: dataDocument.description,
+
+        totalAmount: dataDocument.amountToPay,
+        amountToPay: dataDocument.amountToPay,
+
+        taxAmount: 0,
+        netAmount: 0,
+        detractionRate: 0,
+        detractionAmount: 0,
+
+        paidAmount: 0,
+        observation: dataDocument.codeMovement,
+        idFirebase: '',
+        hasMovements: false,
+
+        registeredAt: new Date(dataDocument.registeredAt),
+        documentDate: new Date(dataDocument.registeredAt),
+        expireDate: new Date(dataDocument.registeredAt),
+
+        documentStatusId: dataDocument.documentStatusId,
+        transactionTypeId: dataDocument.transactionTypeId,
+        documentTypeId: dataDocument.documentTypeId,
+        partyId: dataDocument.partyId,
+        budgetItemId: dataDocument.budgetItemId,
+        currencyId: dataDocument.currencyId,
+        userId: dataDocument.userId,
+        accountabilityId: '',
+        pettyCashId: dataDocument.pettyCashId,
+        documentCategoryId: DOCUMENT_CATEGORY.CLASICO,
+        documentOriginId: DOCUMENT_ORIGIN.CAJA_CHICA
+      }
+    );
+
+    await this.zentraDocumentSalesService.addMovement({
+      code: dataDocument.codeMovement,
+      description: dataDocument.description,
+      documentId: document.id,
+      amount: dataDocument.amountToPay,
+      transactionTypeId: dataDocument.transactionTypeId,
+      movementCategoryId: dataDocument.movementCategoryId,
+
+      budgetItemId: dataDocument.budgetItemId,
+      bankAccountId: dataDocument.bankAccountId,
+      movementStatusId: dataDocument.movementStatusId,
+
+      paymentDate: dataDocument.registeredAt,
+
+      idFirebase: '',
+      documentUrl: '',
+      documentName: '',
+    })
+
+    return { message: "Documento y movimientos creados correctamente" };
+  }
+
 
 }

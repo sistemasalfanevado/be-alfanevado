@@ -91,4 +91,11 @@ export class ZentraPettyCashController {
   }
 
 
+  @Post('add-document-return')
+  addDocumentReturn(@Body() dataAccountability: any) {
+    return this.zentraPettyCashService.addDocumentReturn(dataAccountability);
+  }
+
+
+
 }
