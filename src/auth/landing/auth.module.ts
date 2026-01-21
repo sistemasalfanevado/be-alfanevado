@@ -9,7 +9,8 @@ import { JwtStrategy } from '../shared/strategies/jwt.strategy';
 
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
- 
+
+
 @Module({
   imports: [
     ConfigModule,
@@ -20,7 +21,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '4h' },
+        signOptions: { expiresIn: '12h' },
       }),
     }),
   ],

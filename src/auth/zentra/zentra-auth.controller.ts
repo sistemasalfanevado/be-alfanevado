@@ -6,7 +6,7 @@ import { Public } from '../shared/decorators/public.decorator';
 @Controller('zentra-auth')
 export class ZentraAuthController {
   constructor(private zentraAuthService: ZentraAuthService) { }
-  
+   
   @Public()
   @Post('login')
   async login(@Body() zentraLoginDto: ZentraLoginDto) {
