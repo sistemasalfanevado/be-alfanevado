@@ -63,6 +63,9 @@ export class ZentraDocumentService {
     documentOrigin: true,
     accountability: true,
     pettyCash: true,
+    _count: {
+      select: { files: true }
+    }
   };
 
   private includeRelationsWithBankAccount = {
@@ -102,6 +105,9 @@ export class ZentraDocumentService {
         movementCategory: true,
       }
     },
+    _count: {
+      select: { files: true }
+    }
   };
 
   /** Mapea un registro de Prisma a DTO */
@@ -109,6 +115,20 @@ export class ZentraDocumentService {
 
     const principalAccount = item.party?.partyBankAccounts?.[0] ?? null;
     const partyCurrencyId = principalAccount?.currency?.id;
+    
+    const hasFiles = (item._count?.files ?? 0) > 0;
+
+    let fileBadgeConfig = {
+      text: 'Sin Archivo',
+      class: 'badge-danger'
+    };
+
+    if (hasFiles) {
+      fileBadgeConfig = {
+        text: 'Sustentado',
+        class: 'badge-success'
+      };
+    }
 
     return {
       id: item.id,
@@ -171,7 +191,7 @@ export class ZentraDocumentService {
 
       pettyCashId: item.pettyCash?.id ?? null,
       pettyCashCode: item.pettyCash?.code ?? 'Sin Asignación',
-      
+
       partyBankAccountInfo: principalAccount
         ? `${principalAccount.bank?.name ?? '-'} | ${principalAccount.currency?.name ?? '-'} | ${principalAccount.type?.name ?? '-'} | ${principalAccount.account ?? '-'} | CCI: ${principalAccount.cci ?? '-'}`
         : '',
@@ -229,6 +249,8 @@ export class ZentraDocumentService {
 
       partyBankAccountCurrency: partyCurrencyId,
 
+
+      fileBadge: fileBadgeConfig,
 
 
     };
@@ -1339,7 +1361,7 @@ export class ZentraDocumentService {
   }
 
   // Reversal
-  
+
   async createReversal(dataDocument: any) {
 
     const document = await this.createDocument(dataDocument);
