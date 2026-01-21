@@ -36,6 +36,14 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.updateSimple(id, updateDto);
   }
 
+  @Put('budget-item/:id')
+  updateBudgetItem(
+    @Param('id') id: string,
+    @Body() updateDto: any
+  ) {
+    return this.zentraDocumentService.updateBudgetItem(id, updateDto);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.zentraDocumentService.remove(id);

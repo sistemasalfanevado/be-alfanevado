@@ -70,14 +70,6 @@ export class ZentraMovementService {
     },
   };
 
-
-  /** Códigos de tipo de transacción */
-  private EXIT_ID = '8b190f70-cc43-42fa-8d7b-6afde6ed10b5';
-
-  /** IDs de moneda */
-  private SOLES_ID = '70684299-05fc-4720-8fca-be3a2ecb67ab';
-  private DOLARES_ID = 'a1831dfc-a1f7-4075-a66e-fe3f5694e1e4';
-
   private calculateAmounts(
     transactionTypeId: string,
     currencyId: string,
@@ -185,7 +177,7 @@ export class ZentraMovementService {
 
       documentCode: inst?.code || doc?.code || 'Sin definir',
       documentDescription: inst?.description || doc?.description || 'Sin definir',
-      
+
       documentDate: moment(inst?.documentDate ?? doc.documentDate).format('DD/MM/YYYY'),
       documentType: inst?.documentType?.name ?? doc.documentType?.name,
       documentAmountToPay: inst?.totalAmount ?? doc.amountToPay,
@@ -1139,6 +1131,43 @@ export class ZentraMovementService {
 
 
   }
+
+
+  async updateMovementBudgetItem(movementId: string, newBudgetItemId: string) {
+    // 1. Buscamos el movimiento usando el cliente directo de prisma
+    const movement = await this.prisma.zentraMovement.findUnique({
+      where: { id: movementId }
+    });
+
+    if (!movement || movement.budgetItemId === newBudgetItemId) return;
+
+    // 2. Revertir impacto en partida antigua (usando this.prisma dentro de adjustBalances)
+    await this.adjustBalances(
+      this.prisma,
+      movement.bankAccountId,
+      movement.budgetItemId,
+      -Number(movement.executedAmount),
+      -Number(movement.executedSoles),
+      -Number(movement.executedDolares)
+    );
+
+    // 3. Aplicar impacto en partida nueva
+    await this.adjustBalances(
+      this.prisma,
+      movement.bankAccountId,
+      newBudgetItemId,
+      Number(movement.executedAmount),
+      Number(movement.executedSoles),
+      Number(movement.executedDolares)
+    );
+
+    // 4. Actualizar el registro del movimiento
+    await this.prisma.zentraMovement.update({
+      where: { id: movementId },
+      data: { budgetItemId: newBudgetItemId }
+    });
+  }
+
 
 
 }

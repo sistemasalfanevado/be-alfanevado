@@ -115,7 +115,7 @@ export class ZentraDocumentService {
 
     const principalAccount = item.party?.partyBankAccounts?.[0] ?? null;
     const partyCurrencyId = principalAccount?.currency?.id;
-    
+
     const hasFiles = (item._count?.files ?? 0) > 0;
 
     let fileBadgeConfig = {
@@ -402,6 +402,36 @@ export class ZentraDocumentService {
       id: id
     }
   }
+
+  async updateBudgetItem(id: string, updateDto: any) {
+    const { budgetItemId } = updateDto;
+
+    // 1. Actualizar la partida en el Documento
+    await this.prisma.zentraDocument.update({
+      where: { id },
+      data: { budgetItemId },
+    });
+
+    // 2. Obtener los movimientos asociados
+    const movements = await this.prisma.zentraMovement.findMany({
+      where: { documentId: id },
+      select: { id: true }
+    });
+
+    // 3. Ejecutar la lógica de re-cálculo para cada movimiento
+    for (const mvt of movements) {
+      await this.zentraMovementService.updateMovementBudgetItem(
+        mvt.id,
+        budgetItemId
+      );
+    }
+
+    return {
+      id: id,
+      message: 'Partida actualizada en documento y movimientos (saldos recalculados).'
+    };
+  }
+
 
   async updateStatusAndPaidAmount(id: string, updateDto: any) {
     return this.prisma.zentraDocument.update({
