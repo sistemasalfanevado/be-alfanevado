@@ -31,4 +31,8 @@ export class CreateZentraPartyDto {
   @IsOptional()
   @MaxLength(30)
   idFirebase?: string;
+
+  @IsString()
+  @IsOptional()
+  userId?: string;
 }

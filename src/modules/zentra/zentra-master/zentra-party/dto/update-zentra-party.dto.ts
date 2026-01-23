@@ -34,4 +34,8 @@ export class UpdateZentraPartyDto {
   @IsOptional()
   @MaxLength(30)
   idFirebase?: string;
+
+  @IsString()
+  @IsOptional()
+  userId?: string;
 }

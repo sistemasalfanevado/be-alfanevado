@@ -47,7 +47,11 @@ export class ZentraDocumentService {
     party: true,
     budgetItem: {
       include: {
-        definition: true,
+        definition: {
+          include: {
+            project: true
+          }
+        },
         currency: true
       }
     },
@@ -92,7 +96,11 @@ export class ZentraDocumentService {
     },
     budgetItem: {
       include: {
-        definition: true,
+        definition: {
+          include: {
+            project: true
+          }
+        },
         currency: true
       }
     },
@@ -162,6 +170,11 @@ export class ZentraDocumentService {
       budgetItemId: item.budgetItem.id,
       budgetItemName: item.budgetItem
         ? `${item.budgetItem.definition.name}`
+        : null,
+
+      projectId: item.budgetItem.definition.project.id,
+      projectName: item.budgetItem.definition.project
+        ? `${item.budgetItem.definition.project.name}`
         : null,
 
       currencyId: item.currency.id,
@@ -642,6 +655,63 @@ export class ZentraDocumentService {
 
   }
 
+  async findByFiltersComplete(filters: {
+    companyId?: string;
+    startDate?: string;
+    endDate?: string;
+    userId?: string;
+  }) {
+    const { companyId, userId, startDate, endDate } = filters;
+
+    const where: any = {
+      deletedAt: null,
+    };
+
+    if (startDate || endDate) {
+      where.documentDate = {};
+      if (startDate) {
+        where.documentDate.gte = moment(startDate).startOf('day').toDate();
+      }
+      if (endDate) {
+        where.documentDate.lte = moment(endDate).endOf('day').toDate();
+      }
+    }
+
+    if (userId && userId.trim() !== '') {
+      where.user = { id: userId };
+    }
+
+    if (companyId && companyId.trim() !== '') {
+      where.budgetItem = {
+        definition: {
+          project: {
+            companyId
+          }
+        },
+      };
+    }
+
+    const results = await this.prisma.zentraDocument.findMany({
+      where,
+      include: this.includeRelations,
+      orderBy: {
+        documentDate: 'desc',
+      },
+    });
+
+
+    return results.map(item => {
+      const dto = this.mapEntityToDto(item);
+      return {
+        ...dto,
+      };
+    });
+
+
+
+
+
+  }
 
   async createDocument(dataDocument: any) {
 

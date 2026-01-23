@@ -9,13 +9,14 @@ export class ZentraPartyController {
 
   @Post()
   create(@Body() createZentraPartyDto: CreateZentraPartyDto) {
-    return this.zentraPartyService.create(createZentraPartyDto);
+    return this.zentraPartyService.create(createZentraPartyDto); 
   }
 
   @Post('complex')
   createComplex(@Body() createZentraPartyDto: any) {
     return this.zentraPartyService.createComplex(createZentraPartyDto);
   }
+
 
   @Get()
   findAll() {

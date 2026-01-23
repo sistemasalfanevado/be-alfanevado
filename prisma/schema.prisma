@@ -279,6 +279,7 @@ model ZentraUser {
   accountability        ZentraAccountability[]
   pettyCash             ZentraPettyCash[]
   auditLogs             ZentraAuditLog[]
+  parties               ZentraParty[]
 
   userParties           ZentraUserParty[]
   notificationRecipients          ZentraNotificationRecipient[]
@@ -645,6 +646,9 @@ model ZentraParty {
 
   partyRole     ZentraPartyRole    @relation(fields: [partyRoleId], references: [id])
   partyRoleId   String
+
+  user          ZentraUser? @relation(fields: [userId], references: [id])
+  userId        String?
 
   documents         ZentraDocument[]
   partyDocuments    ZentraPartyDocument[]

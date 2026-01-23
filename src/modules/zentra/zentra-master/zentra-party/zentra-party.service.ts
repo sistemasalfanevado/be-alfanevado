@@ -20,7 +20,8 @@ export class ZentraPartyService {
   }
 
   async create(createZentraPartyDto: CreateZentraPartyDto) {
-    const { partyRoleId, ...partyData } = createZentraPartyDto;
+    // Extraemos partyRoleId y userId del DTO
+    const { partyRoleId, userId, ...partyData } = createZentraPartyDto;
 
     const newParty = await this.prisma.zentraParty.create({
       data: {
@@ -28,6 +29,11 @@ export class ZentraPartyService {
         partyRole: {
           connect: { id: partyRoleId },
         },
+        ...(userId && {
+          user: {
+            connect: { id: userId },
+          },
+        }),
       },
       select: {
         id: true,
@@ -40,27 +46,37 @@ export class ZentraPartyService {
 
 
   async createComplex(dataParty: any) {
+    // 1. Extraemos los campos necesarios, incluyendo el nuevo userId
+    const { partyRoleId, userId } = dataParty;
 
-    const { partyRoleId } = dataParty;
-
-    const validation = await this.zentraPartyDocumentService.validateUniqueness(dataParty.name,dataParty.document);
+    // 2. Validación de duplicados (Nombre y Documento)
+    const validation = await this.zentraPartyDocumentService.validateUniqueness(dataParty.name, dataParty.document);
 
     if (!validation.success) return validation;
 
+    // 3. Preparación de datos básicos
     const dataTempParty = {
       name: dataParty.name,
       document: dataParty.document,
       email: dataParty.email,
       phone: dataParty.phone,
       address: dataParty.address,
-      idFirebase: '',
+      idFirebase: dataParty.idFirebase || '',
     }
+
+    // 4. Creación del Party con relación opcional al usuario
     const newParty = await this.prisma.zentraParty.create({
       data: {
         ...dataTempParty,
         partyRole: {
-          connect: { id: dataParty.partyRoleId },
+          connect: { id: partyRoleId },
         },
+        // Si existe userId, se conecta la relación
+        ...(userId && {
+          user: {
+            connect: { id: userId },
+          },
+        }),
       },
       select: {
         id: true,
@@ -68,7 +84,7 @@ export class ZentraPartyService {
       },
     });
 
-
+    // 5. Lógica de Proveedor (Cuentas bancarias)
     const isProveedor =
       partyRoleId === PARTY_ROL.PROVEEDOR ||
       partyRoleId === PARTY_ROL.CLIENTE_PROVEEDOR;
@@ -85,13 +101,14 @@ export class ZentraPartyService {
       });
     }
 
+    // 6. Creación del documento
     await this.zentraPartyDocumentService.create({
       document: dataParty.document,
       observation: '',
       partyId: newParty.id,
       documentTypeId: dataParty.partyDocumentTypeId,
       documentHierarchyId: dataParty.documentHierarchyId
-    })
+    });
 
     return newParty;
   }
@@ -101,6 +118,7 @@ export class ZentraPartyService {
       where: { deletedAt: null },
       include: {
         partyRole: true,
+        user: true,
         _count: {
           select: { partyBankAccounts: true }
         }
@@ -108,27 +126,45 @@ export class ZentraPartyService {
       orderBy: { name: 'asc' },
     });
 
-    return results.map((item) => ({
-      id: item.id,
-      name: item.name,
-      document: item.document,
-      email: item.email,
-      phone: item.phone,
-      address: item.address,
+    return results.map((item) => {
+      // 1. Construimos el nombre de forma segura
+      // Usamos ?. para que no rompa si el objeto user no existe
+      // Usamos || '' para evitar que aparezca la palabra "null" en el string
+      const firstName = item.user?.firstName || '';
+      const lastName = item.user?.lastName || '';
+      const fullName = `${firstName} ${lastName}`.trim();
 
-      partyRoleId: item.partyRole.id,
-      completeName: `${item.name}`,
-      idFirebase: item.idFirebase,
+      return {
+        id: item.id,
+        name: item.name,
+        document: item.document,
+        email: item.email,
+        phone: item.phone,
+        address: item.address,
+        partyRoleId: item.partyRole.id,
+        completeName: item.name,
+        idFirebase: item.idFirebase,
+        bankAccountsCount: item._count.partyBankAccounts,
 
+        // 2. Si el nombre completo queda vacío tras el trim, es porque no hay usuario
+        userName: fullName || 'Desconocido',
+        userId: item.userId, // Esto será null automáticamente para registros viejos
+      };
+    });
 
-      bankAccountsCount: item._count.partyBankAccounts,
-    }));
   }
 
   async findAllSimple() {
     const results = await this.prisma.zentraParty.findMany({
       where: { deletedAt: null },
       include: {
+        // 1. Añadimos el include del usuario (solo campos necesarios)
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
         partyDocuments: {
           where: {
             documentHierarchyId: PARTY_DOCUMENT_HIERARCHY.PRINCIPAL,
@@ -136,31 +172,41 @@ export class ZentraPartyService {
           include: {
             documentType: true,
           },
-          take: 1, // solo el principal
+          take: 1,
         },
       },
       orderBy: { name: 'asc' },
     });
 
     return results.map((item) => {
-
       const principalDocument = item.partyDocuments[0];
+
+      // 2. Construimos el nombre del creador de forma segura
+      const creatorName = item.user
+        ? `${item.user.firstName || ''} ${item.user.lastName || ''}`.trim()
+        : 'Desconocido';
 
       return {
         id: item.id,
+        // Mantenemos tu formato de "Documento - Nombre"
         name: (principalDocument ? principalDocument.document : '') + ' - ' + item.name,
         partyDocument: principalDocument ? principalDocument.document : '',
 
-      }
-    })
-
+        // 3. Agregamos el rastro del creador
+        userName: creatorName,
+        userId: item.userId, // ID para auditoría rápida
+      };
+    });
   }
+
+
 
   async findAllWithPrincipal() {
     const results = await this.prisma.zentraParty.findMany({
       where: { deletedAt: null },
       include: {
         partyRole: true,
+        user: true,
         partyBankAccounts: {
           where: {
             hierarchyId: BANK_ACCOUNT_HIERARCHY.PRINCIPAL,
@@ -188,6 +234,10 @@ export class ZentraPartyService {
     return results.map((item) => {
       const principalDocument = item.partyDocuments[0];
       const principalBankAccount = item.partyBankAccounts[0];
+
+      const creatorFullName = item.user
+        ? `${item.user.firstName || ''} ${item.user.lastName || ''}`.trim()
+        : 'Desconocido';
 
       return {
         id: item.id,
@@ -223,15 +273,19 @@ export class ZentraPartyService {
         bankAccountComplete: principalBankAccount
           ? `${principalBankAccount.type?.name || ''}: ${principalBankAccount.account} (CCI: ${principalBankAccount.cci})`
           : null,
+
+        userName: creatorFullName,
+        userId: item.userId,
       };
     });
   }
 
   async findAllWithPrincipalDeleted() {
     const results = await this.prisma.zentraParty.findMany({
-      where: { },
+      where: {},
       include: {
         partyRole: true,
+        user: true,
         partyBankAccounts: {
           where: {
             hierarchyId: BANK_ACCOUNT_HIERARCHY.PRINCIPAL,
@@ -259,6 +313,11 @@ export class ZentraPartyService {
     return results.map((item) => {
       const principalDocument = item.partyDocuments[0];
       const principalBankAccount = item.partyBankAccounts[0];
+
+      const creatorFullName = item.user
+        ? `${item.user.firstName || ''} ${item.user.lastName || ''}`.trim()
+        : 'Desconocido';
+
 
       return {
         id: item.id,
@@ -294,6 +353,9 @@ export class ZentraPartyService {
         bankAccountComplete: principalBankAccount
           ? `${principalBankAccount.type?.name || ''}: ${principalBankAccount.account} (CCI: ${principalBankAccount.cci})`
           : null,
+
+        userName: creatorFullName,
+        userId: item.userId,
       };
     });
   }
@@ -532,7 +594,7 @@ export class ZentraPartyService {
     }
 
     const documentCount = partyWithDocuments._count.documents;
-    
+
     const documentList = partyWithDocuments.documents.map(doc => ({
       id: doc.id,
       code: doc.code,
@@ -547,7 +609,7 @@ export class ZentraPartyService {
       partyId,
       totalDocuments: documentCount,
       documentList: documentList,
-      listLimit: partyWithDocuments.documents.length < documentCount ? documentList.length : undefined, 
+      listLimit: partyWithDocuments.documents.length < documentCount ? documentList.length : undefined,
     };
   }
 }

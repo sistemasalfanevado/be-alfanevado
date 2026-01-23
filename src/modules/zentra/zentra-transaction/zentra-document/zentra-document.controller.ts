@@ -76,7 +76,15 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.findByFilters(filters);
   }
 
-
+  @Post('search-complete')
+  searchComplete(@Body() filters: {
+    companyId?: string;
+    userId?: string;
+    startDate?: string;
+    endDate?: string;
+    }) {
+    return this.zentraDocumentService.findByFiltersComplete(filters);
+  }
 
 
 
