@@ -43,7 +43,7 @@ export class ZentraPartyService {
 
     const { partyRoleId } = dataParty;
 
-    const validation = await this.zentraPartyDocumentService.validateDocumentUniqueness(dataParty.document);
+    const validation = await this.zentraPartyDocumentService.validateUniqueness(dataParty.name,dataParty.document);
 
     if (!validation.success) return validation;
 

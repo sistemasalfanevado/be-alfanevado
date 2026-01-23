@@ -8,6 +8,45 @@ import { PARTY_DOCUMENT_HIERARCHY } from 'src/shared/constants/app.constants';
 export class ZentraPartyDocumentService {
   constructor(private prisma: PrismaService) { }
 
+
+  async validateUniqueness(name: string, document: string, excludeId?: string) {
+    
+    const existingDocument = await this.prisma.zentraPartyDocument.findFirst({
+      where: {
+        document: document.trim(),
+        deletedAt: null,
+        ...(excludeId && { id: { not: excludeId } }),
+      },
+      include: { party: true },
+    });
+
+    if (existingDocument) {
+      return {
+        success: false,
+        code: "DOCUMENT_ALREADY_EXISTS",
+        message: `Ya existe un registro con el documento ${document} (${existingDocument.party.name}).`,
+      };
+    }
+
+    const existingName = await this.prisma.zentraParty.findFirst({
+      where: {
+        name: { equals: name.trim(), mode: 'insensitive' },
+        deletedAt: null,
+        ...(excludeId && { id: { not: excludeId } }),
+      },
+    });
+
+    if (existingName) {
+      return {
+        success: false,
+        code: "NAME_ALREADY_EXISTS",
+        message: `Ya existe un proveedor con el nombre "${name}".`,
+      };
+    }
+
+    return { success: true };
+  }
+
   async validateDocumentUniqueness(document: string, excludeId?: string) {
 
     const existing = await this.prisma.zentraPartyDocument.findFirst({
@@ -27,7 +66,7 @@ export class ZentraPartyDocumentService {
       message: `Ya existe un proveedor con este documento (${existing.party.name}).`,
     };
   }
-
+  
   async create(createDto: CreateZentraPartyDocumentDto) {
 
     const validation = await this.validateDocumentUniqueness(createDto.document);
