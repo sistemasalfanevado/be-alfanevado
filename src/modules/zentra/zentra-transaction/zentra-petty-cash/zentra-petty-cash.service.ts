@@ -35,8 +35,8 @@ export class ZentraPettyCashService {
     private mailService: MailService,
   ) { }
 
-  
-  
+
+
 
   private includeRelations = {
     party: true,
@@ -688,5 +688,97 @@ export class ZentraPettyCashService {
     return { message: "Documento y movimientos creados correctamente" };
   }
 
+
+  // Report
+
+  async getAllDataReport(pettyCashId: string) {
+    return this.prisma.zentraDocument.findMany({
+      where: {
+        deletedAt: null,
+        pettyCashId,
+      },
+      select: {
+        documentCategoryId: true,
+        documentType: true,
+        paidAmount: true,
+        amountToPay: true,
+        code: true,
+        description: true,
+        transactionTypeId: true,
+        party: {
+          select: {
+            name: true,
+            partyDocuments: {
+              where: {
+                deletedAt: null,
+                documentHierarchyId: PARTY_DOCUMENT_HIERARCHY.PRINCIPAL
+              },
+              select: {
+                document: true
+              }
+            }
+          }
+        },
+        budgetItem: {
+          select: {
+            definition: {
+              select: {
+                name: true,
+                category: {
+                  select: {
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        },
+        currencyId: true,
+        user: {
+          select: {
+            area: {
+              select: {
+                name: true
+              }
+            },
+            firstName: true,
+            lastName: true
+          }
+        },
+        documentStatus: {
+          select: {
+            name: true
+          }
+        },
+        registeredAt: true,
+        files: {
+          where: {
+            deletedAt: null,
+          }
+        },
+        movements: {
+          select: {
+            code: true,
+            description: true,
+            amount: true,
+            transactionType: true,
+            budgetItemId: true,
+            paymentDate: true,
+            documentUrl: true,
+            documentName: true,
+            fromTelecredito: true,
+            files: {
+              where: {
+                deletedAt: null,
+              }
+            }
+          },
+          where: {
+            deletedAt: null,
+          }
+        }
+      }
+    });
+  }
 
 }

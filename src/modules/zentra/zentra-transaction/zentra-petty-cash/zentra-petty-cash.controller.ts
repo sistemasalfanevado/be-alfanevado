@@ -18,8 +18,7 @@ export class ZentraPettyCashController {
   constructor(
     private readonly zentraPettyCashService: ZentraPettyCashService,
   ) { }
-
-
+  
   @Post('add-document')
   addDocument(@Body() dataDocument: any) {
     return this.zentraPettyCashService.addDocument(dataDocument);
@@ -44,8 +43,7 @@ export class ZentraPettyCashController {
   }) {
     return this.zentraPettyCashService.findByFilters(filters);
   }
-
-
+  
   @Put('update-document/:id')
   async updateDocument(
     @Param('id') id: string,
@@ -78,7 +76,6 @@ export class ZentraPettyCashController {
   addIncrement(@Body() dataAccountability: any) {
     return this.zentraPettyCashService.addIncrement(dataAccountability);
   }
-
   
   @Post('process-expense-document')
   async processExpenseDocument(
@@ -89,12 +86,19 @@ export class ZentraPettyCashController {
       data.documentIds
     );
   }
-
-
+  
   @Post('add-document-return')
-  addDocumentReturn(@Body() dataAccountability: any) {
-    return this.zentraPettyCashService.addDocumentReturn(dataAccountability);
+  addDocumentReturn(@Body() dataPettyCash: any) {
+    return this.zentraPettyCashService.addDocumentReturn(dataPettyCash);
   }
+
+  // Reportes
+
+  @Post('get-data-report')
+  getAllDataReport(@Body('id') pettyCashId: string) {
+    return this.zentraPettyCashService.getAllDataReport(pettyCashId);
+  }
+
 
 
 
