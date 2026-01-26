@@ -179,6 +179,7 @@ export class ZentraMovementService {
       documentDescription: inst?.description || doc?.description || 'Sin definir',
 
       documentDate: moment(inst?.documentDate ?? doc.documentDate).format('DD/MM/YYYY'),
+      documentTypeId: inst?.documentType?.id ?? doc.documentType?.id,
       documentType: inst?.documentType?.name ?? doc.documentType?.name,
       documentAmountToPay: inst?.totalAmount ?? doc.amountToPay,
 
