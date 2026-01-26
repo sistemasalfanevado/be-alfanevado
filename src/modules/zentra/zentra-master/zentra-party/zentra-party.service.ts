@@ -3,7 +3,7 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraPartyDto } from './dto/create-zentra-party.dto';
 import { UpdateZentraPartyDto } from './dto/update-zentra-party.dto';
 
-import { BANK_ACCOUNT_HIERARCHY, PARTY_DOCUMENT_HIERARCHY, PARTY_ROL } from 'src/shared/constants/app.constants';
+import { BANK_ACCOUNT_HIERARCHY, PARTY_DOCUMENT_HIERARCHY, PARTY_ROL, CRM } from 'src/shared/constants/app.constants';
 
 import { ZentraPartyBankAccountService } from '../zentra-party-bank-account/zentra-party-bank-account.service';
 import { ZentraPartyDocumentService } from '../zentra-party-document/zentra-party-document.service';
@@ -17,6 +17,66 @@ export class ZentraPartyService {
     private zentraPartyBankAccountService: ZentraPartyBankAccountService,
     private zentraPartyDocumentService: ZentraPartyDocumentService) {
 
+  }
+
+  async createFromCrm(data: any, documentTypeId: string) {
+    const { name, document, email, phone, address } = data;
+
+    // 1. Basic validation
+    if (!name || !document) {
+      return {
+        success: false,
+        message: 'MISSING_REQUIRED_FIELDS'
+      };
+    }
+
+    // 2. Uniqueness validation
+    const validation = await this.zentraPartyDocumentService.validateUniqueness(name, document);
+
+    if (!validation.success) {
+      return {
+        success: false,
+        message: 'ALREADY_EXISTS',
+      };
+    }
+
+    try {
+      // 3. Create Party
+      const newParty = await this.prisma.zentraParty.create({
+        data: {
+          name: name,
+          email: email || '',
+          phone: phone || '',
+          address: address || '',
+          document: document,
+          partyRoleId: PARTY_ROL.CLIENTE,
+          userId: CRM.USER,
+          idFirebase: '',
+        },
+        select: { id: true, name: true }
+      });
+
+      // 4. Create Document relation
+      await this.zentraPartyDocumentService.create({
+        document: document,
+        observation: 'CRM_EXTERNAL_SYNC',
+        partyId: newParty.id,
+        documentTypeId: documentTypeId,
+        documentHierarchyId: PARTY_DOCUMENT_HIERARCHY.PRINCIPAL
+      });
+
+      return {
+        success: true,
+        message: 'CREATED_SUCCESSFULLY',
+      };
+
+    } catch (error) {
+      console.error('CRM_INTEGRATION_ERROR:', error);
+      return {
+        success: false,
+        message: 'INTERNAL_SERVER_ERROR'
+      };
+    }
   }
 
   async create(createZentraPartyDto: CreateZentraPartyDto) {

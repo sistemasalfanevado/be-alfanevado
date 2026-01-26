@@ -135,4 +135,7 @@ export const PETTY_CASH_STATUS = {
   FINALIZADO: '15d35692-3767-4ac6-84fa-7d73c3e05c29',
 };
 
+export const CRM = {
+  USER: '21e630c0-3627-4416-9523-3935322c3468'
+};
 
