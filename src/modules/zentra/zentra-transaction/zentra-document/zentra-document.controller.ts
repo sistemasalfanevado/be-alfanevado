@@ -78,7 +78,7 @@ export class ZentraDocumentController {
 
   @Post('search-complete')
   searchComplete(@Body() filters: {
-    companyId?: string;
+    //companyId?: string;
     userId?: string;
     startDate?: string;
     endDate?: string;

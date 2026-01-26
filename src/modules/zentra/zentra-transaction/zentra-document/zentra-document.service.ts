@@ -49,7 +49,11 @@ export class ZentraDocumentService {
       include: {
         definition: {
           include: {
-            project: true
+            project: {
+              include: {
+                company: true
+              }
+            }
           }
         },
         currency: true
@@ -98,7 +102,11 @@ export class ZentraDocumentService {
       include: {
         definition: {
           include: {
-            project: true
+            project: {
+              include: {
+                company: true
+              }
+            }
           }
         },
         currency: true
@@ -175,6 +183,11 @@ export class ZentraDocumentService {
       projectId: item.budgetItem.definition.project.id,
       projectName: item.budgetItem.definition.project
         ? `${item.budgetItem.definition.project.name}`
+        : null,
+
+      companyId: item.budgetItem.definition.project.company.id,
+      companyName: item.budgetItem.definition.project.company
+        ? `${item.budgetItem.definition.project.company.name}`
         : null,
 
       currencyId: item.currency.id,
@@ -656,12 +669,12 @@ export class ZentraDocumentService {
   }
 
   async findByFiltersComplete(filters: {
-    companyId?: string;
+    //companyId?: string;
     startDate?: string;
     endDate?: string;
     userId?: string;
   }) {
-    const { companyId, userId, startDate, endDate } = filters;
+    const { userId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -681,6 +694,7 @@ export class ZentraDocumentService {
       where.user = { id: userId };
     }
 
+    /*
     if (companyId && companyId.trim() !== '') {
       where.budgetItem = {
         definition: {
@@ -690,6 +704,7 @@ export class ZentraDocumentService {
         },
       };
     }
+    */
 
     const results = await this.prisma.zentraDocument.findMany({
       where,

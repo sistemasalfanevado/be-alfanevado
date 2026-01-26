@@ -63,6 +63,11 @@ export class ZentraInstallmentController {
     return this.zentraInstallmentService.restore(id);
   }
 
+  @Post('payment')
+  createPayment(@Body() createDataDto: any) {
+    return this.zentraInstallmentService.addPayment(createDataDto);
+  }
+
   @Post('movement')
   createMovement(@Body() createDataDto: any) {
     return this.zentraInstallmentService.addMovement(createDataDto);

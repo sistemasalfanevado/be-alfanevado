@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { ZentraMovementService } from '../../zentra-transaction/zentra-movement/zentra-movement.service';
 import { ZentraDocumentService } from '../../zentra-transaction/zentra-document/zentra-document.service';
 
-import { INSTALLMENT_STATUS, DOCUMENT_STATUS, CURRENCY } from 'src/shared/constants/app.constants';
+import { INSTALLMENT_STATUS, DOCUMENT_STATUS, CURRENCY, TRANSACTION_TYPE, MOVEMENT_CATEGORY, MOVEMENT_STATUS } from 'src/shared/constants/app.constants';
 
 @Injectable()
 export class ZentraInstallmentService {
@@ -275,7 +275,49 @@ export class ZentraInstallmentService {
     return this.recalculateInstallmentAndDocument(data.installmentId);
   }
 
+  async addPayment(data: any) {
 
+    if (data.capital > 0) {
+      await this.createMovement({
+        
+        date: data.paymentDate,
+        installmentId: data.installmentId,
+        idFirebase: '',
+        amount: data.capital,
+        code: 'Capital cuota ' + data.letra,
+        description: 'Capital cuota ' + data.letra,
+        bankAccountId: data.bankAccountId,
+        documentId: data.documentId,
+        budgetItemId: data.budgetItemId,
+
+        transactionTypeId: TRANSACTION_TYPE.EXIT,
+        movementCategoryId: MOVEMENT_CATEGORY.RENTABILIDAD,
+        movementStatusId: MOVEMENT_STATUS.CATEGORIZADO,
+      });
+    }
+
+    let debtAmount = Number(data.extra + data.interest)
+    if (debtAmount > 0) {
+      await this.createMovement({
+        
+        date: data.paymentDate,
+        installmentId: data.installmentId,
+        idFirebase: '',
+        amount: debtAmount,
+        code: 'Interés cuota ' + data.letra,
+        description: 'Interés cuota ' + data.letra,
+        bankAccountId: data.bankAccountId,
+        documentId: data.documentId,
+        budgetItemId: data.budgetItemId,
+
+        transactionTypeId: TRANSACTION_TYPE.EXIT,
+        movementCategoryId: MOVEMENT_CATEGORY.DEUDA,
+        movementStatusId: MOVEMENT_STATUS.CATEGORIZADO,
+      });
+    }
+    
+    return this.recalculateInstallmentAndDocument(data.installmentId);
+  }
 
   async removeMovement(id: string) {
     const movementData = await this.zentraMovementService.findOne(id);
