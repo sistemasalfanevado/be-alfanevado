@@ -46,6 +46,10 @@ export class UpdateZentraDocumentDto {
   @IsOptional()
   paidAmount: number;
 
+  @IsNumber()
+  @IsOptional()
+  extra?: number;
+
   @IsString()
   @IsOptional()
   transactionTypeId: string;

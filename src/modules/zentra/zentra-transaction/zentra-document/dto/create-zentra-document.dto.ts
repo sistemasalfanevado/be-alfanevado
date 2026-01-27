@@ -47,6 +47,10 @@ export class CreateZentraDocumentDto {
   @IsOptional()
   paidAmount?: number;
 
+  @IsNumber()
+  @IsOptional()
+  extra?: number;
+
   @IsString()
   @IsNotEmpty()
   transactionTypeId: string;

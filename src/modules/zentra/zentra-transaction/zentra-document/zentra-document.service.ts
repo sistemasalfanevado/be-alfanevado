@@ -158,6 +158,7 @@ export class ZentraDocumentService {
       detractionAmount: item.detractionAmount,
       amountToPay: item.amountToPay,
       paidAmount: item.paidAmount,
+      extra: item.extra ?? 0,
 
       registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
       documentDate: moment(item.documentDate).format('DD/MM/YYYY'),
@@ -741,6 +742,7 @@ export class ZentraDocumentService {
         detractionAmount: dataDocument.detractionAmount,
         amountToPay: dataDocument.amountToPay,
         paidAmount: dataDocument.paidAmount,
+        extra: dataDocument.extra ?? 0,
         observation: dataDocument.observation,
         idFirebase: dataDocument.idFirebase,
         hasMovements: dataDocument.hasMovements ?? false,

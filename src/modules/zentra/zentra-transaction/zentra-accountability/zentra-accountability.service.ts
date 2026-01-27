@@ -475,6 +475,7 @@ export class ZentraAccountabilityService {
         detractionAmount: dataAccountability.detractionAmount,
 
         paidAmount: dataAccountability.totalAmount,
+        extra: dataAccountability.extra ?? 0,
         observation: dataAccountability.observation,
         idFirebase: '',
         hasMovements: false,
@@ -537,6 +538,7 @@ export class ZentraAccountabilityService {
         detractionAmount: dataDocument.detractionAmount,
 
         paidAmount: dataDocument.paidAmount,
+        extra: dataDocument.extra ?? 0,
         observation: dataDocument.observation,
         idFirebase: '',
         hasMovements: false,
@@ -596,7 +598,7 @@ export class ZentraAccountabilityService {
 
         totalAmount: dataDocument.amountToPay,
         amountToPay: dataDocument.amountToPay,
-
+        extra: dataDocument.extra ?? 0,
         taxAmount: 0,
         netAmount: 0,
         detractionRate: 0,

@@ -178,6 +178,7 @@ export class ZentraPettyCashService {
 
         paidAmount: dataDocumentOrigin.totalAmount,
         observation: dataDocumentOrigin.observation,
+        extra: dataDocumentOrigin.extra ?? 0,
         idFirebase: '',
         hasMovements: false,
 
@@ -637,6 +638,7 @@ export class ZentraPettyCashService {
 
         totalAmount: dataDocument.amountToPay,
         amountToPay: dataDocument.amountToPay,
+        extra: dataDocument.extra ?? 0,
 
         taxAmount: 0,
         netAmount: 0,
