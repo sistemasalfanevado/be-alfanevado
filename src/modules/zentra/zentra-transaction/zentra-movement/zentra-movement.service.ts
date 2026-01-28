@@ -1170,5 +1170,44 @@ export class ZentraMovementService {
   }
 
 
+  async findByBudgetItems(filters: {
+    startDate?: string;
+    endDate?: string;
+    budgetItemIds: string[];
+  }) {
+    const { startDate, endDate, budgetItemIds } = filters;
+
+    const where: any = {
+      deletedAt: null,
+      budgetItemId: {
+        in: budgetItemIds
+      }
+    };
+
+    // 1. Filtro de Fechas (se mantiene igual)
+    if (startDate || endDate) {
+      where.paymentDate = {};
+      if (startDate) {
+        where.paymentDate.gte = moment(startDate).startOf('day').toDate();
+      }
+      if (endDate) {
+        where.paymentDate.lte = moment(endDate).endOf('day').toDate();
+      }
+    }
+    const results = await this.prisma.zentraMovement.findMany({
+      where,
+      include: this.includeRelations,
+      orderBy: {
+        paymentDate: 'desc',
+      },
+    });
+
+    return {
+      movements: results.map(item => this.formatMovement(item))
+    };
+  }
+
+
+
 
 }

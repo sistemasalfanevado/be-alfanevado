@@ -90,7 +90,7 @@ export class ZentraMovementController {
   }) {
     return this.zentraMovementService.findByFilters(filters);
   }
-  
+
   @Get('profitability/yearly/:projectId')
   async getYearlyProfitability(@Param('projectId') projectId: string) {
     return this.zentraMovementService.getYearlyProfitability(projectId);
@@ -125,7 +125,7 @@ export class ZentraMovementController {
   }
 
 
-  
+
   @Post('recalculateBudgetItems')
   recalculateBudgetItems(@Body() body: {
     companyId: string;
@@ -148,7 +148,16 @@ export class ZentraMovementController {
     );
   }
 
-  
+
+  @Post('search-budget-item')
+  searchByBudgetItem(@Body() filters: {
+    startDate?: string;
+    endDate?: string;
+    budgetItemIds: string[];
+  }) {
+    return this.zentraMovementService.findByBudgetItems(filters);
+  }
+
 
 
 }
