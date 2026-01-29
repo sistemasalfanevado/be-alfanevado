@@ -14,14 +14,23 @@ export class ZentraStageService {
   }
 
   async findAll() {
-    return this.prisma.zentraStage.findMany({
-      where: {
-        deletedAt: null,
-      },
-      orderBy: {
-        percentage: 'asc',
+    const stages = await this.prisma.zentraStage.findMany({
+      where: { deletedAt: null },
+      orderBy: { name: 'asc' },
+      select: {
+        id: true,
+        name: true,
+        _count: {
+          select: { subStages: true },
+        },
       },
     });
+
+    return stages.map(stage => ({
+      id: stage.id,
+      name: stage.name,
+      subTaskCount: stage._count.subStages,
+    }));
   }
 
   async findOne(id: string) {

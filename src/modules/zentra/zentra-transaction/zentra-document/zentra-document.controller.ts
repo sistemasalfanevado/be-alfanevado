@@ -318,7 +318,7 @@ export class ZentraDocumentController {
 
   @Post('validate-duplicate')
   async validateDuplicate(
-    @Body() filters: { code: string; documentDate: string; partyId: string }
+    @Body() filters: { code: string; documentDate: string; partyId: string, transactionTypeId: string }
   ) {
     return this.zentraDocumentService.validateDuplicate(filters);
   }

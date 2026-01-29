@@ -3060,7 +3060,7 @@ export class ZentraDocumentService {
 
 
 
-  async validateDuplicate(filters: { code: string; documentDate: string; partyId: string }) {
+  async validateDuplicate(filters: { code: string; documentDate: string; partyId: string, transactionTypeId: string }) {
     // Normalizamos la fecha para comparar solo el día (YYYY-MM-DD)
     const startOfDay = moment(filters.documentDate).startOf('day').toDate();
     const endOfDay = moment(filters.documentDate).endOf('day').toDate();
@@ -3069,6 +3069,7 @@ export class ZentraDocumentService {
       where: {
         code: filters.code.trim(),
         partyId: filters.partyId,
+        transactionTypeId: filters.transactionTypeId,
         documentDate: {
           gte: startOfDay,
           lte: endOfDay,

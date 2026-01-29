@@ -1616,9 +1616,8 @@ model ZentraVisibility {
 model ZentraStage {
   id        String          @id @default(uuid())
 
-  name            String    @db.VarChar(50)
-  percentage      Decimal   @default(0.00) @db.Decimal(12, 2)
-
+  name            String    @db.VarChar(100)
+  
   subStages  ZentraSubStage[]
 
   deletedAt DateTime?
@@ -1631,8 +1630,7 @@ model ZentraStage {
 model ZentraSubStage {
   id        String      @id @default(uuid())
 
-  name        String      @db.VarChar(50)
-  percentage  Decimal     @default(0.00) @db.Decimal(12, 2)
+  name        String      @db.VarChar(100)
   
   stageId    String
   stage      ZentraStage @relation(fields: [stageId], references: [id])

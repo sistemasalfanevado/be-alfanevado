@@ -19,13 +19,11 @@ export class ZentraSubStageService {
         deletedAt: null,
       },
       orderBy: {
-        percentage: 'asc',
+        name: 'asc',
       },
     });
   }
-
-
-
+  
   async findOne(id: string) {
     return this.prisma.zentraSubStage.findUnique({
       where: { id, deletedAt: null },
@@ -64,7 +62,7 @@ export class ZentraSubStageService {
         deletedAt: null,
       },
       orderBy: {
-        percentage: 'asc',
+        name: 'asc',
       },
     });
   }
@@ -80,25 +78,21 @@ export class ZentraSubStageService {
         stage: {
           select: {
             name: true,
-            percentage: true,
           }
         }
       },
       orderBy: [
-        { stage: { percentage: 'asc' } },
-        { percentage: 'asc' }
+        { name: 'asc' }
       ]
     });
 
     return data.map(item => ({
       id: item.id,
       name: item.name,
-      percentage: item.percentage,
-
+      
       stageId: item.stageId,
       stageName: item.stage.name,
-      stagePercentage: item.stage.percentage,
-
+      
       completeName: item.stage.name + ' - ' + item.name,
 
       createdAt: item.createdAt,
