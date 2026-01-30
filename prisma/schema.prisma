@@ -580,8 +580,8 @@ model ZentraProject {
   incomes           ZentraProjectIncome[]
   subProjects       ZentraSubProject[]
   projectUsers      ZentraUserProject[]
-  subStageProgress  ZentraSubStageProgress[]
   telecreditoOperations  ZentraTelecreditoOperation[]
+  subStageAssignments ZentraProjectSubStage[]
 
   imageUrl      String?      @db.VarChar(300)
   
@@ -1635,7 +1635,7 @@ model ZentraSubStage {
   stageId    String
   stage      ZentraStage @relation(fields: [stageId], references: [id])
 
-  subStageProgress  ZentraSubStageProgress[]
+  subStageAssignments ZentraProjectSubStage[]
   
   deletedAt DateTime?
   createdAt DateTime      @default(now())
@@ -1644,27 +1644,58 @@ model ZentraSubStage {
   @@map("zentra_sub_stage")
 }
 
-model ZentraSubStageProgress {
-  id                 String       @id @default(uuid())
+model ZentraPercentage {
+  id     String  @id @default(uuid())
+  
+  amount Decimal @default(0.00) @db.Decimal(5, 2)
+  
+  progress     ZentraProjectSubStageProgress[]
 
-  responsible        String       @db.VarChar(100)
-  status             String       @db.VarChar(200)
-  finishDate         DateTime?
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
-  progressPercentage Decimal      @default(0.00) @db.Decimal(12, 2)
-  investmentAmount   Decimal      @default(0.00) @db.Decimal(14, 2)
+  @@map("zentra_percentage")
+}
 
-  subStageId         String
-  subStage           ZentraSubStage @relation(fields: [subStageId], references: [id])
+model ZentraProjectSubStage {
+  id           String         @id @default(uuid())
+  
+  projectId    String
+  project      ZentraProject  @relation(fields: [projectId], references: [id])
+  
+  subStageId   String
+  subStage     ZentraSubStage @relation(fields: [subStageId], references: [id])
+  
+  progress     ZentraProjectSubStageProgress[]
 
-  projectId          String
-  project            ZentraProject @relation(fields: [projectId], references: [id])
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  deletedAt    DateTime?
 
-  deletedAt          DateTime?
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
+  @@map("zentra_project_sub_stage")
+}
 
-  @@map("zentra_sub_stage_progress")
+model ZentraProjectSubStageProgress {
+  id                   String                    @id @default(uuid())
+
+  projectSubStageId    String
+  projectSubStage      ZentraProjectSubStage     @relation(fields: [projectSubStageId], references: [id])
+
+  percentageId         String
+  percentage           ZentraPercentage          @relation(fields: [percentageId], references: [id])
+
+  responsible          String                    @db.VarChar(100)
+  description          String                    @db.VarChar(300)
+
+  finishDate           DateTime?
+  investmentAmount     Decimal                   @default(0.00) @db.Decimal(14, 2)
+
+  createdAt            DateTime                  @default(now())
+  updatedAt            DateTime                  @updatedAt
+  deletedAt            DateTime?
+
+  @@map("zentra_project_sub_stage_progress")
 }
 
 

@@ -8,7 +8,15 @@ import {
   IsDateString,
 } from 'class-validator';
 
-export class CreateZentraSubStageProgressDto {
+export class CreateZentraProjectSubStageProgressDto {
+  @IsUUID()
+  @IsNotEmpty({ message: 'La relación con la sub-etapa del proyecto es obligatoria' })
+  projectSubStageId: string;
+
+  @IsUUID()
+  @IsNotEmpty({ message: 'Debes seleccionar un porcentaje de la lista' })
+  percentageId: string;
+
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
@@ -16,8 +24,8 @@ export class CreateZentraSubStageProgressDto {
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(200)
-  status: string;
+  @MaxLength(300)
+  description: string;
 
   @IsDateString()
   @IsOptional()
@@ -25,17 +33,5 @@ export class CreateZentraSubStageProgressDto {
 
   @IsNumber()
   @IsOptional()
-  progressPercentage?: number;
-
-  @IsNumber()
-  @IsOptional()
   investmentAmount?: number;
-
-  @IsUUID()
-  @IsNotEmpty()
-  subStageId: string;
-
-  @IsUUID()
-  @IsNotEmpty()
-  projectId: string;
 }

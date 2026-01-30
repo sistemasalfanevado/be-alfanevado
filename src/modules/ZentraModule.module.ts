@@ -34,10 +34,12 @@ import { ZentraAreaModule } from './zentra/zentra-master/zentra-area/zentra-area
 import { ZentraVisibilityModule } from './zentra/zentra-master/zentra-visibility/zentra-visibility.module';
 import { ZentraStageModule } from './zentra/zentra-master/zentra-stage/zentra-stage.module';
 import { ZentraSubStageModule } from './zentra/zentra-master/zentra-sub-stage/zentra-sub-stage.module';
-import { ZentraSubStageProgressModule } from './zentra/zentra-master/zentra-sub-stage-progress/zentra-sub-stage-progress.module';
+import { ZentraSubStageProgressModule } from './zentra/zentra-master/zentra-project-sub-stage-progress/zentra-project-sub-stage-progress.module';
 import { ZentraTransactionNatureModule } from './zentra/zentra-master/zentra-transaction-nature/zentra-transaction-nature.module';
 import { ZentraNotificationRecipientModule } from './zentra/zentra-master/zentra-notification-recipient/zentra-notification-recipient.module';
 import { ZentraAuditLogModule } from './zentra/zentra-master/zentra-audit-log/zentra-audit-log.module';
+import { ZentraPercentageModule } from './zentra/zentra-master/zentra-percentage/zentra-percentage.module';
+import { ZentraProjectSubStageModule } from './zentra/zentra-master/zentra-project-sub-stage/zentra-project-sub-stage.module';
 
 
 import { ZentraPartyDocumentModule } from './zentra/zentra-master/zentra-party-document/zentra-party-document.module';
@@ -143,6 +145,8 @@ import { ZentraPettyCashModule } from './zentra/zentra-transaction/zentra-petty-
     ZentraTransactionNatureModule,
     ZentraNotificationRecipientModule,
     ZentraAuditLogModule,
+    ZentraPercentageModule,
+    ZentraProjectSubStageModule,
 
     ZentraBankModule,
     ZentraBudgetItemCategoryModule,

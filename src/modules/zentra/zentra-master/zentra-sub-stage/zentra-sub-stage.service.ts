@@ -14,16 +14,32 @@ export class ZentraSubStageService {
   }
 
   async findAll() {
-    return this.prisma.zentraSubStage.findMany({
+    const data = await this.prisma.zentraSubStage.findMany({
       where: {
         deletedAt: null,
       },
-      orderBy: {
-        name: 'asc',
+      include: {
+        stage: true
       },
+      orderBy: {
+        stage: {
+          name: 'asc'
+        }
+      }
     });
+
+    return data.map(item => ({
+      id: item.id,
+      name: item.name,
+
+      stageId: item.stageId,
+      stageName: item.stage.name,
+
+      completeName: item.stage.name + ' - ' + item.name,
+
+    }));
   }
-  
+
   async findOne(id: string) {
     return this.prisma.zentraSubStage.findUnique({
       where: { id, deletedAt: null },
@@ -89,10 +105,10 @@ export class ZentraSubStageService {
     return data.map(item => ({
       id: item.id,
       name: item.name,
-      
+
       stageId: item.stageId,
       stageName: item.stage.name,
-      
+
       completeName: item.stage.name + ' - ' + item.name,
 
       createdAt: item.createdAt,
