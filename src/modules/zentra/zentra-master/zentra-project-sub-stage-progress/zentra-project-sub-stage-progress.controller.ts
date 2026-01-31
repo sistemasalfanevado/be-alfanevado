@@ -12,57 +12,53 @@ import { ZentraProjectSubStageProgressService } from './zentra-project-sub-stage
 import { CreateZentraProjectSubStageProgressDto } from './dto/create-zentra-project-sub-stage-progress.dto';
 import { UpdateZentraProjectSubStageProgressDto } from './dto/update-zentra-project-sub-stage-progress.dto';
 
-@Controller('project-sub-stages/:projectSubStageId/progress')
+@Controller('zentra-project-sub-stages-progress')
 export class ZentraProjectSubStageProgressController {
   constructor(
     private readonly service: ZentraProjectSubStageProgressService,
-  ) {}
+  ) { }
 
   @Post()
   create(
-    @Param('projectSubStageId') projectSubStageId: string,
     @Body() dto: CreateZentraProjectSubStageProgressDto,
   ) {
-    return this.service.create(projectSubStageId, dto);
+    return this.service.create(dto);
   }
 
-  @Get()
-  findAll(
+  @Get(':id')
+  findOne(
+    @Param('id') id: string,
+  ) {
+    return this.service.findOne(id);
+  }
+
+  @Put(':id')
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateZentraProjectSubStageProgressDto,
+  ) {
+    return this.service.update(id, dto);
+  }
+
+  @Delete(':id')
+  remove(
+    @Param('id') id: string,
+  ) {
+    return this.service.remove(id);
+  }
+
+  @Patch(':id/restore')
+  restore(
+    @Param('id') id: string,
+  ) {
+    return this.service.restore(id);
+  }
+
+  @Get('by-project-sub-stage/:projectSubStageId')
+  findAllByProjectSubStage(
     @Param('projectSubStageId') projectSubStageId: string,
   ) {
     return this.service.findAllByProjectSubStage(projectSubStageId);
   }
 
-  @Get(':id')
-  findOne(
-    @Param('projectSubStageId') projectSubStageId: string,
-    @Param('id') id: string,
-  ) {
-    return this.service.findOne(projectSubStageId, id);
-  }
-
-  @Put(':id')
-  update(
-    @Param('projectSubStageId') projectSubStageId: string,
-    @Param('id') id: string,
-    @Body() dto: UpdateZentraProjectSubStageProgressDto,
-  ) {
-    return this.service.update(projectSubStageId, id, dto);
-  }
-
-  @Delete(':id')
-  remove(
-    @Param('projectSubStageId') projectSubStageId: string,
-    @Param('id') id: string,
-  ) {
-    return this.service.remove(projectSubStageId, id);
-  }
-
-  @Patch(':id/restore')
-  restore(
-    @Param('projectSubStageId') projectSubStageId: string,
-    @Param('id') id: string,
-  ) {
-    return this.service.restore(projectSubStageId, id);
-  }
 }

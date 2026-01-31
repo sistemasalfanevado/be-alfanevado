@@ -84,7 +84,6 @@ export class ZentraProjectSubStageService {
     });
   }
 
-  // Este es el método más importante para tu lógica:
   async findAllByProject(projectId: string) {
     const results = await this.prisma.zentraProjectSubStage.findMany({
       where: {
@@ -94,26 +93,40 @@ export class ZentraProjectSubStageService {
       include: {
         subStage: {
           include: {
-            stage: true // Traemos también la etapa superior si es necesario
+            stage: true
+          }
+        },
+        progress: {
+          where: { deletedAt: null },
+          include: {
+            percentage: true
           }
         }
       },
       orderBy: {
         subStage: {
           stage: {
-            name: 'asc' // Aquí entramos nivel por nivel: subStage -> stage -> name
+            name: 'asc'
           }
         }
       }
     });
 
-    // Mapeamos para que el Frontend reciba una estructura limpia
-    return results.map(item => ({
-      id: item.id,
-      subStageId: item.subStageId,
-      subStageName: item.subStage.name,
-      stageName: item.subStage.stage.name,
-      completeName: item.subStage.stage.name + ' - ' + item.subStage.name
-    }));
+    return results.map(item => {
+      const progressValues = item.progress.map(p => Number(p.percentage?.amount || 0));
+
+      const maxProgress = progressValues.length > 0 ? Math.max(...progressValues) : 0;
+
+      return {
+        id: item.id,
+        subStageId: item.subStageId,
+        subStageName: item.subStage.name,
+        stageId: item.subStage.stage.id,
+        stageName: item.subStage.stage.name,
+        completeName: `${item.subStage.stage.name} - ${item.subStage.name}`,
+        progress: maxProgress
+      };
+    });
   }
+
 }

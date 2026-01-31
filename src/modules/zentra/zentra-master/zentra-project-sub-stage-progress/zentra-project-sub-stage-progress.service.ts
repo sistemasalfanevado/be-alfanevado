@@ -3,6 +3,7 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraProjectSubStageProgressDto } from './dto/create-zentra-project-sub-stage-progress.dto';
 import { UpdateZentraProjectSubStageProgressDto } from './dto/update-zentra-project-sub-stage-progress.dto';
 import { Prisma } from '@prisma/client';
+import * as moment from 'moment';
 
 @Injectable()
 export class ZentraProjectSubStageProgressService {
@@ -91,5 +92,39 @@ export class ZentraProjectSubStageProgressService {
       data: { deletedAt: null },
     });
   }
+
+  async findAllByProjectSubStage(projectSubStageId: string) {
+    const results = await this.prisma.zentraProjectSubStageProgress.findMany({
+      where: {
+        projectSubStageId: projectSubStageId,
+        deletedAt: null
+      },
+      include: {
+        percentage: true,
+        projectSubStage: {
+          include: {
+            subStage: true
+          }
+        }
+      }
+    });
+
+    return results
+      .map(item => ({
+        id: item.id,
+        projectSubStageId: item.projectSubStageId,
+        percentageId: item.percentageId,
+        responsible: item.responsible,
+        description: item.description,
+        finishDate: item.finishDate ? moment(item.finishDate).format('DD/MM/YYYY') : '---',
+        investmentAmount: item.investmentAmount,
+        
+        percentageAmount: item.percentage?.amount ?? 0,
+        subStageName: item.projectSubStage?.subStage?.name,
+      }))
+      .sort((a, b) => Number(a.percentageAmount) - Number(b.percentageAmount));
+  }
+
+  
 
 }
