@@ -9,4 +9,9 @@ export class UpdateZentraSubStageDto {
   @IsString()
   @IsOptional()
   stageId?: string;
+
+  @IsNumber()
+  @IsOptional() // Opcional porque tiene default(0) en Prisma
+  order?: number;
+  
 }

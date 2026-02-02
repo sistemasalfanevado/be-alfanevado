@@ -39,7 +39,7 @@ export class ZentraProjectSubStageController {
   restore(@Param('id') id: string) {
     return this.projectSubStageService.restore(id);
   }
-
+  
   @Get('project/:projectId')
   findAllByProject(@Param('projectId') projectId: string) {
     return this.projectSubStageService.findAllByProject(projectId);

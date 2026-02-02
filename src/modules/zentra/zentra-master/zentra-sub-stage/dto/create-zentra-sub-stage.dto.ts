@@ -9,4 +9,8 @@ export class CreateZentraSubStageDto {
   @IsString()
   @IsNotEmpty()
   stageId: string;
+
+  @IsNumber()
+  @IsOptional() // Opcional porque tiene default(0) en Prisma
+  order?: number;
 }

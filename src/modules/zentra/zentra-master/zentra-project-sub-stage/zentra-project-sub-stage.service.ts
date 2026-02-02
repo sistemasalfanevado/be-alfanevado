@@ -106,7 +106,7 @@ export class ZentraProjectSubStageService {
       orderBy: {
         subStage: {
           stage: {
-            name: 'asc'
+            order: 'asc'
           }
         }
       }
@@ -123,6 +123,7 @@ export class ZentraProjectSubStageService {
         subStageName: item.subStage.name,
         stageId: item.subStage.stage.id,
         stageName: item.subStage.stage.name,
+        stageOrder: Number(item.subStage.stage.order),
         completeName: `${item.subStage.stage.name} - ${item.subStage.name}`,
         progress: maxProgress
       };
