@@ -5,7 +5,7 @@ import { UpdateZentraStageDto } from './dto/update-zentra-stage.dto';
 
 @Controller('zentra-stages')
 export class ZentraStageController {
-  constructor(private readonly zentraStageService: ZentraStageService) {}
+  constructor(private readonly zentraStageService: ZentraStageService) { }
 
   @Post()
   create(@Body() createZentraStageDto: CreateZentraStageDto) {
@@ -36,4 +36,10 @@ export class ZentraStageController {
   restore(@Param('id') id: string) {
     return this.zentraStageService.restore(id);
   }
+
+  @Post('sub-stages/progress-detail')
+  getSubStagesProgress(@Body() data: { stageId: string; projectId: string }) {
+    return this.zentraStageService.getSubStagesProgress(data.stageId, data.projectId);
+  }
+
 }
