@@ -1695,11 +1695,29 @@ model ZentraProjectSubStageProgress {
   finishDate           DateTime?
   investmentAmount     Decimal                   @default(0.00) @db.Decimal(14, 2)
 
+  files                 ZentraProjectSubStageProgressFile[]
+
   createdAt            DateTime                  @default(now())
   updatedAt            DateTime                  @updatedAt
   deletedAt            DateTime?
 
   @@map("zentra_project_sub_stage_progress")
+}
+
+model ZentraProjectSubStageProgressFile {
+  id           String         @id @default(uuid())
+  
+  projectSubStageProgress     ZentraProjectSubStageProgress @relation(fields: [projectSubStageProgressId], references: [id], onDelete: Cascade)
+  projectSubStageProgressId   String
+
+  fileName     String         @db.VarChar(255)
+  fileUrl      String         @db.VarChar(700)
+  
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  deletedAt   DateTime?
+  
+  @@map("zentra_project_sub_stage_progress_file")
 }
 
 

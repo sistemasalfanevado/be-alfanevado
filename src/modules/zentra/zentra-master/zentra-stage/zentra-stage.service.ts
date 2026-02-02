@@ -63,6 +63,8 @@ export class ZentraStageService {
     });
   }
 
+
+
   async getSubStagesProgress(stageId: string, projectId: string) {
     const subStages = await this.prisma.zentraSubStage.findMany({
       where: {
@@ -89,6 +91,12 @@ export class ZentraStageService {
                 investmentAmount: true,
                 percentage: {
                   select: { amount: true }
+                },
+                files: {
+                  where: { deletedAt: null },
+                  select: {
+                    fileUrl: true
+                  }
                 }
               }
             }
@@ -115,7 +123,10 @@ export class ZentraStageService {
           responsible: p.responsible,
           description: p.description,
           date: moment(p.finishDate).format('DD/MM/YYYY'),
-          investment: p.investmentAmount
+          investment: p.investmentAmount,
+
+          files: p.files.map(f => f.fileUrl)
+          
         }))
       };
     });
