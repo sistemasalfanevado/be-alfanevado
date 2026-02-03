@@ -63,6 +63,13 @@ export class ZentraBudgetItemController {
   findAllByCategory(@Body() body: { categoryId: string; projectId: string }) {
     return this.zentraBudgetItemService.findAllByCategory(body.categoryId, body.projectId);
   }
+
+  @Post('category-dashboard')
+  getAllByCategoryForDashboard(@Body() body: { categoryId: string; projectId: string }) {
+    return this.zentraBudgetItemService.findAllByCategoryForDashboard(body.categoryId, body.projectId);
+  }
+
+
   
   @Post('search')
   search(@Body() filters: {
@@ -79,5 +86,13 @@ export class ZentraBudgetItemController {
     return this.zentraBudgetItemService.findByFiltersExtra(filters);
   }
   
+  @Post('search-dashboard')
+  searchDashboard(@Body() filters: {
+    natureId?: string;
+    projectId?: string;
+  }) {
+    return this.zentraBudgetItemService.findByFiltersDashboard(filters);
+  }
+
 
 }

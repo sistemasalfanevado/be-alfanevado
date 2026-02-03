@@ -71,6 +71,13 @@ export class ZentraBudgetItemService {
 
 
   private mapToDto(item: any) {
+
+    const firstHistory = item.budgetItemHistories && item.budgetItemHistories.length > 0
+      ? item.budgetItemHistories[0]
+      : null;
+
+    const originalAmount = firstHistory ? firstHistory.oldAmount : item.amount;
+
     const available =
       item.amount !== null && item.executedDolares !== null
         ? Number((Number(item.amount) - Number(Math.abs(item.executedDolares))).toFixed(2))
@@ -122,6 +129,8 @@ export class ZentraBudgetItemService {
 
       natureId: item?.definition?.nature?.id || '',
       natureName: item?.definition?.nature?.name || '',
+
+      originalAmount: originalAmount,
 
       idFirebase: item.idFirebase,
     };
@@ -210,7 +219,7 @@ export class ZentraBudgetItemService {
                 budgetCategory: true
               }
             },
-            nature: true 
+            nature: true
           },
         },
         visibility: true,
@@ -269,6 +278,38 @@ export class ZentraBudgetItemService {
     return results.map((item) => this.mapToDto(item));
   }
 
+  async findAllByCategoryForDashboard(categoryId: string, projectId: string): Promise<any[]> {
+    const results = await this.prisma.zentraBudgetItem.findMany({
+      where: {
+        deletedAt: null,
+        definition: { categoryId, projectId },
+        visibilityId: VISIBIILITY.VISIBLE
+      },
+      include: {
+        currency: true,
+        definition: {
+          include: {
+            category: true,
+            project: true
+          }
+        },
+        visibility: true,
+        budgetItemHistories: {
+          orderBy: {
+            createdAt: 'asc'
+          },
+          take: 1
+        }
+      },
+      orderBy: [
+        { definition: { name: 'asc' } },
+        { currency: { name: 'asc' } },
+      ],
+    });
+
+    return results.map((item) => this.mapToDto(item));
+  }
+
 
   async findByFilters(filters: { natureId?: string; projectId?: string }) {
     const { natureId, projectId } = filters;
@@ -299,6 +340,47 @@ export class ZentraBudgetItemService {
           },
         },
         visibility: true,
+      },
+    });
+
+    return results.map((item) => this.mapToDto(item));
+  }
+
+  async findByFiltersDashboard(filters: { natureId?: string; projectId?: string }) {
+    const { natureId, projectId } = filters;
+
+    const where: any = {
+      deletedAt: null,
+      visibilityId: VISIBIILITY.VISIBLE,
+      definition: {},
+    };
+
+    if (natureId && natureId.trim() !== '') {
+      where.definition.natureId = natureId;
+    }
+
+    if (projectId && projectId.trim() !== '') {
+      where.definition.projectId = projectId;
+    }
+
+    const results = await this.prisma.zentraBudgetItem.findMany({
+      where,
+      include: {
+        currency: true,
+        definition: {
+          include: {
+            category: true,
+            nature: true,
+            project: true,
+          },
+        },
+        visibility: true,
+        budgetItemHistories: {
+          orderBy: {
+            createdAt: 'asc'
+          },
+          take: 1
+        }
       },
     });
 
