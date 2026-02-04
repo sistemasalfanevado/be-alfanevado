@@ -534,8 +534,9 @@ export class ZentraDocumentService {
     documentTypeId?: string;
     excludeDocumentTypeId?: string[];
     currencyId?: string;
+    budgetItemId?: string;
   }) {
-    const { currencyId, documentTypeId, excludeDocumentTypeId, withPartyBankAccount, accountabilityId, pettyCashId, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, companyId, userId, startDate, endDate } = filters;
+    const { budgetItemId, currencyId, documentTypeId, excludeDocumentTypeId, withPartyBankAccount, accountabilityId, pettyCashId, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, companyId, userId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -575,10 +576,14 @@ export class ZentraDocumentService {
       where.transactionType = { id: transactionTypeId };
     }
 
+    if (budgetItemId && budgetItemId.trim() !== '') {
+      where.budgetItem = { id: budgetItemId };
+    }
+
     if (excludeDocumentTypeId && Array.isArray(excludeDocumentTypeId) && excludeDocumentTypeId.length > 0) {
       where.documentType = {
         id: {
-          notIn: excludeDocumentTypeId // Operador para excluir múltiples IDs
+          notIn: excludeDocumentTypeId
         }
       };
     }
