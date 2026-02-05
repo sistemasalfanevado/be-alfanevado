@@ -139,3 +139,9 @@ export const CRM = {
   USER: '21e630c0-3627-4416-9523-3935322c3468'
 };
 
+export const PAYMENT_CATEGORY = {
+  REGULAR: '6dd7f62f-2cca-4842-8dcd-bbcd080f24c3',
+  DETRACCION: 'bd02129c-459e-409b-9bc1-9351d66debc1',
+};
+
+

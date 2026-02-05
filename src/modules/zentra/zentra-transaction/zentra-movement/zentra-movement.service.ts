@@ -5,7 +5,7 @@ import { UpdateZentraMovementDto } from './dto/update-zentra-movement.dto';
 import { ZentraExchangeRateService } from '../../zentra-master/zentra-exchange-rate/zentra-exchange-rate.service';
 import * as moment from 'moment';
 
-import { TRANSACTION_TYPE, CURRENCY, BUDGET_NATURE, PARTY_DOCUMENT_HIERARCHY } from 'src/shared/constants/app.constants';
+import { TRANSACTION_TYPE, CURRENCY, BUDGET_NATURE, PARTY_DOCUMENT_HIERARCHY, PAYMENT_CATEGORY } from 'src/shared/constants/app.constants';
 
 
 @Injectable()
@@ -69,6 +69,7 @@ export class ZentraMovementService {
         documentType: true,
       },
     },
+    paymentCategory: true
   };
 
   private calculateAmounts(
@@ -240,6 +241,9 @@ export class ZentraMovementService {
       installmentId: !item.installment?.id ? '' : item.installment?.id,
       installmentCuota: !item.installment?.letra ? '' : 'Cuota: ' + item.installment?.letra,
 
+      paymentCategoryId: !item.paymentCategory?.id ? '' : item.paymentCategory?.id,
+      paymentCategoryName: !item.paymentCategory?.name ? '' : '' + item.paymentCategory?.name,
+      
 
       documentUrl: item.documentUrl,
       documentName: item.documentName,
@@ -279,7 +283,7 @@ export class ZentraMovementService {
         exchangeRate =
           await this.zentraExchangeRateService.upsertTodayRateFromSunat();
       }
-
+      
       const {
         movementStatusId,
         documentId,
@@ -288,6 +292,7 @@ export class ZentraMovementService {
         budgetItemId,
         bankAccountId,
         installmentId = null,
+        paymentCategoryId = PAYMENT_CATEGORY.REGULAR,
         autorizeDate,
         generateDate,
         paymentDate,
@@ -332,6 +337,7 @@ export class ZentraMovementService {
           bankAccount: { connect: { id: bankAccountId } },
           exchangeRate: { connect: { id: exchangeRate.id } },
           installment: installmentId ? { connect: { id: installmentId } } : undefined,
+          paymentCategory: paymentCategoryId ? { connect: { id: paymentCategoryId } } : undefined,
         },
         select: { id: true }, // 👈 solo devolvemos el id
       });
@@ -446,6 +452,7 @@ export class ZentraMovementService {
           budgetItemId: updateDto.budgetItemId ?? existing.budgetItemId,
           documentId: updateDto.documentId ?? existing.documentId,
           installmentId: updateDto.installmentId ?? existing.installmentId,
+          paymentCategoryId: updateDto.paymentCategoryId ?? existing.paymentCategoryId,
           idFirebase: updateDto.idFirebase ?? existing.idFirebase,
           documentUrl: updateDto.documentUrl ?? existing.documentUrl,
           documentName: updateDto.documentName ?? existing.documentName,

@@ -40,6 +40,7 @@ export class ZentraDocumentExpenseService {
       documentUrl: !data.documentUrl ? '' : data.documentUrl,
       documentName: !data.documentName ? '' : data.documentName,
       fromTelecredito: data.fromTelecredito ?? false,
+      paymentCategoryId: data.paymentCategoryId,
     });
     return this.recalculateDocument(data.documentId);
   }
@@ -142,6 +143,7 @@ export class ZentraDocumentExpenseService {
     movementCategoryId: string;
     budgetItemId: string;
     bankAccountId: string;
+    paymentCategoryId: string;
     movementStatusId: string;
     date: string;
     idFirebase: string,
@@ -157,6 +159,7 @@ export class ZentraDocumentExpenseService {
       transactionTypeId: data.transactionTypeId,
       movementCategoryId: data.movementCategoryId,
       budgetItemId: data.budgetItemId,
+      paymentCategoryId: data.paymentCategoryId,
       bankAccountId: data.bankAccountId,
       movementStatusId: data.movementStatusId,
       autorizeDate: data.date,

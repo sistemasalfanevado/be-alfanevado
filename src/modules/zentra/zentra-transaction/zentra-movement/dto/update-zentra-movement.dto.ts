@@ -58,12 +58,14 @@ export class UpdateZentraMovementDto {
   @IsOptional()
   paymentDate?: string;
 
-  // 🔹 Relación opcional con una cuota
   @IsString()
   @IsOptional()
   installmentId?: string;
 
-  // 🔹 Campos opcionales de documentos
+  @IsString()
+  @IsOptional()
+  paymentCategoryId?: string;
+
   @IsString()
   @IsOptional()
   @MaxLength(300)

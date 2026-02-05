@@ -2711,6 +2711,8 @@ export class ZentraDocumentService {
         transactionType: true,
         documentType: true,
         party: true,
+        accountability: true,
+        pettyCash: true,
         budgetItem: {
           include: {
             definition: {
@@ -2753,6 +2755,15 @@ export class ZentraDocumentService {
 
       const factor = item.currency.id === CURRENCY.DOLARES ? sellRate : 1;
       const round = (value: number) => Math.round(value * 100) / 100;
+
+      let originCode = 'Clásico'; // Valor por defecto
+      
+      if (item.accountability !== null) {
+        originCode = item.accountability.code;
+      } else if (item.pettyCash !== null) {
+        originCode = item.pettyCash.code;
+      }
+
 
       return {
         id: item.id,
@@ -2822,7 +2833,7 @@ export class ZentraDocumentService {
         budgetItemSubCategoryId: item.budgetItem?.definition?.category?.id || '',
         budgetItemSubCategoryName: item.budgetItem?.definition?.category?.name || '',
 
-
+        originCode: originCode
 
 
       };
@@ -2839,8 +2850,7 @@ export class ZentraDocumentService {
     endDate?: string;
   }) {
     const { transactionTypeId, documentStatusId, companyId, startDate, endDate } = filters;
-
-
+    
     const whereInstallment: any = {
       deletedAt: null,
       installmentStatusId: INSTALLMENT_STATUS.PAGADO,

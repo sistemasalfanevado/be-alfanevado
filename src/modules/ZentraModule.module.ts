@@ -41,6 +41,7 @@ import { ZentraNotificationRecipientModule } from './zentra/zentra-master/zentra
 import { ZentraAuditLogModule } from './zentra/zentra-master/zentra-audit-log/zentra-audit-log.module';
 import { ZentraPercentageModule } from './zentra/zentra-master/zentra-percentage/zentra-percentage.module';
 import { ZentraProjectSubStageModule } from './zentra/zentra-master/zentra-project-sub-stage/zentra-project-sub-stage.module';
+import { ZentraPaymentCategoryModule } from './zentra/zentra-master/zentra-payment-category/zentra-payment-category.module';
 
 
 import { ZentraPartyDocumentModule } from './zentra/zentra-master/zentra-party-document/zentra-party-document.module';
@@ -151,6 +152,8 @@ import { ZentraPettyCashModule } from './zentra/zentra-transaction/zentra-petty-
     ZentraProjectSubStageProgressModule,
     ZentraProjectSubStageProgressFileModule,
     
+    ZentraPaymentCategoryModule,
+
     ZentraBankModule,
     ZentraBudgetItemCategoryModule,
     ZentraCurrencyModule,

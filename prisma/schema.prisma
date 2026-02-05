@@ -1024,6 +1024,9 @@ model ZentraMovement {
   installment        ZentraInstallment?    @relation(fields: [installmentId], references: [id])
   installmentId      String?
 
+  paymentCategory        ZentraPaymentCategory?    @relation(fields: [paymentCategoryId], references: [id])
+  paymentCategoryId      String?
+  
   files              ZentraMovementFile[]
   documentUrl   String?     @db.VarChar(300)
   documentName  String?     @db.VarChar(150)
@@ -1105,6 +1108,19 @@ model ZentraMovementStatus {
   deletedAt   DateTime?
   
   @@map("zentra_movement_status")
+}
+
+model ZentraPaymentCategory {
+
+  id          String            @id @default(uuid())
+  name        String            @db.VarChar(50)
+  movements   ZentraMovement[]
+
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  deletedAt   DateTime?
+  
+  @@map("zentra_payment_category")
 }
 
 model ZentraDocumentFile {
