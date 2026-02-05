@@ -47,9 +47,10 @@ export class ZentraMovementService {
             project: true,
             category: {
               include: {
-                budgetCategory: true
+                budgetCategory: true,
               }
             },
+            nature: true,
           },
         },
         currency: true,
@@ -155,10 +156,22 @@ export class ZentraMovementService {
 
   private formatMovement(item: any) {
     const principalDoc = item.document?.party?.partyDocuments?.[0];
-
-    // 1. Identificamos si existe un installment válido
     const inst = item.installment;
     const doc = item.document;
+
+    const executedAmount = Number(item.executedAmount || 0);
+    const executedSoles = Number(item.executedSoles || 0);
+    const executedDolares = Number(item.executedDolares || 0);
+
+    let exchangeRateNumber = 1;
+
+    if (executedAmount === executedDolares) {
+      exchangeRateNumber = executedSoles / executedDolares;
+    } else {
+      exchangeRateNumber = executedAmount / executedDolares;
+    }
+
+    exchangeRateNumber = Number(exchangeRateNumber.toFixed(3));
 
 
     return {
@@ -207,7 +220,13 @@ export class ZentraMovementService {
       budgetCategoryName: item.budgetItem
         ? `${item.budgetItem.definition.category.budgetCategory.name}`
         : null,
-
+      
+      budgetNatureId: item.budgetItem
+        ? `${item.budgetItem.definition.nature.id}`
+        : null,
+      budgetNatureName: item.budgetItem
+        ? `${item.budgetItem.definition.nature.name}`
+        : null,
 
       projectName: item.budgetItem.definition.project.name,
 
@@ -230,6 +249,8 @@ export class ZentraMovementService {
 
       idFirebase: !item.idFirebase ? '' : item.idFirebase,
       fromTelecredito: item.fromTelecredito ?? false,
+
+      exchangeRateNumber: exchangeRateNumber,
 
     };
   }
@@ -684,7 +705,7 @@ export class ZentraMovementService {
 
     for (const item of results) {
       const accountId = item.bankAccount.id;
-
+      
       if (!bankSummary[accountId]) {
         bankSummary[accountId] = {
           bankAccountName: `${item.bankAccount.bank.name} - ${item.bankAccount.currency.name}`,

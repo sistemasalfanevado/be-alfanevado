@@ -25,7 +25,7 @@ export class ZentraProjectIncomeService {
             definition: {
               select: {
                 name: true,
-                nature: { select: { name: true } }
+                nature: { select: { name: true } } 
               }
             }
           }
