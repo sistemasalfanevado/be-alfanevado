@@ -171,7 +171,7 @@ export class ZentraMovementService {
       exchangeRateNumber = executedAmount / executedDolares;
     }
 
-    exchangeRateNumber = Number(exchangeRateNumber.toFixed(3));
+    exchangeRateNumber = Number(exchangeRateNumber.toFixed(2));
 
 
     return {
