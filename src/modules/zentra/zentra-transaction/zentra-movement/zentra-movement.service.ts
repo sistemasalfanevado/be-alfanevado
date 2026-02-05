@@ -163,17 +163,18 @@ export class ZentraMovementService {
     const executedSoles = Number(item.executedSoles || 0);
     const executedDolares = Number(item.executedDolares || 0);
 
-    let exchangeRateNumber = 1;
+    let exchangeRateNumber = '';
 
-    if (executedAmount === executedDolares) {
-      exchangeRateNumber = executedSoles / executedDolares;
-    } else {
-      exchangeRateNumber = executedAmount / executedDolares;
+    if (Math.abs(executedAmount) > 0.10) {
+      if (executedAmount === executedDolares) {
+        exchangeRateNumber = '' + (executedSoles / executedDolares);
+      } else {
+        exchangeRateNumber = '' + (executedAmount / executedDolares);
+      }
+
+      exchangeRateNumber = Number(exchangeRateNumber).toFixed(2);
     }
-
-    exchangeRateNumber = Number(exchangeRateNumber.toFixed(2));
-
-
+    
     return {
       id: item.id,
       code: item.code,
@@ -220,7 +221,7 @@ export class ZentraMovementService {
       budgetCategoryName: item.budgetItem
         ? `${item.budgetItem.definition.category.budgetCategory.name}`
         : null,
-      
+
       budgetNatureId: item.budgetItem
         ? `${item.budgetItem.definition.nature.id}`
         : null,
@@ -705,7 +706,7 @@ export class ZentraMovementService {
 
     for (const item of results) {
       const accountId = item.bankAccount.id;
-      
+
       if (!bankSummary[accountId]) {
         bankSummary[accountId] = {
           bankAccountName: `${item.bankAccount.bank.name} - ${item.bankAccount.currency.name}`,
