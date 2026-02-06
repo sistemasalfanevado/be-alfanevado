@@ -30,7 +30,7 @@ export class ZentraBudgetItemCategoryService {
         visibility: true,
       },
       orderBy: [
-        { budgetCategory: { name: 'asc' } },
+        { name: 'asc'},
       ]
 
     });
@@ -58,7 +58,7 @@ export class ZentraBudgetItemCategoryService {
         visibility: true,
       },
       orderBy: [
-        { budgetCategory: { name: 'asc' } },
+        { name: 'asc'},
       ]
 
     });
