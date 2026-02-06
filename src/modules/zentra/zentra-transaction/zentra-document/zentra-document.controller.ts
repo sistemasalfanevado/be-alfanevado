@@ -83,7 +83,7 @@ export class ZentraDocumentController {
     userId?: string;
     startDate?: string;
     endDate?: string;
-    }) {
+  }) {
     return this.zentraDocumentService.findByFiltersComplete(filters);
   }
 
@@ -189,6 +189,7 @@ export class ZentraDocumentController {
   searchReversal(@Body() filters: {
     projectId?: string;
     documentCategoryId?: string;
+    budgetItemId?: string;
     startDate?: string;
     endDate?: string;
   }) {
@@ -200,6 +201,32 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.updateReversal(id, updateZentraDocumentDto);
   }
 
+  // Cuadre
+
+  @Post('cuadre')
+  createCuadre(@Body() createZentraDocumentDto: any) {
+    return this.zentraDocumentService.createCuadre(createZentraDocumentDto);
+  }
+
+  @Delete('cuadre/:id')
+  removeCuadre(@Param('id') id: string) {
+    return this.zentraDocumentService.removeCuadre(id);
+  }
+
+  @Post('cuadre/search')
+  searchCuadre(@Body() filters: {
+    projectId?: string;
+    documentCategoryId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    return this.zentraDocumentService.findByFiltersCuadre(filters);
+  }
+
+  @Put('cuadre/:id')
+  updateCuadre(@Param('id') id: string, @Body() updateZentraDocumentDto: any) {
+    return this.zentraDocumentService.updateCuadre(id, updateZentraDocumentDto);
+  }
 
 
 
@@ -292,7 +319,15 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.removeScheduledDebt(id);
   }
 
-
+  @Post('search-report-expense-detraction')
+  searchReportExpenseDetraction(@Body() filters: {
+    transactionTypeId?: string,
+    companyId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    return this.zentraDocumentService.findByFiltersReportExpenseDetraction(filters);
+  }
 
   @Post('search-report-expense')
   searchReportExpense(@Body() filters: {

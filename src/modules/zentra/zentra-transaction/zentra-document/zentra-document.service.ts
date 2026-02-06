@@ -16,7 +16,7 @@ import { ZentraPettyCashService } from '../../zentra-transaction/zentra-petty-ca
 import {
   TRANSACTION_TYPE, CURRENCY, MOVEMENT_CATEGORY,
   BANK_ACCOUNT_HIERARCHY, EXCHANGE_RATE, DOCUMENT_ORIGIN, INSTALLMENT_STATUS, DOCUMENT_CATEGORY,
-  DOCUMENT_TYPE
+  DOCUMENT_TYPE, PAYMENT_CATEGORY
 } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
@@ -954,6 +954,7 @@ export class ZentraDocumentService {
     documentStatusId?: string;
     startDate?: string;
     endDate?: string;
+    budgetItemId?: string;
   }) {
     const where: any = { deletedAt: null };
 
@@ -977,6 +978,18 @@ export class ZentraDocumentService {
 
     if (filters.documentCategoryId?.trim()) {
       where.documentCategoryId = filters.documentCategoryId;
+    }
+
+    if (filters.budgetItemId?.trim()) {
+      where.budgetItemId = filters.budgetItemId;
+    }
+
+    if (filters.projectId?.trim()) {
+      where.budgetItem = {
+        definition: {
+          projectId: filters.projectId,
+        },
+      };
     }
 
     if (filters.projectId?.trim()) {
@@ -1574,6 +1587,7 @@ export class ZentraDocumentService {
           codeMovement: mov.code,
           documentTypeName: doc.documentType.name,
           partyName: doc.party.name,
+          partyId: doc.party.id,
         };
       });
   }
@@ -1588,6 +1602,149 @@ export class ZentraDocumentService {
         description: updateData.description,
         budgetItemId: updateData.budgetItemId,
         documentTypeId: updateData.documentTypeId,
+        partyId: updateData.partyId,
+      },
+    });
+
+    // 2. Buscar el movimiento asociado
+    const movement = await this.prisma.zentraMovement.findFirst({
+      where: { documentId: id, deletedAt: null },
+    });
+
+    // 3. Si existe movimiento, actualizarlo
+    if (movement) {
+      await this.zentraMovementService.update(movement.id, {
+        amount: updateData.amountOrigin,
+        autorizeDate: updateData.documentDate,
+        generateDate: updateData.documentDate,
+        paymentDate: updateData.documentDate,
+        code: updateData.codeMovement,
+        description: updateData.description,
+        idFirebase: !movement.idFirebase ? '' : movement.idFirebase,
+        documentId: !movement.documentId ? '' : movement.documentId,
+        transactionTypeId: updateData.transactionTypeId,
+        bankAccountId: updateData.backAccountOriginId,
+        budgetItemId: updateData.budgetItemId,
+        movementCategoryId: movement.movementCategoryId,
+        movementStatusId: movement.movementStatusId,
+      });
+    }
+
+    // 4. Retornar algo (si quieres)
+    return {
+      id,
+      updated: true,
+    };
+  }
+
+  // Cuadre
+
+  async createCuadre(dataDocument: any) {
+
+    const document = await this.createDocument(dataDocument);
+
+    await this.createMovement({
+      code: dataDocument.codeMovement,
+      description: dataDocument.description,
+      documentId: document.id,
+      amount: dataDocument.amountOrigin,
+      transactionTypeId: dataDocument.transactionTypeId,
+      movementCategoryId: dataDocument.movementCategoryId,
+      budgetItemId: dataDocument.budgetItemId,
+      bankAccountId: dataDocument.backAccountOriginId,
+      movementStatusId: dataDocument.movementStatusId,
+      date: dataDocument.documentDate,
+      idFirebase: dataDocument.idFirebase,
+      fromTelecredito: dataDocument.fromTelecredito ?? false,
+    });
+
+    return { message: 'Cuadre creado correctamente' };
+  }
+
+  async removeCuadre(id: string) {
+    return this.removeDocumentWithMovements(id);
+  }
+
+  async findByFiltersCuadre(filters: {
+    projectId?: string;
+    documentCategoryId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    const where = this.buildDocumentFilters(filters);
+
+    const results = await this.prisma.zentraDocument.findMany({
+      where,
+      orderBy: { documentDate: 'desc' },
+      select: {
+        id: true,
+        party: true,
+        documentType: true,
+        movements: {
+          where: { deletedAt: null },
+          select: {
+            id: true,
+            amount: true,
+            code: true,
+            paymentDate: true,
+            description: true,
+            budgetItem: {
+              select: {
+                id: true,
+              }
+            },
+            transactionType: {
+              select: {
+                id: true,
+                name: true
+              }
+            },
+            bankAccount: {
+              select: {
+                id: true,
+                bank: { select: { name: true } },
+                currency: { select: { name: true } },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return results
+      .filter((doc) => doc.movements.length > 0)
+      .map((doc) => {
+        const mov = doc.movements[0];
+        return {
+          id: doc.id,
+          documentDate: moment(mov.paymentDate).format("DD/MM/YYYY"),
+          description: mov.description ?? null,
+          bankAccount: `${mov.bankAccount.bank.name} ${mov.bankAccount.currency.name}`,
+          typeTransaction: mov.transactionType.name,
+          amountOrigin: mov.amount,
+          movementId: mov.id,
+          backAccountOriginId: mov.bankAccount.id,
+          transactionTypeId: mov.transactionType.id,
+          budgetItemId: mov.budgetItem.id,
+          codeMovement: mov.code,
+          documentTypeName: doc.documentType.name,
+          partyName: doc.party.name,
+          partyId: doc.party.id,
+        };
+      });
+  }
+
+  async updateCuadre(id: string, updateData: any) {
+
+    // 1. Actualizar documento principal
+    await this.prisma.zentraDocument.update({
+      where: { id },
+      data: {
+        code: updateData.code,
+        description: updateData.description,
+        budgetItemId: updateData.budgetItemId,
+        documentTypeId: updateData.documentTypeId,
+        partyId: updateData.partyId,
       },
     });
 
@@ -2644,7 +2801,162 @@ export class ZentraDocumentService {
   }
 
 
+  async findByFiltersReportExpenseDetraction(filters: {
+    transactionTypeId?: string,
+    companyId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    const { transactionTypeId, companyId, startDate, endDate } = filters;
 
+    const where: any = {
+      deletedAt: null,
+      // Filtramos para que solo traiga documentos que tengan AL MENOS un movimiento de detracción
+      movements: {
+        some: {
+          paymentCategoryId: PAYMENT_CATEGORY.DETRACCION,
+          deletedAt: null,
+          // Aplicamos el filtro de fecha de pago directamente en el movimiento
+          ...((startDate || endDate) && {
+            paymentDate: {
+              ...(startDate && { gte: moment(startDate).startOf('day').toDate() }),
+              ...(endDate && { lte: moment(endDate).endOf('day').toDate() }),
+            }
+          })
+        }
+      }
+    };
+
+    // Filtros adicionales del documento
+    where.documentCategory = {
+      id: {
+        in: [
+          DOCUMENT_CATEGORY.CLASICO,
+          DOCUMENT_CATEGORY.RENDICION_CUENTA,
+          DOCUMENT_CATEGORY.CAJA_CHICA
+        ]
+      }
+    };
+
+    if (transactionTypeId && transactionTypeId.trim() !== '') {
+      where.transactionType = { id: transactionTypeId };
+    }
+
+    if (companyId && companyId.trim() !== '') {
+      where.budgetItem = {
+        definition: {
+          project: { companyId }
+        },
+      };
+    }
+
+    const results = await this.prisma.zentraDocument.findMany({
+      where,
+      include: {
+        documentStatus: true,
+        transactionType: true,
+        documentType: true,
+        party: true,
+        accountability: true,
+        pettyCash: true,
+        movements: {
+          // Incluimos los movimientos de detracción para poder obtener la fecha de pago real en el map
+          where: {
+            paymentCategoryId: PAYMENT_CATEGORY.DETRACCION,
+            deletedAt: null
+          }
+        },
+        budgetItem: {
+          include: {
+            definition: {
+              include: {
+                project: true,
+                category: { include: { budgetCategory: true } },
+                nature: true
+              }
+            },
+          }
+        },
+        currency: true,
+        user: true,
+        documentCategory: true,
+      },
+      orderBy: { documentDate: 'desc' }
+    });
+
+    if (results.length === 0) return [];
+
+    // --- Lógica de Tipo de Cambio ---
+    const exchangeRates = await this.prisma.zentraExchangeRate.findMany({
+      orderBy: { date: 'asc' }
+    });
+    const oldestRate = exchangeRates[0];
+    const rateMap = new Map();
+    exchangeRates.forEach(r => {
+      rateMap.set(moment(r.date).startOf('day').format('YYYY-MM-DD'), r.sellRate);
+    });
+
+    return results.map((item) => {
+      const dateKey = moment(item.documentDate).format('YYYY-MM-DD');
+      const sellRate = rateMap.get(dateKey) || (oldestRate ? oldestRate.sellRate : 1);
+      const factor = item.currency.id === CURRENCY.DOLARES ? sellRate : 1;
+      const round = (value: number) => Math.round(value * 100) / 100;
+
+      // Lógica de origen
+      let originCode = 'Clásico';
+      if (item.accountability) {
+        originCode = item.accountability.code;
+      } else if (item.pettyCash) {
+        originCode = item.pettyCash.code;
+      }
+
+      // Obtenemos la fecha de pago del primer movimiento de detracción encontrado
+      const detractionPaymentDate = item.movements.length > 0
+        ? moment(item.movements[0].paymentDate).format('DD/MM/YYYY')
+        : 'Pendiente';
+
+      return {
+        id: item.id,
+        totalAmountPEN: round(Number(item.totalAmount) * factor),
+        taxAmountPEN: round(Number(item.taxAmount) * factor),
+        netAmountPEN: round(Number(item.netAmount) * factor),
+        detractionAmountPEN: round(Number(item.detractionAmount) * factor),
+        amountToPayPEN: round(Number(item.amountToPay) * factor),
+        paidAmountPEN: round(Number(item.paidAmount) * factor),
+        exchangeRateUsed: factor,
+
+        code: item.code,
+        description: item.description,
+        totalAmount: item.totalAmount,
+        taxAmount: item.taxAmount,
+        netAmount: item.netAmount,
+        detractionRate: item.detractionRate,
+        detractionAmount: item.detractionAmount,
+        amountToPay: item.amountToPay,
+        paidAmount: item.paidAmount,
+
+        registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
+        documentDate: moment(item.documentDate).format('DD/MM/YYYY'),
+        expireDate: moment(item.expireDate).format('DD/MM/YYYY'),
+        // Agregamos el campo de fecha de pago de detracción al resultado
+        detractionPaymentDate: detractionPaymentDate,
+
+        transactionTypeName: item.transactionType.name,
+        documentTypeName: item.documentType.name,
+        partyName: item.party.name,
+        documentStatusName: item.documentStatus.name,
+        projectName: item.budgetItem?.definition?.project?.name || null,
+        currencyName: item.currency.name,
+        userName: item.user.firstName,
+        originCode: originCode,
+
+        // Categorías de presupuesto
+        budgetItemNatureName: item.budgetItem?.definition?.nature?.name || '',
+        budgetItemCategoryName: item.budgetItem?.definition?.category?.budgetCategory.name || '',
+        budgetItemSubCategoryName: item.budgetItem?.definition?.category?.name || '',
+      };
+    });
+  }
 
 
   async findByFiltersReportExpense(filters: {
@@ -2757,7 +3069,7 @@ export class ZentraDocumentService {
       const round = (value: number) => Math.round(value * 100) / 100;
 
       let originCode = 'Clásico'; // Valor por defecto
-      
+
       if (item.accountability !== null) {
         originCode = item.accountability.code;
       } else if (item.pettyCash !== null) {
@@ -2850,7 +3162,7 @@ export class ZentraDocumentService {
     endDate?: string;
   }) {
     const { transactionTypeId, documentStatusId, companyId, startDate, endDate } = filters;
-    
+
     const whereInstallment: any = {
       deletedAt: null,
       installmentStatusId: INSTALLMENT_STATUS.PAGADO,
