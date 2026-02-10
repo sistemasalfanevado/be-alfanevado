@@ -172,6 +172,40 @@ export class ZentraBudgetItemDefinitionService {
     }));
   }
 
+  async findAllCompleteByProjectOrder(projectId: string) {
+    const results = await this.prisma.zentraBudgetItemDefinition.findMany({
+      where: { deletedAt: null, projectId, visibilityId: VISIBIILITY.VISIBLE },
+      include: {
+        category: true,
+        project: true,
+        nature: true,
+        visibility: true,
+      },
+      orderBy: [
+        { name: 'asc' },               // 3. Finalmente por el Nombre del item
+      ],
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      name: item.name,
+
+      categoryId: item.category.id,
+      categoryName: item.category.name,
+
+      projectId: item.project.id,
+      projectName: item.project.name,
+
+      natureId: item.nature?.id ?? null,
+      natureName: item.nature?.name ?? null,
+
+      visibilityId: item.visibility?.id,
+      visibilityName: item.visibility?.name,
+
+      idFirebase: item.idFirebase,
+    }));
+  }
+
   async findAllByProject(projectId: string) {
     const results = await this.prisma.zentraBudgetItemDefinition.findMany({
       where: { deletedAt: null, projectId, visibilityId: VISIBIILITY.VISIBLE },

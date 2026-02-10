@@ -198,8 +198,10 @@ export class ZentraBudgetItemService {
         visibility: true,
       },
       orderBy: [
+        { definition: { category: { budgetCategory: { name: 'asc' } } } },
+        { definition: { category: { name: 'asc' } } },
+        { definition: { nature: { name: 'asc' } } },
         { definition: { name: 'asc' } },
-        { currency: { name: 'asc' } },
       ],
     });
 
@@ -225,8 +227,10 @@ export class ZentraBudgetItemService {
         visibility: true,
       },
       orderBy: [
+        //{ definition: { category: { budgetCategory: { name: 'asc' } } } },
+        { definition: { nature: { name: 'asc' } } },
+        { definition: { category: { name: 'asc' } } },
         { definition: { name: 'asc' } },
-        { currency: { name: 'asc' } },
       ],
     });
 
@@ -247,8 +251,10 @@ export class ZentraBudgetItemService {
         visibility: true,
       },
       orderBy: [
+        { definition: { category: { budgetCategory: { name: 'asc' } } } },
+        { definition: { category: { name: 'asc' } } },
+        { definition: { nature: { name: 'asc' } } },
         { definition: { name: 'asc' } },
-        { currency: { name: 'asc' } },
       ],
     });
 

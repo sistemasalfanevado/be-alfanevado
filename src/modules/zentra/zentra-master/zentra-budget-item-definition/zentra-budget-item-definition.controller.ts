@@ -54,6 +54,11 @@ export class ZentraBudgetItemDefinitionController {
   findAllByProject(@Param('projectId') projectId: string) {
     return this.zentraBudgetItemDefinitionService.findAllByProject(projectId);
   }
+
+  @Get('order-project/:projectId')
+  findAllCompleteByProjectOrder(@Param('projectId') projectId: string) {
+    return this.zentraBudgetItemDefinitionService.findAllCompleteByProjectOrder(projectId);
+  }
   
   @Get('company/:companyId')
   findAllByCompany(@Param('companyId') companyId: string) {
