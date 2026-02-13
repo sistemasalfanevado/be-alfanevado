@@ -175,7 +175,7 @@ export class ZentraMovementService {
 
       exchangeRateNumber = Number(exchangeRateNumber).toFixed(2);
     }
-    
+
     return {
       id: item.id,
       code: item.code,
@@ -243,7 +243,7 @@ export class ZentraMovementService {
 
       paymentCategoryId: !item.paymentCategory?.id ? '' : item.paymentCategory?.id,
       paymentCategoryName: !item.paymentCategory?.name ? '' : '' + item.paymentCategory?.name,
-      
+
 
       documentUrl: item.documentUrl,
       documentName: item.documentName,
@@ -256,6 +256,40 @@ export class ZentraMovementService {
       fromTelecredito: item.fromTelecredito ?? false,
 
       exchangeRateNumber: exchangeRateNumber,
+
+    };
+  }
+
+  private formatMovementSummary(item: any) {
+    return {
+      id: item.id,
+      code: item.code,
+      description: item.description,
+      paymentDate: moment(item.paymentDate).format('DD/MM/YYYY'),
+
+      amount: Number(item.amount || 0),
+
+      executedAmount: Math.abs(Number(item.executedAmount || 0)),
+      executedSoles: Math.abs(Number(item.executedSoles || 0)),
+      executedDolares: Math.abs(Number(item.executedDolares || 0)),
+
+      budgetItemId: item.budgetItem?.id,
+      budgetItemName: item.budgetItem?.definition?.name || 'Sin definir',
+
+      natureId: item.budgetItem?.definition?.nature?.id,
+      NatureName: item.budgetItem?.definition?.nature?.name || 'Sin definir',
+
+      transactionTypeId: item.transactionType?.id,
+      transactionTypeName: item.transactionType?.name,
+
+      partyId: item.document?.party?.id,
+      partyName: item.document?.party?.name,
+
+      documentUrl: item.documentUrl || '',
+      fromTelecredito: item.fromTelecredito ?? false,
+
+      bankAccountCurrencyId: item.bankAccount.currency.id,
+      bankAccountCurrency: item.bankAccount.currency.name,
 
     };
   }
@@ -283,7 +317,7 @@ export class ZentraMovementService {
         exchangeRate =
           await this.zentraExchangeRateService.upsertTodayRateFromSunat();
       }
-      
+
       const {
         movementStatusId,
         documentId,
@@ -754,12 +788,26 @@ export class ZentraMovementService {
         },
       },
       include: {
+        document: {
+          include: {
+            party: true,
+          }
+        },
         budgetItem: {
           include: {
-            definition: true,
+            definition: {
+              include: {
+                nature: true
+              }
+            }
           },
         },
         transactionType: true,
+        bankAccount: {
+          include: {
+            currency: true
+          }
+        }
       },
     });
   }
@@ -770,7 +818,7 @@ export class ZentraMovementService {
 
     for (const mov of movements) {
       const natureId = mov.budgetItem.definition.natureId;
-
+      
       if (natureId === BUDGET_NATURE.INGRESO) {
         ingresos.push(mov);
       } else if (
@@ -827,20 +875,47 @@ export class ZentraMovementService {
   }
 
   async getMonthlyProfitability(projectId: string, month: number, year: number) {
-
     const startOfMonth = moment({ year, month }).startOf('month').toDate();
     const endOfMonth = moment({ year, month }).endOf('month').toDate();
 
-    const movements = await this.getMovementsInRange(projectId, startOfMonth, endOfMonth);
-    const { ingresos, gastos } = this.classifyMovements(movements);
+    const allMovements = await this.getMovementsInRange(projectId, startOfMonth, endOfMonth);
 
-    const result = { ingresos: 0, gastos: 0 };
+    const ingresos: any[] = [];
+    const gastos: any[] = [];
+    const rendicionCuenta: any[] = [];
+    const cajaChica: any[] = [];
+    
+    for (const mov of allMovements) {
+      const natureId = mov.budgetItem.definition.natureId;
+      
+      const formatted = this.formatMovementSummary(mov);
 
-    this.sumMovements(ingresos, 'ingresos', result);
-    this.sumMovements(gastos, 'gastos', result);
+      if (natureId === BUDGET_NATURE.INGRESO) {
+        ingresos.push(formatted);
+      }
+      if (natureId === BUDGET_NATURE.GASTO || natureId === BUDGET_NATURE.COSTO_DIRECTO) {
+        gastos.push(formatted);
+      }
+      if (natureId === BUDGET_NATURE.RENDICION_CUENTA) {
+        rendicionCuenta.push(formatted);
+      }
+      if (natureId === BUDGET_NATURE.CAJA_CHICA) {
+        cajaChica.push(formatted);
+      }
 
+    }
+
+    const result = {
+      detalleIngresos: ingresos,
+      detalleGastos: gastos,
+      detalleRendicionCuenta: rendicionCuenta,
+      detalleCajaChica: cajaChica,
+    };
+    
     return result;
   }
+
+
 
 
   async findAllByProject(projectId: string): Promise<any[]> {
