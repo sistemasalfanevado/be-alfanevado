@@ -818,7 +818,7 @@ export class ZentraMovementService {
 
     for (const mov of movements) {
       const natureId = mov.budgetItem.definition.natureId;
-      
+
       if (natureId === BUDGET_NATURE.INGRESO) {
         ingresos.push(mov);
       } else if (
@@ -884,24 +884,40 @@ export class ZentraMovementService {
     const gastos: any[] = [];
     const rendicionCuenta: any[] = [];
     const cajaChica: any[] = [];
-    
+
     for (const mov of allMovements) {
       const natureId = mov.budgetItem.definition.natureId;
-      
+      const transactionTypeId = mov.transactionType.id;
       const formatted = this.formatMovementSummary(mov);
 
+
       if (natureId === BUDGET_NATURE.INGRESO) {
-        ingresos.push(formatted);
+        if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
+          ingresos.push(formatted);
+        }
+        if (transactionTypeId === TRANSACTION_TYPE.EXIT) {
+          gastos.push(formatted);
+        }
       }
       if (natureId === BUDGET_NATURE.GASTO || natureId === BUDGET_NATURE.COSTO_DIRECTO) {
-        gastos.push(formatted);
+
+        if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
+          ingresos.push(formatted);
+        }
+        if (transactionTypeId === TRANSACTION_TYPE.EXIT) {
+          gastos.push(formatted);
+        }
       }
+      
+
       if (natureId === BUDGET_NATURE.RENDICION_CUENTA) {
         rendicionCuenta.push(formatted);
       }
+
       if (natureId === BUDGET_NATURE.CAJA_CHICA) {
         cajaChica.push(formatted);
       }
+
 
     }
 
@@ -911,7 +927,7 @@ export class ZentraMovementService {
       detalleRendicionCuenta: rendicionCuenta,
       detalleCajaChica: cajaChica,
     };
-    
+
     return result;
   }
 
