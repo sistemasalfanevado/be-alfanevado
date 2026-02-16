@@ -325,7 +325,6 @@ export class ZentraProjectService {
         for (const item of def.budgetItems) {
           for (const mv of item.movements) {
 
-            // 1. tipo de cambio calculado si no hay relación exchangeRate
             const executedAmount = Number(mv.executedAmount);
             const executedSoles = Number(mv.executedSoles);
             const executedDolares = Number(mv.executedDolares);
