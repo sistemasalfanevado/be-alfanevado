@@ -5,7 +5,7 @@ import { UpdateZentraMovementDto } from './dto/update-zentra-movement.dto';
 import { ZentraExchangeRateService } from '../../zentra-master/zentra-exchange-rate/zentra-exchange-rate.service';
 import * as moment from 'moment';
 
-import { TRANSACTION_TYPE, PETTY_CASH_STATUS, CURRENCY, BUDGET_NATURE, PARTY_DOCUMENT_HIERARCHY, PAYMENT_CATEGORY, ACCOUNTABILITY_STATUS } from 'src/shared/constants/app.constants';
+import { TRANSACTION_TYPE, PETTY_CASH_STATUS, CURRENCY, BUDGET_NATURE, PARTY_DOCUMENT_HIERARCHY, PAYMENT_CATEGORY, ACCOUNTABILITY_STATUS, DOCUMENT_CATEGORY, DOCUMENT_TYPE } from 'src/shared/constants/app.constants';
 
 
 @Injectable()
@@ -791,6 +791,8 @@ export class ZentraMovementService {
         document: {
           include: {
             party: true,
+            documentCategory: true,
+            documentType: true,
             accountability: {
               include: {
                 accountabilityStatus: true,
@@ -884,6 +886,7 @@ export class ZentraMovementService {
     return result;
   }
 
+
   async getMonthlyProfitability(projectId: string, month: number, year: number) {
     const startOfMonth = moment({ year, month }).startOf('month').toDate();
     const endOfMonth = moment({ year, month }).endOf('month').toDate();
@@ -899,11 +902,21 @@ export class ZentraMovementService {
       const natureId = mov.budgetItem.definition.natureId;
       const transactionTypeId = mov.transactionType.id;
 
+      const documentTypeId = mov.document?.documentType.id
       const accountabilityStatusId = mov.document?.accountability?.accountabilityStatus?.id;
       const pettyCashStatusId = mov.document?.pettyCash?.pettyCashStatus?.id;
       
       const formatted = this.formatMovementSummary(mov);
 
+
+      if (documentTypeId === DOCUMENT_TYPE.DEVOLUCION_USUARIO) {
+        if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
+          ingresos.push(formatted);
+        }
+        if (transactionTypeId === TRANSACTION_TYPE.EXIT) {
+          gastos.push(formatted);
+        }
+      }
 
       if (natureId === BUDGET_NATURE.INGRESO) {
         if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
