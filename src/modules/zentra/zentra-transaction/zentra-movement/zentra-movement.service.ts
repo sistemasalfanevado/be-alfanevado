@@ -5,7 +5,7 @@ import { UpdateZentraMovementDto } from './dto/update-zentra-movement.dto';
 import { ZentraExchangeRateService } from '../../zentra-master/zentra-exchange-rate/zentra-exchange-rate.service';
 import * as moment from 'moment';
 
-import { TRANSACTION_TYPE, CURRENCY, BUDGET_NATURE, PARTY_DOCUMENT_HIERARCHY, PAYMENT_CATEGORY } from 'src/shared/constants/app.constants';
+import { TRANSACTION_TYPE, PETTY_CASH_STATUS, CURRENCY, BUDGET_NATURE, PARTY_DOCUMENT_HIERARCHY, PAYMENT_CATEGORY, ACCOUNTABILITY_STATUS } from 'src/shared/constants/app.constants';
 
 
 @Injectable()
@@ -791,6 +791,16 @@ export class ZentraMovementService {
         document: {
           include: {
             party: true,
+            accountability: {
+              include: {
+                accountabilityStatus: true,
+              }
+            },
+            pettyCash: {
+              include: {
+                pettyCashStatus: true,
+              }
+            },
           }
         },
         budgetItem: {
@@ -888,6 +898,10 @@ export class ZentraMovementService {
     for (const mov of allMovements) {
       const natureId = mov.budgetItem.definition.natureId;
       const transactionTypeId = mov.transactionType.id;
+
+      const accountabilityStatusId = mov.document?.accountability?.accountabilityStatus?.id;
+      const pettyCashStatusId = mov.document?.pettyCash?.pettyCashStatus?.id;
+      
       const formatted = this.formatMovementSummary(mov);
 
 
@@ -908,13 +922,13 @@ export class ZentraMovementService {
           gastos.push(formatted);
         }
       }
-      
 
-      if (natureId === BUDGET_NATURE.RENDICION_CUENTA) {
+
+      if (natureId === BUDGET_NATURE.RENDICION_CUENTA && accountabilityStatusId !== ACCOUNTABILITY_STATUS.LIQUIDADO) {
         rendicionCuenta.push(formatted);
       }
 
-      if (natureId === BUDGET_NATURE.CAJA_CHICA) {
+      if (natureId === BUDGET_NATURE.CAJA_CHICA && pettyCashStatusId !== PETTY_CASH_STATUS.FINALIZADO) {
         cajaChica.push(formatted);
       }
 
