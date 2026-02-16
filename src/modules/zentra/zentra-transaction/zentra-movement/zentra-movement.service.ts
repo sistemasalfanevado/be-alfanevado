@@ -773,6 +773,78 @@ export class ZentraMovementService {
 
   }
 
+  async findByFiltersAllBudgetItem(filters: {
+    partyId?: string;
+    budgetItemId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    const { partyId, budgetItemId, startDate, endDate } = filters;
+
+    const where: any = {
+      deletedAt: null,
+    };
+
+    if (startDate || endDate) {
+      where.paymentDate = {};
+      if (startDate) {
+        where.paymentDate.gte = moment(startDate).startOf('day').toDate();
+      }
+      if (endDate) {
+        where.paymentDate.lte = moment(endDate).endOf('day').toDate();
+      }
+    }
+
+    if (budgetItemId && budgetItemId.trim() !== '') {
+      where.budgetItem = { id: budgetItemId };
+    }
+      
+
+    if (partyId && partyId.trim() !== '') {
+      where.document = {
+        partyId
+      }
+    }
+
+    const results = await this.prisma.zentraMovement.findMany({
+      where,
+      include: this.includeRelations,
+      orderBy: {
+        paymentDate: 'desc',
+      },
+    });
+
+    const bankSummary: Record<string, { id: string, bankAccountName: string, entry: number, exit: number, balance: number }> = {};
+
+    for (const item of results) {
+      const accountId = item.bankAccount.id;
+
+      if (!bankSummary[accountId]) {
+        bankSummary[accountId] = {
+          bankAccountName: `${item.bankAccount.bank.name} - ${item.bankAccount.currency.name}`,
+          entry: 0,
+          exit: 0,
+          balance: 0,
+          id: item.bankAccount.id,
+        };
+      }
+
+      if (item.transactionType.id === TRANSACTION_TYPE.ENTRY) {
+        bankSummary[accountId].entry += Number(item.amount);
+        bankSummary[accountId].balance += Number(item.amount);
+      } else if (item.transactionType.id === TRANSACTION_TYPE.EXIT) {
+        bankSummary[accountId].exit += Number(item.amount);
+        bankSummary[accountId].balance -= Number(item.amount);
+      }
+    }
+
+    return {
+      movements: results.map(item => this.formatMovement(item)),
+      bankSummary: Object.values(bankSummary),
+    };
+
+  }
+
   private async getMovementsInRange(projectId: string, start: Date, end: Date) {
     return this.prisma.zentraMovement.findMany({
       where: {
@@ -918,6 +990,16 @@ export class ZentraMovementService {
         }
       }
 
+
+      if (natureId === BUDGET_NATURE.EXTORNO || natureId === BUDGET_NATURE.NO_IDENTIFICADA) {
+        if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
+          ingresos.push(formatted);
+        }
+        if (transactionTypeId === TRANSACTION_TYPE.EXIT) {
+          gastos.push(formatted);
+        }
+      }
+
       if (natureId === BUDGET_NATURE.INGRESO) {
         if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
           ingresos.push(formatted);
@@ -926,6 +1008,7 @@ export class ZentraMovementService {
           gastos.push(formatted);
         }
       }
+
       if (natureId === BUDGET_NATURE.GASTO || natureId === BUDGET_NATURE.COSTO_DIRECTO) {
 
         if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
@@ -935,7 +1018,6 @@ export class ZentraMovementService {
           gastos.push(formatted);
         }
       }
-
 
       if (natureId === BUDGET_NATURE.RENDICION_CUENTA && accountabilityStatusId !== ACCOUNTABILITY_STATUS.LIQUIDADO) {
         rendicionCuenta.push(formatted);

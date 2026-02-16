@@ -91,6 +91,16 @@ export class ZentraMovementController {
     return this.zentraMovementService.findByFilters(filters);
   }
 
+  @Post('search-all-budget-item')
+  searchAllBudgetIten(@Body() filters: {
+    partyId?: string;
+    startDate?: string;
+    endDate?: string;
+    budgetItemId?: string;
+  }) {
+    return this.zentraMovementService.findByFiltersAllBudgetItem(filters);
+  }
+
   @Get('profitability/yearly/:projectId')
   async getYearlyProfitability(@Param('projectId') projectId: string) {
     return this.zentraMovementService.getYearlyProfitability(projectId);
