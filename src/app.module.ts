@@ -12,6 +12,7 @@ import { APP_INTERCEPTOR, APP_GUARD } from '@nestjs/core'; // Importa APP_GUARD
 import { AuditInterceptor } from './common/interceptors/audit.interceptor'; // Ajusta la ruta
 import { JwtAuthGuard } from './auth/shared/guards/jwt-auth.guard'; // Asegúrate de importar tu Guard
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -25,7 +26,7 @@ import { JwtAuthGuard } from './auth/shared/guards/jwt-auth.guard'; // Asegúrat
         secure: false,
         auth: {
           user: process.env.MAIL_USER,
-          pass: process.env.MAIL_PASS,
+          pass: process.env.MAIL_PASS, 
         },
       },
       defaults: {

@@ -449,9 +449,10 @@ model ZentraMovementCategory {
   id          String    @id @default(uuid())
   name        String    @db.VarChar(50)
   
-  movements   ZentraMovement[]
-  financialNatures ZentraFinancialNature[]
-  
+  movements               ZentraMovement[]
+  financialNatures        ZentraFinancialNature[]
+  movementBudgetConfig    ZentraMovementBudgetConfig[]
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
@@ -835,6 +836,7 @@ model ZentraBudgetItem {
   documents       ZentraDocument[]
   movements       ZentraMovement[]
   incomes         ZentraProjectIncome[]
+  movementBudgetConfig         ZentraMovementBudgetConfig[]
 
   // 👇 Relación inversa
   budgetItemHistories    ZentraBudgetItemHistory[]
@@ -1898,4 +1900,21 @@ model ZentraAuditLog {
   user            ZentraUser @relation(fields: [userId], references: [id])
 
   @@map("zentra_audit_logs")
+}
+
+
+model ZentraMovementBudgetConfig {
+  id          String    @id @default(uuid())
+  
+  movementCategory     ZentraMovementCategory @relation(fields: [movementCategoryId], references: [id])
+  movementCategoryId   String
+
+  budgetItem     ZentraBudgetItem @relation(fields: [budgetItemId], references: [id])
+  budgetItemId   String
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  
+  @@map("zentra_movement_budget_config")
 }

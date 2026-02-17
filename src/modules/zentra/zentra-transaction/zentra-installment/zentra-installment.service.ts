@@ -277,6 +277,7 @@ export class ZentraInstallmentService {
 
   async addPayment(data: any) {
 
+
     if (data.capital > 0) {
       await this.createMovement({
         
@@ -288,10 +289,11 @@ export class ZentraInstallmentService {
         description: 'Capital cuota ' + data.letra,
         bankAccountId: data.bankAccountId,
         documentId: data.documentId,
-        budgetItemId: data.budgetItemId,
-
+        
+        budgetItemId: data.budgetItemId1,
+        movementCategoryId: data.movementCategoryId1,
+        
         transactionTypeId: TRANSACTION_TYPE.EXIT,
-        movementCategoryId: MOVEMENT_CATEGORY.RENTABILIDAD,
         movementStatusId: MOVEMENT_STATUS.CATEGORIZADO,
       });
     }
@@ -308,10 +310,11 @@ export class ZentraInstallmentService {
         description: 'Interés cuota ' + data.letra,
         bankAccountId: data.bankAccountId,
         documentId: data.documentId,
-        budgetItemId: data.budgetItemId,
+
+        budgetItemId: data.budgetItemId2,
+        movementCategoryId: data.movementCategoryId2,
 
         transactionTypeId: TRANSACTION_TYPE.EXIT,
-        movementCategoryId: MOVEMENT_CATEGORY.DEUDA,
         movementStatusId: MOVEMENT_STATUS.CATEGORIZADO,
       });
     }
@@ -336,7 +339,7 @@ export class ZentraInstallmentService {
     await this.zentraMovementService.update(id, data);
     return this.recalculateInstallmentAndDocument(data.installmentId);
   }
-
+  
   async recalculateSimpleInstallmentAndDocument(installmentId: string) {
     return this.recalculateInstallmentAndDocument(installmentId);
   }

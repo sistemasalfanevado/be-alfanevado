@@ -160,22 +160,6 @@ export class ZentraMovementService {
     const inst = item.installment;
     const doc = item.document;
 
-    const executedAmount = Number(item.executedAmount || 0);
-    const executedSoles = Number(item.executedSoles || 0);
-    const executedDolares = Number(item.executedDolares || 0);
-
-    let exchangeRateNumber = '';
-
-    if (Math.abs(executedAmount) > 0.10) {
-      if (executedAmount === executedDolares) {
-        exchangeRateNumber = '' + (executedSoles / executedDolares);
-      } else {
-        exchangeRateNumber = '' + (executedAmount / executedDolares);
-      }
-
-      exchangeRateNumber = Number(exchangeRateNumber).toFixed(2);
-    }
-
     return {
       id: item.id,
       code: item.code,
@@ -197,8 +181,7 @@ export class ZentraMovementService {
       documentTypeId: inst?.documentType?.id ?? doc.documentType?.id,
       documentType: inst?.documentType?.name ?? doc.documentType?.name,
       documentAmountToPay: inst?.totalAmount ?? doc.amountToPay,
-
-
+      
       transactionTypeId: item.transactionType.id,
       transactionTypeName: item.transactionType.name,
 
@@ -254,9 +237,9 @@ export class ZentraMovementService {
 
       idFirebase: !item.idFirebase ? '' : item.idFirebase,
       fromTelecredito: item.fromTelecredito ?? false,
-
-      exchangeRateNumber: exchangeRateNumber,
-
+      
+      exchangeRateNumber: Number((item.exchangeRate.buyRate))
+    
     };
   }
 
