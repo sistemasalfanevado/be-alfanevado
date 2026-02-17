@@ -56,9 +56,9 @@ export class ZentraBudgetItemController {
   @Get('company/:companyId')
   findAllByCompany(@Param('companyId') companyId: string) {
     return this.zentraBudgetItemService.findAllByCompany(companyId);
-  }  
+  }
 
-  
+
   @Post('category')
   findAllByCategory(@Body() body: { categoryId: string; projectId: string }) {
     return this.zentraBudgetItemService.findAllByCategory(body.categoryId, body.projectId);
@@ -70,7 +70,7 @@ export class ZentraBudgetItemController {
   }
 
 
-  
+
   @Post('search')
   search(@Body() filters: {
     natureId?: string;
@@ -85,7 +85,7 @@ export class ZentraBudgetItemController {
   }) {
     return this.zentraBudgetItemService.findByFiltersExtra(filters);
   }
-  
+
   @Post('search-dashboard')
   searchDashboard(@Body() filters: {
     natureId?: string;
@@ -94,5 +94,9 @@ export class ZentraBudgetItemController {
     return this.zentraBudgetItemService.findByFiltersDashboard(filters);
   }
 
+  @Post('summary-projects')
+  getSummaryProjects(@Body() body: { projectIds: string[] }) {
+    return this.zentraBudgetItemService.getGeneralFinancialSummary(body.projectIds);
+  }
 
 }

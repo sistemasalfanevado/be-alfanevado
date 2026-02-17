@@ -105,7 +105,7 @@ export class ZentraMovementController {
   async getYearlyProfitability(@Param('projectId') projectId: string) {
     return this.zentraMovementService.getYearlyProfitability(projectId);
   }
-
+  
   @Post('profitability/monthly')
   async getMonthlyProfitability(
     @Body() body: { projectId: string; month: number; year: number }
@@ -116,8 +116,7 @@ export class ZentraMovementController {
       body.year
     );
   }
-
-
+  
   @Get('project/:projectId')
   findAllByProject(@Param('projectId') projectId: string) {
     return this.zentraMovementService.findAllByProject(projectId);

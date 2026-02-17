@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraBudgetItemDto } from './dto/create-zentra-budget-item.dto';
 import { UpdateZentraBudgetItemDto } from './dto/update-zentra-budget-item.dto';
-import { VISIBIILITY } from 'src/shared/constants/app.constants';
+import { BUDGET_NATURE, VISIBIILITY } from 'src/shared/constants/app.constants';
 
 
 @Injectable()
@@ -417,5 +417,49 @@ export class ZentraBudgetItemService {
 
     return results.map((item) => this.mapToDto(item));
   }
+
+
+
+  async getGeneralFinancialSummary(projectIds: string[]) {
+
+    const results = await this.prisma.zentraBudgetItem.findMany({
+      where: {
+        deletedAt: null,
+        visibilityId: VISIBIILITY.VISIBLE,
+        definition: {
+          natureId: BUDGET_NATURE.GASTO,
+          projectId: { in: projectIds }
+        }
+      },
+      include: {
+        definition: {
+          include: {
+            project: true,
+          }
+        }
+      }
+    });
+
+    const summary = projectIds.map(pid => {
+      const projectItems = results.filter((item: any) => item.definition.project.id === pid);
+
+      // Extraemos el nombre del proyecto del primer item encontrado (si existe)
+      const projectName = projectItems.length > 0
+        ? projectItems[0].definition.project.name
+        : 'Proyecto no encontrado';
+
+      return {
+        projectId: pid,
+        projectName: projectName, // <--- Nuevo campo agregado
+        totalAmount: projectItems.reduce((sum, i) => sum + Number(i.amount), 0),
+        // Usamos Math.abs porque en gastos el executed suele venir negativo
+        totalExecuted: projectItems.reduce((sum, i) => sum + Math.abs(Number(i.executedDolares)), 0),
+      };
+    });
+
+    return summary;
+
+  }
+
 
 }

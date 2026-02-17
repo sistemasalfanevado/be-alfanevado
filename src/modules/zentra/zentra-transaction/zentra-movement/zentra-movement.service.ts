@@ -244,6 +244,20 @@ export class ZentraMovementService {
   }
 
   private formatMovementSummary(item: any) {
+
+    const accountabilityCode = item.document?.accountability?.code || '';
+    const pettyCashCode = item.document?.pettyCash?.code || '';
+
+    let originCode = 'Clásico'
+
+    if (accountabilityCode) {
+      originCode = accountabilityCode
+    }
+
+    if (pettyCashCode) {
+      originCode = pettyCashCode
+    }
+
     return {
       id: item.id,
       code: item.code,
@@ -274,6 +288,10 @@ export class ZentraMovementService {
       bankAccountCurrencyId: item.bankAccount.currency.id,
       bankAccountCurrency: item.bankAccount.currency.name,
 
+      documentCode: item.document?.code,
+
+      originCode: originCode
+    
     };
   }
 
@@ -942,6 +960,7 @@ export class ZentraMovementService {
   }
 
 
+
   async getMonthlyProfitability(projectId: string, month: number, year: number) {
     const startOfMonth = moment({ year, month }).startOf('month').toDate();
     const endOfMonth = moment({ year, month }).endOf('month').toDate();
@@ -962,8 +981,7 @@ export class ZentraMovementService {
       const pettyCashStatusId = mov.document?.pettyCash?.pettyCashStatus?.id;
       
       const formatted = this.formatMovementSummary(mov);
-
-
+      
       if (documentTypeId === DOCUMENT_TYPE.DEVOLUCION_USUARIO) {
         if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
           ingresos.push(formatted);
