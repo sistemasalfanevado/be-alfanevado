@@ -61,17 +61,19 @@ export class ZentraExchangeRateService {
 
   // Extras
 
-  async findOneByDate(date: Date) {
+  async findOneByDate(date: Date | string) {
+    const normalizedDate = moment.utc(date).startOf('day').toDate();
+
     return this.prisma.zentraExchangeRate.findFirst({
       where: {
-        date: moment(date).startOf('day').toDate(),
+        date: normalizedDate,
         deletedAt: null
       },
     });
   }
 
   async getTodayRate() {
-    const today = moment().startOf('day').toDate();
+    const today = moment.utc().startOf('day').toDate();
     let rate = await this.prisma.zentraExchangeRate.findFirst({
       where: {
         date: today,
@@ -126,7 +128,7 @@ export class ZentraExchangeRateService {
   }
 
   async getExchangeRateByDate(date: Date) {
-    const normalizedDate = moment(date).startOf('day').toDate();
+    const normalizedDate = moment.utc(date).startOf('day').toDate();
 
     return await this.prisma.zentraExchangeRate.findFirst({
       where: {
@@ -139,7 +141,7 @@ export class ZentraExchangeRateService {
 
 
   async getOrFetchRate(date: Date) {
-    const normalizedDate = moment(date).startOf('day').toDate();
+    const normalizedDate = moment.utc(date).startOf('day').toDate();
 
     let exchangeRate = await this.prisma.zentraExchangeRate.findFirst({
       where: {
@@ -174,7 +176,7 @@ export class ZentraExchangeRateService {
 
   async upsertTodayRateFromSunat() {
     const { date, buyRate, sellRate } = await this.fetchTodayRateFromSunat();
-    const normalizedDate = moment(date).startOf('day').toDate();
+    const normalizedDate = moment.utc(date).startOf('day').toDate();
 
     const existingRate = await this.prisma.zentraExchangeRate.findFirst({
       where: { date: normalizedDate },
