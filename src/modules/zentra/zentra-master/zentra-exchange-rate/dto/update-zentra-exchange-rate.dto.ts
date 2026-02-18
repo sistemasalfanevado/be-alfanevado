@@ -13,11 +13,4 @@ export class UpdateZentraExchangeRateDto {
   @IsOptional()
   sellRate?: number;
 
-  @IsDateString()
-  @IsOptional()
-  createdAt?: string;
-
-  @IsDateString()
-  @IsOptional()
-  updatedAt?: string;
 }

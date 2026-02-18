@@ -2486,19 +2486,8 @@ export class ZentraDocumentService {
       .startOf('day')
       .toDate();
 
-    const normalizedDate = moment(movementDate).startOf('day').toDate();
-
-    let exchangeRate = await this.prisma.zentraExchangeRate.findUnique({
-      where: { date: normalizedDate },
-    });
-
-    if (!exchangeRate) {
-      exchangeRate =
-        await this.zentraExchangeRateService.upsertTodayRateFromSunat();
-    }
-
-    // Aqui neceesito dolarizar los datos de documentAmountToPay documentPaidAmount documentPendingAmount
-
+    const exchangeRate = await this.zentraExchangeRateService.getOrFetchRate(movementDate);
+    
     const rate = Number(exchangeRate.buyRate);
 
     // Transformamos el arreglo existente sin mutar el original

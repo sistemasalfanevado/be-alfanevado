@@ -16,9 +16,20 @@ export class ZentraExchangeRateService {
   }
 
   async findAll() {
-    return this.prisma.zentraExchangeRate.findMany({
+
+    const results = await this.prisma.zentraExchangeRate.findMany({
+      where: { deletedAt: null },
       orderBy: { date: 'desc' },
     });
+
+    return results.map((item) => ({
+      id: item.id,
+      date: moment(item.date).format('DD/MM/YYYY'),
+      sellRate: item.sellRate,
+      buyRate: item.buyRate,
+    }));
+
+
   }
 
   async findOne(id: string) {
@@ -35,35 +46,42 @@ export class ZentraExchangeRateService {
   }
 
   async remove(id: string) {
-    return this.prisma.zentraExchangeRate.delete({
+    return this.prisma.zentraExchangeRate.update({
       where: { id },
+      data: { deletedAt: new Date() },
     });
   }
 
   async restore(id: string) {
-    // Si quieres implementar "restore" como soft delete, deberías agregar deletedAt al modelo
-    throw new Error('Restore no implementado. Para soft delete agrega deletedAt al modelo.');
-  }
-
-  async findOneByDate(date: Date) {
-    return this.prisma.zentraExchangeRate.findUnique({
-      where: { date },
+    return this.prisma.zentraExchangeRate.update({
+      where: { id },
+      data: { deletedAt: null },
     });
   }
 
+  // Extras
 
+  async findOneByDate(date: Date) {
+    return this.prisma.zentraExchangeRate.findFirst({
+      where: {
+        date: moment(date).startOf('day').toDate(),
+        deletedAt: null
+      },
+    });
+  }
 
-  /** Obtiene el tipo de cambio del día de hoy */
   async getTodayRate() {
     const today = moment().startOf('day').toDate();
-    let rate = await this.prisma.zentraExchangeRate.findUnique({
-      where: { date: today },
+    let rate = await this.prisma.zentraExchangeRate.findFirst({
+      where: {
+        date: today,
+        deletedAt: null // <--- Solo activos
+      },
     });
 
     if (!rate) {
-      throw new Error('No se encontró el tipo de cambio para hoy.');
+      throw new Error('No se encontró el tipo de cambio activo para hoy.');
     }
-
     return rate;
   }
 
@@ -78,11 +96,9 @@ export class ZentraExchangeRateService {
       const sellRate = parseFloat(sellStr);
       const date = moment(dateStr, 'DD/MM/YYYY').startOf('day').toDate();
 
-      // Devolvemos el tipo de cambio obtenido de SUNAT
       return { date, buyRate, sellRate };
     } catch (error) {
 
-      // Si falla, usamos el último tipo de cambio guardado en BD
       const lastExchangeRate = await this.getExchangeRateByDate(new Date());
 
       if (!lastExchangeRate) {
@@ -112,24 +128,24 @@ export class ZentraExchangeRateService {
   async getExchangeRateByDate(date: Date) {
     const normalizedDate = moment(date).startOf('day').toDate();
 
-    let exchangeRate = await this.prisma.zentraExchangeRate.findFirst({
+    return await this.prisma.zentraExchangeRate.findFirst({
       where: {
-        date: {
-          lte: normalizedDate,
-        },
+        date: { lte: normalizedDate },
+        deletedAt: null, // <--- Evita traer tipos de cambio eliminados
       },
       orderBy: { date: 'desc' },
     });
-
-    return exchangeRate;
   }
 
 
   async getOrFetchRate(date: Date) {
     const normalizedDate = moment(date).startOf('day').toDate();
 
-    let exchangeRate = await this.prisma.zentraExchangeRate.findUnique({
-      where: { date: normalizedDate },
+    let exchangeRate = await this.prisma.zentraExchangeRate.findFirst({
+      where: {
+        date: normalizedDate,
+        deletedAt: null
+      },
     });
 
     if (!exchangeRate) {
@@ -158,14 +174,29 @@ export class ZentraExchangeRateService {
 
   async upsertTodayRateFromSunat() {
     const { date, buyRate, sellRate } = await this.fetchTodayRateFromSunat();
-
-    // Aseguramos que la fecha de SUNAT también esté normalizada
     const normalizedDate = moment(date).startOf('day').toDate();
 
-    return this.prisma.zentraExchangeRate.upsert({
+    const existingRate = await this.prisma.zentraExchangeRate.findFirst({
       where: { date: normalizedDate },
-      create: { date: normalizedDate, buyRate, sellRate },
-      update: { buyRate, sellRate },
+    });
+
+    if (existingRate) {
+      return this.prisma.zentraExchangeRate.update({
+        where: { id: existingRate.id },
+        data: {
+          buyRate,
+          sellRate,
+          deletedAt: null,
+        },
+      });
+    }
+
+    return this.prisma.zentraExchangeRate.create({
+      data: {
+        date: normalizedDate,
+        buyRate,
+        sellRate,
+      },
     });
   }
 

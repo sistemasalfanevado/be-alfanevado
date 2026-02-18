@@ -1160,7 +1160,7 @@ model ZentraInstallmentFile {
 
 model ZentraExchangeRate {
   id         String   @id @default(uuid())
-  date       DateTime @unique          // Fecha del tipo de cambio (ej: 2025-08-21)
+  date       DateTime          // Fecha del tipo de cambio (ej: 2025-08-21)
   buyRate    Decimal  @db.Decimal(10,4) // Tipo de cambio compra
   sellRate   Decimal  @db.Decimal(10,4) // Tipo de cambio venta
   
@@ -1168,6 +1168,7 @@ model ZentraExchangeRate {
 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  deletedAt  DateTime?
 
   @@map("zentra_exchange_rate")
 }
