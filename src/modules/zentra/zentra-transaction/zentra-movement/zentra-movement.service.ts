@@ -440,7 +440,7 @@ export class ZentraMovementService {
       const movementDate = moment(updateDto.paymentDate || new Date())
         .startOf('day')
         .toDate();
-      
+
       const exchangeRate = await this.zentraExchangeRateService.getOrFetchRate(movementDate);
 
       // Nuevos montos
@@ -1409,6 +1409,48 @@ export class ZentraMovementService {
       movements: results.map(item => this.formatMovement(item))
     };
   }
+
+
+  async recalculateExchangeRatesByRange(startDateStr: string, endDateStr: string) {
+    
+    const start = moment.utc(startDateStr, 'DD/MM/YYYY').startOf('day').toDate();
+    const end = moment.utc(endDateStr, 'DD/MM/YYYY').endOf('day').toDate();
+
+    const movements = await this.prisma.zentraMovement.findMany({
+      where: {
+        paymentDate: { gte: start, lte: end },
+        deletedAt: null,
+      },
+      orderBy: { paymentDate: 'asc' }
+    });
+
+    const results: any = {
+      processed: 0,
+      errors: []
+    };
+
+    for (const mov of movements) {
+      try {
+        
+        await this.update(mov.id, {
+          amount: mov.amount,
+          paymentDate: mov.paymentDate,
+          bankAccountId: mov.bankAccountId,
+          transactionTypeId: mov.transactionTypeId,
+        } as any);
+
+        results.processed++;
+      } catch (error) {
+        results.errors.push({ id: mov.id, error: error.message });
+      }
+    }
+
+    return {
+      message: 'Proceso de recalculo finalizado',
+      ...results
+    };
+  }
+
 
 
 
