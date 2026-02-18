@@ -5,7 +5,7 @@ import { UpdateZentraMovementDto } from './dto/update-zentra-movement.dto';
 import { ZentraExchangeRateService } from '../../zentra-master/zentra-exchange-rate/zentra-exchange-rate.service';
 import * as moment from 'moment';
 
-import { TRANSACTION_TYPE, PETTY_CASH_STATUS, CURRENCY, BUDGET_NATURE, PARTY_DOCUMENT_HIERARCHY, PAYMENT_CATEGORY, ACCOUNTABILITY_STATUS, DOCUMENT_CATEGORY, DOCUMENT_TYPE } from 'src/shared/constants/app.constants';
+import { TRANSACTION_TYPE, PETTY_CASH_STATUS, CURRENCY, BUDGET_NATURE, PARTY_DOCUMENT_HIERARCHY, PAYMENT_CATEGORY, ACCOUNTABILITY_STATUS, DOCUMENT_CATEGORY, DOCUMENT_TYPE, VISIBIILITY } from 'src/shared/constants/app.constants';
 
 
 @Injectable()
@@ -755,12 +755,12 @@ export class ZentraMovementService {
   }
 
   async findByFiltersAllBudgetItem(filters: {
-    partyId?: string;
     budgetItemId?: string;
     startDate?: string;
     endDate?: string;
+    projectId?: string;
   }) {
-    const { partyId, budgetItemId, startDate, endDate } = filters;
+    const { projectId, budgetItemId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -779,12 +779,13 @@ export class ZentraMovementService {
     if (budgetItemId && budgetItemId.trim() !== '') {
       where.budgetItem = { id: budgetItemId };
     }
-
-
-    if (partyId && partyId.trim() !== '') {
-      where.document = {
-        partyId
-      }
+    else if (projectId && projectId.trim() !== '') {
+      where.budgetItem = {
+        definition: {
+          projectId: projectId,
+          visibilityId: VISIBIILITY.VISIBLE
+        }
+      };
     }
 
     const results = await this.prisma.zentraMovement.findMany({
@@ -1412,7 +1413,7 @@ export class ZentraMovementService {
 
 
   async recalculateExchangeRatesByRange(startDateStr: string, endDateStr: string) {
-    
+
     const start = moment.utc(startDateStr, 'DD/MM/YYYY').startOf('day').toDate();
     const end = moment.utc(endDateStr, 'DD/MM/YYYY').endOf('day').toDate();
 
@@ -1431,7 +1432,7 @@ export class ZentraMovementService {
 
     for (const mov of movements) {
       try {
-        
+
         await this.update(mov.id, {
           amount: mov.amount,
           paymentDate: mov.paymentDate,

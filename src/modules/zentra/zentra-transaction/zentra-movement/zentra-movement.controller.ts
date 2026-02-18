@@ -93,10 +93,10 @@ export class ZentraMovementController {
 
   @Post('search-all-budget-item')
   searchAllBudgetIten(@Body() filters: {
-    partyId?: string;
     startDate?: string;
     endDate?: string;
     budgetItemId?: string;
+    projectId?: string;
   }) {
     return this.zentraMovementService.findByFiltersAllBudgetItem(filters);
   }
