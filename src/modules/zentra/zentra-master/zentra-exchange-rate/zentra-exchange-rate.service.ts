@@ -25,6 +25,7 @@ export class ZentraExchangeRateService {
     return results.map((item) => ({
       id: item.id,
       date: moment(item.date).format('DD/MM/YYYY'),
+      dateReal: item.date,
       sellRate: item.sellRate,
       buyRate: item.buyRate,
     }));
