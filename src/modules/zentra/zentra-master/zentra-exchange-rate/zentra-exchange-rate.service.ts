@@ -52,6 +52,7 @@ export class ZentraExchangeRateService {
   }
 
 
+
   /** Obtiene el tipo de cambio del día de hoy */
   async getTodayRate() {
     const today = moment().startOf('day').toDate();
@@ -66,7 +67,6 @@ export class ZentraExchangeRateService {
     return rate;
   }
 
-  /** Obtiene el tipo de cambio actual desde SUNAT, o usa el último guardado si falla */
   async fetchTodayRateFromSunat() {
     const url = 'https://www.sunat.gob.pe/a/txt/tipoCambio.txt';
 
@@ -97,16 +97,6 @@ export class ZentraExchangeRateService {
     }
   }
 
-  /** Inserta o actualiza el tipo de cambio para hoy */
-  async upsertTodayRateFromSunat() {
-    const { date, buyRate, sellRate } = await this.fetchTodayRateFromSunat();
-    return this.prisma.zentraExchangeRate.upsert({
-      where: { date },
-      create: { date, buyRate, sellRate },
-      update: { buyRate, sellRate },
-    });
-  }
-
   async getLatestRate() {
     const rate = await this.prisma.zentraExchangeRate.findFirst({
       orderBy: { date: 'desc' },
@@ -133,6 +123,52 @@ export class ZentraExchangeRateService {
 
     return exchangeRate;
   }
+
+
+  async getOrFetchRate(date: Date) {
+    const normalizedDate = moment(date).startOf('day').toDate();
+
+    let exchangeRate = await this.prisma.zentraExchangeRate.findUnique({
+      where: { date: normalizedDate },
+    });
+
+    if (!exchangeRate) {
+      try {
+        exchangeRate = await this.upsertTodayRateFromSunat();
+      } catch (error) {
+        const lastAvailable = await this.prisma.zentraExchangeRate.findFirst({
+          orderBy: { date: 'desc' },
+        });
+
+        if (lastAvailable) {
+          exchangeRate = await this.prisma.zentraExchangeRate.create({
+            data: {
+              date: normalizedDate,
+              buyRate: lastAvailable.buyRate,
+              sellRate: lastAvailable.sellRate,
+            },
+          });
+        }
+      }
+    }
+
+    if (!exchangeRate) throw new Error('No hay tipo de cambio disponible.');
+    return exchangeRate;
+  }
+
+  async upsertTodayRateFromSunat() {
+    const { date, buyRate, sellRate } = await this.fetchTodayRateFromSunat();
+
+    // Aseguramos que la fecha de SUNAT también esté normalizada
+    const normalizedDate = moment(date).startOf('day').toDate();
+
+    return this.prisma.zentraExchangeRate.upsert({
+      where: { date: normalizedDate },
+      create: { date: normalizedDate, buyRate, sellRate },
+      update: { buyRate, sellRate },
+    });
+  }
+
 
 
 }

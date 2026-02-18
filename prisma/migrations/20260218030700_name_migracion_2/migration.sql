@@ -1,0 +1,48 @@
+-- AlterTable
+ALTER TABLE "landing_lot" ALTER COLUMN "totalPrice" SET DATA TYPE DECIMAL(16,4);
+
+-- AlterTable
+ALTER TABLE "zentra_bank_account" ALTER COLUMN "amount" SET DATA TYPE DECIMAL(16,4);
+
+-- AlterTable
+ALTER TABLE "zentra_bank_statement" ALTER COLUMN "balance" SET DATA TYPE DECIMAL(16,4);
+
+-- AlterTable
+ALTER TABLE "zentra_budget_increase_request" ALTER COLUMN "requestedAmount" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "availableAmount" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "extraNeeded" SET DATA TYPE DECIMAL(16,4);
+
+-- AlterTable
+ALTER TABLE "zentra_budget_item" ALTER COLUMN "amount" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "executedAmount" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "executedDolares" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "executedSoles" SET DATA TYPE DECIMAL(16,4);
+
+-- AlterTable
+ALTER TABLE "zentra_budget_item_history" ALTER COLUMN "oldAmount" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "newAmount" SET DATA TYPE DECIMAL(16,4);
+
+-- AlterTable
+ALTER TABLE "zentra_document" ALTER COLUMN "totalAmount" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "amountToPay" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "detractionAmount" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "detractionRate" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "netAmount" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "paidAmount" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "taxAmount" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "totalInflow" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "totalOutflow" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "extra" SET DATA TYPE DECIMAL(16,4);
+
+-- AlterTable
+ALTER TABLE "zentra_installment" ALTER COLUMN "capital" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "interest" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "totalAmount" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "extra" SET DATA TYPE DECIMAL(16,4),
+ALTER COLUMN "paidAmount" SET DATA TYPE DECIMAL(16,4);
+
+-- AlterTable
+ALTER TABLE "zentra_movement" ALTER COLUMN "amount" SET DATA TYPE DECIMAL(16,4);
+
+-- AlterTable
+ALTER TABLE "zentra_telecredito_operation_detail" ALTER COLUMN "totalAmount" SET DATA TYPE DECIMAL(16,4);

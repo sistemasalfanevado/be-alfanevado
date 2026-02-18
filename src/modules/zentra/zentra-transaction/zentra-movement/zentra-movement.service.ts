@@ -181,7 +181,7 @@ export class ZentraMovementService {
       documentTypeId: inst?.documentType?.id ?? doc.documentType?.id,
       documentType: inst?.documentType?.name ?? doc.documentType?.name,
       documentAmountToPay: inst?.totalAmount ?? doc.amountToPay,
-      
+
       transactionTypeId: item.transactionType.id,
       transactionTypeName: item.transactionType.name,
 
@@ -237,9 +237,10 @@ export class ZentraMovementService {
 
       idFirebase: !item.idFirebase ? '' : item.idFirebase,
       fromTelecredito: item.fromTelecredito ?? false,
-      
-      exchangeRateNumber: Number((item.exchangeRate.buyRate))
-    
+
+      exchangeRateNumber: Number((item.exchangeRate.buyRate)),
+      exchangeRateId: item.exchangeRate.id
+
     };
   }
 
@@ -291,7 +292,7 @@ export class ZentraMovementService {
       documentCode: item.document?.code,
 
       originCode: originCode
-    
+
     };
   }
 
@@ -308,16 +309,7 @@ export class ZentraMovementService {
         createDto.bankAccountId
       );
 
-      const normalizedDate = moment(movementDate).startOf('day').toDate();
-
-      let exchangeRate = await this.prisma.zentraExchangeRate.findUnique({
-        where: { date: normalizedDate },
-      });
-
-      if (!exchangeRate) {
-        exchangeRate =
-          await this.zentraExchangeRateService.upsertTodayRateFromSunat();
-      }
+      const exchangeRate = await this.zentraExchangeRateService.getOrFetchRate(movementDate);
 
       const {
         movementStatusId,
@@ -445,24 +437,11 @@ export class ZentraMovementService {
         updateDto.bankAccountId ?? existing.bankAccountId
       );
 
-
-      // Usar el exchangeRateId ya existente en el movimiento
-      const exchangeRateId = existing.exchangeRateId;
-      if (!exchangeRateId) {
-        throw new Error(
-          `El movimiento ${id} no tiene un tipo de cambio asociado`
-        );
-      }
-
-      const exchangeRate = await tx.zentraExchangeRate.findUnique({
-        where: { id: exchangeRateId },
-      });
-
-      if (!exchangeRate) {
-        throw new Error(
-          `El tipo de cambio asociado al movimiento ${id} no existe`
-        );
-      }
+      const movementDate = moment(updateDto.paymentDate || new Date())
+        .startOf('day')
+        .toDate();
+      
+      const exchangeRate = await this.zentraExchangeRateService.getOrFetchRate(movementDate);
 
       // Nuevos montos
       const { executedAmount, executedSoles, executedDolares } =
@@ -495,6 +474,7 @@ export class ZentraMovementService {
           executedSoles,
           executedDolares,
           fromTelecredito: updateDto.fromTelecredito ?? existing.fromTelecredito,
+          exchangeRateId: exchangeRate.id
         },
       });
 
@@ -799,7 +779,7 @@ export class ZentraMovementService {
     if (budgetItemId && budgetItemId.trim() !== '') {
       where.budgetItem = { id: budgetItemId };
     }
-      
+
 
     if (partyId && partyId.trim() !== '') {
       where.document = {
@@ -969,19 +949,15 @@ export class ZentraMovementService {
 
     const ingresos: any[] = [];
     const gastos: any[] = [];
-    const rendicionCuenta: any[] = [];
-    const cajaChica: any[] = [];
 
     for (const mov of allMovements) {
       const natureId = mov.budgetItem.definition.natureId;
       const transactionTypeId = mov.transactionType.id;
 
       const documentTypeId = mov.document?.documentType.id
-      const accountabilityStatusId = mov.document?.accountability?.accountabilityStatus?.id;
-      const pettyCashStatusId = mov.document?.pettyCash?.pettyCashStatus?.id;
-      
+
       const formatted = this.formatMovementSummary(mov);
-      
+
       if (documentTypeId === DOCUMENT_TYPE.DEVOLUCION_USUARIO) {
         if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
           ingresos.push(formatted);
@@ -991,6 +967,14 @@ export class ZentraMovementService {
         }
       }
 
+      if (documentTypeId === DOCUMENT_TYPE.REEMBOLSO) {
+        if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
+          ingresos.push(formatted);
+        }
+        if (transactionTypeId === TRANSACTION_TYPE.EXIT) {
+          gastos.push(formatted);
+        }
+      }
 
       if (natureId === BUDGET_NATURE.EXTORNO || natureId === BUDGET_NATURE.NO_IDENTIFICADA) {
         if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
@@ -1020,22 +1004,11 @@ export class ZentraMovementService {
         }
       }
 
-      if (natureId === BUDGET_NATURE.RENDICION_CUENTA && accountabilityStatusId !== ACCOUNTABILITY_STATUS.LIQUIDADO) {
-        rendicionCuenta.push(formatted);
-      }
-
-      if (natureId === BUDGET_NATURE.CAJA_CHICA && pettyCashStatusId !== PETTY_CASH_STATUS.FINALIZADO) {
-        cajaChica.push(formatted);
-      }
-
-
     }
 
     const result = {
       detalleIngresos: ingresos,
       detalleGastos: gastos,
-      detalleRendicionCuenta: rendicionCuenta,
-      detalleCajaChica: cajaChica,
     };
 
     return result;
