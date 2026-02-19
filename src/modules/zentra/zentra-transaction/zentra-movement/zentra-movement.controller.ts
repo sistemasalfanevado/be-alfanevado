@@ -110,7 +110,7 @@ export class ZentraMovementController {
   async getMonthlyProfitability(
     @Body() body: { projectId: string; month: number; year: number }
   ) {
-    return this.zentraMovementService.getMonthlyProfitability(
+    return this.zentraMovementService.getMonthlyProfitability( 
       body.projectId,
       body.month,
       body.year

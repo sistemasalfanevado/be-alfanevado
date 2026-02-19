@@ -156,7 +156,7 @@ export class ZentraMovementService {
   }
 
   private formatMovement(item: any) {
-    const principalDoc = item.document?.party?.partyDocuments?.[0];
+    const principalDoc = item.document?.party?.partyDocuments?.[0]; 
     const inst = item.installment;
     const doc = item.document;
 
@@ -246,8 +246,14 @@ export class ZentraMovementService {
 
   private formatMovementSummary(item: any) {
 
+    const principalDoc = item.document?.party?.partyDocuments?.[0]; 
+    
+
     const accountabilityCode = item.document?.accountability?.code || '';
     const pettyCashCode = item.document?.pettyCash?.code || '';
+
+    const inst = item.installment;
+    const doc = item.document;
 
     let originCode = 'Clásico'
 
@@ -258,6 +264,7 @@ export class ZentraMovementService {
     if (pettyCashCode) {
       originCode = pettyCashCode
     }
+
 
     return {
       id: item.id,
@@ -271,9 +278,6 @@ export class ZentraMovementService {
       executedSoles: Math.abs(Number(item.executedSoles || 0)),
       executedDolares: Math.abs(Number(item.executedDolares || 0)),
 
-      budgetItemId: item.budgetItem?.id,
-      budgetItemName: item.budgetItem?.definition?.name || 'Sin definir',
-
       natureId: item.budgetItem?.definition?.nature?.id,
       NatureName: item.budgetItem?.definition?.nature?.name || 'Sin definir',
 
@@ -282,16 +286,54 @@ export class ZentraMovementService {
 
       partyId: item.document?.party?.id,
       partyName: item.document?.party?.name,
-
+      partyDocument: principalDoc?.document ?? '',
+      
       documentUrl: item.documentUrl || '',
       fromTelecredito: item.fromTelecredito ?? false,
 
+      originCode: originCode,
+
+      // extras
+      documentDate: moment(inst?.documentDate ?? doc.documentDate).format('DD/MM/YYYY'),
+      documentTypeId: inst?.documentType?.id ?? doc.documentType?.id,
+      documentType: inst?.documentType?.name ?? doc.documentType?.name,
+      documentAmountToPay: inst?.totalAmount ?? doc.amountToPay,
+
+      documentCode: inst?.code || doc?.code || 'Sin definir',
+      documentDescription: inst?.description || doc?.description || 'Sin definir',
+
+      bankAccountId: item.bankAccount.id,
+      bankAccountName: item.bankAccount.bank.name,
       bankAccountCurrencyId: item.bankAccount.currency.id,
       bankAccountCurrency: item.bankAccount.currency.name,
+      bankAccountComplete: item.bankAccount.bank.name + ' - ' + item.bankAccount.currency.name,
 
-      documentCode: item.document?.code,
+      movementCategoryId: item.movementCategory.id,
+      movementCategoryName: item.movementCategory.name,
 
-      originCode: originCode
+      projectName: item.budgetItem.definition.project.name,
+
+      budgetItemId: item.budgetItem?.id,
+      budgetItemName: item.budgetItem
+        ? `${item.budgetItem.definition.name}`
+        : null,
+      budgetSubCategoryName: item.budgetItem
+        ? `${item.budgetItem.definition.category.name}`
+        : null,
+      budgetCategoryName: item.budgetItem
+        ? `${item.budgetItem.definition.category.budgetCategory.name}`
+        : null,
+
+      budgetNatureId: item.budgetItem
+        ? `${item.budgetItem.definition.nature.id}`
+        : null,
+      budgetNatureName: item.budgetItem
+        ? `${item.budgetItem.definition.nature.name}`
+        : null,
+
+      exchangeRateNumber: Number((item.exchangeRate.buyRate)),
+      exchangeRateId: item.exchangeRate.id
+
 
     };
   }
@@ -827,6 +869,7 @@ export class ZentraMovementService {
 
   }
 
+
   private async getMovementsInRange(projectId: string, start: Date, end: Date) {
     return this.prisma.zentraMovement.findMany({
       where: {
@@ -842,9 +885,26 @@ export class ZentraMovementService {
         },
       },
       include: {
+        exchangeRate: true,
+        movementCategory: true,
         document: {
           include: {
-            party: true,
+            party: {
+              include: {
+                partyDocuments: {
+                  where: {
+                    deletedAt: null,
+                    documentHierarchyId: PARTY_DOCUMENT_HIERARCHY.PRINCIPAL,
+                  },
+                  take: 1,
+                  include: {
+                    documentType: true,
+                    documentHierarchy: true,
+                  },
+                },
+                partyRole: true,
+              },
+            },
             documentCategory: true,
             documentType: true,
             accountability: {
@@ -859,23 +919,42 @@ export class ZentraMovementService {
             },
           }
         },
+        installment: {
+          include: {
+            currency: true,
+            documentType: true,
+          },
+        },
         budgetItem: {
           include: {
             definition: {
               include: {
-                nature: true
-              }
-            }
+                project: true,
+                category: {
+                  include: {
+                    budgetCategory: true,
+                  }
+                },
+                nature: true,
+              },
+            },
+            currency: true,
           },
         },
         transactionType: true,
         bankAccount: {
           include: {
-            currency: true
+            currency: true,
+            bank: true,
           }
         }
       },
+      orderBy: {
+        paymentDate: 'desc',
+      },
     });
+
+
   }
 
   private classifyMovements(movements: any[]) {
@@ -939,7 +1018,6 @@ export class ZentraMovementService {
 
     return result;
   }
-
 
 
   async getMonthlyProfitability(projectId: string, month: number, year: number) {
