@@ -60,6 +60,44 @@ export class ZentraExchangeRateService {
     });
   }
 
+
+  async findByFilters(filters: {
+    startDate?: string;
+    endDate?: string;
+  }) {
+    const { startDate, endDate } = filters;
+
+    const where: any = {
+      deletedAt: null,
+    };
+
+    if (startDate || endDate) {
+      where.date = {};
+      if (startDate) {
+        where.date.gte = moment(startDate).startOf('day').toDate();
+      }
+      if (endDate) {
+        where.date.lte = moment(endDate).endOf('day').toDate();
+      }
+    }
+    
+    const results = await this.prisma.zentraExchangeRate.findMany({
+      where,
+      orderBy: { date: 'desc' },
+    });
+
+    return results.map((item) => ({
+      id: item.id,
+      date: moment(item.date).format('DD/MM/YYYY'),
+      dateReal: item.date,
+      sellRate: item.sellRate,
+      buyRate: item.buyRate,
+    }));
+  
+  }
+
+
+
   // Extras
 
   async findOneByDate(date: Date | string) {

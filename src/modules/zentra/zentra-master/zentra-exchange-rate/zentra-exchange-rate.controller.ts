@@ -41,4 +41,14 @@ export class ZentraExchangeRateController {
   restore(@Param('id') id: string) {
     return this.exchangeRateService.restore(id);
   }
+
+  @Post('search')
+  search(@Body() filters: {
+    startDate?: string;
+    endDate?: string;
+  }) {
+    return this.exchangeRateService.findByFilters(filters);
+  }
+
+  
 }

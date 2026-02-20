@@ -100,6 +100,8 @@ import { ZentraTransactionGeneralModule } from './zentra/zentra-transaction/zent
 import { ZentraTelecreditoOperationModule } from './zentra/zentra-transaction/zentra-telecredito-operation/zentra-telecredito-operation.module';
 import { ZentraTelecreditoOperationDetailModule } from './zentra/zentra-transaction/zentra-telecredito-operation-detail/zentra-telecredito-operation-detail.module';
 
+import { ZentraExtrasModule } from './zentra/zentra-utils/zentra-extras/zentra-extras.module';
+
 
 // Zentra Ollama
 import { ZentraOllamaModule } from './zentra/zentra-utils/zentra-ollama/zentra-ollama.module';
@@ -218,7 +220,7 @@ import { ZentraPettyCashModule } from './zentra/zentra-transaction/zentra-petty-
 
     ZentraInstallmentFileModule,
 
-
+    ZentraExtrasModule,
 
     // Utils
     ZentraBankStatementModule,
