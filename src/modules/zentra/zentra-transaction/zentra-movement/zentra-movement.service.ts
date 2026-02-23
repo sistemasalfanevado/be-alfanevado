@@ -156,7 +156,7 @@ export class ZentraMovementService {
   }
 
   private formatMovement(item: any) {
-    const principalDoc = item.document?.party?.partyDocuments?.[0]; 
+    const principalDoc = item.document?.party?.partyDocuments?.[0];
     const inst = item.installment;
     const doc = item.document;
 
@@ -246,8 +246,8 @@ export class ZentraMovementService {
 
   private formatMovementSummary(item: any) {
 
-    const principalDoc = item.document?.party?.partyDocuments?.[0]; 
-    
+    const principalDoc = item.document?.party?.partyDocuments?.[0];
+
 
     const accountabilityCode = item.document?.accountability?.code || '';
     const pettyCashCode = item.document?.pettyCash?.code || '';
@@ -287,7 +287,7 @@ export class ZentraMovementService {
       partyId: item.document?.party?.id,
       partyName: item.document?.party?.name,
       partyDocument: principalDoc?.document ?? '',
-      
+
       documentUrl: item.documentUrl || '',
       fromTelecredito: item.fromTelecredito ?? false,
 
@@ -1026,71 +1026,46 @@ export class ZentraMovementService {
 
     const allMovements = await this.getMovementsInRange(projectId, startOfMonth, endOfMonth);
 
-    const ingresos: any[] = [];
-    const gastos: any[] = [];
+    // Usamos Maps para asegurar que cada movimiento sea único por su ID
+    const ingresosMap = new Map<string, any>();
+    const gastosMap = new Map<string, any>();
 
     for (const mov of allMovements) {
       const natureId = mov.budgetItem.definition.natureId;
       const transactionTypeId = mov.transactionType.id;
+      const documentTypeId = mov.document?.documentType.id;
 
-      const documentTypeId = mov.document?.documentType.id
+      // Centralizamos los criterios de filtrado
+      const esDocumentoValido = [
+        DOCUMENT_TYPE.DEVOLUCION_USUARIO,
+        DOCUMENT_TYPE.REEMBOLSO
+      ].includes(documentTypeId);
 
-      const formatted = this.formatMovementSummary(mov);
+      const esNaturalezaValida = [
+        BUDGET_NATURE.EXTORNO,
+        BUDGET_NATURE.NO_IDENTIFICADA,
+        BUDGET_NATURE.INGRESO,
+        BUDGET_NATURE.GASTO,
+        BUDGET_NATURE.COSTO_DIRECTO
+      ].includes(natureId);
 
-      if (documentTypeId === DOCUMENT_TYPE.DEVOLUCION_USUARIO) {
-        if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
-          ingresos.push(formatted);
-        }
-        if (transactionTypeId === TRANSACTION_TYPE.EXIT) {
-          gastos.push(formatted);
-        }
-      }
-
-      if (documentTypeId === DOCUMENT_TYPE.REEMBOLSO) {
-        if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
-          ingresos.push(formatted);
-        }
-        if (transactionTypeId === TRANSACTION_TYPE.EXIT) {
-          gastos.push(formatted);
-        }
-      }
-
-      if (natureId === BUDGET_NATURE.EXTORNO || natureId === BUDGET_NATURE.NO_IDENTIFICADA) {
-        if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
-          ingresos.push(formatted);
-        }
-        if (transactionTypeId === TRANSACTION_TYPE.EXIT) {
-          gastos.push(formatted);
-        }
-      }
-
-      if (natureId === BUDGET_NATURE.INGRESO) {
-        if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
-          ingresos.push(formatted);
-        }
-        if (transactionTypeId === TRANSACTION_TYPE.EXIT) {
-          gastos.push(formatted);
-        }
-      }
-
-      if (natureId === BUDGET_NATURE.GASTO || natureId === BUDGET_NATURE.COSTO_DIRECTO) {
+      // Si cumple cualquiera de los criterios, procedemos
+      if (esDocumentoValido || esNaturalezaValida) {
+        const formatted = this.formatMovementSummary(mov);
 
         if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
-          ingresos.push(formatted);
-        }
-        if (transactionTypeId === TRANSACTION_TYPE.EXIT) {
-          gastos.push(formatted);
+          // Al usar .set(id, valor), si el ID ya existe, se sobrescribe (no se duplica)
+          ingresosMap.set(mov.id, formatted);
+        } else if (transactionTypeId === TRANSACTION_TYPE.EXIT) {
+          gastosMap.set(mov.id, formatted);
         }
       }
-
     }
 
-    const result = {
-      detalleIngresos: ingresos,
-      detalleGastos: gastos,
+    return {
+      detalleIngresos: Array.from(ingresosMap.values()),
+      detalleGastos: Array.from(gastosMap.values()),
     };
-
-    return result;
   }
 
 

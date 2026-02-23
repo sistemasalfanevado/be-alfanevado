@@ -182,7 +182,7 @@ export class ZentraBudgetItemDefinitionService {
         visibility: true,
       },
       orderBy: [
-        { name: 'asc' },               // 3. Finalmente por el Nombre del item
+        { name: 'asc' },
       ],
     });
 
