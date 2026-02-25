@@ -1026,7 +1026,6 @@ export class ZentraMovementService {
 
     const allMovements = await this.getMovementsInRange(projectId, startOfMonth, endOfMonth);
 
-    // Usamos Maps para asegurar que cada movimiento sea único por su ID
     const ingresosMap = new Map<string, any>();
     const gastosMap = new Map<string, any>();
 
@@ -1035,7 +1034,6 @@ export class ZentraMovementService {
       const transactionTypeId = mov.transactionType.id;
       const documentTypeId = mov.document?.documentType.id;
 
-      // Centralizamos los criterios de filtrado
       const esDocumentoValido = [
         DOCUMENT_TYPE.DEVOLUCION_USUARIO,
         DOCUMENT_TYPE.REEMBOLSO
@@ -1049,12 +1047,10 @@ export class ZentraMovementService {
         BUDGET_NATURE.COSTO_DIRECTO
       ].includes(natureId);
 
-      // Si cumple cualquiera de los criterios, procedemos
       if (esDocumentoValido || esNaturalezaValida) {
         const formatted = this.formatMovementSummary(mov);
 
         if (transactionTypeId === TRANSACTION_TYPE.ENTRY) {
-          // Al usar .set(id, valor), si el ID ya existe, se sobrescribe (no se duplica)
           ingresosMap.set(mov.id, formatted);
         } else if (transactionTypeId === TRANSACTION_TYPE.EXIT) {
           gastosMap.set(mov.id, formatted);
@@ -1067,10 +1063,7 @@ export class ZentraMovementService {
       detalleGastos: Array.from(gastosMap.values()),
     };
   }
-
-
-
-
+  
   async findAllByProject(projectId: string): Promise<any[]> {
     const results = await this.prisma.zentraMovement.findMany({
       where: {
@@ -1102,8 +1095,7 @@ export class ZentraMovementService {
     });
     return results.map(this.formatMovement);
   }
-
-
+  
   async findAllByBankStatement(bankAccountId: string): Promise<any[]> {
 
     const movements = await this.prisma.zentraMovement.findMany({

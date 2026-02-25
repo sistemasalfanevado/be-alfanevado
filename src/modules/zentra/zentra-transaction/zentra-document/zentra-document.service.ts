@@ -225,31 +225,24 @@ export class ZentraDocumentService {
 
       partyBankAccountInfoHtml: principalAccount
         ? `
-    <div style="display: flex; flex-direction: column; gap: 2px; line-height: 1.3; padding: 2px 0; color: ${partyCurrencyId === CURRENCY.SOLES ? '#1E3A8A' /* azul profundo */ : '#C2410C' /* naranja oscuro */
-        };">
-      <span style="font-weight: 600; font-size: 15px;">
-        ${principalAccount.bank?.name ?? '-'}
-      </span>
+        <div style="font-size: 10px; line-height: 1.2; color: ${partyCurrencyId === CURRENCY.SOLES ? '#1E3A8A' : '#C2410C'}; min-width: 190px; font-family: 'Inter', sans-serif;">
+          <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 1px;">
+            <span style="font-weight: 800; text-transform: uppercase; white-space: nowrap;">${principalAccount.bank?.name ?? '-'}</span>
+            <span style="font-size: 9px; font-weight: 900; opacity: 0.7;">•</span>
+            <span style="font-weight: 800; font-size: 9px;">${partyCurrencyId === CURRENCY.SOLES ? 'SOLES' : 'USD'}</span>
+          </div>
 
-      <div style="margin-left: 2px;">
-        <span style="display: block; font-size: 13.5px; font-weight: 500;">
-          ${principalAccount.type?.name ?? '-'}
-        </span>
-        <span style="display: block; font-size: 13px;">
-          ${principalAccount.account ?? '-'}
-        </span>
-      </div>
+          <div style="display: flex; gap: 4px; align-items: baseline; opacity: 0.9;">
+            <span style="font-weight: 700; font-size: 9px; opacity: 0.7;">${principalAccount.type?.name}.</span>
+            <span style="font-family: 'Roboto Mono', monospace; font-weight: 500; letter-spacing: -0.2px;">${principalAccount.account ?? '-'}</span>
+          </div>
 
-      <div style="margin-top: 2px; font-size: 12px; opacity: 0.85;">
-        <span style="font-weight: 500;">CCI:</span>
-        <span style="font-family: monospace;">${principalAccount.cci ?? '-'}</span>
-      </div>
-
-      <span style="margin-top: 3px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
-        ${partyCurrencyId === CURRENCY.SOLES ? 'SOLES' : 'DÓLARES'}
-      </span>
-    </div>
-  `
+          <div style="font-size: 9px; opacity: 0.7; display: flex; gap: 3px;">
+            <span style="font-weight: 700;">CCI:</span>
+            <span style="font-family: 'Roboto Mono', monospace;">${principalAccount.cci ?? '-'}</span>
+          </div>
+        </div>
+      `
         : '',
       partyBankAccountInfoSimpleHtml: principalAccount
         ? `
