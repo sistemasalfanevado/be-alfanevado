@@ -2,8 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateZentraBudgetItemDto } from './dto/create-zentra-budget-item.dto';
 import { UpdateZentraBudgetItemDto } from './dto/update-zentra-budget-item.dto';
-import { BUDGET_NATURE, VISIBIILITY } from 'src/shared/constants/app.constants';
 
+import {
+  BUDGET_CATEGORY,
+  VISIBIILITY,
+  TRANSACTION_TYPE,
+  CURRENCY,
+  BUDGET_NATURE
+} from 'src/shared/constants/app.constants';
 
 @Injectable()
 export class ZentraBudgetItemService {
@@ -418,47 +424,118 @@ export class ZentraBudgetItemService {
     return results.map((item) => this.mapToDto(item));
   }
 
-
-
   async getGeneralFinancialSummary(projectIds: string[]) {
+    const currentYear = new Date().getFullYear();
+    const lastYear = currentYear - 1;
 
-    const results = await this.prisma.zentraBudgetItem.findMany({
+    const monthNames = [
+      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
+
+    // 1. Filtramos por las dos naturalezas (GASTO y COSTO_DIRECTO)
+    const movements = await this.prisma.zentraMovement.findMany({
       where: {
         deletedAt: null,
-        visibilityId: VISIBIILITY.VISIBLE,
-        definition: {
-          natureId: BUDGET_NATURE.GASTO,
-          projectId: { in: projectIds }
-        }
+        budgetItem: {
+          visibilityId: VISIBIILITY.VISIBLE,
+          definition: {
+            projectId: { in: projectIds },
+            natureId: {
+              in: [BUDGET_NATURE.GASTO, BUDGET_NATURE.COSTO_DIRECTO]
+            }
+          },
+        },
       },
       include: {
-        definition: {
+        exchangeRate: true,
+        bankAccount: true,
+        budgetItem: {
           include: {
-            project: true,
+            definition: {
+              include: { project: true }
+            }
           }
         }
-      }
+      },
+      orderBy: { paymentDate: 'asc' }
     });
 
-    const summary = projectIds.map(pid => {
-      const projectItems = results.filter((item: any) => item.definition.project.id === pid);
+    const createEmptyBreakdown = () => [
+      { month: 0, label: `${lastYear}`, executed: 0 },
+      ...monthNames.map((name, i) => ({ month: i + 1, label: name, executed: 0 }))
+    ];
 
-      // Extraemos el nombre del proyecto del primer item encontrado (si existe)
-      const projectName = projectItems.length > 0
-        ? projectItems[0].definition.project.name
-        : 'Proyecto no encontrado';
+    const summary = projectIds.map(pid => {
+      // Intentamos obtener el nombre del proyecto de los datos (o de una consulta previa si es necesario)
+      const firstMov = movements.find(m => m.budgetItem.definition.projectId === pid);
+      const projectName = firstMov?.budgetItem.definition.project.name || '';
+      const projectImg = firstMov?.budgetItem.definition.project.imageUrl || '';
+
+      // Inicializamos las 3 estructuras solicitadas
+      const costoTierraBreakdown = createEmptyBreakdown();
+      const costoDirectoBreakdown = createEmptyBreakdown(); // Aquí irá el Costo Directo EXCLUYENDO Tierra
+      const gastoBreakdown = createEmptyBreakdown();
+
+      movements
+        .filter(m => m.budgetItem.definition.projectId === pid)
+        .forEach(mov => {
+          let amountInUsd = Number(mov.amount);
+
+          if (mov.bankAccount.currencyId === CURRENCY.SOLES) {
+            const rate = Number(mov.exchangeRate?.buyRate) || 1;
+            amountInUsd = amountInUsd / rate;
+          }
+
+          if (mov.transactionTypeId === TRANSACTION_TYPE.EXIT) {
+            const movDate = new Date(mov.paymentDate);
+            const movYear = movDate.getFullYear();
+            const def = mov.budgetItem.definition;
+
+            // --- LÓGICA DE DISTRIBUCIÓN ---
+            let targetBreakdown;
+
+            if (def.categoryId === BUDGET_CATEGORY.COSTO_TIERRA) {
+              // Caso específico: Es Tierra (aunque sea de naturaleza Costo Directo, tiene prioridad)
+              targetBreakdown = costoTierraBreakdown;
+            } else if (def.natureId === BUDGET_NATURE.COSTO_DIRECTO) {
+              // Caso general: Es Costo Directo pero NO es Tierra
+              targetBreakdown = costoDirectoBreakdown;
+            } else if (def.natureId === BUDGET_NATURE.GASTO) {
+              // Caso Gasto
+              targetBreakdown = gastoBreakdown;
+            }
+
+            if (targetBreakdown) {
+              if (movYear < currentYear) {
+                targetBreakdown[0].executed += amountInUsd;
+              } else if (movYear === currentYear) {
+                const monthIndex = movDate.getMonth() + 1;
+                targetBreakdown[monthIndex].executed += amountInUsd;
+              }
+            }
+          }
+        });
+
+      const format = (breakdown) => breakdown.map(b => ({ ...b, executed: Number(b.executed.toFixed(2)) }));
 
       return {
         projectId: pid,
-        projectName: projectName, // <--- Nuevo campo agregado
-        totalAmount: projectItems.reduce((sum, i) => sum + Number(i.amount), 0),
-        // Usamos Math.abs porque en gastos el executed suele venir negativo
-        totalExecuted: projectItems.reduce((sum, i) => sum + Math.abs(Number(i.executedDolares)), 0),
+        projectName: projectName,
+        projectImg: projectImg,
+        COSTO_TIERRA: {
+          monthlyBreakdown: format(costoTierraBreakdown)
+        },
+        COSTO_DIRECTO: {
+          monthlyBreakdown: format(costoDirectoBreakdown)
+        },
+        GASTO: {
+          monthlyBreakdown: format(gastoBreakdown)
+        }
       };
     });
 
     return summary;
-
   }
 
 
