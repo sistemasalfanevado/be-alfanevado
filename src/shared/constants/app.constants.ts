@@ -121,6 +121,8 @@ export const DOCUMENT_TYPE = {
   ADELANTO: 'd6c19939-2f6d-425e-a4bc-c31f49d514c3',
   DEVOLUCION_USUARIO: '94c666b5-2324-435f-b3ab-6b4330db174b',
   REEMBOLSO: '55781b36-19c3-4d9a-abb9-362b692d9a23',
+  FACTURA: '360bfa79-df6e-41a2-aff5-13948f1ec863'
+
 };
 
 export const BANK = {

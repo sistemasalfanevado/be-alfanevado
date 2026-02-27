@@ -2480,7 +2480,7 @@ export class ZentraDocumentService {
       .toDate();
 
     const exchangeRate = await this.zentraExchangeRateService.getOrFetchRate(movementDate);
-    
+
     const rate = Number(exchangeRate.buyRate);
 
     // Transformamos el arreglo existente sin mutar el original
@@ -2940,7 +2940,6 @@ export class ZentraDocumentService {
     });
   }
 
-
   async findByFiltersReportExpense(filters: {
     transactionTypeId?: string,
     documentStatusId?: string;
@@ -2950,9 +2949,7 @@ export class ZentraDocumentService {
   }) {
     const { transactionTypeId, documentStatusId, companyId, startDate, endDate } = filters;
 
-    const where: any = {
-      deletedAt: null,
-    };
+    const where: any = { deletedAt: null };
 
     where.documentCategory = {
       id: {
@@ -2964,39 +2961,18 @@ export class ZentraDocumentService {
       }
     };
 
-    if ((startDate || endDate)) {
+    if (startDate || endDate) {
       where.documentDate = {};
-      if (startDate) {
-        where.documentDate.gte = moment(startDate).startOf('day').toDate();
-      }
-      if (endDate) {
-        where.documentDate.lte = moment(endDate).endOf('day').toDate();
-      }
+      if (startDate) where.documentDate.gte = moment(startDate).startOf('day').toDate();
+      if (endDate) where.documentDate.lte = moment(endDate).endOf('day').toDate();
     }
 
-    if (documentStatusId && documentStatusId.trim() !== '') {
-      where.documentStatus = { id: documentStatusId };
+    // ... (tus otros filtros de ID se mantienen igual)
+    if (documentStatusId?.trim()) where.documentStatus = { id: documentStatusId };
+    if (transactionTypeId?.trim()) where.transactionType = { id: transactionTypeId };
+    if (companyId?.trim()) {
+      where.budgetItem = { definition: { project: { companyId } } };
     }
-
-
-    if (transactionTypeId && transactionTypeId.trim() !== '') {
-      where.transactionType = { id: transactionTypeId };
-    }
-
-    if (companyId && companyId.trim() !== '') {
-      where.budgetItem = {
-        definition: {
-          project: {
-            companyId
-          }
-        },
-      };
-    }
-
-    let orderBy: any = {
-      documentDate: 'desc',
-    };
-
 
     const results = await this.prisma.zentraDocument.findMany({
       where,
@@ -3012,11 +2988,7 @@ export class ZentraDocumentService {
             definition: {
               include: {
                 project: true,
-                category: {
-                  include: {
-                    budgetCategory: true
-                  }
-                },
+                category: { include: { budgetCategory: true } },
                 nature: true
               }
             },
@@ -3026,51 +2998,79 @@ export class ZentraDocumentService {
         user: true,
         documentCategory: true,
       },
-      orderBy
+      orderBy: { documentDate: 'desc' }
     });
 
     if (results.length === 0) return [];
 
+    // --- OPTIMIZACIÓN DE TIPO DE CAMBIO ---
+
+    // Obtenemos el rango real de fechas de los documentos obtenidos
+    const documentDates = results.map(r => r.documentDate.getTime());
+    const minDocDate = new Date(Math.min(...documentDates));
+    const maxDocDate = new Date(Math.max(...documentDates));
+
+    // Traemos solo los tipos de cambio necesarios
     const exchangeRates = await this.prisma.zentraExchangeRate.findMany({
+      where: {
+        date: {
+          // Traemos desde un poco antes por si el primer día no tiene TC
+          gte: moment(minDocDate).subtract(7, 'days').toDate(),
+          lte: maxDocDate
+        }
+      },
       orderBy: { date: 'asc' }
     });
 
-    const oldestRate = exchangeRates[0];
-
+    // Mapeo rápido para búsqueda O(1)
     const rateMap = new Map();
     exchangeRates.forEach(r => {
-      rateMap.set(moment(r.date).startOf('day').format('YYYY-MM-DD'), r.sellRate);
+      rateMap.set(moment(r.date).format('YYYY-MM-DD'), Number(r.sellRate));
     });
 
-    return results.map((item) => {
-      const dateKey = moment(item.documentDate).format('YYYY-MM-DD');
-
-      const sellRate = rateMap.get(dateKey) || (oldestRate ? oldestRate.sellRate : 1);
-
-      const factor = item.currency.id === CURRENCY.DOLARES ? sellRate : 1;
-      const round = (value: number) => Math.round(value * 100) / 100;
-
-      let originCode = 'Clásico'; // Valor por defecto
-
-      if (item.accountability !== null) {
-        originCode = item.accountability.code;
-      } else if (item.pettyCash !== null) {
-        originCode = item.pettyCash.code;
+    // Función para encontrar el TC más cercano (hacia atrás)
+    const getEffectiveRate = (date: Date) => {
+      let current = moment(date);
+      // Buscamos hasta 7 días atrás si no hay TC el mismo día
+      for (let i = 0; i < 7; i++) {
+        const key = current.format('YYYY-MM-DD');
+        if (rateMap.has(key)) return rateMap.get(key);
+        current.subtract(1, 'day');
       }
+      return exchangeRates.length > 0 ? Number(exchangeRates[0].sellRate) : 1;
+    };
 
+    return results.map((item) => {
+      // Determinamos el factor de conversión
+      const sellRate = getEffectiveRate(item.documentDate);
+      const factor = item.currency.id === CURRENCY.DOLARES ? sellRate : 1;
+
+      const round = (value: any) => Math.round(Number(value) * factor * 100) / 100;
+
+      const isFactura = item.documentType.id === DOCUMENT_TYPE.FACTURA;
+
+      const netAmountPEN = round(Number(item.netAmount) * factor);
+      const totalAmountPEN = round(Number(item.totalAmount) * factor);
+
+      const montoTotalSoles = isFactura ? netAmountPEN : totalAmountPEN;
+      const montoTotalDolares = round(montoTotalSoles / sellRate);
+
+      let originCode = 'Clásico';
+      if (item.accountability) originCode = item.accountability.code;
+      else if (item.pettyCash) originCode = item.pettyCash.code;
 
       return {
         id: item.id,
+        // Valores convertidos a PEN
+        totalAmountPEN: round(item.totalAmount),
+        taxAmountPEN: round(item.taxAmount),
+        netAmountPEN: round(item.netAmount),
+        detractionAmountPEN: round(item.detractionAmount),
+        amountToPayPEN: round(item.amountToPay),
+        paidAmountPEN: round(item.paidAmount),
 
-        totalAmountPEN: round(Number(item.totalAmount) * factor),
-        taxAmountPEN: round(Number(item.taxAmount) * factor),
-        netAmountPEN: round(Number(item.netAmount) * factor),
-        detractionAmountPEN: round(Number(item.detractionAmount) * factor),
-        amountToPayPEN: round(Number(item.amountToPay) * factor),
-        paidAmountPEN: round(Number(item.paidAmount) * factor),
-
-        exchangeRateUsed: factor,
-
+        exchangeRateFactor: factor,
+        exchangeRateUsed: sellRate,
 
         code: item.code,
         description: item.description,
@@ -3127,8 +3127,10 @@ export class ZentraDocumentService {
         budgetItemSubCategoryId: item.budgetItem?.definition?.category?.id || '',
         budgetItemSubCategoryName: item.budgetItem?.definition?.category?.name || '',
 
-        originCode: originCode
+        originCode: originCode,
 
+        montoTotalSoles: montoTotalSoles,
+        montoTotalDolares: montoTotalDolares,
 
       };
     });
@@ -3145,225 +3147,217 @@ export class ZentraDocumentService {
   }) {
     const { transactionTypeId, documentStatusId, companyId, startDate, endDate } = filters;
 
+    // --- 1. CONFIGURACIÓN DE FILTROS ---
     const whereInstallment: any = {
       deletedAt: null,
       installmentStatusId: INSTALLMENT_STATUS.PAGADO,
     };
 
+    const where: any = { deletedAt: null };
+    where.documentCategory = { id: { in: [DOCUMENT_CATEGORY.CLASICO] } };
+    where.documentType = { id: { notIn: [DOCUMENT_TYPE.DEVOLUCION_USUARIO] } };
+
     if (startDate || endDate) {
-      whereInstallment.documentDate = {};
-      if (startDate) {
-        whereInstallment.documentDate.gte = moment(startDate).startOf('day').toDate();
-      }
-      if (endDate) {
-        whereInstallment.documentDate.lte = moment(endDate).endOf('day').toDate();
-      }
-    }
-
-    if (companyId && companyId.trim() !== '') {
-      whereInstallment.scheduledIncomeDocument = {
-        document: {
-          budgetItem: {
-            definition: {
-              project: {
-                companyId
-              }
-            }
-          }
-        }
-      }
-    }
-
-    const where: any = {
-      deletedAt: null,
-    };
-
-    where.documentCategory = {
-      id: {
-        in: [
-          DOCUMENT_CATEGORY.CLASICO,
-        ]
-      }
-    };
-
-    if ((startDate || endDate)) {
-      where.documentDate = {};
-      if (startDate) {
-        where.documentDate.gte = moment(startDate).startOf('day').toDate();
-      }
-      if (endDate) {
-        where.documentDate.lte = moment(endDate).endOf('day').toDate();
-      }
-    }
-
-    if (documentStatusId && documentStatusId.trim() !== '') {
-      where.documentStatus = { id: documentStatusId };
-    }
-
-
-    if (transactionTypeId && transactionTypeId.trim() !== '') {
-      where.transactionType = { id: transactionTypeId };
-    }
-
-    if (companyId && companyId.trim() !== '') {
-      where.budgetItem = {
-        definition: {
-          project: {
-            companyId
-          }
-        },
+      const dateFilter = {
+        ...(startDate && { gte: moment(startDate).startOf('day').toDate() }),
+        ...(endDate && { lte: moment(endDate).endOf('day').toDate() }),
       };
+      whereInstallment.documentDate = dateFilter;
+      where.documentDate = dateFilter;
     }
 
-    const results = await this.prisma.zentraDocument.findMany({
-      where,
-      include: {
-        documentStatus: true,
-        transactionType: true,
-        documentType: true,
-        party: true,
-        budgetItem: {
-          include: {
-            definition: {
-              include: {
-                project: true
+    if (companyId?.trim()) {
+      const companyFilter = { definition: { project: { companyId } } };
+      whereInstallment.scheduledIncomeDocument = { document: { budgetItem: companyFilter } };
+      where.budgetItem = companyFilter;
+    }
+
+    if (documentStatusId?.trim()) where.documentStatus = { id: documentStatusId };
+    if (transactionTypeId?.trim()) where.transactionType = { id: transactionTypeId };
+
+    // --- 2. EJECUCIÓN DE CONSULTAS ---
+    const [results, installments] = await Promise.all([
+      this.prisma.zentraDocument.findMany({
+        where,
+        include: {
+          documentStatus: true,
+          transactionType: true,
+          documentType: true,
+          party: true,
+          budgetItem: {
+            include: {
+              definition: {
+                include: {
+                  project: true,
+                  category: { include: { budgetCategory: true } },
+                  nature: true
+                }
+              },
+            }
+          },
+          currency: true,
+          user: true,
+          documentCategory: true,
+        }
+      }),
+
+      this.prisma.zentraInstallment.findMany({
+        where: whereInstallment,
+        include: {
+          installmentStatus: true,
+          currency: true,
+          scheduledIncomeDocument: {
+            include: {
+              document: {
+                include: {
+                  budgetItem: {
+                    include: {
+                      definition: {
+                        include: {
+                          project: true,
+                          category: { include: { budgetCategory: true } },
+                          nature: true
+                        }
+                      },
+                    }
+                  },
+                  user: true,
+                  party: true
+                }
               }
             },
-          }
-        },
-        currency: true,
-        user: true,
-        documentCategory: true,
-      }
-    });
-
-
-    const installments = await this.prisma.zentraInstallment.findMany({
-      where: whereInstallment,
-      include: {
-        installmentStatus: {
-          select: { id: true, name: true },
-        },
-        currency: {
-          select: { id: true, name: true },
-        },
-        scheduledIncomeDocument: {
-          select: {
-            id: true,
-            documentId: true,
-            document: {
-              include: {
-                budgetItem: {
-                  include: {
-                    definition: {
-                      include: {
-                        project: true
-                      }
-                    }
-                  }
-                },
-                user: true,
-                party: true
-              }
-            }
           },
-        },
-        documentType: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
+          documentType: true,
+        }
+      })
+    ])
+
+
+    if (results.length === 0 && installments.length === 0) return [];
+
+    // --- 3. OPTIMIZACIÓN DE TIPO DE CAMBIO (Igual que en Expense) ---
+    const allDates = [
+      ...results.map(r => r.documentDate.getTime()),
+      ...installments.map((i: any) => i.documentDate.getTime())
+    ];
+    const minDocDate = new Date(Math.min(...allDates));
+    const maxDocDate = new Date(Math.max(...allDates));
+
+    const exchangeRates = await this.prisma.zentraExchangeRate.findMany({
+      where: {
+        date: {
+          gte: moment(minDocDate).subtract(7, 'days').toDate(),
+          lte: maxDocDate
+        }
       },
-      orderBy: {
-        documentDate: 'desc',
-      },
+      orderBy: { date: 'asc' }
     });
 
-    // 1. Mapear los Documentos (Results)
-    const mappedDocuments = results.map((item) => ({
-      id: item.id,
-      code: item.code,
-      description: item.description,
-      totalAmount: item.totalAmount,
-      taxAmount: item.taxAmount,
-      netAmount: item.netAmount,
-      detractionRate: item.detractionRate,
-      detractionAmount: item.detractionAmount,
-      amountToPay: item.amountToPay,
-      paidAmount: item.paidAmount,
+    const rateMap = new Map();
+    exchangeRates.forEach(r => {
+      rateMap.set(moment(r.date).format('YYYY-MM-DD'), Number(r.sellRate));
+    });
 
-      rawDate: item.documentDate,
-      registeredAt: moment(item.registeredAt).format('DD/MM/YYYY'),
-      documentDate: item.documentDate ? moment(item.documentDate).format('DD/MM/YYYY') : null,
-      documentTypeId: item.documentType.id,
-      documentTypeName: item.documentType.name,
-      partyId: item.party.id,
-      partyName: item.party.name,
-      documentStatusId: item.documentStatus.id,
-      documentStatusName: item.documentStatus.name,
-      budgetItemId: item.budgetItem?.id,
-      budgetItemName: item.budgetItem?.definition?.name || null,
-      projectName: item.budgetItem?.definition?.project?.name || null,
-      currencyId: item.currency.id,
-      currencyName: item.currency.name,
-      userId: item.user.id,
-      userName: item.user.firstName,
-    }));
-
-    // 2. Mapear los Installments (Cuotas)
-    const mappedInstallments = installments.map((item) => ({
-      id: item.id,
-      code: item.code,
-      description: item.description,
-      totalAmount: item.totalAmount,
-      taxAmount: 0,
-      netAmount: item.totalAmount,
-      detractionRate: 0,
-      detractionAmount: 0,
-      amountToPay: item.totalAmount,
-      paidAmount: item.paidAmount,
-
-      rawDate: item.documentDate,
-      registeredAt: moment(item.createdAt).format('DD/MM/YYYY'),
-      documentDate: item.documentDate ? moment(item.documentDate).format('DD/MM/YYYY') : 'Sin Definir',
-
-      documentTypeId: item.documentType?.id || null,
-      documentTypeName: item.documentType?.name || 'Sin Documento',
-
-      partyId: item.scheduledIncomeDocument?.document.party.id,
-      partyName: item.scheduledIncomeDocument?.document.party.name,
-
-      documentStatusId: '',
-      documentStatusName: item.installmentStatus.name,
-
-      budgetItemId: item.scheduledIncomeDocument?.document?.budgetItem?.id || '',
-      budgetItemName: item.scheduledIncomeDocument?.document?.budgetItem.definition.name || '',
-
-      projectName: item.scheduledIncomeDocument?.document?.budgetItem.definition.project.name || '',
-
-      currencyId: item.currency.id,
-      currencyName: item.currency.name,
-
-      userId: item.scheduledIncomeDocument?.document?.user?.id || null,
-      userName: item.scheduledIncomeDocument?.document?.user?.firstName || 'Sin Definir',
-    }));
-
-    // 3. Unir y Ordenar
-    const allResults = [...mappedDocuments, ...mappedInstallments];
-
-    allResults.sort((a, b) => {
-      // Si ambos tienen fecha, comparamos
-      if (a.rawDate && b.rawDate) {
-        return b.rawDate.getTime() - a.rawDate.getTime(); // Descendente
+    const getEffectiveRate = (date: Date) => {
+      let current = moment(date);
+      for (let i = 0; i < 7; i++) {
+        const key = current.format('YYYY-MM-DD');
+        if (rateMap.has(key)) return rateMap.get(key);
+        current.subtract(1, 'day');
       }
-      // Si uno no tiene fecha, lo enviamos al final
-      if (!a.rawDate) return 1;
-      if (!b.rawDate) return -1;
-      return 0;
-    });
+      return exchangeRates.length > 0 ? Number(exchangeRates[0].sellRate) : 1;
+    };
 
-    // 4. Opcional: Eliminar la propiedad rawDate antes de enviar al front si no la quieres
+    // --- 4. FUNCIÓN DE MAPEO COMÚN ---
+    const mapItem = (item: any, isInstallment = false) => {
+      const sellRate = getEffectiveRate(item.documentDate);
+      const factor = item.currency.id === CURRENCY.DOLARES ? sellRate : 1;
+      const round = (value: any) => Math.round(Number(value) * factor * 100) / 100;
+
+      const isFactura = item.documentType?.id === DOCUMENT_TYPE.FACTURA;
+
+      // Para installments, el taxAmount suele ser 0 según tu lógica original
+      const itemNetAmount = isInstallment ? item.totalAmount : item.netAmount;
+      const itemTaxAmount = isInstallment ? 0 : item.taxAmount;
+
+      const netAmountPEN = round(itemNetAmount);
+      const totalAmountPEN = round(item.totalAmount);
+
+      const montoTotalSoles = isFactura ? netAmountPEN : totalAmountPEN;
+      const montoTotalDolares = Math.round((montoTotalSoles / sellRate) * 100) / 100;
+
+      // Extraer datos según si es Documento o Cuota (Installment)
+      const doc = isInstallment ? item.scheduledIncomeDocument.document : item;
+
+      return {
+        id: item.id,
+        totalAmountPEN,
+        taxAmountPEN: round(itemTaxAmount),
+        netAmountPEN,
+        detractionAmountPEN: round(isInstallment ? 0 : item.detractionAmount),
+        amountToPayPEN: round(item.totalAmount),
+        paidAmountPEN: round(item.paidAmount),
+
+        exchangeRateFactor: factor,
+        exchangeRateUsed: sellRate,
+        montoTotalSoles,
+        montoTotalDolares,
+
+        code: item.code,
+        description: item.description,
+        totalAmount: Number(item.totalAmount),
+        taxAmount: Number(itemTaxAmount),
+        netAmount: Number(itemNetAmount),
+        detractionRate: Number(isInstallment ? 0 : item.detractionRate),
+        detractionAmount: Number(isInstallment ? 0 : item.detractionAmount),
+        amountToPay: Number(item.totalAmount),
+        paidAmount: Number(item.paidAmount),
+
+        rawDate: item.documentDate,
+        registeredAt: moment(isInstallment ? item.createdAt : item.registeredAt).format('DD/MM/YYYY'),
+        documentDate: moment(item.documentDate).format('DD/MM/YYYY'),
+
+        transactionTypeId: doc.transactionTypeId || null,
+        transactionTypeName: doc.transactionType?.name || null,
+        documentTypeId: item.documentType?.id || null,
+        documentTypeName: item.documentType?.name || 'Sin Documento',
+        partyId: doc.party.id,
+        partyName: doc.party.name,
+        documentStatusId: doc.documentStatusId || '',
+        documentStatusName: isInstallment ? item.installmentStatus.name : doc.documentStatus.name,
+        
+        budgetItemId: doc.budgetItem?.id,
+        budgetItemName: doc.budgetItem?.definition?.name || null,
+        
+        projectName: doc.budgetItem?.definition?.project?.name || null,
+        currencyId: item.currency.id,
+        currencyName: item.currency.name,
+        userId: doc.user.id,
+        userName: doc.user.firstName,
+
+        originCode: isInstallment ? 'Cuota' : 'Clásico',
+
+
+        budgetItemNatureId: doc.budgetItem?.definition?.nature?.id || '',
+        budgetItemNatureName: doc.budgetItem?.definition?.nature?.name || '',
+
+        budgetItemCategoryId: doc.budgetItem?.definition?.category?.budgetCategory.id || '',
+        budgetItemCategoryName: doc.budgetItem?.definition?.category?.budgetCategory.name || '',
+
+        budgetItemSubCategoryId: doc.budgetItem?.definition?.category?.id || '',
+        budgetItemSubCategoryName: doc.budgetItem?.definition?.category?.name || '',
+
+      };
+    };
+
+    // --- 5. UNIR, ORDENAR Y LIMPIAR ---
+    const allResults = [
+      ...results.map(i => mapItem(i, false)),
+      ...installments.map(i => mapItem(i, true))
+    ];
+
+    allResults.sort((a, b) => b.rawDate.getTime() - a.rawDate.getTime());
+
     return allResults.map(({ rawDate, ...rest }) => rest);
   }
 
