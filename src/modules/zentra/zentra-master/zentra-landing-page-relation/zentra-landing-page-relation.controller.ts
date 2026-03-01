@@ -54,4 +54,12 @@ export class ZentraLandingPageRelationController {
   restore(@Param('id') id: string) {
     return this.zentraLandingPageRelationService.restore(id);
   }
+
+
+  @Post('lots-by-projects')
+  getLotsByProjectIds(@Body('projectIds') projectIds: string[]) {
+    return this.zentraLandingPageRelationService.getLotsByProjectIds(projectIds);
+  }
+
+
 }

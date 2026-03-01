@@ -558,6 +558,7 @@ export class ZentraInstallmentService {
     });
   }
 
+
   async findDebtsAll(projectId: string) {
     const installments = await this.prisma.zentraInstallment.findMany({
 
@@ -612,7 +613,7 @@ export class ZentraInstallmentService {
     }
 
     return Number(totalDebtUSD.toFixed(2));
-  }
+  } 
 
   async getExchangeRateByDate(date: Date) {
     const normalizedDate = moment(date).startOf('day').toDate();

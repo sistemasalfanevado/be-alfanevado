@@ -433,7 +433,6 @@ export class ZentraBudgetItemService {
       "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
 
-    // 1. Filtramos por las dos naturalezas (GASTO y COSTO_DIRECTO)
     const movements = await this.prisma.zentraMovement.findMany({
       where: {
         deletedAt: null,
