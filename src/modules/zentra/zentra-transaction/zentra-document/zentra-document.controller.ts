@@ -329,6 +329,7 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.findByFiltersReportExpenseDetraction(filters);
   }
 
+  
   @Post('search-report-expense')
   searchReportExpense(@Body() filters: {
     transactionTypeId?: string,

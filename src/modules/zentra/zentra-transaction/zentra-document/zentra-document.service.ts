@@ -2940,6 +2940,7 @@ export class ZentraDocumentService {
     });
   }
 
+
   async findByFiltersReportExpense(filters: {
     transactionTypeId?: string,
     documentStatusId?: string;
@@ -2967,7 +2968,6 @@ export class ZentraDocumentService {
       if (endDate) where.documentDate.lte = moment(endDate).endOf('day').toDate();
     }
 
-    // ... (tus otros filtros de ID se mantienen igual)
     if (documentStatusId?.trim()) where.documentStatus = { id: documentStatusId };
     if (transactionTypeId?.trim()) where.transactionType = { id: transactionTypeId };
     if (companyId?.trim()) {
@@ -3003,18 +3003,13 @@ export class ZentraDocumentService {
 
     if (results.length === 0) return [];
 
-    // --- OPTIMIZACIÓN DE TIPO DE CAMBIO ---
-
-    // Obtenemos el rango real de fechas de los documentos obtenidos
     const documentDates = results.map(r => r.documentDate.getTime());
     const minDocDate = new Date(Math.min(...documentDates));
     const maxDocDate = new Date(Math.max(...documentDates));
 
-    // Traemos solo los tipos de cambio necesarios
     const exchangeRates = await this.prisma.zentraExchangeRate.findMany({
       where: {
         date: {
-          // Traemos desde un poco antes por si el primer día no tiene TC
           gte: moment(minDocDate).subtract(7, 'days').toDate(),
           lte: maxDocDate
         }
@@ -3022,16 +3017,13 @@ export class ZentraDocumentService {
       orderBy: { date: 'asc' }
     });
 
-    // Mapeo rápido para búsqueda O(1)
     const rateMap = new Map();
     exchangeRates.forEach(r => {
       rateMap.set(moment(r.date).format('YYYY-MM-DD'), Number(r.sellRate));
     });
 
-    // Función para encontrar el TC más cercano (hacia atrás)
     const getEffectiveRate = (date: Date) => {
       let current = moment(date);
-      // Buscamos hasta 7 días atrás si no hay TC el mismo día
       for (let i = 0; i < 7; i++) {
         const key = current.format('YYYY-MM-DD');
         if (rateMap.has(key)) return rateMap.get(key);
@@ -3041,35 +3033,52 @@ export class ZentraDocumentService {
     };
 
     return results.map((item) => {
-      // Determinamos el factor de conversión
       const sellRate = getEffectiveRate(item.documentDate);
-      const factor = item.currency.id === CURRENCY.DOLARES ? sellRate : 1;
+      
+      let totalAmountPEN = ''
+      let taxAmountPEN = ''
+      let netAmountPEN = ''
+      let detractionAmountPEN = ''
+      let amountToPayPEN = ''
+      let paidAmountPEN = ''
 
-      const round = (value: any) => Math.round(Number(value) * factor * 100) / 100;
+      if (item.currency.id === CURRENCY.DOLARES) {
+        totalAmountPEN = (Number(item.totalAmount) * sellRate).toFixed(2)
+        taxAmountPEN = (Number(item.taxAmount) * sellRate).toFixed(2)
+        netAmountPEN = (Number(item.netAmount) * sellRate).toFixed(2)
+        detractionAmountPEN = (Number(item.detractionAmount) * sellRate).toFixed(2)
+        amountToPayPEN = (Number(item.amountToPay) * sellRate).toFixed(2)
+        paidAmountPEN = (Number(item.paidAmount) * sellRate).toFixed(2)
+      }
 
+      if (item.currency.id === CURRENCY.SOLES) {
+        totalAmountPEN = (Number(item.totalAmount)).toFixed(2)
+        taxAmountPEN = (Number(item.taxAmount)).toFixed(2)
+        netAmountPEN = (Number(item.netAmount)).toFixed(2)
+        detractionAmountPEN = (Number(item.detractionAmount)).toFixed(2)
+        amountToPayPEN = (Number(item.amountToPay)).toFixed(2)
+        paidAmountPEN = (Number(item.paidAmount)).toFixed(2)
+      }
+      
       const isFactura = item.documentType.id === DOCUMENT_TYPE.FACTURA;
 
-      const netAmountPEN = round(Number(item.netAmount) * factor);
-      const totalAmountPEN = round(Number(item.totalAmount) * factor);
-
-      const montoTotalSoles = isFactura ? netAmountPEN : totalAmountPEN;
-      const montoTotalDolares = round(montoTotalSoles / sellRate);
-
+      let montoTotalSoles = isFactura ? netAmountPEN : totalAmountPEN;
+      let montoTotalDolares = (Number(montoTotalSoles) / sellRate).toFixed(2);
+      
       let originCode = 'Clásico';
       if (item.accountability) originCode = item.accountability.code;
       else if (item.pettyCash) originCode = item.pettyCash.code;
 
       return {
         id: item.id,
-        // Valores convertidos a PEN
-        totalAmountPEN: round(item.totalAmount),
-        taxAmountPEN: round(item.taxAmount),
-        netAmountPEN: round(item.netAmount),
-        detractionAmountPEN: round(item.detractionAmount),
-        amountToPayPEN: round(item.amountToPay),
-        paidAmountPEN: round(item.paidAmount),
+        
+        totalAmountPEN: totalAmountPEN,
+        taxAmountPEN: taxAmountPEN,
+        netAmountPEN: netAmountPEN,
+        detractionAmountPEN: detractionAmountPEN,
+        amountToPayPEN: amountToPayPEN,
+        paidAmountPEN: paidAmountPEN,
 
-        exchangeRateFactor: factor,
         exchangeRateUsed: sellRate,
 
         code: item.code,
@@ -3268,38 +3277,58 @@ export class ZentraDocumentService {
       return exchangeRates.length > 0 ? Number(exchangeRates[0].sellRate) : 1;
     };
 
-    // --- 4. FUNCIÓN DE MAPEO COMÚN ---
     const mapItem = (item: any, isInstallment = false) => {
       const sellRate = getEffectiveRate(item.documentDate);
-      const factor = item.currency.id === CURRENCY.DOLARES ? sellRate : 1;
-      const round = (value: any) => Math.round(Number(value) * factor * 100) / 100;
+      
 
-      const isFactura = item.documentType?.id === DOCUMENT_TYPE.FACTURA;
-
-      // Para installments, el taxAmount suele ser 0 según tu lógica original
       const itemNetAmount = isInstallment ? item.totalAmount : item.netAmount;
       const itemTaxAmount = isInstallment ? 0 : item.taxAmount;
 
-      const netAmountPEN = round(itemNetAmount);
-      const totalAmountPEN = round(item.totalAmount);
 
-      const montoTotalSoles = isFactura ? netAmountPEN : totalAmountPEN;
-      const montoTotalDolares = Math.round((montoTotalSoles / sellRate) * 100) / 100;
+      let totalAmountPEN = ''
+      let taxAmountPEN = ''
+      let netAmountPEN = ''
+      let detractionAmountPEN = ''
+      let amountToPayPEN = ''
+      let paidAmountPEN = ''
+      
+      if (item.currency.id === CURRENCY.DOLARES) {
+        totalAmountPEN = (Number(item.totalAmount) * sellRate).toFixed(2)
+        taxAmountPEN = (Number(item.itemTaxAmount) * sellRate).toFixed(2)
+        netAmountPEN = (Number(item.itemNetAmount) * sellRate).toFixed(2)
+        detractionAmountPEN = (Number(isInstallment ? 0 : item.detractionAmount) * sellRate).toFixed(2)
+        amountToPayPEN = (Number(item.totalAmount) * sellRate).toFixed(2)
+        paidAmountPEN = (Number(item.paidAmount) * sellRate).toFixed(2)
+      }
 
-      // Extraer datos según si es Documento o Cuota (Installment)
+      if (item.currency.id === CURRENCY.SOLES) {
+        totalAmountPEN = (Number(item.totalAmount)).toFixed(2)
+        taxAmountPEN = (Number(item.itemTaxAmount)).toFixed(2)
+        netAmountPEN = (Number(item.itemNetAmount)).toFixed(2)
+        detractionAmountPEN = (Number(isInstallment ? 0 : item.detractionAmount)).toFixed(2)
+        amountToPayPEN = (Number(item.totalAmount)).toFixed(2)
+        paidAmountPEN = (Number(item.paidAmount)).toFixed(2)
+      }
+
+      const isFactura = item.documentType?.id === DOCUMENT_TYPE.FACTURA;
+      
+      let montoTotalSoles = isFactura ? netAmountPEN : totalAmountPEN;
+      let montoTotalDolares = (Number(montoTotalSoles) / sellRate).toFixed(2);
+     
       const doc = isInstallment ? item.scheduledIncomeDocument.document : item;
 
       return {
         id: item.id,
-        totalAmountPEN,
-        taxAmountPEN: round(itemTaxAmount),
-        netAmountPEN,
-        detractionAmountPEN: round(isInstallment ? 0 : item.detractionAmount),
-        amountToPayPEN: round(item.totalAmount),
-        paidAmountPEN: round(item.paidAmount),
+        
+        totalAmountPEN: totalAmountPEN,
+        taxAmountPEN: taxAmountPEN,
+        netAmountPEN: netAmountPEN,
+        detractionAmountPEN: detractionAmountPEN,
+        amountToPayPEN: amountToPayPEN,
+        paidAmountPEN: item.paidAmount,
 
-        exchangeRateFactor: factor,
         exchangeRateUsed: sellRate,
+        
         montoTotalSoles,
         montoTotalDolares,
 
