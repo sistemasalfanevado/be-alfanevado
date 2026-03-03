@@ -1063,7 +1063,7 @@ export class ZentraMovementService {
       detalleGastos: Array.from(gastosMap.values()),
     };
   }
-  
+
   async findAllByProject(projectId: string): Promise<any[]> {
     const results = await this.prisma.zentraMovement.findMany({
       where: {
@@ -1095,7 +1095,7 @@ export class ZentraMovementService {
     });
     return results.map(this.formatMovement);
   }
-  
+
   async findAllByBankStatement(bankAccountId: string): Promise<any[]> {
 
     const movements = await this.prisma.zentraMovement.findMany({
@@ -1206,72 +1206,99 @@ export class ZentraMovementService {
     return chunks;
   }
 
+
+
   async recalculateBudgetItems(companyId: string, preview: boolean) {
-    // 1. Traer partidas
     const budgetItems = await this.prisma.zentraBudgetItem.findMany({
       where: { definition: { project: { companyId } } },
-      select: { id: true },
+      select: { id: true, currencyId: true },
     });
 
-    // 2. Traer movimientos
     const movements = await this.prisma.zentraMovement.findMany({
       where: {
         deletedAt: null,
-        budgetItem: {
-          definition: { project: { companyId } },
-        },
+        budgetItem: { definition: { project: { companyId } } },
       },
-      select: {
-        budgetItemId: true,
-        executedAmount: true,
-        executedSoles: true,
-        executedDolares: true,
+      include: {
+        exchangeRate: true,
+        bankAccount: { select: { currencyId: true } }
       },
     });
 
-    // Solo preview
-    if (preview) {
+    if (preview) return { preview: true, totalPartidas: budgetItems.length, totalMovimientos: movements.length };
+
+    // --- PASO 3: RECALCULAR MOVIMIENTOS CON LÓGICA DE TRANSACCIÓN ---
+    const updatedMovements = movements.map((m) => {
+      const rawAmount = Number(m.amount);
+      const rate = m.exchangeRate ? Number(m.exchangeRate.buyRate) : 1;
+
+      // REPLICAR LÓGICA FRONTAL: Signo según Entrada/Salida
+      // Asumiendo que m.transactionTypeId es el campo en tu modelo
+      const isEntrada = m.transactionTypeId === TRANSACTION_TYPE.ENTRY;
+      const sign = isEntrada ? 1 : -1;
+      const adjustedAmount = rawAmount * sign;
+
+      let soles = 0;
+      let dolares = 0;
+
+      if (m.bankAccount.currencyId === CURRENCY.DOLARES) {
+        dolares = adjustedAmount;
+        soles = adjustedAmount * rate;
+      } else {
+        soles = adjustedAmount;
+        dolares = rate !== 0 ? adjustedAmount / rate : 0;
+      }
+
+      // REDONDEO A 2 DECIMALES (Igual que el frontal para evitar descalces)
       return {
-        preview: true,
-        totalPartidas: budgetItems.length,
-        totalMovimientos: movements.length,
+        ...m,
+        calculatedSoles: Number(soles.toFixed(2)),
+        calculatedDolares: Number(dolares.toFixed(2)),
       };
+    });
+
+    // --- PASO 4: ACTUALIZAR MOVIMIENTOS ---
+    const movementChunks = this.chunkArray(updatedMovements, 100);
+    for (const chunk of movementChunks) {
+      await Promise.all(
+        chunk.map((m) =>
+          this.prisma.zentraMovement.update({
+            where: { id: m.id },
+            data: {
+              executedSoles: m.calculatedSoles,
+              executedDolares: m.calculatedDolares,
+              // Aquí guardamos el monto con signo si es necesario, 
+              // o mantenemos el original según tu regla de negocio
+              executedAmount: m.calculatedSoles // o la moneda que corresponda
+            },
+          })
+        )
+      );
     }
 
-    // 3. Agrupar por partida
-    const grouped = movements.reduce((acc, m) => {
-      if (!acc[m.budgetItemId]) acc[m.budgetItemId] = [];
-      acc[m.budgetItemId].push(m);
-      return acc;
-    }, {} as Record<string, typeof movements>);
+    // --- PASO 5: AGRUPAR Y RECALCULAR PARTIDAS ---
+    const updatesPartidas: any[] = [];
 
-    const updates: any[] = [];
-
-    // 4. Construir updates
     for (const item of budgetItems) {
-      const list = grouped[item.id] || [];
+      const list = updatedMovements.filter(m => m.budgetItemId === item.id);
 
-      const executedAmount = Number(
-        list.reduce((s, m) => s + Number(m.executedAmount), 0).toFixed(2)
-      );
-      const executedSoles = Number(
-        list.reduce((s, m) => s + Number(m.executedSoles), 0).toFixed(2)
-      );
-      const executedDolares = Number(
-        list.reduce((s, m) => s + Number(m.executedDolares), 0).toFixed(2)
-      );
+      // Sumamos los valores ya redondeados (Paso crucial para que coincida con el frontal)
+      const totalSoles = list.reduce((s, m) => s + m.calculatedSoles, 0);
+      const totalDolares = list.reduce((s, m) => s + m.calculatedDolares, 0);
 
-      updates.push({
+      const totalBase = item.currencyId === CURRENCY.SOLES ? totalSoles : totalDolares;
+
+      updatesPartidas.push({
         id: item.id,
-        executedAmount,
-        executedSoles,
-        executedDolares,
+        executedAmount: Number(totalBase.toFixed(2)),
+        executedSoles: Number(totalSoles.toFixed(2)),
+        executedDolares: Number(totalDolares.toFixed(2)),
       });
     }
 
-    const chunks = this.chunkArray(updates, 100);
-
-    for (const chunk of chunks) {
+    // --- PASO 6: ACTUALIZAR PARTIDAS ---
+    const itemChunks = this.chunkArray(updatesPartidas, 100);
+    for (const chunk of itemChunks) {
       await Promise.all(
         chunk.map((u) =>
           this.prisma.zentraBudgetItem.update({
@@ -1286,14 +1313,7 @@ export class ZentraMovementService {
       );
     }
 
-    return {
-      preview: false,
-      message: "Partidas recalculadas correctamente",
-      totalPartidas: budgetItems.length,
-      totalMovimientos: movements.length,
-    };
-
-
+    return { preview: false, totalPartidas: budgetItems.length, totalMovimientos: movements.length };
   }
 
   async recalculateBankAccount(companyId: string, preview: boolean) {
