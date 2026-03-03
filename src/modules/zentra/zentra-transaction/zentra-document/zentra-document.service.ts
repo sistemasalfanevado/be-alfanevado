@@ -3034,7 +3034,7 @@ export class ZentraDocumentService {
 
     return results.map((item) => {
       const sellRate = getEffectiveRate(item.documentDate);
-      
+
       let totalAmountPEN = ''
       let taxAmountPEN = ''
       let netAmountPEN = ''
@@ -3059,19 +3059,19 @@ export class ZentraDocumentService {
         amountToPayPEN = (Number(item.amountToPay)).toFixed(2)
         paidAmountPEN = (Number(item.paidAmount)).toFixed(2)
       }
-      
+
       const isFactura = item.documentType.id === DOCUMENT_TYPE.FACTURA;
 
       let montoTotalSoles = isFactura ? netAmountPEN : totalAmountPEN;
       let montoTotalDolares = (Number(montoTotalSoles) / sellRate).toFixed(2);
-      
+
       let originCode = 'Clásico';
       if (item.accountability) originCode = item.accountability.code;
       else if (item.pettyCash) originCode = item.pettyCash.code;
 
       return {
         id: item.id,
-        
+
         totalAmountPEN: totalAmountPEN,
         taxAmountPEN: taxAmountPEN,
         netAmountPEN: netAmountPEN,
@@ -3156,11 +3156,16 @@ export class ZentraDocumentService {
   }) {
     const { transactionTypeId, documentStatusId, companyId, startDate, endDate } = filters;
 
-    // --- 1. CONFIGURACIÓN DE FILTROS ---
     const whereInstallment: any = {
       deletedAt: null,
-      installmentStatusId: INSTALLMENT_STATUS.PAGADO,
+      installmentStatusId: {
+        in: [INSTALLMENT_STATUS.PAGADO, INSTALLMENT_STATUS.PARCIAL]
+      }
     };
+
+
+
+
 
     const where: any = { deletedAt: null };
     where.documentCategory = { id: { in: [DOCUMENT_CATEGORY.CLASICO] } };
@@ -3279,7 +3284,7 @@ export class ZentraDocumentService {
 
     const mapItem = (item: any, isInstallment = false) => {
       const sellRate = getEffectiveRate(item.documentDate);
-      
+
 
       const itemNetAmount = isInstallment ? item.totalAmount : item.netAmount;
       const itemTaxAmount = isInstallment ? 0 : item.taxAmount;
@@ -3291,7 +3296,7 @@ export class ZentraDocumentService {
       let detractionAmountPEN = ''
       let amountToPayPEN = ''
       let paidAmountPEN = ''
-      
+
       if (item.currency.id === CURRENCY.DOLARES) {
         totalAmountPEN = (Number(item.totalAmount) * sellRate).toFixed(2)
         taxAmountPEN = (Number(item.itemTaxAmount) * sellRate).toFixed(2)
@@ -3311,15 +3316,15 @@ export class ZentraDocumentService {
       }
 
       const isFactura = item.documentType?.id === DOCUMENT_TYPE.FACTURA;
-      
+
       let montoTotalSoles = isFactura ? netAmountPEN : totalAmountPEN;
       let montoTotalDolares = (Number(montoTotalSoles) / sellRate).toFixed(2);
-     
+
       const doc = isInstallment ? item.scheduledIncomeDocument.document : item;
 
       return {
         id: item.id,
-        
+
         totalAmountPEN: totalAmountPEN,
         taxAmountPEN: taxAmountPEN,
         netAmountPEN: netAmountPEN,
@@ -3328,7 +3333,7 @@ export class ZentraDocumentService {
         paidAmountPEN: item.paidAmount,
 
         exchangeRateUsed: sellRate,
-        
+
         montoTotalSoles,
         montoTotalDolares,
 
@@ -3354,10 +3359,10 @@ export class ZentraDocumentService {
         partyName: doc.party.name,
         documentStatusId: doc.documentStatusId || '',
         documentStatusName: isInstallment ? item.installmentStatus.name : doc.documentStatus.name,
-        
+
         budgetItemId: doc.budgetItem?.id,
         budgetItemName: doc.budgetItem?.definition?.name || null,
-        
+
         projectName: doc.budgetItem?.definition?.project?.name || null,
         currencyId: item.currency.id,
         currencyName: item.currency.name,
