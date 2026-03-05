@@ -23,6 +23,7 @@ export class ZentraBudgetItemHistoryService {
     return { message: 'Historial registrado correctamente' };
   }
 
+  
   async findAll() {
 
     const results = await this.prisma.zentraBudgetItemHistory.findMany({

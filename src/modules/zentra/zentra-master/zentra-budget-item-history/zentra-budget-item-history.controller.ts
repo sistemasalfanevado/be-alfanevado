@@ -3,6 +3,7 @@ import { ZentraBudgetItemHistoryService } from './zentra-budget-item-history.ser
 import { CreateZentraBudgetItemHistoryDto } from './dto/create-zentra-budget-item-history.dto';
 import { UpdateZentraBudgetItemHistoryDto } from './dto/update-zentra-budget-item-history.dto';
 
+
 @Controller('zentra-budget-item-history')
 export class ZentraBudgetItemHistoryController {
   constructor(

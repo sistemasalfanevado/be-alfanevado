@@ -971,6 +971,9 @@ model ZentraDocument {
 
   documentOrigin     ZentraDocumentOrigin? @relation(fields: [documentOriginId], references: [id])
   documentOriginId   String?
+
+  documentBudgetStatus     ZentraDocumentBudgetStatus? @relation(fields: [documentBudgetStatusId], references: [id])
+  documentBudgetStatusId   String?
   
   movements          ZentraMovement[]
   files              ZentraDocumentFile[]
@@ -1918,4 +1921,17 @@ model ZentraMovementBudgetConfig {
   deletedAt   DateTime?
   
   @@map("zentra_movement_budget_config")
+}
+
+model ZentraDocumentBudgetStatus {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(50)
+
+  documents         ZentraDocument[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("zentra_document_budget_status")
 }

@@ -24,7 +24,7 @@ export class CreateZentraBudgetItemHistoryDto {
 
   @IsDateString()
   @IsNotEmpty()
-  registeredAt: string;
+  registeredAt: string; 
 
 
   @IsString()
