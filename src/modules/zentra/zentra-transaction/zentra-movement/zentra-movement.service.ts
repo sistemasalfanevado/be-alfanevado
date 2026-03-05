@@ -36,6 +36,17 @@ export class ZentraMovementService {
           },
         },
         documentType: true,
+        currency: true,
+
+        budgetItem: {
+          include: {
+            definition: {
+              include: {
+                project: true
+              },
+            },
+          },
+        },
       },
     },
     transactionType: true,
@@ -173,14 +184,16 @@ export class ZentraMovementService {
       documentId: item.document.id,
       documentDetractionAmount: item.document.detractionAmount,
       documentTaxAmount: item.document.taxAmount,
-
       documentCode: inst?.code || doc?.code || 'Sin definir',
       documentDescription: inst?.description || doc?.description || 'Sin definir',
-
       documentDate: moment(inst?.documentDate ?? doc.documentDate).format('DD/MM/YYYY'),
       documentTypeId: inst?.documentType?.id ?? doc.documentType?.id,
       documentType: inst?.documentType?.name ?? doc.documentType?.name,
       documentAmountToPay: inst?.totalAmount ?? doc.amountToPay,
+      documentCurrency: inst?.currency?.name ?? doc?.currency?.name,
+      documentProjectName: doc?.budgetItem?.definition?.project?.name,
+      documentBudgetItemName: doc?.budgetItem?.definition?.name,
+
 
       transactionTypeId: item.transactionType.id,
       transactionTypeName: item.transactionType.name,
