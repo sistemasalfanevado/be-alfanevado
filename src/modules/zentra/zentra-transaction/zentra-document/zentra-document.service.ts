@@ -3162,11 +3162,7 @@ export class ZentraDocumentService {
         in: [INSTALLMENT_STATUS.PAGADO, INSTALLMENT_STATUS.PARCIAL]
       }
     };
-
-
-
-
-
+    
     const where: any = { deletedAt: null };
     where.documentCategory = { id: { in: [DOCUMENT_CATEGORY.CLASICO] } };
     where.documentType = { id: { notIn: [DOCUMENT_TYPE.DEVOLUCION_USUARIO] } };
@@ -3284,11 +3280,9 @@ export class ZentraDocumentService {
 
     const mapItem = (item: any, isInstallment = false) => {
       const sellRate = getEffectiveRate(item.documentDate);
-
-
+      
       const itemNetAmount = isInstallment ? item.totalAmount : item.netAmount;
       const itemTaxAmount = isInstallment ? 0 : item.taxAmount;
-
 
       let totalAmountPEN = ''
       let taxAmountPEN = ''
@@ -3299,8 +3293,8 @@ export class ZentraDocumentService {
 
       if (item.currency.id === CURRENCY.DOLARES) {
         totalAmountPEN = (Number(item.totalAmount) * sellRate).toFixed(2)
-        taxAmountPEN = (Number(item.itemTaxAmount) * sellRate).toFixed(2)
-        netAmountPEN = (Number(item.itemNetAmount) * sellRate).toFixed(2)
+        taxAmountPEN = (Number(itemTaxAmount) * sellRate).toFixed(2)
+        netAmountPEN = (Number(itemNetAmount) * sellRate).toFixed(2)
         detractionAmountPEN = (Number(isInstallment ? 0 : item.detractionAmount) * sellRate).toFixed(2)
         amountToPayPEN = (Number(item.totalAmount) * sellRate).toFixed(2)
         paidAmountPEN = (Number(item.paidAmount) * sellRate).toFixed(2)
@@ -3308,8 +3302,8 @@ export class ZentraDocumentService {
 
       if (item.currency.id === CURRENCY.SOLES) {
         totalAmountPEN = (Number(item.totalAmount)).toFixed(2)
-        taxAmountPEN = (Number(item.itemTaxAmount)).toFixed(2)
-        netAmountPEN = (Number(item.itemNetAmount)).toFixed(2)
+        taxAmountPEN = (Number(itemTaxAmount)).toFixed(2)
+        netAmountPEN = (Number(itemNetAmount)).toFixed(2)
         detractionAmountPEN = (Number(isInstallment ? 0 : item.detractionAmount)).toFixed(2)
         amountToPayPEN = (Number(item.totalAmount)).toFixed(2)
         paidAmountPEN = (Number(item.paidAmount)).toFixed(2)
