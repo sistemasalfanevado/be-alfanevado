@@ -14,6 +14,11 @@ export class ZentraDocumentExpenseController {
     return this.zentraDocumentExpenseService.addMovement(createDataDto);
   }
   
+  @Post('movement/bulk')
+  createMovementsBulk(@Body() movements: any[]) {
+    return this.zentraDocumentExpenseService.addMovementsBulk(movements);
+  }
+
   @Delete('movement/:id')
   removeMovement(@Param('id') id: string) {
     return this.zentraDocumentExpenseService.removeMovement(id);

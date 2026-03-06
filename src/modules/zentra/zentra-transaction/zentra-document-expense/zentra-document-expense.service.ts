@@ -22,7 +22,18 @@ export class ZentraDocumentExpenseService {
   ) { }
 
 
+  async addMovementsBulk(movements: any[]) {
+    const processedLogs: any = [];
+    for (const data of movements) {
+      await this.addMovement(data);
 
+      processedLogs.push({ documentId: data.documentId, status: 'success' });
+    }
+    return {
+      message: 'Procesamiento por lote finalizado',
+      totalProcessed: processedLogs.length
+    };
+  }
 
   async addMovement(data: any) {
     await this.createMovement({
