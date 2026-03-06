@@ -1,12 +1,10 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { MailService } from './mail.service';
-import { SendTestMailDto } from './dto/send-test-mail.dto';
 
 @Controller('mail')
 export class MailController {
   constructor(private readonly mailService: MailService) { }
 
-  
   @Post('notify-paid')
   notifyPaidDocuments(
     @Body()
@@ -25,6 +23,15 @@ export class MailController {
     return this.mailService.notifyDocumentsPaid(dto.documents);
   }
 
-  
+  @Post('notify-budget')
+  notifyBudgetDocument(
+    @Body()
+    dto: {
+      documentId: string;
+    },
+  ) {
+    return this.mailService.notifyBudgetDocument(dto);
+  }
+
 
 }

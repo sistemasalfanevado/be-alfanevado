@@ -9,30 +9,18 @@ export class ZentraNotificationRecipientService {
 
   constructor(private prisma: PrismaService) { }
 
-  // ✅ Crear receptor
   async create(dto: CreateZentraNotificationRecipientDto) {
-
-    // Evitar duplicados activos
-    const exists = await this.prisma.zentraNotificationRecipient.findFirst({
-      where: {
-        userId: dto.userId,
-        deletedAt: null,
-      },
-    });
-
-    if (exists) {
-      throw new BadRequestException('El usuario ya está registrado como receptor de notificaciones');
-    }
 
     return this.prisma.zentraNotificationRecipient.create({
       data: {
         userId: dto.userId,
+        notificationCategoryId: dto.notificationCategoryId
       },
     });
   }
 
-  // ✅ Listar receptores activos
   async findAll() {
+    
     const recipients = await this.prisma.zentraNotificationRecipient.findMany({
       where: {
         deletedAt: null,
@@ -46,6 +34,12 @@ export class ZentraNotificationRecipientService {
             email: true,
           },
         },
+        notificationCategory: {
+          select: {
+            id: true,
+            name: true,
+          },
+        }
       },
       orderBy: {
         createdAt: 'asc',
@@ -58,10 +52,12 @@ export class ZentraNotificationRecipientService {
       completeName: r.user.firstName + ' ' + r.user.lastName,
       email: r.user.email,
       createdAt: r.createdAt,
+      notificationCategoryId: r.notificationCategory?.id,
+      notificationCategoryName: r.notificationCategory?.name,
+      
     }));
   }
 
-  // ✅ Obtener uno
   async findOne(id: string) {
     const recipient = await this.prisma.zentraNotificationRecipient.findFirst({
       where: {
@@ -70,6 +66,7 @@ export class ZentraNotificationRecipientService {
       },
       include: {
         user: true,
+        notificationCategory: true
       },
     });
 
@@ -80,35 +77,17 @@ export class ZentraNotificationRecipientService {
     return recipient;
   }
 
-  // ✏️ Editar receptor (cambiar usuario)
   async update(id: string, dto: UpdateZentraNotificationRecipientDto) {
-
-    if (!dto.userId) {
-      throw new BadRequestException('No hay datos para actualizar');
-    }
-
-    // Validar duplicado
-    const duplicate = await this.prisma.zentraNotificationRecipient.findFirst({
-      where: {
-        userId: dto.userId,
-        deletedAt: null,
-        NOT: { id },
-      },
-    });
-
-    if (duplicate) {
-      throw new BadRequestException('El usuario ya está registrado como receptor');
-    }
 
     return this.prisma.zentraNotificationRecipient.update({
       where: { id },
       data: {
         userId: dto.userId,
+        notificationCategoryId: dto.notificationCategoryId
       },
     });
   }
 
-  // 🗑️ Soft delete
   async remove(id: string) {
     return this.prisma.zentraNotificationRecipient.update({
       where: { id },
@@ -118,7 +97,6 @@ export class ZentraNotificationRecipientService {
     });
   }
 
-  // ♻️ Restaurar
   async restore(id: string) {
     return this.prisma.zentraNotificationRecipient.update({
       where: { id },
@@ -127,4 +105,5 @@ export class ZentraNotificationRecipientService {
       },
     });
   }
+
 }

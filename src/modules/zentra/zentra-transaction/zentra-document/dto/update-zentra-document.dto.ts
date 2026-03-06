@@ -135,4 +135,9 @@ export class UpdateZentraDocumentDto {
   @IsString()
   @IsOptional()
   documentOriginId?: string;
+
+  @IsString()
+  @IsOptional()
+  documentBudgetStatusId?: string;
+  
 }

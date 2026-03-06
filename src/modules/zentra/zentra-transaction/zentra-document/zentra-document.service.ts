@@ -71,6 +71,7 @@ export class ZentraDocumentService {
     documentOrigin: true,
     accountability: true,
     pettyCash: true,
+    documentBudgetStatus: true,
     _count: {
       select: { files: true }
     }
@@ -116,6 +117,7 @@ export class ZentraDocumentService {
     user: true,
     movements: true,
     documentCategory: true,
+    documentBudgetStatus: true,
     financialNature: {
       include: {
         movementCategory: true,
@@ -272,11 +274,12 @@ export class ZentraDocumentService {
 
       fileBadge: fileBadgeConfig,
 
-
+      documentBudgetStatusId: item.documentBudgetStatus?.id ?? '',
+      documentBudgetStatusName: item.documentBudgetStatus?.name ?? '',
+    
     };
   }
 
-  /** Método reutilizable para búsquedas con mapeo */
   private async findManyWithMapping(where: any) {
     const results = await this.prisma.zentraDocument.findMany({
       where,
@@ -287,6 +290,7 @@ export class ZentraDocumentService {
     });
     return results.map(this.mapEntityToDto);
   }
+
 
   async create(createDto: CreateZentraDocumentDto): Promise<{ id: string }> {
     const {
@@ -306,6 +310,7 @@ export class ZentraDocumentService {
       accountabilityId,
       pettyCashId,
       documentOriginId,
+      documentBudgetStatusId,
       ...data
     } = createDto;
 
@@ -337,6 +342,9 @@ export class ZentraDocumentService {
         }),
         ...(documentOriginId && {
           documentOrigin: { connect: { id: documentOriginId } },
+        }),
+        ...(documentBudgetStatusId && {
+          documentBudgetStatus: { connect: { id: documentBudgetStatusId } },
         }),
       },
       select: {
@@ -382,6 +390,7 @@ export class ZentraDocumentService {
       expireDate,
       registeredAt,
       documentDate,
+      documentBudgetStatusId,
       ...data
     } = updateDto;
 
@@ -402,6 +411,10 @@ export class ZentraDocumentService {
 
     if (financialNatureId) {
       updateData.financialNature = { connect: { id: financialNatureId } };
+    }
+
+    if (documentBudgetStatusId) {
+      updateData.documentBudgetStatus = { connect: { id: documentBudgetStatusId } };
     }
 
     await this.prisma.zentraDocument.update({
@@ -528,8 +541,9 @@ export class ZentraDocumentService {
     excludeDocumentTypeId?: string[];
     currencyId?: string;
     budgetItemId?: string;
+    documentBudgetStatusId?: string;
   }) {
-    const { budgetItemId, currencyId, documentTypeId, excludeDocumentTypeId, withPartyBankAccount, accountabilityId, pettyCashId, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, companyId, userId, startDate, endDate } = filters;
+    const { documentBudgetStatusId, budgetItemId, currencyId, documentTypeId, excludeDocumentTypeId, withPartyBankAccount, accountabilityId, pettyCashId, documentStatusId, partyId, documentCategoryId, financialNatureId, transactionTypeId, projectId, companyId, userId, startDate, endDate } = filters;
 
     const where: any = {
       deletedAt: null,
@@ -593,6 +607,10 @@ export class ZentraDocumentService {
       where.pettyCash = { id: pettyCashId };
     }
 
+    if (documentBudgetStatusId && documentBudgetStatusId.trim() !== '') {
+      where.documentBudgetStatus = { id: documentBudgetStatusId };
+    }
+    
     if (userId && userId.trim() !== '') {
       where.user = { id: userId };
     }

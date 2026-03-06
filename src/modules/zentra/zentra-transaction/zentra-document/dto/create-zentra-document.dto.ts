@@ -137,4 +137,8 @@ export class CreateZentraDocumentDto {
   @IsOptional()
   documentOriginId?: string;
 
+  @IsString()
+  @IsOptional()
+  documentBudgetStatusId?: string;
+
 }

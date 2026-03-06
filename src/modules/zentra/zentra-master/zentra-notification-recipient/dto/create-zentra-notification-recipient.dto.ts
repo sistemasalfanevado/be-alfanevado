@@ -6,4 +6,10 @@ export class CreateZentraNotificationRecipientDto {
   @IsNotEmpty()
   userId: string;
 
+  @IsUUID()
+  @IsNotEmpty()
+  notificationCategoryId: string;
+  
+
+
 }

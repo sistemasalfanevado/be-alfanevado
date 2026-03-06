@@ -1742,13 +1742,29 @@ model ZentraProjectSubStageProgressFile {
   @@map("zentra_project_sub_stage_progress_file")
 }
 
+model ZentraNotificationCategory {
+  id        String     @id @default(uuid())
+
+  name      String     @db.VarChar(50)
+
+  notificationRecipient         ZentraNotificationRecipient[]
+
+  deletedAt DateTime?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("zentra_notification_category")
+}
 
 model ZentraNotificationRecipient {
   id        String     @id @default(uuid())
 
-  userId    String
   user      ZentraUser @relation(fields: [userId], references: [id])
+  userId    String
 
+  notificationCategory      ZentraNotificationCategory? @relation(fields: [notificationCategoryId], references: [id])
+  notificationCategoryId    String?
+  
   deletedAt DateTime?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt

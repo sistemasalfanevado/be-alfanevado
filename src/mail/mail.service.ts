@@ -2,8 +2,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { defaultTemplate } from './templates/default.template';
 import { PrismaService } from '../prisma/prisma.service';
-import { CURRENCY } from 'src/shared/constants/app.constants';
+import { CURRENCY, NOTIFICATION_CATEGORY } from 'src/shared/constants/app.constants';
 
+import * as moment from 'moment';
 
 @Injectable()
 export class MailService {
@@ -42,9 +43,11 @@ export class MailService {
 
     const documentUrl = documentList[0].documentUrl;
 
-    // 1. Obtener Recipientes (Administradores)
     const recipients = await this.prisma.zentraNotificationRecipient.findMany({
-      where: { deletedAt: null },
+      where: {
+        deletedAt: null,
+        notificationCategoryId: NOTIFICATION_CATEGORY.DOCUMENTO_PAGADO
+      },
       include: {
         user: {
           select: { id: true, firstName: true, lastName: true, email: true },
@@ -52,7 +55,6 @@ export class MailService {
       },
     });
 
-    // 2. Obtener los creadores de los documentos recibidos
     const documentIds = documentList.map((d) => d.documentId);
     const documentsFromDb = await this.prisma.zentraDocument.findMany({
       where: { id: { in: documentIds } },
@@ -60,7 +62,7 @@ export class MailService {
         user: {
           select: { id: true, firstName: true, lastName: true, email: true },
         },
-        // Traemos el nombre del proyecto siguiendo la relación
+
         budgetItem: {
           include: {
             definition: {
@@ -159,7 +161,6 @@ export class MailService {
     return { totalRecipients: recipients.length, totalCreators: creatorMap.size };
   }
 
-
   async notifyExpenseReportPendingAccounting(accountability: {
     id: string;
     code: string;
@@ -181,6 +182,7 @@ export class MailService {
     const recipients = await this.prisma.zentraNotificationRecipient.findMany({
       where: {
         deletedAt: null,
+        notificationCategoryId: NOTIFICATION_CATEGORY.RENDICION_CUENTA
       },
       include: {
         user: {
@@ -288,6 +290,7 @@ export class MailService {
     const recipients = await this.prisma.zentraNotificationRecipient.findMany({
       where: {
         deletedAt: null,
+        notificationCategoryId: NOTIFICATION_CATEGORY.RENDICION_CUENTA
       },
       include: {
         user: {
@@ -365,6 +368,113 @@ export class MailService {
     return { sent: recipients.length };
   }
 
+  async notifyBudgetDocument(dto: { documentId: string }) {
+
+    const doc = await this.prisma.zentraDocument.findUnique({
+      where: { id: dto.documentId },
+      include: {
+        currency: true,
+        party: true,
+        user: true,
+        documentType: true,
+        budgetItem: {
+          include: {
+            definition: {
+              include: {
+                project: true
+              }
+            },
+            currency: true
+          }
+        }
+      },
+    });
+
+    if (!doc) throw new Error('Documento no encontrado');
+
+    const projectName = doc.budgetItem?.definition?.project?.name || 'Proyecto no definido';
+    const definitionName = doc.budgetItem?.definition?.name || 'Partida no definida';
+
+    const recipients = await this.prisma.zentraNotificationRecipient.findMany({
+      where: {
+        deletedAt: null,
+        notificationCategoryId: NOTIFICATION_CATEGORY.PRESUPUESTO
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    // 3. Template del Email (Actualizado con la alerta de exceso)
+    const getEmailBody = (userName: string) => {
+      // Aseguramos 2 decimales para los montos
+      const montoDocumento = Number(doc.totalAmount).toFixed(2);
+      const montoPresupuesto = Number(doc.budgetItem.amount).toFixed(2);
+
+      return `
+    <div style="font-family: sans-serif; color: #334155; line-height: 1.6; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+      <div style="background-color: #ef4444; color: white; padding: 18px; text-align: center;">
+        <h2 style="margin: 0; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">⚠️ Alerta: Presupuesto Excedido</h2>
+      </div>
+      
+      <div style="padding: 24px;">
+        Hola <strong>${userName}</strong>,<br /><br />
+        Se ha registrado un documento que supera el presupuesto asignado para la siguiente partida:
+        <br /><br />
+        
+        <table width="100%" style="border-collapse: collapse; font-size: 14px;">
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;">Proyecto</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: bold;">${projectName}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;">Partida</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: bold; color: #2563eb;">${definitionName}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;">Presupuesto de Partida</td>
+            <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: bold;">${doc.budgetItem.currency.name} ${montoPresupuesto}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #64748b;">Monto del Documento</td>
+            <td style="padding: 8px 0; text-align: right; font-weight: bold; color: #ef4444; font-size: 16px;">${doc.currency.name} ${montoDocumento}</td>
+          </tr>
+        </table>
+
+        <div style="margin-top: 24px; padding: 16px; background-color: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
+          <strong style="font-size: 13px; color: #475569;">DETALLES DEL REGISTRO:</strong><br />
+          <p style="margin: 8px 0 0 0; font-size: 14px;">
+            <strong>Fecha:</strong> ${moment(doc.documentDate).format('DD/MM/YYYY')}<br />
+            <strong>Tipo:</strong> ${doc.documentType.name} ${doc.code}<br />
+            <strong>Proveedor:</strong> ${doc.party.name}<br />
+            <strong>Registrado por:</strong> ${doc.user.firstName} ${doc.user.lastName}<br />
+            <strong>Descripción:</strong> ${doc.description || 'Sin descripción'}
+          </p>
+        </div>
+
+        <p style="margin-top: 25px; font-size: 12px; color: #94a3b8; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 15px;">
+          Este es un mensaje automático del <strong>Sistema de Control - Alfa Nevado</strong>
+        </p>
+      </div>
+    </div>
+  `;
+    };
+
+    for (const recipient of recipients) {
+      await this.sendCustomEmail(
+        recipient.user.email,
+        `EXCESO DE PRESUPUESTO - ${projectName} ${definitionName}`,
+        'Presupuesto',
+        getEmailBody(recipient.user.firstName)
+      );
+    }
+
+    return {
+      success: true,
+      recipientsNotified: recipients.length,
+      partida: definitionName
+    };
+  }
 
 
 

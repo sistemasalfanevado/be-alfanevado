@@ -10,20 +10,20 @@ import {
   UseGuards
 } from '@nestjs/common';
 
-import { ZentraNotificationRecipientService } from './zentra-notification-recipient.service';
-import { CreateZentraNotificationRecipientDto } from './dto/create-zentra-notification-recipient.dto';
-import { UpdateZentraNotificationRecipientDto } from './dto/update-zentra-notification-recipient.dto';
+import { ZentraNotificationCategoryService } from './zentra-notification-category.service';
+import { CreateZentraNotificationCategoryDto } from './dto/create-zentra-notification-category.dto';
+import { UpdateZentraNotificationCategoryDto } from './dto/update-zentra-notification-category.dto';
 
-@Controller('zentra-notification-recipients')
-export class ZentraNotificationRecipientController {
+@Controller('zentra-notification-categories')
+export class ZentraNotificationCategoryController {
 
   constructor(
-    private readonly service: ZentraNotificationRecipientService
+    private readonly service: ZentraNotificationCategoryService
   ) { }
 
   @Post()
   create(
-    @Body() dto: CreateZentraNotificationRecipientDto
+    @Body() dto: CreateZentraNotificationCategoryDto
   ) {
     return this.service.create(dto);
   }
@@ -43,7 +43,7 @@ export class ZentraNotificationRecipientController {
   @Put(':id')
   update(
     @Param('id') id: string,
-    @Body() dto: UpdateZentraNotificationRecipientDto
+    @Body() dto: UpdateZentraNotificationCategoryDto
   ) {
     return this.service.update(id, dto);
   }
@@ -61,6 +61,4 @@ export class ZentraNotificationRecipientController {
   ) {
     return this.service.restore(id);
   }
-
-  
 }
