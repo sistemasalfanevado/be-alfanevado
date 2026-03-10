@@ -8,7 +8,7 @@ import { ZentraDocumentSalesService } from '../zentra-document-sales/zentra-docu
 import { MailService } from '../../../../mail/mail.service';
 
 
-import { DOCUMENT_CATEGORY, DOCUMENT_STATUS, DOCUMENT_ORIGIN, ACCOUNTABILITY_STATUS, DOCUMENT_TYPE, PARTY_DOCUMENT_HIERARCHY, TRANSACTION_TYPE } from 'src/shared/constants/app.constants';
+import { DOCUMENT_CATEGORY, DOCUMENT_STATUS, DOCUMENT_ORIGIN, ACCOUNTABILITY_STATUS, DOCUMENT_TYPE, PARTY_DOCUMENT_HIERARCHY, TRANSACTION_TYPE, DOCUEMNT_BUDGET_STATUS } from 'src/shared/constants/app.constants';
 import { Prisma } from '@prisma/client';
 import * as moment from 'moment';
 
@@ -159,6 +159,7 @@ export class ZentraAccountabilityService {
       select: { id: true, code: true },
     });
 
+
     await this.zentraDocumentService.createDocument(
       {
         code: newCode,
@@ -180,8 +181,7 @@ export class ZentraAccountabilityService {
         registeredAt: new Date(createDto.registeredAt),
         documentDate: new Date(createDto.registeredAt),
         expireDate: new Date(createDto.registeredAt),
-
-
+        
         transactionTypeId: createDto.transactionTypeId,
         documentTypeId: createDto.documentTypeId,
         partyId: createDto.partyId,
@@ -193,7 +193,8 @@ export class ZentraAccountabilityService {
         accountabilityId: created.id,
 
         documentStatusId: DOCUMENT_STATUS.PENDIENTE,
-        documentOriginId: DOCUMENT_ORIGIN.RENDICION_CUENTAS
+        documentOriginId: DOCUMENT_ORIGIN.RENDICION_CUENTAS,
+        documentBudgetStatusId: DOCUEMNT_BUDGET_STATUS.APROBADO,
       }
     );
 

@@ -15,7 +15,8 @@ import {
   DOCUMENT_TYPE,
   PARTY_DOCUMENT_HIERARCHY,
   TRANSACTION_TYPE,
-  PETTY_CASH_STATUS
+  PETTY_CASH_STATUS,
+  DOCUEMNT_BUDGET_STATUS
 
 } from 'src/shared/constants/app.constants';
 import { Prisma } from '@prisma/client';
@@ -291,7 +292,8 @@ export class ZentraPettyCashService {
         pettyCashId: created.id,
 
         documentStatusId: DOCUMENT_STATUS.PENDIENTE,
-        documentOriginId: DOCUMENT_ORIGIN.CAJA_CHICA
+        documentOriginId: DOCUMENT_ORIGIN.CAJA_CHICA,
+        documentBudgetStatusId: DOCUEMNT_BUDGET_STATUS.APROBADO,
       }
     );
 
