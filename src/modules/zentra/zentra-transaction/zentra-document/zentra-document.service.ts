@@ -738,11 +738,7 @@ export class ZentraDocumentService {
         ...dto,
       };
     });
-
-
-
-
-
+  
   }
 
   async createDocument(dataDocument: any) {
@@ -791,8 +787,10 @@ export class ZentraDocumentService {
         ...(dataDocument.documentOriginId && {
           documentOrigin: { connect: { id: dataDocument.documentOriginId } },
         }),
-
-
+        ...(dataDocument.documentBudgetStatusId && {
+          documentBudgetStatus: { connect: { id: dataDocument.documentBudgetStatusId } },
+        }),
+      
 
       },
       select: { id: true, code: true }, // 👈 solo traemos el id
