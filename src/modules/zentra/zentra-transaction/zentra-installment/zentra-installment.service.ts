@@ -280,7 +280,7 @@ export class ZentraInstallmentService {
 
     if (data.capital > 0) {
       await this.createMovement({
-        
+
         date: data.paymentDate,
         installmentId: data.installmentId,
         idFirebase: '',
@@ -289,10 +289,10 @@ export class ZentraInstallmentService {
         description: 'Capital cuota ' + data.letra,
         bankAccountId: data.bankAccountId,
         documentId: data.documentId,
-        
+
         budgetItemId: data.budgetItemId1,
         movementCategoryId: data.movementCategoryId1,
-        
+
         transactionTypeId: TRANSACTION_TYPE.EXIT,
         movementStatusId: MOVEMENT_STATUS.CATEGORIZADO,
       });
@@ -301,7 +301,7 @@ export class ZentraInstallmentService {
     let debtAmount = Number(data.extra + data.interest)
     if (debtAmount > 0) {
       await this.createMovement({
-        
+
         date: data.paymentDate,
         installmentId: data.installmentId,
         idFirebase: '',
@@ -318,7 +318,7 @@ export class ZentraInstallmentService {
         movementStatusId: MOVEMENT_STATUS.CATEGORIZADO,
       });
     }
-    
+
     return this.recalculateInstallmentAndDocument(data.installmentId);
   }
 
@@ -339,7 +339,7 @@ export class ZentraInstallmentService {
     await this.zentraMovementService.update(id, data);
     return this.recalculateInstallmentAndDocument(data.installmentId);
   }
-  
+
   async recalculateSimpleInstallmentAndDocument(installmentId: string) {
     return this.recalculateInstallmentAndDocument(installmentId);
   }
@@ -613,7 +613,7 @@ export class ZentraInstallmentService {
     }
 
     return Number(totalDebtUSD.toFixed(2));
-  } 
+  }
 
   async getExchangeRateByDate(date: Date) {
     const normalizedDate = moment(date).startOf('day').toDate();
@@ -865,6 +865,51 @@ export class ZentraInstallmentService {
 
     }));
   }
+
+
+  async getReportMovementsByScheduled(scheduledIncomeDocumentId: string) {
+    const installments = await this.prisma.zentraInstallment.findMany({
+      where: {
+        scheduledIncomeDocumentId,
+        deletedAt: null,
+      },
+      orderBy: { letra: 'asc' },
+      include: {
+        movements: {
+          where: { deletedAt: null },
+          include: {
+            bankAccount: {
+              include: {
+                currency: true,
+                bank: true,
+              }
+            },
+            exchangeRate: true
+          }
+        },
+        currency: { select: { name: true } }
+      },
+    });
+
+    return installments.map(inst => ({
+      installmentNumber: inst.letra,
+      dueDate: moment(inst.dueDate).format('DD/MM/YYYY'),
+      totalAmount: inst.totalAmount,
+      paidAmount: inst.paidAmount,
+      currency: inst.currency.name,
+
+      movements: inst.movements.map(mov => ({
+        paymentDate: moment(mov.paymentDate).format('DD/MM/YYYY'),
+        amount: mov.amount,
+        description: mov.description,
+        bankName: mov.bankAccount.bank.name,
+        currencyName: mov.bankAccount.currency.name,
+        code: mov.code,
+        exchangeRate: mov.exchangeRate?.sellRate
+      }))
+    }));
+  }
+
 
 
 

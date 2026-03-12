@@ -35,7 +35,7 @@ export class ZentraInstallmentController {
   findAllByScheduledDebt(@Param('id') scheduledDebtDocumentId: string) {
     return this.zentraInstallmentService.findAllByScheduledDebt(scheduledDebtDocumentId);
   }
-  
+
   @Put(':id')
   update(
     @Param('id') id: string,
@@ -113,6 +113,14 @@ export class ZentraInstallmentController {
   recalculateInstallment(@Body() body: { installmentId: string }) {
     return this.zentraInstallmentService.recalculateSimpleInstallmentAndDocument(body.installmentId);
   }
+
+
+  @Get('scheduled/:id/movements-report')
+  findAllMovementsByScheduled(@Param('id') id: string) {
+    return this.zentraInstallmentService.getReportMovementsByScheduled(id);
+  }
+
+
 
 
 }
