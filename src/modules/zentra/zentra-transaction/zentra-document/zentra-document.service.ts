@@ -3037,7 +3037,7 @@ export class ZentraDocumentService {
     exchangeRates.forEach(r => {
       rateMap.set(moment(r.date).format('YYYY-MM-DD'), Number(r.sellRate));
     });
-
+    
     const getEffectiveRate = (date: Date) => {
       let current = moment(date);
       for (let i = 0; i < 7; i++) {
@@ -3293,7 +3293,7 @@ export class ZentraDocumentService {
       }
       return exchangeRates.length > 0 ? Number(exchangeRates[0].sellRate) : 1;
     };
-
+    
     const mapItem = (item: any, isInstallment = false) => {
       const sellRate = getEffectiveRate(item.documentDate);
       

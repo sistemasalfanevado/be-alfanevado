@@ -104,8 +104,8 @@ export class ZentraMovementService {
     return {
       factor,
       executedAmount,
-      executedSoles: factor * Number(executedSoles.toFixed(2)),
-      executedDolares: factor * Number(executedDolares.toFixed(2)),
+      executedSoles: factor * Number(executedSoles.toFixed(3)),
+      executedDolares: factor * Number(executedDolares.toFixed(3)),
     };
   }
 
