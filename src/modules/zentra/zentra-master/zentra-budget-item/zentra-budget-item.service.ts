@@ -109,8 +109,8 @@ export class ZentraBudgetItemService {
       currencyName: item.currency.name,
 
       available: available,
-      completeName: `${item.definition.name} - ${item.currency.name}${available !== null ? ' - ' + formatter.format(available) : ''
-        }`,
+
+      completeName: `${item.definition.project.name} - ${item.definition.name}`,
 
       projectName: `${item.definition.project.name}`,
 
@@ -233,7 +233,6 @@ export class ZentraBudgetItemService {
         visibility: true,
       },
       orderBy: [
-        //{ definition: { category: { budgetCategory: { name: 'asc' } } } },
         { definition: { nature: { name: 'asc' } } },
         { definition: { category: { name: 'asc' } } },
         { definition: { name: 'asc' } },
