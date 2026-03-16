@@ -373,5 +373,11 @@ export class ZentraDocumentController {
   }
 
 
+  // Report Sales
+  @Post('summary-sales')
+  getSummaryProjects(@Body() body: { projectIds: string[] }) {
+    return this.zentraDocumentService.getSalesMatrixReport(body.projectIds);
+  }
+  
 
 }

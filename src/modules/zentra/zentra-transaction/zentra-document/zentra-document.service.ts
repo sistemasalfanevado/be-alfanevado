@@ -276,7 +276,7 @@ export class ZentraDocumentService {
 
       documentBudgetStatusId: item.documentBudgetStatus?.id ?? '',
       documentBudgetStatusName: item.documentBudgetStatus?.name ?? '',
-    
+
     };
   }
 
@@ -610,7 +610,7 @@ export class ZentraDocumentService {
     if (documentBudgetStatusId && documentBudgetStatusId.trim() !== '') {
       where.documentBudgetStatus = { id: documentBudgetStatusId };
     }
-    
+
     if (userId && userId.trim() !== '') {
       where.user = { id: userId };
     }
@@ -738,7 +738,7 @@ export class ZentraDocumentService {
         ...dto,
       };
     });
-  
+
   }
 
   async createDocument(dataDocument: any) {
@@ -790,7 +790,7 @@ export class ZentraDocumentService {
         ...(dataDocument.documentBudgetStatusId && {
           documentBudgetStatus: { connect: { id: dataDocument.documentBudgetStatusId } },
         }),
-      
+
 
       },
       select: { id: true, code: true }, // 👈 solo traemos el id
@@ -3037,7 +3037,7 @@ export class ZentraDocumentService {
     exchangeRates.forEach(r => {
       rateMap.set(moment(r.date).format('YYYY-MM-DD'), Number(r.sellRate));
     });
-    
+
     const getEffectiveRate = (date: Date) => {
       let current = moment(date);
       for (let i = 0; i < 7; i++) {
@@ -3178,7 +3178,7 @@ export class ZentraDocumentService {
         in: [INSTALLMENT_STATUS.PAGADO, INSTALLMENT_STATUS.PARCIAL]
       }
     };
-    
+
     const where: any = { deletedAt: null };
     where.documentCategory = { id: { in: [DOCUMENT_CATEGORY.CLASICO] } };
     where.documentType = { id: { notIn: [DOCUMENT_TYPE.DEVOLUCION_USUARIO] } };
@@ -3293,10 +3293,10 @@ export class ZentraDocumentService {
       }
       return exchangeRates.length > 0 ? Number(exchangeRates[0].sellRate) : 1;
     };
-    
+
     const mapItem = (item: any, isInstallment = false) => {
       const sellRate = getEffectiveRate(item.documentDate);
-      
+
       const itemNetAmount = isInstallment ? item.totalAmount : item.netAmount;
       const itemTaxAmount = isInstallment ? 0 : item.taxAmount;
 
@@ -3537,7 +3537,112 @@ export class ZentraDocumentService {
   }
 
 
+  async getSalesMatrixReport(projectIds: string[]) {
+
+    const documents = await this.prisma.zentraDocument.findMany({
+      where: {
+        documentCategoryId: DOCUMENT_CATEGORY.CRONOGRAMA,
+        budgetItem: {
+          definition: {
+            projectId: { in: projectIds }
+          }
+        },
+        deletedAt: null
+      },
+      include: {
+        currency: true,
+        budgetItem: {
+          include: {
+            definition: {
+              include: {
+                project: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (documents.length === 0) return [];
+
+    const dates = documents.map(d => d.documentDate.getTime());
+    const exchangeRates = await this.prisma.zentraExchangeRate.findMany({
+      where: {
+        date: {
+          gte: moment(Math.min(...dates)).subtract(7, 'days').toDate(),
+          lte: new Date(Math.max(...dates))
+        }
+      },
+      orderBy: { date: 'asc' }
+    });
+
+    const rateMap = new Map();
+    exchangeRates.forEach(r => rateMap.set(moment(r.date).format('YYYY-MM-DD'), Number(r.sellRate)));
+
+    const getRate = (date: Date) => {
+      let curr = moment(date);
+      for (let i = 0; i < 7; i++) {
+        const k = curr.format('YYYY-MM-DD');
+        if (rateMap.has(k)) return rateMap.get(k);
+        curr.subtract(1, 'days');
+      }
+      return 1;
+    };
+
+    const matrix: any = {};
+
+    documents.forEach(doc => {
+      const pId = doc.budgetItem.definition.projectId;
+      const pName = doc.budgetItem.definition.project.name;
+      const year = moment(doc.documentDate).year();
+      const month = moment(doc.documentDate).month();
+
+      const rate = getRate(doc.documentDate);
+
+      const amountInUsd = doc.currencyId === CURRENCY.SOLES
+        ? Number(doc.totalAmount) / rate
+        : Number(doc.totalAmount);
+
+      if (!matrix[pId]) matrix[pId] = { projectName: pName, years: {} };
+      if (!matrix[pId].years[year]) matrix[pId].years[year] = new Array(12).fill(0);
+
+      matrix[pId].years[year][month] += amountInUsd;
+    });
 
 
+    const reportArray: any = [];
+    const totalSummary: any = { projectName: 'Acumulado', years: {} };
 
+    Object.values(matrix).forEach((project: any) => {
+
+      Object.keys(project.years).forEach(year => {
+        const monthArray = project.years[year];
+
+        const yearlyTotal = monthArray.reduce((acc: number, val: number) => acc + val, 0);
+
+        const finalYearlyArray = [
+          ...monthArray.map((m: number) => Number(m.toFixed(2))),
+          Number(yearlyTotal.toFixed(2))
+        ];
+
+        project.years[year] = finalYearlyArray;
+
+        if (!totalSummary.years[year]) {
+          totalSummary.years[year] = new Array(13).fill(0);
+        }
+
+        finalYearlyArray.forEach((amount, index) => {
+          totalSummary.years[year][index] += amount;
+        });
+      });
+
+      reportArray.push(project);
+    });
+
+    Object.keys(totalSummary.years).forEach(year => {
+      totalSummary.years[year] = totalSummary.years[year].map((val: number) => Number(val.toFixed(2)));
+    });
+
+    return [totalSummary, ...reportArray];
+  }
 }
