@@ -16,7 +16,7 @@ import { ZentraPettyCashService } from '../../zentra-transaction/zentra-petty-ca
 import {
   TRANSACTION_TYPE, CURRENCY, MOVEMENT_CATEGORY,
   BANK_ACCOUNT_HIERARCHY, EXCHANGE_RATE, DOCUMENT_ORIGIN, INSTALLMENT_STATUS, DOCUMENT_CATEGORY,
-  DOCUMENT_TYPE, PAYMENT_CATEGORY
+  DOCUMENT_TYPE, PAYMENT_CATEGORY, TRANSACTION_NATURE
 } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
@@ -3547,6 +3547,12 @@ export class ZentraDocumentService {
             projectId: { in: projectIds }
           }
         },
+        scheduledIncomeDocuments: {
+          some: {
+            transactionNatureId: TRANSACTION_NATURE.VENTA
+          }
+        },
+
         deletedAt: null
       },
       include: {
@@ -3566,6 +3572,7 @@ export class ZentraDocumentService {
     if (documents.length === 0) return [];
 
     const dates = documents.map(d => d.documentDate.getTime());
+
     const exchangeRates = await this.prisma.zentraExchangeRate.findMany({
       where: {
         date: {
@@ -3592,16 +3599,15 @@ export class ZentraDocumentService {
     const matrix: any = {};
 
     documents.forEach(doc => {
-      const pId = doc.budgetItem.definition.projectId;
+      const pId = doc.budgetItem.definition.project.id;
       const pName = doc.budgetItem.definition.project.name;
       const year = moment(doc.documentDate).year();
       const month = moment(doc.documentDate).month();
-
       const rate = getRate(doc.documentDate);
 
-      const amountInUsd = doc.currencyId === CURRENCY.SOLES
-        ? Number(doc.totalAmount) / rate
-        : Number(doc.totalAmount);
+      const amountInUsd = doc.currency.id === CURRENCY.SOLES
+        ? Number(doc.amountToPay) / rate
+        : Number(doc.amountToPay);
 
       if (!matrix[pId]) matrix[pId] = { projectName: pName, years: {} };
       if (!matrix[pId].years[year]) matrix[pId].years[year] = new Array(12).fill(0);
@@ -3614,33 +3620,35 @@ export class ZentraDocumentService {
     const totalSummary: any = { projectName: 'Acumulado', years: {} };
 
     Object.values(matrix).forEach((project: any) => {
-
       Object.keys(project.years).forEach(year => {
         const monthArray = project.years[year];
-
         const yearlyTotal = monthArray.reduce((acc: number, val: number) => acc + val, 0);
 
-        const finalYearlyArray = [
-          ...monthArray.map((m: number) => Number(m.toFixed(2))),
-          Number(yearlyTotal.toFixed(2))
-        ];
-
-        project.years[year] = finalYearlyArray;
+        const fullYearRow = [...monthArray, yearlyTotal];
 
         if (!totalSummary.years[year]) {
           totalSummary.years[year] = new Array(13).fill(0);
         }
 
-        finalYearlyArray.forEach((amount, index) => {
+        fullYearRow.forEach((amount, index) => {
           totalSummary.years[year][index] += amount;
         });
-      });
 
+        project.years[year] = fullYearRow;
+      });
       reportArray.push(project);
     });
 
+    const formatRow = (arr: number[]) => arr.map(val => Number(val.toFixed(2)));
+
+    reportArray.forEach((project: any) => {
+      Object.keys(project.years).forEach(year => {
+        project.years[year] = formatRow(project.years[year]);
+      });
+    });
+
     Object.keys(totalSummary.years).forEach(year => {
-      totalSummary.years[year] = totalSummary.years[year].map((val: number) => Number(val.toFixed(2)));
+      totalSummary.years[year] = formatRow(totalSummary.years[year]);
     });
 
     return [totalSummary, ...reportArray];

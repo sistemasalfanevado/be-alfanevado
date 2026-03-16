@@ -165,3 +165,9 @@ export const NOTIFICATION_CATEGORY = {
   RENDICION_CUENTA: 'ac80cb13-0cc7-4667-9840-7bc5e6a0e716',
 };
 
+export const TRANSACTION_NATURE = {
+  VENTA: '25e875a5-f96d-4b1c-ae93-c48d2da8bfbc',
+  DEVOLUCION: 'f3364582-13b3-45af-8ffa-21c146b0193b',
+};
+
+
