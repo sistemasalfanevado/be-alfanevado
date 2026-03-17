@@ -16,7 +16,7 @@ import { ZentraPettyCashService } from '../../zentra-transaction/zentra-petty-ca
 import {
   TRANSACTION_TYPE, CURRENCY, MOVEMENT_CATEGORY,
   BANK_ACCOUNT_HIERARCHY, EXCHANGE_RATE, DOCUMENT_ORIGIN, INSTALLMENT_STATUS, DOCUMENT_CATEGORY,
-  DOCUMENT_TYPE, PAYMENT_CATEGORY, TRANSACTION_NATURE
+  DOCUMENT_TYPE, PAYMENT_CATEGORY, TRANSACTION_NATURE, SALE_TYPE
 } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
@@ -3649,6 +3649,103 @@ export class ZentraDocumentService {
 
     Object.keys(totalSummary.years).forEach(year => {
       totalSummary.years[year] = formatRow(totalSummary.years[year]);
+    });
+
+    return [totalSummary, ...reportArray];
+  }
+
+  async getLotSalesMatrixReport(projectIds: string[]) {
+
+    const documents = await this.prisma.zentraDocument.findMany({
+      where: {
+        documentCategoryId: DOCUMENT_CATEGORY.CRONOGRAMA,
+        budgetItem: {
+          definition: {
+            projectId: { in: projectIds }
+          }
+        },
+        scheduledIncomeDocuments: {
+          some: {
+            transactionNatureId: TRANSACTION_NATURE.VENTA,
+            saleTypeId: {
+              in: [SALE_TYPE.LOTE, SALE_TYPE.LOTE_COCHERA]
+            },
+          }
+        },
+
+        deletedAt: null
+      },
+      include: {
+        budgetItem: {
+          include: {
+            definition: {
+              include: {
+                project: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (documents.length === 0) return [];
+
+    // Eliminamos la lógica de ExchangeRates ya que ahora contamos unidades (lotes),
+    // por lo que el tipo de cambio ya no es necesario.
+
+    const matrix: any = {};
+
+    documents.forEach(doc => {
+      const pId = doc.budgetItem.definition.project.id;
+      const pName = doc.budgetItem.definition.project.name;
+
+      // Usamos UTC para evitar desfases en el conteo mensual
+      const date = moment.utc(doc.documentDate);
+      const year = date.year();
+      const month = date.month();
+
+      if (!matrix[pId]) matrix[pId] = { projectName: pName, years: {} };
+      if (!matrix[pId].years[year]) matrix[pId].years[year] = new Array(12).fill(0);
+
+      // En lugar de sumar monto, sumamos 1 unidad (un lote vendido)
+      matrix[pId].years[year][month] += 1;
+    });
+
+    const reportArray: any = [];
+    const totalSummary: any = { projectName: 'Acumulado', years: {} };
+
+    Object.values(matrix).forEach((project: any) => {
+      Object.keys(project.years).forEach(year => {
+        const monthArray = project.years[year];
+        const yearlyTotal = monthArray.reduce((acc: number, val: number) => acc + val, 0);
+
+        const fullYearRow = [...monthArray, yearlyTotal];
+
+        if (!totalSummary.years[year]) {
+          totalSummary.years[year] = new Array(13).fill(0);
+        }
+
+        fullYearRow.forEach((count, index) => {
+          totalSummary.years[year][index] += count;
+        });
+
+        project.years[year] = fullYearRow;
+      });
+      reportArray.push(project);
+    });
+
+    // Nota: No es estrictamente necesario formatRow (toFixed) porque son enteros,
+    // pero lo mantenemos si deseas asegurar que el formato de salida sea siempre numérico.
+    const finalizeNumbers = (arr: number[]) => arr.map(val => Math.floor(val));
+
+    reportArray.forEach((project: any) => {
+      Object.keys(project.years).forEach(year => {
+        project.years[year] = finalizeNumbers(project.years[year]);
+      });
+    });
+
+    Object.keys(totalSummary.years).forEach(year => {
+      totalSummary.years[year] = finalizeNumbers(totalSummary.years[year]);
     });
 
     return [totalSummary, ...reportArray];

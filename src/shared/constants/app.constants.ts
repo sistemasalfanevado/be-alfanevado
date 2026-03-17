@@ -171,3 +171,11 @@ export const TRANSACTION_NATURE = {
 };
 
 
+export const SALE_TYPE = {
+  LOTE: '34743056-dd3f-4461-a4c5-47e8a2bf2602',
+  LOTE_COCHERA: 'bf1dfed9-f7c7-4948-9d99-41642c5c5f54',
+  COCHERA: 'db8ac12f-f3af-4b26-82b3-aa70781523d7',
+  OTRO: '5653eaa6-c02f-43c3-9a6b-24daa8a7a8eb'
+};
+
+

@@ -373,10 +373,15 @@ export class ZentraDocumentController {
   }
 
 
-  // Report Sales
   @Post('summary-sales')
   getSummaryProjects(@Body() body: { projectIds: string[] }) {
     return this.zentraDocumentService.getSalesMatrixReport(body.projectIds);
+  }
+  
+
+  @Post('summary-lot-sales')
+  getSummaryLotProjects(@Body() body: { projectIds: string[] }) {
+    return this.zentraDocumentService.getLotSalesMatrixReport(body.projectIds);
   }
   
 
