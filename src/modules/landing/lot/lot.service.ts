@@ -36,24 +36,30 @@ export class LotService {
   }
 
   async findAllByPage(pageId: string) {
+  const landingLots = await this.prisma.landingLot.findMany({
+    where: {
+      deletedAt: null,
+      pageId
+    },
+    include: {
+      status: true,
+    },
+  });
 
-    const landingLots = await this.prisma.landingLot.findMany({
-      where: { deletedAt: null, pageId },
-      include: {
-        status: true,
-      },
+  const sortedLots = landingLots.sort((a, b) => {
+    return (a.name || '').localeCompare((b.name || ''), undefined, { 
+      numeric: true, 
+      sensitivity: 'base' 
     });
+  });
+
+  return sortedLots.map(lot => ({
+    ...lot,
+    statusTitle: lot.status.title,
+  }));
+}
 
 
-    const transformedLots = landingLots.map(lot => ({
-      ...lot,
-      statusTitle: lot.status.title,
-      status: undefined,
-    }));
-
-    return transformedLots;
-
-  }
 
   async findOne(id: string) {
     return this.prisma.landingLot.findUnique({
