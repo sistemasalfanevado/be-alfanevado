@@ -102,15 +102,19 @@ export class ZentraLandingPageRelationService {
     const lots = relation.landingPage.lots;
 
     lots.sort((a, b) => {
-      return a.status.title.localeCompare(b.status.title);
+      return (a.name || '').localeCompare((b.name || ''), undefined, {
+        numeric: true,
+        sensitivity: 'base'
+      });
     });
+
 
     return lots.map((lot) => ({
       id: lot.id,
-      title: `${lot.name} - ${lot.status.title}`,
       number: lot.number,
       block: lot.block,
       code: lot.code,
+      name: lot.name,
       status: lot.status.title,
       statusId: lot.status.id,
       area: lot.area,
@@ -119,6 +123,8 @@ export class ZentraLandingPageRelationService {
       totalPrice: lot.totalPrice ?? 0,
     }));
   }
+
+
 
   async getAvailableLots(zentraProjectId: string) {
 
@@ -248,7 +254,7 @@ export class ZentraLandingPageRelationService {
         }, 0);
 
       const projectBudgets = budgetItems.filter(bi => bi.definition.projectId === project.id);
-      
+
       let totalTerrenoUSD = 0;
       let totalObraUSD = 0;
       let totalGastosUSD = 0;
@@ -256,7 +262,7 @@ export class ZentraLandingPageRelationService {
       projectBudgets.forEach(item => {
         const budgetAmount = Number(item.amount);
         const executedDolares = Math.abs(Number(item.executedDolares));
-        
+
         const pendingUSD = budgetAmount - executedDolares
 
         if (item.definition.categoryId === BUDGET_CATEGORY.COSTO_TIERRA) {
@@ -271,7 +277,7 @@ export class ZentraLandingPageRelationService {
       const totalPending = totalTerrenoUSD + totalObraUSD + totalGastosUSD;
       const totalIncome = Number(totalPriceSum.toFixed(2)) + Number(projectDebtUSD.toFixed(2));
       const totalAvailable = totalIncome - totalPending;
-      
+
       return {
         projectId: project.id,
         projectName: project.name,
