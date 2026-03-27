@@ -107,7 +107,7 @@ export class ZentraLandingPageRelationService {
         sensitivity: 'base'
       });
     });
-
+    
 
     return lots.map((lot) => ({
       id: lot.id,

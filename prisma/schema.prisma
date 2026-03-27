@@ -1951,3 +1951,16 @@ model ZentraDocumentBudgetStatus {
 
   @@map("zentra_document_budget_status")
 }
+
+model ZentraPaymentPlan {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(50)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("zentra_payment_plan")
+}
+
+

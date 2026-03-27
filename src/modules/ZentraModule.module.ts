@@ -15,6 +15,7 @@ import { ZentraUserProjectModule } from './zentra/zentra-config/zentra-user-proj
 
 
 // Zentra Masters
+import { ZentraPaymentPlanModule } from './zentra/zentra-master/zentra-payment-plan/zentra-payment-plan.module';
 import { ZentraBankModule } from './zentra/zentra-master/zentra-bank/zentra-bank.module';
 import { ZentraDocumentBudgetStatusModule } from './zentra/zentra-master/zentra-document-budget-status/zentra-document-budget-status.module';
 import { ZentraCurrencyModule } from './zentra/zentra-master/zentra-currency/zentra-currency.module';
@@ -162,6 +163,7 @@ import { ZentraPettyCashModule } from './zentra/zentra-transaction/zentra-petty-
     ZentraPaymentCategoryModule,
     ZentraMovementBudgetConfigModule,
     
+    ZentraPaymentPlanModule,
     ZentraBankModule,
     ZentraDocumentBudgetStatusModule,
     ZentraBudgetItemCategoryModule,
