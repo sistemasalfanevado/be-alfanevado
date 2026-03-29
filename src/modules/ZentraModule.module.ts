@@ -82,6 +82,9 @@ import { ZentraScheduledIncomeDocumentStatusModule } from './zentra/zentra-maste
 
 import { ZentraScheduledDebtDocumentModule } from './zentra/zentra-master/zentra-scheduled-debt-document/zentra-scheduled-debt-document.module';
 
+import { ZentraQuotationMilestoneModule } from './zentra/zentra-master/zentra-quotation-milestone/zentra-quotation-milestone.module';
+import { ZentraLotQuotationModule } from './zentra/zentra-master/zentra-lot-quotation/zentra-lot-quotation.module';
+
 
 import { ZentraInstallmentStatusModule } from './zentra/zentra-master/zentra-installment-status/zentra-installment-status.module';
 import { ZentraBankStatementModule } from './zentra/zentra-utils/zentra-bank-statement/zentra-bank-statement.module';
@@ -203,6 +206,9 @@ import { ZentraPettyCashModule } from './zentra/zentra-transaction/zentra-petty-
     ZentraScheduledIncomeDocumentStatusModule,
 
     ZentraScheduledDebtDocumentModule,
+
+    ZentraQuotationMilestoneModule,
+    ZentraLotQuotationModule,
 
     ZentraDocumentStatusModule,
     ZentraDocumentCategoryModule,

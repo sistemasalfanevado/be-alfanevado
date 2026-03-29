@@ -208,6 +208,7 @@ model LandingLot {
   page      LandingPage      @relation(fields: [pageId], references: [id])
   status    LandingLotStatus @relation(fields: [statusId], references: [id])
   scheduledIncomeDocuments ZentraScheduledIncomeDocument[]
+  quotations ZentraLotQuotation[]
 
   deletedAt DateTime?
   createdAt DateTime         @default(now())
@@ -1956,6 +1957,8 @@ model ZentraPaymentPlan {
   id        String   @id @default(uuid())
   name      String   @db.VarChar(50)
 
+  quotations ZentraLotQuotation[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
@@ -1963,4 +1966,53 @@ model ZentraPaymentPlan {
   @@map("zentra_payment_plan")
 }
 
+
+model ZentraLotQuotation {
+  id               String   @id @default(uuid())
+  clientName       String   @db.VarChar(100)
+  
+  // Relaciones
+  lotId            String
+  lot              LandingLot @relation(fields: [lotId], references: [id])
+  paymentPlanId    String
+  paymentPlan      ZentraPaymentPlan @relation(fields: [paymentPlanId], references: [id])
+  
+  // Instantánea de precios al momento de cotizar
+  area             Decimal  @db.Decimal(10, 2)
+  pricePerSqMeter  Decimal  @db.Decimal(10, 2) // El "precio nuevo" que pone el vendedor
+  totalLotPrice    Decimal  @db.Decimal(16, 4)
+  
+  // Lógica de Inicial
+  downPaymentPercentage Decimal @db.Decimal(5, 2) // % de inicial
+  downPaymentAmount     Decimal @db.Decimal(16, 4) // Monto de inicial en dinero
+  
+  // Campos específicos para Financiamiento Mensual
+  totalMonths      Int?     // Número de cuotas
+  annualInterest   Decimal? @db.Decimal(5, 2)
+  monthlyInstallment Decimal? @db.Decimal(16, 4) // Valor de la cuota calculada
+  
+  milestones       ZentraQuotationMilestone[]
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  deletedAt        DateTime?
+
+  @@map("zentra_lot_quotation")
+}
+
+model ZentraQuotationMilestone {
+  id           String       @id @default(uuid())
+  quotationId  String
+  quotation    ZentraLotQuotation @relation(fields: [quotationId], references: [id])
+  
+  description  String       @db.VarChar(200) // "Cercado", "Entrega de llaves", etc.
+  dueDate      DateTime     // Fecha del pago
+  amount       Decimal      @db.Decimal(16, 4) // Monto de esta cuota
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  deletedAt        DateTime?
+  
+  @@map("zentra_quotation_milestone")
+}
 
