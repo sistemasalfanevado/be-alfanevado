@@ -19,13 +19,11 @@ export class ZentraLotQuotationController {
     return this.lotQuotationService.findAll();
   }
 
-  // --- NUEVO MÉTODO ---
   @Get('lot/:lotId')
   findByLot(@Param('lotId') lotId: string) {
     return this.lotQuotationService.findByLot(lotId);
   }
-  // --------------------
-
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.lotQuotationService.findOne(id);
