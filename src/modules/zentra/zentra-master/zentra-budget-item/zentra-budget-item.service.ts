@@ -485,34 +485,41 @@ export class ZentraBudgetItemService {
             amountInUsd = amountInUsd / rate;
           }
 
-          if (mov.transactionTypeId === TRANSACTION_TYPE.EXIT) {
+          // LÓGICA DE SIGNOS:
+          // Si es Entrada, suma al flujo. Si es Salida, resta.
+          let signedAmount = 0;
+          if (mov.transactionTypeId === TRANSACTION_TYPE.ENTRY) {
+            signedAmount = amountInUsd;
+          } else if (mov.transactionTypeId === TRANSACTION_TYPE.EXIT) {
+            signedAmount = -amountInUsd;
+          }
+
+          if (signedAmount !== 0) {
             const movDate = new Date(mov.paymentDate);
             const movYear = movDate.getFullYear();
             const def = mov.budgetItem.definition;
 
-            // --- LÓGICA DE DISTRIBUCIÓN ---
             let targetBreakdown;
 
             if (def.categoryId === BUDGET_CATEGORY.COSTO_TIERRA) {
-              // Caso específico: Es Tierra (aunque sea de naturaleza Costo Directo, tiene prioridad)
               targetBreakdown = costoTierraBreakdown;
             } else if (def.natureId === BUDGET_NATURE.COSTO_DIRECTO) {
-              // Caso general: Es Costo Directo pero NO es Tierra
               targetBreakdown = costoDirectoBreakdown;
             } else if (def.natureId === BUDGET_NATURE.GASTO) {
-              // Caso Gasto
               targetBreakdown = gastoBreakdown;
             }
 
             if (targetBreakdown) {
               if (movYear < currentYear) {
-                targetBreakdown[0].executed += amountInUsd;
+                targetBreakdown[0].executed += signedAmount;
               } else if (movYear === currentYear) {
                 const monthIndex = movDate.getMonth() + 1;
-                targetBreakdown[monthIndex].executed += amountInUsd;
+                targetBreakdown[monthIndex].executed += signedAmount;
               }
             }
           }
+
+
         });
 
       const format = (breakdown) => breakdown.map(b => ({ ...b, executed: Number(b.executed.toFixed(2)) }));

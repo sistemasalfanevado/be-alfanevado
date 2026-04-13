@@ -168,8 +168,12 @@ export class ZentraMovementService {
 
   private formatMovement(item: any) {
     const principalDoc = item.document?.party?.partyDocuments?.[0];
+    
     const inst = item.installment;
     const doc = item.document;
+
+    const useDocType = inst?.scheduledDebtDocumentId != null;
+
 
     return {
       id: item.id,
@@ -187,8 +191,15 @@ export class ZentraMovementService {
       documentCode: inst?.code || doc?.code || 'Sin definir',
       documentDescription: inst?.description || doc?.description || 'Sin definir',
       documentDate: moment(inst?.documentDate ?? doc.documentDate).format('DD/MM/YYYY'),
-      documentTypeId: inst?.documentType?.id ?? doc.documentType?.id,
-      documentType: inst?.documentType?.name ?? doc.documentType?.name,
+      
+      documentTypeId: useDocType 
+        ? doc.documentType?.id 
+        : (inst?.documentType?.id ?? doc.documentType?.id),
+
+      documentType: useDocType 
+        ? doc.documentType?.name 
+        : (inst?.documentType?.name ?? doc.documentType?.name),
+
       documentAmountToPay: inst?.totalAmount ?? doc.amountToPay,
       documentCurrency: inst?.currency?.name ?? doc?.currency?.name,
       documentProjectName: doc?.budgetItem?.definition?.project?.name,

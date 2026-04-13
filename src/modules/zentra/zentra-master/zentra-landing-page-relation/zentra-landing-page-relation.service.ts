@@ -264,11 +264,12 @@ export class ZentraLandingPageRelationService {
         const executedDolares = Math.abs(Number(item.executedDolares));
 
         const pendingUSD = budgetAmount - executedDolares
+        //const pendingUSD = executedDolares
 
         if (item.definition.categoryId === BUDGET_CATEGORY.COSTO_TIERRA) {
           totalTerrenoUSD += pendingUSD;
         } else if (item.definition.natureId === BUDGET_NATURE.COSTO_DIRECTO) {
-          totalObraUSD += pendingUSD;
+          totalObraUSD += pendingUSD; 
         } else if (item.definition.natureId === BUDGET_NATURE.GASTO) {
           totalGastosUSD += pendingUSD;
         }
@@ -285,13 +286,18 @@ export class ZentraLandingPageRelationService {
         totalPrice: Number(totalPriceSum.toFixed(2)),
         totalDebt: Number(projectDebtUSD.toFixed(2)),
         totalIncome: Number(totalIncome.toFixed(2)),
-
-
         totalPending: Number(totalPending.toFixed(2)),
+        totalAvailable: Number(totalAvailable.toFixed(2)),
+
         totalTerreno: Number(totalTerrenoUSD.toFixed(2)),
         totalObra: Number(totalObraUSD.toFixed(2)),
         totalGastos: Number(totalGastosUSD.toFixed(2)),
-        totalAvailable: Number(totalAvailable.toFixed(2))
+
+        // Extras
+        totalTerreno2: Number(totalTerrenoUSD.toFixed(2)),
+        totalObra2: Number(totalObraUSD.toFixed(2)),
+        totalGastos2: Number(totalGastosUSD.toFixed(2)),
+        
 
       };
     });
