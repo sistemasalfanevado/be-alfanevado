@@ -106,9 +106,14 @@ export class ZentraAuditLogService {
     const movementIds = logs
       .filter(log => movementModules.includes(log.module) && log.recordId)
       .map(log => log.recordId as string);
+
+    const installmentModules = ['ZENTRA-INSTALLMENTS'];
+    const installmentIds = logs
+      .filter(log => installmentModules.includes(log.module) && log.recordId)
+      .map(log => log.recordId as string);
     
 
-    const [budgetItemsData, documentsData, movementsData] = await Promise.all([
+    const [budgetItemsData, documentsData, movementsData, installmentsData] = await Promise.all([
       
       budgetItemIds.length > 0
         ? this.prisma.zentraBudgetItem.findMany({
@@ -139,6 +144,17 @@ export class ZentraAuditLogService {
         })
         : Promise.resolve([] as any[]),
 
+        installmentIds.length > 0
+        ? this.prisma.zentraInstallment.findMany({
+            where: { id: { in: installmentIds } },
+            include: {
+              scheduledIncomeDocument: {
+                include: { lot: true }
+              }
+            }
+          })
+        : Promise.resolve([] as any[]),
+
 
     ]);
 
@@ -146,6 +162,7 @@ export class ZentraAuditLogService {
     const budgetMap = new Map<string, any>(budgetItemsData.map(item => [item.id, item]));
     const documentMap = new Map<string, any>(documentsData.map(doc => [doc.id, doc]));
     const movementMap = new Map<string, any>(movementsData.map(mov => [mov.id, mov]));
+    const installmentMap = new Map<string, any>(installmentsData.map(inst => [inst.id, inst]));
 
     return logs.map((log) => {
       let extraDescription = '';
@@ -189,6 +206,22 @@ export class ZentraAuditLogService {
           extraDescription = `[${code}] ${docDate} | ${projectName} - ${budgetName} | ${desc}`;
         }
       }
+
+      if (installmentModules.includes(log.module)) {
+        const instData = installmentMap.get(log.recordId);
+        if (instData) {
+          const letra = instData.letra || 'N/A';
+          const amount = instData.totalAmount ? parseFloat(instData.totalAmount).toFixed(2) : '0.00';
+          const date = instData.dueDate ? moment(instData.dueDate).format('DD/MM/YYYY') : '';
+          
+          // Acceso a datos del lote a través de la jerarquía
+          const lot = instData.scheduledIncomeDocument?.lot;
+          //const lotInfo = lot ? `Lote: ${lot.name} | Mz: ${lot.block} | N°: ${lot.number}` : 'Sin Lote asignado';
+          const lotInfo = lot ? `Lote: ${lot.name}` : 'Sin Lote asignado';
+          extraDescription = `Letra ${letra} | Monto: ${amount} | Venc: ${date} | ${lotInfo}`;
+        }
+      }
+
 
       return {
         id: log.id,
