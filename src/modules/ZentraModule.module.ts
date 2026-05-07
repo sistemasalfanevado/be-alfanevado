@@ -44,6 +44,7 @@ import { ZentraNotificationRecipientModule } from './zentra/zentra-master/zentra
 import { ZentraNotificationCategoryModule } from './zentra/zentra-master/zentra-notification-category/zentra-notification-category.module';
 
 import { ZentraAuditLogModule } from './zentra/zentra-master/zentra-audit-log/zentra-audit-log.module';
+
 import { ZentraPercentageModule } from './zentra/zentra-master/zentra-percentage/zentra-percentage.module';
 import { ZentraProjectSubStageModule } from './zentra/zentra-master/zentra-project-sub-stage/zentra-project-sub-stage.module';
 import { ZentraPaymentCategoryModule } from './zentra/zentra-master/zentra-payment-category/zentra-payment-category.module';
@@ -130,9 +131,15 @@ import { ZentraAccountabilityModule } from './zentra/zentra-transaction/zentra-a
 import { ZentraPettyCashStatusModule } from './zentra/zentra-master/zentra-petty-cash-status/zentra-petty-cash-status.module';
 import { ZentraPettyCashModule } from './zentra/zentra-transaction/zentra-petty-cash/zentra-petty-cash.module';
 
+import { ZentraSessionLogModule } from './zentra/zentra-master/zentra-session-log/zentra-session-log.module';
+
 
 @Module({
   imports: [
+
+    ZentraSessionLogModule,
+
+
     ZentraAuthModule,
     ZentraUsersModule,
     ZentraPageModule,
@@ -158,6 +165,7 @@ import { ZentraPettyCashModule } from './zentra/zentra-transaction/zentra-petty-
     ZentraNotificationRecipientModule,
     ZentraNotificationCategoryModule,
     ZentraAuditLogModule,
+    
     ZentraPercentageModule,
     ZentraProjectSubStageModule,
     ZentraProjectSubStageProgressModule,

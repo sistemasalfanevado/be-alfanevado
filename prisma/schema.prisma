@@ -267,9 +267,7 @@ model ZentraUser {
 
   areaId      String?
   area        ZentraArea? @relation(fields: [areaId], references: [id])
-
-
-
+  
   mainRoute    String?      @db.VarChar(200)
 
   documents             ZentraDocument[]
@@ -280,6 +278,7 @@ model ZentraUser {
   accountability        ZentraAccountability[]
   pettyCash             ZentraPettyCash[]
   auditLogs             ZentraAuditLog[]
+  sessionLogs             ZentraSessionLog[]
   parties               ZentraParty[]
 
   userParties           ZentraUserParty[]
@@ -2016,3 +2015,22 @@ model ZentraQuotationMilestone {
   @@map("zentra_quotation_milestone")
 }
 
+model ZentraSessionLog {
+  id              String   @id @default(uuid())
+  userId          String
+  user            ZentraUser @relation(fields: [userId], references: [id])
+  
+  userAgent       String   // El string completo del navegador
+  browser         String   // Ej: Chrome
+  os              String   // Ej: Windows 11
+  deviceType      String   // Ej: Desktop, Mobile, Tablet
+  
+  ipAddress       String
+  
+  deviceFingerprint String? // ID único generado en el front
+  
+  serverCreatedAt DateTime @default(now())
+  localCreatedAt  DateTime
+
+  @@map("zentra_session_logs")
+}
