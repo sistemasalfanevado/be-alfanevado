@@ -290,6 +290,22 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.findByFiltersScheduledIncomeReportIa(filters);
   }
 
+  @Post('scheduled-income/sales-report')
+  getSalesReport(@Body() filters: {
+    startDate?: string;
+    endDate?: string;
+  }) {
+    return this.zentraDocumentService.getSalesDetailedReport(filters);
+  }
+  
+  @Post('scheduled-income/collection-report')
+  getCollectionReport(@Body() filters: {
+    startDate?: string;
+    endDate?: string;
+  }) {
+    return this.zentraDocumentService.getCollectionDetailedReport(filters);
+  }
+
 
   // Scheduled Document Debt
   @Post('scheduled-debt')

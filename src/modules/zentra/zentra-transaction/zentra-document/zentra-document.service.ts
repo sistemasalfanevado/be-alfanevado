@@ -16,7 +16,7 @@ import { ZentraPettyCashService } from '../../zentra-transaction/zentra-petty-ca
 import {
   TRANSACTION_TYPE, CURRENCY, MOVEMENT_CATEGORY,
   BANK_ACCOUNT_HIERARCHY, EXCHANGE_RATE, DOCUMENT_ORIGIN, INSTALLMENT_STATUS, DOCUMENT_CATEGORY,
-  DOCUMENT_TYPE, PAYMENT_CATEGORY, TRANSACTION_NATURE, SALE_TYPE
+  DOCUMENT_TYPE, PAYMENT_CATEGORY, TRANSACTION_NATURE, SALE_TYPE, PARTY_DOCUMENT_HIERARCHY, PROJECT_NO_SALES
 } from 'src/shared/constants/app.constants';
 
 import * as moment from 'moment';
@@ -2599,6 +2599,389 @@ export class ZentraDocumentService {
 
     return finalReport;
   }
+
+
+  async getSalesDetailedReport(filters: {
+    projectId?: string;
+    companyId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+
+    const whereClause: any = {
+      deletedAt: null,
+      transactionNatureId: TRANSACTION_NATURE.VENTA,
+      document: {
+        deletedAt: null,
+        budgetItem: {
+          definition: {
+            project: {
+              // 📌 EXCLUSIÓN GLOBAL: No importa la compañía, este proyecto nunca se cargará
+              id: {
+                notIn: Object.values(PROJECT_NO_SALES)
+              }
+            }
+          }
+        },
+        // Mantenemos el filtro de fechas por si el usuario quiere acotar el reporte por rango de tiempo
+        ...((filters.startDate || filters.endDate) && {
+          documentDate: {
+            ...(filters.startDate && { gte: new Date(filters.startDate) }),
+            ...(filters.endDate && { lte: new Date(filters.endDate) }),
+          }
+        })
+      }
+    };
+
+    const sales = await this.prisma.zentraScheduledIncomeDocument.findMany({
+      where: whereClause,
+      include: {
+        lot: {
+          include: {
+            page: {
+              include: {
+                zentraProjects: {
+                  include: { zentraProject: true }
+                }
+              }
+            }
+          }
+        },
+        document: {
+          include: {
+            currency: true,
+            party: {
+              include: {
+                partyDocuments: {
+                  where: {
+                    deletedAt: null,
+                    documentHierarchyId: PARTY_DOCUMENT_HIERARCHY.PRINCIPAL // Trae solo el principal (DNI/RUC)
+                  }
+                }
+              }
+            },
+            budgetItem: {
+              include: {
+                definition: {
+                  include: { project: true }
+                }
+              }
+            },
+            documentStatus: true
+          }
+        },
+        broker: true, // Asumido como el vendedor
+        status: true,
+        installments: {
+          where: { deletedAt: null },
+          orderBy: { letra: 'asc' },
+          include: {
+            movements: {
+              where: { deletedAt: null },
+              include: {
+                bankAccount: true,
+                exchangeRate: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    const lastExchangeRate = await this.prisma.zentraExchangeRate.findFirst({
+      where: {
+        deletedAt: null,
+      },
+      orderBy: {
+        date: 'desc', // Trae la fecha más alta/reciente registrada
+      },
+    });
+
+    // Si no hay ningún TC en la BD, usamos un valor por defecto seguro para no romper cálculos
+    const tcAplicado = lastExchangeRate ? Number(lastExchangeRate.sellRate) : 3.75;
+
+    const mappedResults = sales.map((sale, index) => {
+      const doc = sale.document;
+      const party = doc?.party;
+      const lot = sale.lot;
+      const project = doc?.budgetItem?.definition?.project;
+      const installments = sale.installments ?? [];
+
+      // 1️⃣ Lógica para el número de contrato autoincremental
+      const numeroContratoCorrelativo = (index + 1).toString();
+
+      // 2️⃣ Extraer el Documento de Identidad Principal (DNI o RUC) del Party
+      const principalDocumentObj = party?.partyDocuments?.[0];
+      const clienteDniReal = principalDocumentObj?.document ?? party?.document ?? null;
+
+      // 3️⃣ Datos de contacto directos del modelo ZentraParty
+      const clienteTelefonoReal = party?.phone ?? null;
+      const clienteEmailReal = party?.email ?? null;
+
+      // Lógica de cuotas (Fechas e importes)
+      const firstInstallment = installments[0];
+      const fechaPrimeraCuota = firstInstallment
+        ? moment(firstInstallment.dueDate).format('DD/MM/YYYY')
+        : null;
+
+      const cuotasPendientes = installments.filter(inst =>
+        inst.installmentStatusId === INSTALLMENT_STATUS.PENDIENTE
+      );
+
+      // 2️⃣ El número de meses de saldo es la cantidad de cuotas que cumplen con esa condición
+      const mesesSaldoReal = cuotasPendientes.length;
+
+
+      const isDolar = doc?.currencyId === CURRENCY.DOLARES;
+      const totalAmount = Number(doc?.amountToPay ?? 0);
+
+      const precioTotalUsd = isDolar ? totalAmount : (totalAmount / tcAplicado);
+      const precioTotalPen = isDolar ? (totalAmount * tcAplicado) : totalAmount;
+
+
+      const inicialInstallment = installments.find(i => i.letra === 1);
+      let totalPagadoInicialDolares = 0;
+
+      if (inicialInstallment && inicialInstallment.movements) {
+        // Recorremos cada movimiento/pago asociado a la inicial
+        inicialInstallment.movements.forEach(mov => {
+
+          const esCuentaDolares = mov.bankAccount?.currencyId === CURRENCY.DOLARES;
+          const montoMovimiento = Number(mov.amount ?? 0);
+
+          if (esCuentaDolares) {
+            totalPagadoInicialDolares += montoMovimiento;
+          } else {
+            const tcMovimiento = mov.exchangeRate ? Number(mov.exchangeRate.buyRate) : tcAplicado;
+            if (tcMovimiento > 0) {
+              totalPagadoInicialDolares += (montoMovimiento / tcMovimiento);
+            }
+          }
+        });
+      }
+      
+      return {
+        proyecto_codigo: project?.name ?? null,
+        numero_contrato: numeroContratoCorrelativo, // 📌 Correlativo puro (1, 2, 3...)
+        fecha_venta: doc?.documentDate ? moment(doc.documentDate).format('DD/MM/YYYY') : null,
+
+        // 📌 Datos del Cliente extraídos con precisión de ZentraParty
+        cliente_nombre: party?.name ?? null,
+        cliente_dni: clienteDniReal,
+        cliente_telefono: clienteTelefonoReal,
+        cliente_email: clienteEmailReal,
+
+        // Datos del Lote
+        lote_codigo: lot?.name ?? null,
+        lote_manzana: lot?.block ?? null,
+        lote_numero: lot?.number ?? null,
+        area_m2: lot?.area ? Number(lot.area) : null,
+        precio_usd_m2: lot?.pricePerSquareMeter ? Number(lot.pricePerSquareMeter) : null,
+        precio_usd_lote: lot?.totalPrice ? Number(lot.totalPrice) : null,
+
+        // Datos Financieros y Moneda
+        precio_total_usd: Number(precioTotalUsd.toFixed(2)),
+        precio_total_pen: Number(precioTotalPen.toFixed(2)),
+
+        tc_aplicado: tcAplicado,
+
+        pct_inicial: Number(totalPagadoInicialDolares.toFixed(2)),
+
+        meses_saldo: mesesSaldoReal,
+        fecha_primera_cuota: fechaPrimeraCuota,
+
+        // Vendedor y Estado
+        vendedor_nombre: sale.broker?.name ?? null,
+        comision_pct: 0,
+        estado: sale.document.documentStatus?.name,
+
+        fecha_cancelacion: '',
+        motivo_cancelacion: '',
+        notas: ''
+      };
+    });
+
+    // 4. Ordenamiento por Proyecto y por Código de Lote
+    return mappedResults.sort((a, b) => {
+      const projectCompare = (a.proyecto_codigo || '').localeCompare(b.proyecto_codigo || '', 'es');
+      if (projectCompare !== 0) return projectCompare;
+
+      if (!a.lote_codigo) return 1;
+      if (!b.lote_codigo) return -1;
+      return a.lote_codigo.localeCompare(b.lote_codigo, 'es', { numeric: true });
+    });
+  }
+
+
+  async getCollectionDetailedReport(filters: {
+    startDate?: string;
+    endDate?: string;
+  }) {
+    // 1️⃣ Obtener el tipo de cambio más reciente registrado (Mismo fallback que el anterior)
+    const lastExchangeRate = await this.prisma.zentraExchangeRate.findFirst({
+      where: { deletedAt: null },
+      orderBy: { date: 'desc' },
+    });
+    const tcAplicado = lastExchangeRate ? Number(lastExchangeRate.sellRate) : 3.75;
+
+    // 2️⃣ Construcción del Where Clause enfocado en traer los documentos de venta válidos
+    const whereClause: any = {
+      deletedAt: null,
+      transactionNatureId: TRANSACTION_NATURE.VENTA,
+      document: {
+        deletedAt: null,
+        budgetItem: {
+          definition: {
+            project: {
+              id: {
+                notIn: Object.values(PROJECT_NO_SALES) // Mantiene la exclusión de los 3 proyectos
+              }
+            }
+          }
+        },
+        ...((filters.startDate || filters.endDate) && {
+          documentDate: {
+            ...(filters.startDate && { gte: new Date(filters.startDate) }),
+            ...(filters.endDate && { lte: new Date(filters.endDate) }),
+          }
+        })
+      }
+    };
+
+    // 3️⃣ Consulta a la Base de Datos
+    const sales = await this.prisma.zentraScheduledIncomeDocument.findMany({
+      where: whereClause,
+      include: {
+        document: {
+          include: {
+            party: {
+              include: {
+                partyDocuments: {
+                  where: {
+                    deletedAt: null,
+                    documentHierarchyId: PARTY_DOCUMENT_HIERARCHY.PRINCIPAL
+                  }
+                }
+              }
+            },
+            budgetItem: {
+              include: {
+                definition: {
+                  include: { project: true }
+                }
+              }
+            }
+          }
+        },
+        installments: {
+          where: {
+            deletedAt: null,
+            // 📌 REGLA CRÍTICA: Solo cuotas que tengan amortizaciones parciales o totales
+            installmentStatusId: {
+              in: [INSTALLMENT_STATUS.PAGADO, INSTALLMENT_STATUS.PARCIAL]
+            }
+          },
+          orderBy: { letra: 'asc' },
+          include: {
+            movements: {
+              where: { deletedAt: null },
+              include: {
+                bankAccount: {
+                  include: { bank: true } // Incluye el banco de la cuenta
+                },
+                exchangeRate: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    const collectionResults: any[] = [];
+
+    // 4️⃣ Mapeo de datos: Iteramos por cada venta y desglosamos sus cuotas cobradas
+    sales.forEach((sale) => {
+      const doc = sale.document;
+      const party = doc?.party;
+      const project = doc?.budgetItem?.definition?.project;
+      const installments = sale.installments ?? [];
+
+      // 📌 REGLA: concatenación del Proyecto y del Nombre del Cliente (Proveedor del dinero)
+      const projectName = project?.name ?? 'SIN_PROYECTO';
+      const partyName = party?.name ?? 'SIN_CLIENTE';
+      const numeroContratoConcatenado = `${projectName}-${partyName}`.trim().toUpperCase();
+
+      const principalDocumentObj = party?.partyDocuments?.[0];
+      const clienteDniReal = principalDocumentObj?.document ?? party?.document ?? null;
+
+      // Procesamos de manera independiente cada cuota cobrada
+      installments.forEach((installment) => {
+        let totalPagadoCuotaSoles = 0;
+        let nombreBanco = 'VARIOS BANCOS';
+        let numeroOperacion = '';
+        let fechaCobranza: Date | null = null;
+
+        const movements = installment.movements ?? [];
+
+        movements.forEach((mov, movIndex) => {
+          const esCuentaDolares = mov.bankAccount?.currencyId === CURRENCY.DOLARES;
+          const montoMovimiento = Number(mov.amount ?? 0);
+
+          // Capturamos la fecha del primer movimiento ejecutor o la del pago general
+          if (movIndex === 0) {
+            fechaCobranza = mov.paymentDate
+            nombreBanco = mov.bankAccount?.bank?.name ?? 'TRANSFERENCIA';
+            numeroOperacion = mov.code ?? '';
+          } else {
+            // Si hay múltiples movimientos concatenamos operaciones si difieren
+            if (mov.code && !numeroOperacion.includes(mov.code)) {
+              numeroOperacion += `, ${mov.code}`;
+            }
+          }
+
+          // Calcular el monto ejecutado transformándolo siempre a SOLES (monto_pen)
+          if (!esCuentaDolares) {
+            // Si la cuenta destino ya está en soles, sumamos directo
+            totalPagadoCuotaSoles += montoMovimiento;
+          } else {
+            // Si la cuenta es en dólares, convertimos a soles multiplicando por el TC del movimiento o el actual
+            const tcMovimiento = mov.exchangeRate ? Number(mov.exchangeRate.sellRate) : tcAplicado;
+            totalPagadoCuotaSoles += (montoMovimiento * tcMovimiento);
+          }
+        });
+
+        // Si por alguna razón la cuota no tiene movimientos registrados pero está pagada, tomamos fallback analítico
+        if (movements.length === 0) {
+          const isDocDolar = doc?.currencyId === CURRENCY.DOLARES;
+          const totalAmountInst = Number(installment.paidAmount ?? installment.totalAmount ?? 0);
+          totalPagadoCuotaSoles = isDocDolar ? (totalAmountInst * tcAplicado) : totalAmountInst;
+          fechaCobranza = installment.dueDate;
+        }
+
+        // Estructuramos la fila del CSV solicitada
+        collectionResults.push({
+          numero_contrato: numeroContratoConcatenado,
+          cliente_dni: clienteDniReal,
+          numero_cuota_planificada: installment.letra, // Correlativo de la cuota (0, 1, 2...)
+          fecha_cobranza: fechaCobranza ? moment(fechaCobranza).format('DD/MM/YYYY') : null,
+          monto_pen: Number(totalPagadoCuotaSoles.toFixed(2)),
+          medio_pago: 'TRANSFERENCIA', // Fijo por regla de negocio
+          banco: nombreBanco,
+          numero_operacion: numeroOperacion || 'S/N',
+          notas: '' // Siempre vacías por regla de negocio
+        });
+      });
+    });
+
+    // 5️⃣ Ordenamiento del reporte por contrato y número de cuota
+    return collectionResults.sort((a, b) => {
+      const contratoCompare = (a.numero_contrato || '').localeCompare(b.numero_contrato || '', 'es');
+      if (contratoCompare !== 0) return contratoCompare;
+      return a.numero_cuota_planificada - b.numero_cuota_planificada;
+    });
+  }
+
+
 
 
   // Scheduled Debt Document

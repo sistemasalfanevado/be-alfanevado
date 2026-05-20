@@ -179,3 +179,12 @@ export const SALE_TYPE = {
 };
 
 
+export const PROJECT_NO_SALES = {
+  ALFA_NEVADO: '8fab8adf-8323-4c06-a885-25985d0ac776',
+  ALFA_HOLDING: '70f1bf2d-9ca6-4ed7-b1c3-b3fb9445522a',
+  PRUEBAS: '41a89b6e-beec-44ad-8adf-d62c064c3ceb'
+};
+
+
+
+

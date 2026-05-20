@@ -2,3 +2,1038 @@
 > alfa-nevado-backend@0.0.1 start
 > node dist/main
 
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMailerModule dependencies initialized[39m[38;5;3m +31ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +18ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBitrixMainModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mLandingMainModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPassportModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraMainModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +26ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMailerCoreModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraOllamaModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUsersModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mProjectModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraSessionLogModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraUsersModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraExchangeRateModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraUserPartyModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraPageModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraPageGroupModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraRoleModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraRolePermissionModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraGenreModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraActionModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraRoleActionModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraPasswordResetTokenModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraTelecreditoConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraUserProjectModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraDocumentOriginModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraFinancialImpactModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraTelecreditoOperationStateModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraAreaModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraVisibilityModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraStageModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraSubStageModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraTransactionNatureModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraNotificationRecipientModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraNotificationCategoryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraAuditLogModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraProjectSubStageModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraProjectSubStageProgressModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraProjectSubStageProgressFileModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraPaymentCategoryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraMovementBudgetConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraPaymentPlanModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraBankModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraDocumentBudgetStatusModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraBudgetItemCategoryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraCurrencyModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraDocumentTypeModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraDocumentTransactionMethodModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraMovementCategoryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraProjectModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraSubProjectModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraTransactionTypeModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraCompanyModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraPartyBankAccountModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraPartyDocumentModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraPartyRoleModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraPartyDocumentHierarchyModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraPartyDocumentTypeModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraBankAccountModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraBankAccountHierarchyModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraBankAccountTypeModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraLandingPageRelationModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraBudgetCategoryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraBudgetItemModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraBudgetItemDefinitionModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraBudgetNatureModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraBudgetItemHistoryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraInstallmentStatusModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraFinancialNatureModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraBrokerModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraSaleTypeModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraScheduledIncomeDocumentModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraScheduledIncomeDocumentStatusModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraScheduledDebtDocumentModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraQuotationMilestoneModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraLotQuotationModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraDocumentStatusModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraDocumentCategoryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraMovementStatusModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraBudgetIncreaseRequestModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraBudgetIncreaseStatusModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraProjectIncomeModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraDocumentFileModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraMovementFileModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraTransactionGeneralModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraTelecreditoOperationModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraTelecreditoOperationDetailModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraInstallmentFileModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraExtrasModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraBankStatementModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraLandingLeadModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraAccountabilityStatusModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraPettyCashStatusModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraMovementModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraPartyModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMailModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraInstallmentModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraDebtInvestmentModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraDocumentExpenseModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraDocumentSalesModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraDocumentModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraPercentageModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraPettyCashModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraAccountabilityModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBitrixModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSettingsModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mFooterContactModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mFooterLinkModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mFooterSocialModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mHeroBannerModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mFeatureModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mContentModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mContentYearModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mContentSliderModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mLotStatusModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mLotModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPageModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mCompleteProjectModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTermConditionModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mZentraAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mBitrixController {/bitrix}:[39m[38;5;3m +19ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/bitrix/lead, POST} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/auth}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/login, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mUsersController {/users}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/users/:id/restore, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mFooterContactController {/footer-contact}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-contact, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-contact, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-contact/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-contact/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-contact/:id, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-contact/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mFooterLinkController {/footer-link}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-link, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-link, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-link/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-link/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-link/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-link/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mFooterSocialController {/footer-social}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-social, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-social, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-social/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-social/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-social/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/footer-social/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mHeroBannerController {/hero-banner}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/hero-banner, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/hero-banner, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/hero-banner/:pageId/page, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/hero-banner/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/hero-banner/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/hero-banner/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/hero-banner/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mFeatureController {/feature}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/feature, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/feature, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/feature/:pageId/page, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/feature/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/feature/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/feature/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/feature/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mProjectController {/project}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/project, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/project, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/project/:pageId/page, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/project/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/project/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/project/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/project/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mContentController {/content}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content/:pageId/page, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mContentYearController {/content-year}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content-year, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content-year, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content-year/:pageId/page, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content-year/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content-year/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content-year/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content-year/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mContentSliderController {/content-slider}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content-slider, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content-slider, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content-slider/:pageId/page, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content-slider/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content-slider/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content-slider/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/content-slider/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mLotStatusController {/lot-status}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/lot-status, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/lot-status, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/lot-status/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/lot-status/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/lot-status/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/lot-status/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mLotController {/lot}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/lot, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/lot, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/lot/:pageId/page, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/lot/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/lot/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/lot/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/lot/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSettingsController {/setting}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/setting, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/setting, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/setting/maintenance, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/setting/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/setting/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/setting/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/setting/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mPageController {/page}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/page, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/page, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/page/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/page/by-route/:route, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/page/:id, PUT} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/page/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/page/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mCompleteProjectController {/complete-projects}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/complete-projects, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/complete-projects, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/complete-projects/:pageId/page, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/complete-projects/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/complete-projects/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/complete-projects/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/complete-projects/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mTermConditionController {/term-conditions}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/term-conditions, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/term-conditions, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/term-conditions/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/term-conditions/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/term-conditions/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/term-conditions/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraSessionLogController {/zentra-session-logs}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-session-logs/login-entry, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-session-logs, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-session-logs/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-session-logs/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-session-logs/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraAuthController {/zentra-auth}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-auth/login, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraUsersController {/zentra-users}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-users, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-users, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-users/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-users/:id, PUT} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-users/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-users/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraExchangeRateController {/exchange-rates}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/exchange-rates, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/exchange-rates, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/exchange-rates/today, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/exchange-rates/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/exchange-rates/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/exchange-rates/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/exchange-rates/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/exchange-rates/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraUserPartyController {/zentra-user-parties}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-user-parties, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-user-parties, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-user-parties/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-user-parties/by-user/:userId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-user-parties/:id, PUT} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-user-parties/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-user-parties/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraPageController {/zentra-page}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-page, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-page, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-page/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-page/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-page/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-page/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraPageGroupController {/zentra-page-group}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-page-group, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-page-group, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-page-group/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-page-group/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-page-group/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-page-group/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraRoleController {/zentra-role}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role/:id/restore, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraRolePermissionController {/zentra-role-permission}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role-permission, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role-permission, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role-permission/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role-permission/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role-permission/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role-permission/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraGenreController {/zentra-genres}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-genres, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-genres, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-genres/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-genres/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-genres/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-genres/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraActionController {/zentra-action}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-action, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-action, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-action/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-action/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-action/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-action/:id/restore, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraRoleActionController {/zentra-role-action}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role-action, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role-action, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role-action/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role-action/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role-action/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-role-action/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraPasswordResetTokenController {/zentra-password-reset}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-password-reset/generate, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-password-reset/reset, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-password-reset/verify, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-password-reset/all, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraTelecreditoConfigController {/zentra-telecredito-config}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-config, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-config, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-config/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-config/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-config/:id, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-config/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-config/by-bank-account, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraUserProjectController {/zentra-user-project}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-user-project, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-user-project, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-user-project/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-user-project/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-user-project/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-user-project/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraDocumentOriginController {/zentra-document-origin}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-origin, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-origin, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-origin/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-origin/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-origin/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-origin/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraFinancialImpactController {/zentra-financial-impact}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-financial-impact, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-financial-impact, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-financial-impact/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-financial-impact/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-financial-impact/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-financial-impact/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraTelecreditoOperationStateController {/zentra-telecredito-operation-states}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operation-states, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operation-states, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operation-states/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operation-states/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operation-states/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operation-states/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraAreaController {/zentra-areas}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-areas, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-areas, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-areas/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-areas/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-areas/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-areas/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraVisibilityController {/zentra-visibility}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-visibility, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-visibility, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-visibility/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-visibility/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-visibility/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-visibility/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraStageController {/zentra-stages}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-stages, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-stages, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-stages/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-stages/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-stages/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-stages/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-stages/sub-stages/progress-detail, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraSubStageController {/zentra-sub-stages}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sub-stages, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sub-stages, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sub-stages/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sub-stages/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sub-stages/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sub-stages/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sub-stages/by-stage/:stageId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sub-stages/with-stage, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraTransactionNatureController {/zentra-transaction-natures}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-transaction-natures, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-transaction-natures, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-transaction-natures/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-transaction-natures/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-transaction-natures/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-transaction-natures/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraNotificationRecipientController {/zentra-notification-recipients}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-notification-recipients, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-notification-recipients, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-notification-recipients/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-notification-recipients/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-notification-recipients/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-notification-recipients/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraNotificationCategoryController {/zentra-notification-categories}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-notification-categories, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-notification-categories, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-notification-categories/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-notification-categories/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-notification-categories/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-notification-categories/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraAuditLogController {/zentra-audit-logs}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-audit-logs, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-audit-logs/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-audit-logs/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraPercentageController {/zentra-percentages}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-percentages, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-percentages, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-percentages/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-percentages/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-percentages/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-percentages/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraProjectSubStageController {/zentra-project-sub-stages}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stages, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stages, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stages/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stages/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stages/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stages/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stages/project/:projectId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraProjectSubStageProgressController {/zentra-project-sub-stages-progress}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stages-progress, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stages-progress/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stages-progress/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stages-progress/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stages-progress/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stages-progress/by-project-sub-stage/:projectSubStageId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraProjectSubStageProgressFileController {/zentra-project-sub-stage-progress-files}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stage-progress-files, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stage-progress-files, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stage-progress-files/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stage-progress-files/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stage-progress-files/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stage-progress-files/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-sub-stage-progress-files/by-code/:projectSubStageProgressId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraPaymentCategoryController {/zentra-payment-category}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-payment-category, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-payment-category, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-payment-category/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-payment-category/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-payment-category/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-payment-category/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraMovementBudgetConfigController {/zentra-movement-budget-config}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-budget-config, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-budget-config, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-budget-config/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-budget-config/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-budget-config/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-budget-config/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-budget-config/project/:projectId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraPaymentPlanController {/zentra-payment-plans}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-payment-plans, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-payment-plans, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-payment-plans/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-payment-plans/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-payment-plans/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-payment-plans/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraBankController {/zentra-banks}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-banks, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-banks, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-banks/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-banks/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-banks/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-banks/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraDocumentBudgetStatusController {/zentra-document-budget-status}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-budget-status, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-budget-status, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-budget-status/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-budget-status/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-budget-status/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-budget-status/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraBudgetItemCategoryController {/zentra-budget-item-categories}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-categories, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-categories, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-categories/complete, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-categories/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-categories/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-categories/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-categories/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraCurrencyController {/zentra-currencies}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-currencies, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-currencies, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-currencies/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-currencies/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-currencies/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-currencies/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraDocumentTypeController {/zentra-document-types}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-types, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-types, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-types/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-types/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-types/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-types/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-types/visibility/:visibilityId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraDocumentTransactionMethodController {/zentra-document-transaction-methods}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-transaction-methods, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-transaction-methods, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-transaction-methods/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-transaction-methods/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-transaction-methods/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-transaction-methods/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraMovementCategoryController {/zentra-movement-categories}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-categories, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-categories, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-categories/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-categories/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-categories/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-categories/:id/restore, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraProjectController {/zentra-projects}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-projects, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-projects, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-projects/with-details, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-projects/with-company, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-projects/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-projects/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-projects/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-projects/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-projects/company/:companyId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-projects/user/:userId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraSubProjectController {/zentra-sub-projects}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sub-projects, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sub-projects, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sub-projects/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sub-projects/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sub-projects/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sub-projects/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraTransactionTypeController {/zentra-transaction-types}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-transaction-types, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-transaction-types, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-transaction-types/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-transaction-types/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-transaction-types/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-transaction-types/:id/restore, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraCompanyController {/zentra-companies}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-companies, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-companies, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-companies/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-companies/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-companies/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-companies/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraPartyController {/zentra-parties}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-parties/crm-dni, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-parties/crm-ruc, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-parties, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-parties/complex, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-parties, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-parties/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-parties/:id, PUT} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-parties/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-parties/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-parties/with-principal, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-parties/with-principal-deleted, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-parties/simple, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-parties/find-one-with-principal, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-parties/clean-without-documents, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-parties/document-count-and-list, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraPartyBankAccountController {/zentra-party-bank-accounts}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-bank-accounts, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-bank-accounts, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-bank-accounts/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-bank-accounts/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-bank-accounts/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-bank-accounts/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-bank-accounts/party/:partyId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-bank-accounts/partyManyPrincipal, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-bank-accounts/fixMultiplePrincipals, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraPartyDocumentController {/zentra-party-documents}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-documents, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-documents, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-documents/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-documents/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-documents/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-documents/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-documents/party/:partyId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-documents/partyManyPrincipal, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-documents/fixMultiplePrincipals, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraPartyRoleController {/zentra-party-roles}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-roles, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-roles, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-roles/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-roles/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-roles/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-roles/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraPartyDocumentHierarchyController {/zentra-party-document-hierarchies}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-document-hierarchies, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-document-hierarchies, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-document-hierarchies/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-document-hierarchies/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-document-hierarchies/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-document-hierarchies/:id/restore, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraPartyDocumentTypeController {/zentra-party-document-types}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-document-types, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-document-types, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-document-types/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-document-types/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-document-types/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-party-document-types/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraBankAccountController {/zentra-bank-accounts}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-accounts, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-accounts, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-accounts/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-accounts/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-accounts/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-accounts/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-accounts/project/:projectId, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-accounts/company/:companyId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraBankAccountHierarchyController {/zentra-bank-account-hierarchies}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-account-hierarchies, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-account-hierarchies, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-account-hierarchies/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-account-hierarchies/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-account-hierarchies/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-account-hierarchies/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraBankAccountTypeController {/zentra-bank-account-types}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-account-types, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-account-types, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-account-types/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-account-types/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-account-types/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-account-types/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraLandingPageRelationController {/zentra-landing-page-relations}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-landing-page-relations, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-landing-page-relations, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-landing-page-relations/:id/available-lots, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-landing-page-relations/:id/lots, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-landing-page-relations/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-landing-page-relations/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-landing-page-relations/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-landing-page-relations/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-landing-page-relations/lots-by-projects, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraBudgetCategoryController {/zentra-budget-categories}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-categories, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-categories, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-categories/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-categories/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-categories/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-categories/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraBudgetItemController {/zentra-budget-items}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items/complete, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items/complete-project/:projectId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items/project/:projectId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items/company/:companyId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items/category, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items/category-dashboard, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items/search, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items/search-extra, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items/search-dashboard, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-items/summary-projects, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraBudgetItemDefinitionController {/zentra-budget-item-definitions}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-definitions, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-definitions, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-definitions/complete, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-definitions/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-definitions/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-definitions/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-definitions/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-definitions/complete-project/:projectId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-definitions/project/:projectId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-definitions/order-project/:projectId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-definitions/company/:companyId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraBudgetNatureController {/zentra-budget-natures}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-natures, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-natures, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-natures/complete, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-natures/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-natures/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-natures/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-natures/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraBudgetItemHistoryController {/zentra-budget-item-history}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-history, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-history, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-history/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-history/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-history/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-history/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-item-history/budget-item/:budgetItemId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraInstallmentStatusController {/zentra-installment-status}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installment-status, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installment-status, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installment-status/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installment-status/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installment-status/:id, DELETE} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installment-status/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraFinancialNatureController {/zentra-financial-natures}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-financial-natures, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-financial-natures, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-financial-natures/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-financial-natures/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-financial-natures/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-financial-natures/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraBrokerController {/zentra-brokers}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-brokers, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-brokers, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-brokers/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-brokers/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-brokers/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-brokers/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraSaleTypeController {/zentra-sale-types}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sale-types, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sale-types, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sale-types/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sale-types/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sale-types/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-sale-types/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraScheduledIncomeDocumentController {/zentra-scheduled-income-documents}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-income-documents, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-income-documents, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-income-documents/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-income-documents/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-income-documents/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-income-documents/:id/restore, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraScheduledIncomeDocumentStatusController {/zentra-scheduled-income-document-status}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-income-document-status, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-income-document-status, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-income-document-status/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-income-document-status/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-income-document-status/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-income-document-status/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraScheduledDebtDocumentController {/zentra-scheduled-debt-documents}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-debt-documents, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-debt-documents, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-debt-documents/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-debt-documents/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-debt-documents/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-scheduled-debt-documents/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraQuotationMilestoneController {/zentra-quotation-milestones}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-quotation-milestones, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-quotation-milestones, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-quotation-milestones/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-quotation-milestones/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-quotation-milestones/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-quotation-milestones/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-quotation-milestones/quotation/:quotationId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraLotQuotationController {/zentra-lot-quotations}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-lot-quotations, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-lot-quotations, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-lot-quotations/lot/:lotId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-lot-quotations/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-lot-quotations/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-lot-quotations/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-lot-quotations/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraDocumentStatusController {/zentra-document-status}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-status, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-status, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-status/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-status/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-status/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-status/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraDocumentCategoryController {/zentra-document-categories}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-categories, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-categories, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-categories/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-categories/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-categories/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-categories/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraMovementStatusController {/zentra-movement-status}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-status, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-status, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-status/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-status/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-status/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-status/:id/restore, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraBudgetIncreaseRequestController {/zentra-budget-increase-requests}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-increase-requests, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-increase-requests, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-increase-requests/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-increase-requests/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-increase-requests/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-increase-requests/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraBudgetIncreaseStatusController {/zentra-budget-increase-statuses}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-increase-statuses, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-increase-statuses, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-increase-statuses/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-increase-statuses/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-increase-statuses/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-budget-increase-statuses/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraProjectIncomeController {/zentra-project-income}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-income, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-income, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-income/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-income/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-income/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-income/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-project-income/project/:projectId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraPettyCashController {/zentra-petty-cash}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash/add-document, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash/update-document/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash/update-simple-document/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash/remove-document/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash/add-increment, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash/process-expense-document, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash/add-document-return, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash/get-data-report, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mMailController {/mail}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/mail/notify-paid, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/mail/notify-budget, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraDocumentController {/zentra-documents}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/simple/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/budget-item/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/search-complete, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/exchange-rate, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/exchange-rate/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/exchange-rate/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/exchange-rate/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/financial-expense, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/financial-expense/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/financial-expense/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/financial-expense/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/not-identified, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/not-identified/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/not-identified/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/not-identified/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/reversal, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/reversal/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/reversal/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/reversal/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/cuadre, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/cuadre/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/cuadre/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/cuadre/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/scheduled-income, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/scheduled-income/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/scheduled-income/search-detail, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/scheduled-income/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/scheduled-income/:id, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/scheduled-document/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/scheduled-income/report, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/scheduled-income/ia, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/scheduled-income/sales-report, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/scheduled-debt, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/scheduled-debt/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/scheduled-debt/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/scheduled-debt/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/search-report-expense-detraction, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/search-report-expense, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/search-report-sales, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/validate-duplicate, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/petty-cash/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/summary-sales, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-documents/summary-lot-sales, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraMovementController {/zentra-movements}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/simple/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/:id, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/by-budget-item/:budgetItemId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/by-currency/:currencyId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/by-budget-item/:budgetItemId/currency/:currencyId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/by-installment/:installmentId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/by-document/:documentId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/search-all-budget-item, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/profitability/yearly/:projectId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/profitability/monthly, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/project/:projectId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/company/:companyId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/bankStatement/:bankAccountId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/recalculateBudgetItems, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/recalculateBankAccount, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/search-budget-item, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movements/recalculate-exchange-rates, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraInstallmentController {/zentra-installments}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/scheduled/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/scheduled-debt/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/simple/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/payment, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/movement, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/movement/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/movement/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/debts-year, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/debts-all, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/project/:projectId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/company/:companyId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/company-debt/:companyId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/recalculate, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installments/scheduled/:id/movements-report, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraAccountabilityController {/zentra-accountabilities}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountabilities, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountabilities, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountabilities/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountabilities/:id, PUT} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountabilities/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountabilities/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountabilities/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountabilities/add-increment, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountabilities/add-refund, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountabilities/add-document, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountabilities/update-document/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountabilities/update-simple-document/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountabilities/remove-document/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountabilities/add-document-return, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountabilities/get-data-report, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraDocumentExpenseController {/zentra-document-expenses}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-expenses/movement, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-expenses/movement/bulk, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-expenses/movement/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-expenses/movement/:id, PUT} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-expenses/movement-exchange-rate/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraDocumentSalesController {/zentra-document-sales}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-sales/movement, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-sales/movement/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-sales/movement/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraDocumentFileController {/zentra-document-files}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-files, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-files, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-files/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-files/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-files/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-files/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-document-files/by-document/:documentId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraMovementFileController {/zentra-movement-files}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-files, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-files, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-files/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-files/:id, PUT} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-files/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-files/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-movement-files/by-movement/:movementId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraDebtInvestmentController {/zentra-debt-investments}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-debt-investments/movement, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-debt-investments/movement/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-debt-investments/movement/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraTransactionGeneralController {/zentra-transaction-general}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-transaction-general/weekly-summary, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraTelecreditoOperationController {/zentra-telecredito-operations}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operations, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operations, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operations/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operations/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operations/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operations/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operations/search, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operations/create-with-details, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraTelecreditoOperationDetailController {/zentra-telecredito-operation-details}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operation-details, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operation-details, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operation-details/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operation-details/by-operation/:telecreditoOperationId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operation-details/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operation-details/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-telecredito-operation-details/:id/restore, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraInstallmentFileController {/zentra-installment-files}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installment-files, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installment-files, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installment-files/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installment-files/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installment-files/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installment-files/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-installment-files/by-installment/:installmentId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraExtrasController {/zentra-extras}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-extras/recover-rates, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraBankStatementController {/zentra-bank-statements}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-statements, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-statements, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-statements/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-statements/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-statements/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-statements/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-statements/project/:projectId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-statements/company/:companyId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-bank-statements/bank-account/:bankAccountId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraOllamaController {/zentra-ollama}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-ollama/ask, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraLandingLeadController {/zentra-landing-leads}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-landing-leads, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-landing-leads, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-landing-leads/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-landing-leads/:id, PUT} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-landing-leads/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-landing-leads/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraAccountabilityStatusController {/zentra-accountability-status}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountability-status, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountability-status, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountability-status/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountability-status/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountability-status/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-accountability-status/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mZentraPettyCashStatusController {/zentra-petty-cash-status}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash-status, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash-status, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash-status/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash-status/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash-status/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 7111  - [39m05/19/2026, 12:15:34 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/zentra-petty-cash-status/:id/restore, PATCH} route[39m[38;5;3m +0ms[39m
