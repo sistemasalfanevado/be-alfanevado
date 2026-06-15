@@ -159,7 +159,7 @@ export class ZentraLandingPageRelationService {
     return lots.map((lot) => ({
       number: lot.number,
       block: lot.block,
-      code: lot.code,
+      code: lot.block + ' - ' + lot.number,
       status: lot.status.title,
       area: lot.area,
       perimeter: lot.perimeter,
