@@ -76,9 +76,6 @@ export class ZentraPasswordResetTokenService {
     return true;
   }
 
-  /**
-   * (Opcional) Limpiar tokens expirados
-   */
   async cleanExpired() {
     return this.prisma.zentraPasswordResetToken.deleteMany({
       where: { expiresAt: { lt: new Date() } },
@@ -87,7 +84,7 @@ export class ZentraPasswordResetTokenService {
 
   async findAllTokens() {
     const tokens = await this.prisma.zentraPasswordResetToken.findMany({
-      include: { user: true },   // traer información del usuario
+      include: { user: true },
       orderBy: { createdAt: 'desc' },
     });
 
@@ -103,9 +100,6 @@ export class ZentraPasswordResetTokenService {
     }));
   }
 
-  /**
-   * Formatear fecha DD/MM/YYYY HH:mm
-   */
   private formatDateTime(date: Date | string): string {
     return moment(date).format('DD/MM/YYYY HH:mm');
   }
