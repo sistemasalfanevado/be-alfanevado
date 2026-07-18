@@ -1,4 +1,4 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 
 import { CreateZentraDocumentDto } from './dto/create-zentra-document.dto';
@@ -2759,7 +2759,7 @@ export class ZentraDocumentService {
           }
         });
       }
-      
+
       return {
         proyecto_codigo: project?.name ?? null,
         numero_contrato: numeroContratoCorrelativo, // 📌 Correlativo puro (1, 2, 3...)
@@ -4133,4 +4133,82 @@ export class ZentraDocumentService {
 
     return [totalSummary, ...reportArray];
   }
+
+
+  async findAttachmentsByDocumentId(documentId: string) {
+    const document = await this.prisma.zentraDocument.findFirst({
+      where: {
+        id: documentId,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        code: true,
+        description: true,
+        files: {
+          where: { deletedAt: null },
+          select: {
+            id: true,
+            fileName: true,
+            fileUrl: true,
+            createdAt: true,
+          },
+        },
+        movements: {
+          where: { deletedAt: null },
+          select: {
+            id: true,
+            code: true,
+            description: true,
+            paymentDate: true,
+            files: {
+              where: { deletedAt: null },
+              select: {
+                id: true,
+                fileName: true,
+                fileUrl: true,
+                createdAt: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Validamos si el documento existe
+    if (!document) {
+      throw new NotFoundException(`El documento con ID ${documentId} no existe o fue eliminado.`);
+    }
+
+    // 2. Estructuramos la respuesta de forma limpia para el asesor
+    const documentFiles = document.files.map(file => ({
+      id: file.id,
+      fileName: file.fileName,
+      fileUrl: file.fileUrl,
+      uploadedAt: file.createdAt,
+      source: 'Documento Principal',
+      sourceInfo: document.code || 'S/N'
+    }));
+
+    // Aplanamos y estructuramos los archivos de los movimientos
+    const movementFiles = document.movements.flatMap(movement =>
+      movement.files.map(file => ({
+        id: file.id,
+        fileName: file.fileName,
+        fileUrl: file.fileUrl,
+        uploadedAt: file.createdAt,
+        source: 'Movimiento (Pago)',
+        sourceInfo: `Mvto: ${movement.code || 'S/N'} - ${movement.description || ''}`
+      }))
+    );
+
+    return {
+      documentId: document.id,
+      documentCode: document.code,
+      totalFilesCount: documentFiles.length + movementFiles.length,
+      attachments: [...documentFiles, ...movementFiles]
+    };
+  }
+
+
 }

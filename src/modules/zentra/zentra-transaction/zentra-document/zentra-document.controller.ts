@@ -297,7 +297,7 @@ export class ZentraDocumentController {
   }) {
     return this.zentraDocumentService.getSalesDetailedReport(filters);
   }
-  
+
   @Post('scheduled-income/collection-report')
   getCollectionReport(@Body() filters: {
     startDate?: string;
@@ -346,7 +346,7 @@ export class ZentraDocumentController {
     return this.zentraDocumentService.findByFiltersReportExpenseDetraction(filters);
   }
 
-  
+
   @Post('search-report-expense')
   searchReportExpense(@Body() filters: {
     transactionTypeId?: string,
@@ -393,12 +393,20 @@ export class ZentraDocumentController {
   getSummaryProjects(@Body() body: { projectIds: string[] }) {
     return this.zentraDocumentService.getSalesMatrixReport(body.projectIds);
   }
-  
+
 
   @Post('summary-lot-sales')
   getSummaryLotProjects(@Body() body: { projectIds: string[] }) {
     return this.zentraDocumentService.getLotSalesMatrixReport(body.projectIds);
   }
-  
+
+
+  @Post('attachments')
+  async getDocumentAttachments(
+    @Body() payload: { documentId: string }
+  ) {
+    return this.zentraDocumentService.findAttachmentsByDocumentId(payload.documentId);
+  }
+
 
 }
