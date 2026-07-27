@@ -3903,6 +3903,7 @@ export class ZentraDocumentService {
         projectName: doc.budgetItem.definition.project.name,
         code: doc.code,
         documentTypeName: doc.documentType.name,
+        partyId: doc.party.id,
         partyName: doc.party.name,
         description: doc.description,
 
