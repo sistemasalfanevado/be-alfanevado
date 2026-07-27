@@ -60,6 +60,14 @@ export class ZentraPettyCashController {
     return this.zentraPettyCashService.updateSimpleDocument(id, updateZentraPettyCashDto);
   }
 
+  @Put('update-party/:id')
+  async updateParty(
+    @Param('id') id: string,
+    @Body() updateZentraPettyCashDto: any
+  ) {
+    return this.zentraPettyCashService.updateParty(id, updateZentraPettyCashDto);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.zentraPettyCashService.remove(id);

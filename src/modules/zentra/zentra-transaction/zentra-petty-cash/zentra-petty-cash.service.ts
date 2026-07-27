@@ -427,6 +427,16 @@ export class ZentraPettyCashService {
 
   }
 
+  async updateParty(id: string, dataDocument: any) {
+    await this.zentraDocumentService.updateSimple(id,
+      {
+        partyId: dataDocument.partyId,
+      },
+    );
+
+    return { message: 'Petty cash actualizada exitosamente' };
+  }
+
   async updateSimple(id: string, updateDto: any) {
     await this.prisma.zentraPettyCash.update({
       where: { id },
