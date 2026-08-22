@@ -1666,6 +1666,129 @@ export class ZentraMovementService {
     return result;
   }
 
+  async getBudgetSummaryByYears2(projectId: string, startDateParam: string, endDateParam: string) {
+    // 1. Definir rango de fechas para la auditoría (2022 - 2024)
+    const startDate = moment(startDateParam).startOf('day').toDate();
+    const endDate = moment(endDateParam).endOf('day').toDate();
+
+    // 2. Traer las partidas del proyecto (con su presupuesto 'amount')
+    // Nota: Ajusta la relación según tu esquema de Prisma si es necesario
+    const budgetItems = await this.prisma.zentraBudgetItem.findMany({
+      where: {
+        definition: {
+          projectId: projectId,
+          visibilityId: VISIBIILITY.VISIBLE, // Usando tu constante de visibilidad
+        },
+      },
+      include: {
+        definition: true,
+      },
+    });
+
+    // 3. Traer los movimientos en el rango de fechas para el proyecto
+    const movements = await this.prisma.zentraMovement.findMany({
+      where: {
+        deletedAt: null,
+        paymentDate: {
+          gte: startDate,
+          lte: endDate,
+        },
+        budgetItem: {
+          definition: {
+            projectId: projectId,
+          },
+        },
+      },
+      include: {
+        bankAccount: {
+          include: {
+            currency: true,
+          },
+        },
+        transactionType: true,
+        exchangeRate: true,
+        budgetItem: {
+          include: {
+            definition: true,
+          },
+        },
+      },
+    });
+
+    // 4. Inicializar el mapa del resumen usando las partidas encontradas
+    const summaryMap: Record<string, {
+      budgetItemName: string;
+      budget: number;
+      '2023': number;
+      '2024': number;
+      '2025': number;
+      total: number;
+    }> = {};
+
+    budgetItems.forEach((item) => {
+      summaryMap[item.id] = {
+        budgetItemName: item.definition.name,
+        budget: Number(item.amount) || 0, // El presupuesto de la partida en dólares
+        '2023': 0,
+        '2024': 0,
+        '2025': 0,
+        total: 0,
+      };
+    });
+
+    // 5. Procesar y dolarizar cada movimiento (Réplica de la lógica Frontend)
+    movements.forEach((mov) => {
+      const budgetItemId = mov.budgetItem?.id;
+      if (!budgetItemId || !summaryMap[budgetItemId]) return;
+
+      const paymentYear = moment(mov.paymentDate).year();
+      const yearKey = paymentYear.toString() as '2023' | '2024' | '2025';
+
+      // Solo nos interesan los años de la auditoría
+      if (yearKey !== '2023' && yearKey !== '2024' && yearKey !== '2025') return;
+
+      const exchangeRate = Number(mov.exchangeRate?.buyRate || 1);
+      const amount = Number(mov.amount);
+      const isEntry = mov.transactionType.id === TRANSACTION_TYPE.ENTRY; // ID_MODELS.transactionTypeEntrada
+
+      let totalDolares = 0;
+
+      // Lógica idéntica al Frontend
+      const adjustedAmount = isEntry ? amount : amount * -1;
+
+      if (mov.bankAccount.currency.id === CURRENCY.SOLES) {
+        totalDolares = adjustedAmount / exchangeRate;
+      } else if (mov.bankAccount.currency.id === CURRENCY.DOLARES) {
+        totalDolares = adjustedAmount;
+      } else {
+        // Por seguridad, si hay otra moneda o por defecto
+        totalDolares = adjustedAmount;
+      }
+
+      // Redondear a 2 decimales tal cual lo hacía el front: Number(Number(...).toFixed(2))
+      totalDolares = Number(totalDolares.toFixed(2));
+
+      // Acumular en el año correspondiente y en el total general ejecutado
+      summaryMap[budgetItemId][yearKey] += totalDolares;
+      summaryMap[budgetItemId].total += totalDolares;
+    });
+
+    // 6. Dar formato final redondeando los acumulados
+    const result = Object.entries(summaryMap)
+      .map(([id, item]) => ({
+        id: id,
+        partida: item.budgetItemName,
+        presupuesto: Number(item.budget.toFixed(2)),
+        '2023': Math.abs(Number(item['2023'].toFixed(2))),
+        '2024': Math.abs(Number(item['2024'].toFixed(2))),
+        '2025': Math.abs(Number(item['2025'].toFixed(2))),
+        totalEjecutado: Math.abs(Number(item.total.toFixed(2))),
+      }))
+      .sort((a, b) => a.partida.localeCompare(b.partida));
+
+    return result;
+  }
+
 
 
 
