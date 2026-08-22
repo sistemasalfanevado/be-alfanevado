@@ -1543,10 +1543,10 @@ export class ZentraMovementService {
 
 
 
-  async getBudgetSummaryByYears(projectId: string) {
+  async getBudgetSummaryByYears(projectId: string, startDateParam: string, endDateParam: string) {
     // 1. Definir rango de fechas para la auditoría (2022 - 2024)
-    const startDate = moment('2022-01-01').startOf('day').toDate();
-    const endDate = moment('2024-12-31').endOf('day').toDate();
+    const startDate = moment(startDateParam).startOf('day').toDate();
+    const endDate = moment(endDateParam).endOf('day').toDate();
 
     // 2. Traer las partidas del proyecto (con su presupuesto 'amount')
     // Nota: Ajusta la relación según tu esquema de Prisma si es necesario

@@ -181,7 +181,12 @@ export class ZentraMovementController {
 
   @Post('summary-by-years')
   async getSummaryByYears(@Body() body: { projectId: string }) {
-    return this.zentraMovementService.getBudgetSummaryByYears(body.projectId);
+    return this.zentraMovementService.getBudgetSummaryByYears(body.projectId, '2022-01-01', '2024-12-31');
+  }
+
+  @Post('summary-by-years-2')
+  async getSummaryByYears2(@Body() body: { projectId: string }) {
+    return this.zentraMovementService.getBudgetSummaryByYears(body.projectId, '2023-01-01', '2025-12-31');
   }
 
 }
